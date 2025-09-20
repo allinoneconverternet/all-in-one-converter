@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Offline Document Converter — Free, Private, In-Browser</title>
+  <meta name="description"
+    content="Convert PDF, DOCX, XLSX, CSV, TXT, MD, HTML, PNG, JPG, WebP — 100% in your browser. No uploads." />
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- AdSense loader (once) -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6251303109610053"
+    crossorigin="anonymous"></script>
+  <!-- In index.html head, gate the AdSense script -->
+
+
+</head>
+
+<body>
+  <header>
+    <div class="wrap row header-row">
+      <h1>All-in-one converter</h1>
+      <div class="row header-tools">
+        <div class="pill" id="memory-pill">Detecting memory…</div>
+      </div class="topbar_Buttons">
+      <button class="btn-topbar" id="theme-btn">Toggle theme</button>
+      <button class="btn-topbar" id="share-btn">Share</button>
+    </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="panel prepanel">
+      <h2 id="pair-title">Offline document converter</h2>
+      <p id="pair-desc" class="hint">Drop files and choose an output. Everything runs on your device.</p>
+    </section>
+
+    <div class="panel grid" id="app">
+      <section class="controls">
+        <h2>1) Add files</h2>
+        <div class="row">
+          <div class="flex2"><input class="file-input" id="file-input" type="file" multiple /></div>
+          <div class="flex1"><button class="btn-ghost" id="clear-btn">Clear</button></div>
+        </div>
+        <div id="dropzone" class="dropzone" aria-label="Drag and drop files here">
+          Drop files here or click above to select
+        </div>
+
+        <h2 class="mt">2) Choose output type</h2>
+        <div class="row">
+          <div class="flex1">
+            <label for="target-format">Convert to</label>
+            <select id="target-format"></select>
+          </div>
+          <div id="quality-wrap" class="quality-wrap">
+            <label for="quality">Quality (JPEG/WebP)</label>
+            <input id="quality" type="range" min="0.4" max="1" step="0.02" value="0.92" />
+          </div>
+        </div>
+
+        <h2 class="mt">3) Limits & performance</h2>
+        <div class="row">
+          <div>
+            <label for="limit-mode">Memory budget</label>
+            <select id="limit-mode">
+              <option value="auto">Automatic (recommended)</option>
+              <option value="manual">Manual</option>
+            </select>
+          </div>
+          <div>
+            <label for="manual-limit">Max total file size (MB)</label>
+            <input id="manual-limit" type="number" min="10" step="10" value="200" disabled />
+          </div>
+          <div>
+            <label for="concurrency">Parallel conversions</label>
+            <input id="concurrency" type="number" min="1" max="4" step="1" value="2" />
+          </div>
+        </div>
+
+        <div class="row mt">
+          <button class="convert" id="convert-btn">Convert</button>
+          <button class="btn-ghost" id="save-all-btn" title="Save all outputs to a folder (if supported)">Save
+            All</button>
+        </div>
+
+        <div id="banner" class="hint mt-small"></div>
+
+        <div class="filelist" id="file-list" aria-live="polite" aria-label="Selected files"></div>
+        <div class="downloads" id="downloads" hidden>
+          <div class="hint">Outputs</div>
+          <div id="download-links"></div>
+        </div>
+      </section>
+
+      <aside class="aside">
+
+
+        <!-- Quick start instructions -->
+        <h2 class="mt-small">Quick start</h2>
+        <ol class="hint">
+          <li><b>Add files:</b> drag & drop into the box or click <em>Add files</em>.</li>
+          <li><b>Choose output:</b> pick a format in <em>Convert to</em> (set <em>Quality</em> for JPEG/WebP).</li>
+          <li><b>Convert:</b> press <b>Convert</b>. The row shows a badge, progress, and status.</li>
+          <li><b>Download:</b> when status is <b>Ready</b>, <b>click the file name</b> to download that result.
+            Use <b>Save All</b> to save every output at once.</li>
+          <li><b>Remove:</b> click the <b>×</b> on a file to remove it from the list.</li>
+        </ol>
+
+        <div class="hint" style="margin-top:.4rem">
+          <h3 class="mt-small">Tips and tricks</h3>
+          <ul style="margin:.4rem 0 0 1.1em">
+            <li><b>Parallel conversions:</b> adjust how many run at once.</li>
+            <li><b>Memory budget:</b> switch to <em>Manual</em> if you hit limits.</li>
+            <li><b>Long names:</b> names are shortened on the card; hover to see the full name.</li>
+            <li><b>Privacy:</b> everything runs in your browser — no uploads.</li>
+          </ul>
+        </div>
+
+
+
+        <h2 class="mt-small">Detected capabilities</h2>
+        <div id="caps" class="cap-list"></div>
+      </aside>
+
+    </div>
+  </main>
+
+  <!-- Mobile footer ad (horizontal slot) -->
+  <div class="footer-ads" role="complementary" aria-label="Sponsored">
+    <div class="ad-slot">
+      <div class="ad-note">Ad</div>
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6251303109610053" data-ad-slot="5450299774"
+        data-ad-format="auto" data-full-width-responsive="true" data-adtest="on"></ins>
+    </div>
+  </div>
+
+  <!-- Desktop bottom bar (horizontal slot) -->
+  <div id="bottom-ads" class="bottom-ads" role="complementary" aria-label="Sponsored (desktop)">
+    <div class="ad-slot ad-bottom">
+      <div class="ad-note">Ad</div>
+      <button class="ad-close" aria-label="Hide ad" title="Hide ad">×</button>
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6251303109610053" data-ad-slot="5450299774"
+        data-ad-format="horizontal" data-full-width-responsive="true" data-adtest="on"></ins>
+    </div>
+  </div>
+
+  <!-- Desktop side rails (vertical slot) -->
+  <div id="side-ads" class="side-ads">
+    <aside class="rail left" role="complementary" aria-label="Sponsored (left)">
+      <div class="ad-slot ad-rail">
+        <div class="ad-note">Ad</div>
+        <ins class="adsbygoogle" style="display:inline-block;width:300px;height:600px"
+          data-ad-client="ca-pub-6251303109610053" data-ad-slot="7685580873" data-adtest="on"></ins>
+      </div>
+    </aside>
+    <aside class="rail right" role="complementary" aria-label="Sponsored (right)">
+      <div class="ad-slot ad-rail">
+        <div class="ad-note">Ad</div>
+        <ins class="adsbygoogle" style="display:inline-block;width:300px;height:600px"
+          data-ad-client="ca-pub-6251303109610053" data-ad-slot="7685580873" data-adtest="on"></ins>
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    (() => {
+      // Viewport helpers
+      const isWide = () => matchMedia('(min-width:1200px)').matches;
+
+      // Show only the bars that match the viewport (prevents width=0)
+      function toggleFrames() {
+        const footer = document.querySelector('.footer-ads');   // mobile
+        const bottom = document.getElementById('bottom-ads');   // desktop
+        if (footer) footer.style.display = isWide() ? 'none' : '';
+        if (bottom) bottom.style.display = isWide() ? '' : '';
+
+        const rails = document.getElementById('side-ads');      // desktop only
+        if (rails) rails.style.display = isWide() ? '' : 'none';
+      }
+
+      // Find the box we should measure (parent .ad-slot is safest)
+      const box = el => el.closest('.ad-slot') || el.parentElement || el;
+
+      function readyToPush(ins) {
+        // must have a real slot and not already processed by AdSense
+        if (!ins.getAttribute('data-ad-slot')) return false;
+        if (ins.hasAttribute('data-adsbygoogle-status')) return false; // already filled
+        if (ins.dataset.adsInit === '1') return false;                 // we already tried
+
+        // must be visible and have width > 0
+        const host = box(ins);
+        const cs = getComputedStyle(host);
+        const w = Math.round(host.getBoundingClientRect().width);
+        return cs.display !== 'none' && cs.visibility !== 'hidden' && w > 0;
+      }
+
+      function normalizeIns(ins) {
+        // Give AdSense something to work with (prevents availableWidth=0)
+        const host = box(ins);
+        if (ins.style.display === '') ins.style.display = 'block';
+        if (ins.style.width === '') ins.style.width = '100%';
+        // Horizontal min-heights are set in CSS. Rails are fixed-size.
+        // Make sure host is not zero-height:
+        if (host.style.minHeight === '') host.style.minHeight = '1px';
+      }
+
+      function pushWhenReady(ins, tries = 16) {
+        if (!window.adsbygoogle) return;                 // loader blocked
+        if (ins.hasAttribute('data-adsbygoogle-status')) return; // already processed
+        if (ins.dataset.adsInit === '1') return;         // avoid double init
+
+        if (!readyToPush(ins)) {
+          if (tries > 0) setTimeout(() => pushWhenReady(ins, tries - 1), 250);
+          return;
+        }
+
+        try {
+          normalizeIns(ins);
+          (adsbygoogle = window.adsbygoogle || []).push({});
+          ins.dataset.adsInit = '1';
+        } catch (e) {
+          const msg = String(e && e.message || e);
+          // If everything is already filled, just mark done
+          if (msg.includes("already have ads")) {
+            ins.dataset.adsInit = '1';
+            return;
+          }
+          // Width race: retry a few times
+          if (tries > 0 && (msg.includes('No slot size') || msg.includes('availableWidth=0'))) {
+            setTimeout(() => pushWhenReady(ins, tries - 1), 350);
+            return;
+          }
+          console.warn('Ad push failed, retrying…', e);
+          if (tries > 0) setTimeout(() => pushWhenReady(ins, tries - 1), 400);
+        }
+      }
+
+      function initAll() {
+        document.querySelectorAll('ins.adsbygoogle[data-ad-slot]').forEach(pushWhenReady);
+      }
+
+      // One-time cleanup: remove any slot-less <ins> so global errors disappear
+      document.querySelectorAll('ins.adsbygoogle:not([data-ad-slot])').forEach(el => el.remove());
+
+      // Observe layout/size changes so slots init when they *become* visible
+      const ro = 'ResizeObserver' in window ? new ResizeObserver(initAll) : null;
+
+      window.addEventListener('load', () => {
+        toggleFrames();           // pick mobile vs desktop bar
+        initAll();                // first pass
+        if (ro) document.querySelectorAll('.ad-slot').forEach(el => ro.observe(el));
+        setTimeout(initAll, 500); // after fonts/layout settle
+        setTimeout(initAll, 1200);// after images
+      });
+
+      window.addEventListener('resize', () => {
+        toggleFrames();
+        initAll();
+      });
+    })();
+  </script>
+
+  <!-- Vendor libs (load before app.js) -->
+  <script src="vendor/mammoth.browser.min.js"></script>
+
+  <!-- keep it as a classic script (NOT type="module") -->
+  <script src="ffmpeg-esm-shim.js"></script>
+
+
+  <script src="vendor/jszip.min.js"></script>
+  <script src="vendor/xlsx.full.min.js"></script>
+  <script src="vendor/jspdf.umd.min.js"></script>
+  <script src="vendor/docx.min.js"></script>
+
+  <!-- Tesseract (offline) -->
+  <script src="vendor/tesseract.min.js"></script>
+  <script>
+    window.OCR_OPTS = {
+      workerPath: 'vendor/tesseract/worker.min.js',
+      corePath: 'vendor/tesseract/tesseract-core-simd.wasm.js',
+      langPath: 'vendor/tessdata',
+      gzip: true
+    };
+  </script>
+
+  <!-- Your app -->
+  <script src="app.js"></script>
+  <style>
+    /* Horizontal containers stretch */
+    .footer-ads,
+    .bottom-ads {
+      width: 100%;
+    }
+
+    .footer-ads .ad-slot,
+    .bottom-ads .ad-slot {
+      width: 100%;
+      max-width: 970px;
+      margin: 0 auto;
+    }
+
+    .bottom-ads .ad-slot>ins.adsbygoogle {
+      display: block;
+      width: 100%;
+      min-height: 90px;
+    }
+
+    .footer-ads .ad-slot>ins.adsbygoogle {
+      display: block;
+      width: 100%;
+      min-height: 50px;
+    }
+
+    /* Rails fixed size so they never init at 0 */
+    .rail .ad-slot {
+      width: 300px;
+    }
+
+    .rail .ad-slot>ins.adsbygoogle {
+      display: inline-block;
+      width: 300px;
+      height: 600px;
+    }
+  </style>
+
+  <noscript>
+    <p>Please enable JavaScript.</p>
+  </noscript>
+</body>
+
+</html>

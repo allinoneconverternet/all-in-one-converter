@@ -1,0 +1,1134 @@
+/* styles.css */
+:root {
+    --bottom-safe: 0px;
+    --rail-offset: 24px;
+    --scroll-slack: 5vh;
+    --bg: #0b1020;
+    --panel: #141a2f;
+    --panel-2: #0f1528;
+    --text: #e6ebff;
+    --muted: #a7b0d6;
+    --accent: #6ea8fe;
+    --danger: #ff6b6b;
+    --ok: #69db7c;
+    --border: #263154;
+    --shadow: 0 10px 30px rgba(0, 0, 0, .25);
+    --radius: 16px;
+
+    --cap_okay_colour: rgb(0, 252, 42);
+    --topbar_background_colour: linear-gradient(180deg, rgb(11, 16, 32), rgb(11, 16, 32));
+
+    --advert_background_colour: #0b1226;
+    --topbar_button_background_colour: #10182e;
+    --panel_background_colour: linear-gradient(180deg, var(--panel), var(--panel-2));
+    --dropzone_background_colour: #0b1226;
+    --convert_border: #2a3a6a;
+    --convert_button_background_colour: linear-gradient(180deg, #1b2b59, #12234b);
+    --button_background_colour: #10182e;
+    --choose_file_background: #10182e;
+
+
+    --body_background_colour: radial-gradient(1200px 800px at 20% -10%, #162044, transparent 60%), radial-gradient(1200px 800px at 120% 20%, #112042, transparent 60%), var(--bg);
+
+}
+
+:root[data-theme="light"] {
+    --bg: #f6f8ff;
+    --panel: #ffffff;
+    --panel-2: #f2f4ff;
+    --text: #0b1020;
+    --muted: #4a5677;
+    --accent: #3056d3;
+    --danger: #b00020;
+    --ok: #0b8e2a;
+    --border: #dbe1ff;
+    --choose_file_background: #f7f9ff;
+    --button_background_colour: #f7f9ff;
+    --convert_border: #dbe1ff;
+    --topbar_background_colour: #F9F9FB;
+    --body_background_colour: #FAFDFF;
+    --advert_background_colour: #FEFEFE;
+    --topbar_button_background_colour: #FEFFFF;
+    --panel_background_colour: #FFFFFF;
+    --dropzone_background_colour: #FDFDFF;
+    --cap_okay_colour: rgba(5, 235, 43, 0.377);
+    --convert_button_background_colour: #5589D2;
+
+}
+
+:root {
+    --bg: #0b1020;
+    /* your base */
+    /* fade to alpha-0 of the same colors (not plain transparent) */
+    --body_background_colour:
+        radial-gradient(1200px 800px at 20% -10%,
+            #162044 0%,
+            rgba(22, 32, 68, 0) 60%),
+        radial-gradient(1200px 800px at 120% 20%,
+            #112042 0%,
+            rgba(17, 32, 66, 0) 60%),
+        var(--bg);
+}
+
+/* Paint it once, fixed to the viewport so it never “jumps” */
+html {
+    background: var(--body_background_colour);
+    background-attachment: fixed, fixed, fixed;
+    /* one per layer */
+    background-repeat: no-repeat;
+    background-color: var(--bg);
+    /* fallback */
+}
+
+/* Let html's background show through */
+body,
+body::after {
+    background: transparent;
+}
+
+* {
+    box-sizing: border-box
+}
+
+html,
+body {
+    height: 100%
+}
+
+body {
+    margin: 0;
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+    background: var(--body_background_colour);
+    color: var(--text);
+    overflow: visible;
+
+}
+
+/* Dark theme fade */
+
+
+header {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: var(--topbar_background_colour);
+    border-bottom: 1px solid var(--border);
+
+
+}
+
+.wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 18px 20px
+}
+
+.header-row {
+    justify-content: space-between;
+    align-items: center;
+    display: flex
+}
+
+.header-tools {
+    gap: 10px;
+    align-items: center;
+    display: flex
+}
+
+h1 {
+    margin: 0;
+    font-size: clamp(20px, 2.4vw, 28px)
+}
+
+main {
+    max-width: 1100px;
+    margin: 18px auto 140px;
+    padding: 0 20px
+}
+
+.panel {
+    background: var(--panel_background_colour);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden
+}
+
+.grid {
+    display: grid;
+    gap: 16px
+}
+
+@media (min-width:960px) {
+    .grid {
+        grid-template-columns: 1.2fr .8fr
+    }
+}
+
+.controls {
+    padding: 18px
+}
+
+.controls h2 {
+    margin: 4px 0 10px;
+    font-size: 18px;
+    color: var(--muted)
+}
+
+.row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center
+}
+
+.row>* {
+    flex: 1
+}
+
+.flex2 {
+    flex: 2
+}
+
+.flex1 {
+    flex: 1
+}
+
+.mt {
+    margin-top: 18px
+}
+
+.mt-small {
+    margin-top: 12px
+}
+
+label {
+    font-size: 12px;
+    color: var(--muted)
+}
+
+select,
+input[type="number"],
+button {
+    width: 100%;
+    background: #0b1226;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    outline: none
+}
+
+:root[data-theme="light"] select,
+:root[data-theme="light"] input {
+    background: var(--choose_file_background);
+}
+
+select:focus,
+input:focus,
+button:focus {
+    border-color: var(--accent)
+}
+
+/* Light theme button for <input type="file" class="file-input"> */
+.file-input {
+    font: 500 14px/1 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    color: var(--text);
+    background-color: var(--choose_file_background);
+    /* label text (e.g., “No file chosen”) */
+}
+
+/* Modern browsers */
+.file-input {
+    font: 500 14px/1 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    color: var(--text);
+    /* affects filename text */
+    background: var(--choose_file_background);
+    /* field area behind the button */
+}
+
+.file-input::file-selector-button,
+.file-input::-webkit-file-upload-button {
+    font: inherit;
+    color: inherit;
+    background: var(--choose_file_background);
+    border: 1px solid var(--convert_border);
+    /* add 'solid' so it shows */
+    border-radius: 10px;
+    padding: 8px 14px;
+    cursor: pointer;
+}
+
+/* Hover / active / focus */
+
+.file-input:focus-visible::file-selector-button {
+    border-color: #80a6ff;
+    border: 1px var(--convert_border);
+    border-color: var(--convert_border);
+
+    box-shadow: 0 0 0 3px rgba(99, 132, 255, .2);
+}
+
+/* Disabled */
+.file-input:disabled::file-selector-button {
+    opacity: .6;
+    cursor: not-allowed;
+}
+
+/* Safari/WebKit fallback */
+
+
+
+
+
+.file-input:focus-visible::-webkit-file-upload-button {
+    border-color: #80a6ff;
+    box-shadow: 0 0 0 3px rgba(99, 132, 255, .2);
+}
+
+button {
+    cursor: pointer;
+    transition: transform .02s ease, background .2s ease
+}
+
+button:hover {
+    transform: translateY(-1px)
+}
+
+.btn {
+    background: var(--convert_button_background_colour);
+    border-color: var(--convert_border);
+}
+
+.btn-ghost {
+    background: var(--button_background_colour);
+
+}
+
+.btn-topbar {
+    background: var(--topbar_button_background_colour);
+
+    max-width: 150px;
+}
+
+
+
+.dropzone {
+    margin-top: 10px;
+    border: 1px dashed var(--border);
+    border-radius: 14px;
+    padding: 18px;
+    text-align: center;
+    background: var(--dropzone_background_colour);
+    transition: border-color .2s ease, background .2s ease
+}
+
+:root[data-theme="light"] .dropzone {
+    background: var(--choose_file_background);
+}
+
+.dropzone.drag {
+    border-color: var(--accent);
+    background: #0f1a38
+}
+
+.filelist {
+    padding: 0;
+    list-style: none;
+    margin: 0
+}
+
+.filecard {
+    display: grid;
+    grid-template-columns: 1fr 120px 120px 180px;
+    gap: 12px;
+    align-items: center;
+    padding: 12px 16px;
+    border-top: 1px solid var(--border)
+}
+
+.filecard:first-child {
+    border-top: none
+}
+
+.f-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap
+}
+
+.badge {
+    font-size: 11px;
+    background: var(--convert_button_background_colour);
+    border: 1px solid var(--border);
+    padding: 4px 8px;
+    border-radius: 999px
+}
+
+.status {
+    font-size: 12px;
+    color: var(--muted)
+}
+
+progress {
+    width: 100%;
+    height: 10px
+}
+
+.downloads {
+    padding: 16px;
+    border-top: 1px solid var(--border);
+    background: #0e1430
+}
+
+:root[data-theme="light"] .downloads {
+    background: #ffffff
+}
+
+.downloads a {
+    display: inline-block;
+    margin: 6px 8px 0 0;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--text)
+}
+
+.aside {
+    padding: 18px;
+    border-left: 1px solid var(--border)
+}
+
+.hint {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5
+}
+
+.footer-ads {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    border-top: 1px solid var(--border);
+    background: linear-gradient(180deg, rgba(20, 26, 47, .92), rgba(20, 26, 47, .98));
+    padding: 10px 16px;
+    display: flex;
+    justify-content: center
+}
+
+:root[data-theme="light"] .footer-ads {
+    background: #ffffff
+}
+
+.ad-slot {
+    width: min(100%, 970px);
+    min-height: 90px;
+    border: 1px dashed var(--border);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    background: #0b1226;
+    position: relative
+}
+
+:root[data-theme="light"] .ad-slot {
+    background: var(--choose_file_background);
+}
+
+.ad-note {
+    position: absolute;
+    left: 12px;
+    top: 8px;
+    font-size: 11px;
+    color: #8b93bf
+}
+
+.pill {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: #0f1a38;
+    font-size: 13px
+}
+
+:root[data-theme="light"] .pill {
+    background: #eef2ff
+}
+
+.cap-list {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 8px
+}
+
+.cap {
+    font-size: 12px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: #0e1430
+}
+
+:root[data-theme="light"] .cap {
+    background: #f4f7ff
+}
+
+.cap.ok {
+    border-color: var(--cap_okay_colour);
+    background: rgba(105, 219, 124, .08)
+}
+
+.cap.miss {
+    border-color: rgba(255, 107, 107, .4);
+    background: rgba(255, 107, 107, .08)
+}
+
+.prepanel {
+    margin-bottom: 16px;
+    padding: 16px
+}
+
+.quality-wrap {
+    display: none
+}
+
+.inline-ad {
+    display: none;
+    max-width: 1100px;
+    margin: 12px auto 120px;
+    padding: 16px;
+    border: 1px dashed var(--border)
+}
+
+
+/* Center badge text */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 4px 8px;
+    min-width: 84px;
+}
+
+/* Filecard polish */
+.filecard {
+    position: relative;
+}
+
+.filecard .file-remove {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 22px;
+    height: 22px;
+    line-height: 20px;
+    border: 0;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text);
+    cursor: pointer;
+}
+
+.filecard .file-remove:hover {
+    background: rgba(255, 255, 255, 0.18);
+}
+
+.f-name.clickable {
+    cursor: pointer;
+}
+
+.f-name.clickable:hover {
+    text-decoration: underline;
+}
+
+/* Status area download button */
+.btn.btn-small,
+.btn-small {
+    font-size: 12px;
+    padding: 6px 10px;
+    margin-left: 8px;
+}
+
+/* Output chips at bottom */
+#download-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+#download-links .dl-chip {
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px dashed rgba(255, 255, 255, 0.15);
+    text-decoration: none;
+    white-space: nowrap;
+    max-width: 280px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#download-links .dl-chip:hover {
+    background: rgba(255, 255, 255, 0.16);
+}
+
+body::after {
+    content: "";
+    display: block;
+    height: calc(var(--bottom-safe) + var(--scroll-slack));
+}
+
+
+/* --- Side rail ads (fixed rails) --- */
+.side-ads {
+    pointer-events: none;
+}
+
+.side-ads .rail {
+    position: fixed;
+    top: calc(var(--header-safe, 72px) + var(--rail-offset, 24px));
+    z-index: 9;
+    width: var(--rail-w, 160px);
+    pointer-events: auto;
+}
+
+.side-ads .rail.left {
+    left: calc(50% - 550px - var(--rail-w, 160px) - 24px);
+}
+
+.side-ads .rail.right {
+    right: calc(50% - 550px - var(--rail-w, 160px) - 24px);
+}
+
+.side-ads .ad-slot {
+    width: var(--rail-w, 160px) !important;
+    min-height: 600px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.side-ads .ad-slot img,
+.side-ads .ad-slot iframe {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+@media (min-width: 1400px) {
+    .side-ads {
+        --rail-w: 300px;
+    }
+}
+
+/* --- Center the desktop bottom ad under the content --- */
+.bottom-ads {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.bottom-ads .ad-bottom {
+    pointer-events: auto;
+    position: relative;
+    width: min(var(--leader-w, 970px), calc(100vw - 48px));
+    max-width: 970px;
+}
+
+@media (max-width: 1280px) {
+    .bottom-ads .ad-bottom {
+        --leader-w: 728px;
+        max-width: 728px;
+    }
+}
+
+/* Bottom ad close button (compact) */
+/* Plain text “×” (no circle) */
+.bottom-ads .ad-close {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    border: 0;
+    padding: 0;
+    background: none;
+    border-radius: 0;
+    width: auto;
+    height: auto;
+    /* no fixed square */
+    line-height: 1;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--muted);
+    cursor: pointer;
+    z-index: 2;
+    /* above the ad iframe */
+}
+
+.bottom-ads .ad-close:hover {
+    color: #fff;
+}
+
+
+/* Prevent mobile+desktop overlap by default */
+.footer-ads {
+    display: none;
+}
+
+@media (max-width:1199px) {
+    .footer-ads {
+        display: flex;
+    }
+}
+
+@media (min-width:1200px) {
+    .bottom-ads {
+        display: flex;
+    }
+
+    .footer-ads {
+        display: none !important;
+    }
+}
+
+
+#downloads {
+    display: none !important;
+}
+
+.filecard {
+    display: grid;
+    grid-template-columns: minmax(340px, 1fr) 84px minmax(220px, 2fr) 120px;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+}
+
+
+.filecard .file-remove {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 22px;
+    height: 22px;
+    line-height: 20px;
+    border: 0;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text, #fff);
+    cursor: pointer;
+}
+
+.filecard .file-remove:hover {
+    background: rgba(255, 255, 255, 0.18);
+}
+
+.f-name.clickable {
+    cursor: pointer;
+}
+
+.f-name.clickable:hover {
+    text-decoration: underline;
+}
+
+
+.progwrap progress {
+    width: 100%;
+}
+
+/* --- Enhancements: file remove + name truncation --- */
+.filecard {
+    max-width: 100%;
+}
+
+.filecard .f-name {
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.filecard .file-remove {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 22px;
+    height: 22px;
+    line-height: 20px;
+    border: 0;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text);
+    cursor: pointer;
+}
+
+.filecard .file-remove:hover {
+    background: rgba(255, 255, 255, 0.16);
+}
+
+.filecard .file-remove:focus-visible {
+    outline: 2px solid var(--accent);
+}
+
+/* === File card: single-line layout + tighter sizing === */
+
+/* Tweakables (change numbers to taste) */
+#file-list {
+    --filecard-max: 820px;
+    /* overall max width for the card */
+    --name-ch: 36;
+    /* ≈ max characters shown for the filename */
+    --prog-w: 160px;
+    /* progress bar width */
+    --prog-h: 8px;
+    /* progress bar height */
+}
+
+/* Keep the card to a single row */
+#file-list .filecard {
+    width: min(100%, var(--filecard-max));
+    margin-inline: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: nowrap;
+    /* <- single line */
+    padding: 10px 12px;
+    border: 1px solid var(--border, #2a2a2a);
+    border-radius: 12px;
+    background: var(--panel, rgba(255, 255, 255, 0.04));
+}
+
+/* Let children shrink; needed for ellipsis */
+#file-list .filecard>* {
+    min-width: 0;
+}
+
+/* Filename: clamp to N characters with ellipsis */
+#file-list {
+    --name-ch: 26;
+}
+
+/* tweak this number */
+
+#file-list .f-name {
+    max-inline-size: calc(var(--name-ch) * 1ch);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    min-width: 0;
+    /* important inside flex rows */
+    /* optional: keep a fixed slot width */
+    flex: 0 1 calc(var(--name-ch) * 1ch);
+}
+
+/* Progress: fixed small width + height */
+#file-list .filecard progress {
+    flex: 0 0 var(--prog-w);
+    inline-size: var(--prog-w);
+    block-size: var(--prog-h);
+    height: var(--prog-h);
+    margin-bottom: 4px;
+    /* fallback */
+}
+
+#file-list .filecard progress::-webkit-progress-bar {
+    height: var(--prog-h);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .08);
+}
+
+#file-list .filecard progress::-webkit-progress-value {
+    height: var(--prog-h);
+    border-radius: 999px;
+    background: var(--accent, #4b8aff);
+}
+
+#file-list .filecard progress::-moz-progress-bar {
+    height: var(--prog-h);
+    border-radius: 999px;
+    background: var(--accent, #4b8aff);
+}
+
+/* Status text stays compact and doesn't wrap */
+#file-list .filecard [id^="status-"] {
+    flex: 0 0 auto;
+    max-width: 14ch;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    opacity: .8;
+    font-size: .9em;
+}
+
+/* Delete (×) button stays at the far right without stretching layout */
+.file-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.file-remove {
+    appearance: none;
+    -webkit-appearance: none;
+    background: none;
+    border: 0;
+    padding: 0 0 0 8px;
+    /* small gap from status */
+    margin: 0;
+    font: inherit;
+    font-size: 18px;
+    line-height: 1;
+    color: var(--text, #0f172a);
+    cursor: pointer;
+}
+
+.file-controls .file-remove:hover {
+    opacity: .8;
+}
+
+/* no ring / outline */
+.file-controls .file-remove:focus,
+.file-controls .file-remove:focus-visible,
+.file-controls .file-remove:active {
+    outline: none;
+    box-shadow: none;
+}
+
+/* Optional: on very small screens, allow wrapping to avoid overflow */
+@media (max-width: 560px) {
+    #file-list .filecard {
+        flex-wrap: wrap;
+    }
+
+    #file-list .filecard progress {
+        flex-basis: 100%;
+        inline-size: 100%;
+    }
+}
+
+/* Progress width defaults + smaller while converting */
+#file-list {
+    --prog-w: 160px;
+    /* normal width */
+    --prog-w-conv: 110px;
+    /* width during "Converting…" */
+    --prog-h: 8px;
+}
+
+#file-list .filecard progress {
+    flex: 0 0 var(--prog-w);
+    inline-size: var(--prog-w);
+    block-size: var(--prog-h);
+    height: var(--prog-h);
+    transition: inline-size 180ms ease;
+}
+
+/* When the card is converting, make the bar smaller */
+#file-list .filecard.is-converting progress {
+    flex-basis: var(--prog-w-conv);
+    inline-size: var(--prog-w-conv);
+}
+
+/* Keep status on one line so the row stays stable */
+#file-list .filecard [id^="status-"] {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.convert {
+    background-color: var(--convert_button_background_colour);
+}
+
+/* Progress size (normal vs converting) */
+#file-list {
+    --prog-w: 160px;
+    /* normal width */
+    --prog-w-conv: 110px;
+    /* during converting */
+    --prog-h: 8px;
+}
+
+#file-list .filecard progress {
+    flex: 0 0 var(--prog-w);
+    inline-size: var(--prog-w);
+    block-size: var(--prog-h);
+    height: var(--prog-h);
+    /* default: no animation to avoid jitter */
+    transition: none;
+}
+
+/* Smaller bar while converting */
+#file-list .filecard.is-converting progress {
+    flex-basis: var(--prog-w-conv);
+    inline-size: var(--prog-w-conv);
+}
+
+/* If user allows motion, use a *very* short resize animation */
+@media (prefers-reduced-motion: no-preference) {
+    #file-list .filecard progress {
+        transition: inline-size 90ms ease;
+    }
+}
+
+/* Filename looks clickable only after ready */
+#file-list .f-name {
+    cursor: default;
+}
+
+#file-list .f-name.clickable {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+/* Pack the whole controls group to the right edge */
+#file-list .file-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: auto;
+    /* pushes group to the far right */
+    justify-content: flex-end;
+    /* pack items against the right edge */
+}
+
+/* Status box: fixed width, contents right-aligned, ellipsis */
+#file-list .file-controls .status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    /* text sticks to the right inside the box */
+    width: var(--status-w);
+    min-width: var(--status-w);
+    max-width: var(--status-w);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: right;
+}
+
+/* Control the progress-bar shrink during "Converting…" */
+#file-list {
+    --prog-w: 160px;
+    /* normal width (keep as-is) */
+    --prog-min: 140px;
+    /* NEVER smaller than this when converting */
+    --prog-shrink: 12px;
+    /* how much to shrink from normal (tweak smaller) */
+}
+
+/* Smooth but modest animation */
+/* Fixed progress width while converting (global) */
+#file-list {
+    --prog-w: 160px;
+    /* normal width */
+    --prog-w-conv: 119.5px;
+    /* your manual width during converting */
+}
+
+#file-list .filecard.is-converting .file-controls progress {
+    inline-size: var(--prog-w-conv);
+    flex-basis: var(--prog-w-conv);
+    transition: inline-size 150ms ease;
+    /* tweak speed/feel */
+}
+
+/* before */
+.side-ads .rail {
+    position: fixed;
+    /* ... */
+}
+
+/* after */
+.side-ads .rail {
+    position: relative;
+    /* scrolls with the page */
+    top: var(--rail-offset, 24px);
+    /* left/right rules you already had continue to apply */
+    margin-top: auto;
+    margin-bottom: auto;
+    z-index: 1000;
+
+
+
+
+
+    position: fixed;
+    z-index: 2;
+
+    top: 75px;
+
+    overflow: hidden;
+}
+
+.hint {
+    padding-right: 50px;
+}
+
+/* Inline, text-only × inside .file-controls (overrides earlier absolute bubble) */
+#file-list .filecard .file-controls .file-remove {
+    position: static !important;
+    width: auto;
+    height: auto;
+    padding: 0 0 0 8px;
+    /* small gap after status */
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    background: none !important;
+    box-shadow: none;
+    font: inherit;
+    font-size: 18px;
+    line-height: 1;
+    color: var(--text);
+    cursor: pointer;
+    align-self: center;
+    /* aligns with progress/status in the flex row */
+}
+
+#file-list .filecard .file-controls .file-remove:hover {
+    opacity: .8;
+    background: none !important;
+}
+
+#file-list .filecard .file-controls .file-remove:focus,
+#file-list .filecard .file-controls .file-remove:focus-visible,
+#file-list .filecard .file-controls .file-remove:active {
+    outline: none;
+    box-shadow: none;
+}
+
+/* Limit the .sub text length similar to filename */
+#file-list {
+    --sub-ch: 24;
+    /* tweak how many characters to show */
+}
+
+#file-list .sub {
+    max-inline-size: calc(var(--sub-ch) * 1ch);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    min-width: 0;
+    /* important inside flex rows */
+    opacity: .8;
+    /* keep your subdued tone */
+    flex: 0 1 calc(var(--sub-ch) * 1ch);
+}
