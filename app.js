@@ -1158,8 +1158,8 @@ async function convertMediaFile(file, target, kind, index) {
     // Pick core (local → CDN)
     let corePath = 'vendor/ffmpeg/ffmpeg-core.js';
     try {
-      const ok = await fetch(corePath, { method: 'HEAD', cache: 'no-store' }).then(r => r.ok);
-      if (!ok) corePath = 'https://unpkg.com/@ffmpeg/core@0.12.10/dist/umd/ffmpeg-core.js';
+      const res = await fetch(corePath, { cache: 'no-store' }); // GET instead of HEAD
+      if (!res.ok) corePath = 'https://unpkg.com/@ffmpeg/core@0.12.10/dist/umd/ffmpeg-core.js';
     } catch {
       corePath = 'https://unpkg.com/@ffmpeg/core@0.12.10/dist/umd/ffmpeg-core.js';
     }
