@@ -70,6 +70,20 @@
         var(--bg);
 }
 
+/* Hide unfilled AdSense INS nodes immediately */
+ins.adsbygoogle[data-ad-status="unfilled"] {
+    display: none !important;
+}
+
+/* Utility: hide the whole ad slot wrapper if we decide to collapse it */
+.ad-slot.is-collapsed {
+    display: none !important;
+}
+
+[hidden] {
+    display: none !important;
+}
+
 /* Paint it once, fixed to the viewport so it never “jumps” */
 html {
     background: var(--body_background_colour);
@@ -822,7 +836,7 @@ body::after {
 
 /* Filename: clamp to N characters with ellipsis */
 #file-list {
-    --name-ch: 26;
+    --name-ch: 24;
 }
 
 /* tweak this number */
@@ -1131,4 +1145,160 @@ body::after {
     opacity: .8;
     /* keep your subdued tone */
     flex: 0 1 calc(var(--sub-ch) * 1ch);
+}
+
+
+
+
+
+
+
+
+/* ===== Mobile layout overrides ===== */
+@media (max-width: 720px) {
+
+    /* make room for the mobile footer ad (+ iOS notch) */
+    :root {
+        --bottom-safe: calc(84px + env(safe-area-inset-bottom, 0px));
+        --radius: 12px;
+        --rail-offset: 0px;
+    }
+
+    header .wrap {
+        padding: 12px 14px;
+    }
+
+    .header-row {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    h1 {
+        font-size: clamp(18px, 5.4vw, 24px);
+    }
+
+    main {
+        margin: 12px auto calc(24px + var(--bottom-safe));
+        padding: 0 14px;
+        max-width: 1100px;
+        /* keep your existing max-width */
+    }
+
+    .panel {
+        border-radius: var(--radius);
+    }
+
+    .controls {
+        padding: 14px;
+    }
+
+    .aside {
+        padding: 14px;
+        border-left: 0;
+        border-top: 1px solid var(--border);
+        /* becomes a divider when stacked */
+    }
+
+    /* stack every control row */
+    .row {
+        gap: 8px;
+    }
+
+    .row>* {
+        flex: 1 1 100%;
+    }
+
+    /* larger tap targets on mobile */
+    select,
+    input[type="number"],
+    button {
+        padding: 12px;
+        font-size: 16px;
+    }
+
+    input[type="range"] {
+        width: 100%;
+    }
+
+    /* dropzone a bit tighter */
+    #dropzone {
+        padding: 14px;
+    }
+
+    /* action buttons: full width, stacked */
+    .convert,
+    .btn-ghost,
+    .btn {
+        width: 100%;
+    }
+
+    /* file list: turn the 4-column grid into a simple stacked card */
+    .filecard {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto auto;
+        gap: 8px;
+        align-items: start;
+        padding: 12px 12px 14px;
+    }
+
+    .f-name {
+        white-space: normal;
+        /* allow wrap instead of ellipsis */
+        overflow: visible;
+        text-overflow: clip;
+    }
+
+    .badge,
+    .status,
+    progress {
+        justify-self: start;
+    }
+
+    .filecard .file-remove {
+        top: 4px;
+        right: 4px;
+    }
+
+    /* downloads area */
+    .downloads {
+        padding: 12px;
+    }
+
+    /* ads: show only the mobile footer bar; hide desktop frames */
+    #bottom-ads,
+    .side-ads {
+        display: none !important;
+    }
+
+    .footer-ads {
+        display: flex !important;
+        padding: 8px 10px;
+    }
+
+    .footer-ads .ad-slot {
+        min-height: 60px;
+        /* compact horizontal slot */
+        width: 100%;
+    }
+
+    /* top-right small buttons */
+    .btn-topbar {
+        max-width: none;
+    }
+
+    .topbar_Buttons {
+        display: flex;
+        gap: 8px;
+    }
+}
+
+/* extra-small phones */
+@media (max-width: 380px) {
+    .badge {
+        min-width: auto;
+    }
+
+    .footer-ads .ad-slot {
+        min-height: 50px;
+    }
 }

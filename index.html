@@ -3,18 +3,64 @@
 
 <head>
   <meta charset="utf-8" />
+  <title>All-in-One Converter — Fast, Private, In-Browser (MP3, MP4, PDF, DOCX, JPG…)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Offline Document Converter — Free, Private, In-Browser</title>
   <meta name="description"
-    content="Convert PDF, DOCX, XLSX, CSV, TXT, MD, HTML, PNG, JPG, WebP — 100% in your browser. No uploads." />
-  <link rel="stylesheet" href="styles.css" />
+    content="Convert audio, video, documents and images (MP3, MP4, WAV, PDF, DOCX, XLSX, JPG, PNG, WebP…) instantly in your browser. No uploads — files never leave your device. Free and private.">
+  <meta name="robots" content="index,follow">
 
-  <!-- AdSense loader (once) -->
+  <!-- Canonical / hreflang -->
+  <link rel="canonical" href="https://www.all-in-one-converter.net/">
+  <link rel="alternate" href="https://www.all-in-one-converter.net/" hreflang="en" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="All-in-One Converter — Fast, Private, In-Browser">
+  <meta property="og:description" content="Convert MP3, MP4, PDF, DOCX, JPG and more — no uploads.">
+  <meta property="og:url" content="https://www.all-in-one-converter.net/">
+  <meta property="og:image" content="https://www.all-in-one-converter.net/og/home.png">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="All-in-One Converter — Fast, Private, In-Browser">
+  <meta name="twitter:description" content="Convert MP3, MP4, PDF, DOCX, JPG and more — no uploads.">
+  <meta name="twitter:image" content="https://www.all-in-one-converter.net/og/home.png">
+
+  <!-- Performance -->
+  <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="/vendor/ffmpeg/ffmpeg-core.wasm" as="fetch" type="application/wasm" crossorigin>
+
+  <link rel="icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/styles.css" />
+
+  <!-- Ads (your tag) -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6251303109610053"
     crossorigin="anonymous"></script>
-  <!-- In index.html head, gate the AdSense script -->
 
-
+  <!-- Structured data: WebSite + Organization -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"WebSite",
+    "url":"https://www.all-in-one-converter.net/",
+    "name":"All-in-One Converter",
+    "potentialAction":{
+      "@type":"SearchAction",
+      "target":"https://www.all-in-one-converter.net/search?q={search_term_string}",
+      "query-input":"required name=search_term_string"
+    }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"Organization",
+    "name":"All-in-One Converter",
+    "url":"https://www.all-in-one-converter.net/",
+    "logo":"https://www.all-in-one-converter.net/og/logo.png"
+  }
+  </script>
 </head>
 
 <body>
@@ -23,10 +69,11 @@
       <h1>All-in-one converter</h1>
       <div class="row header-tools">
         <div class="pill" id="memory-pill">Detecting memory…</div>
-      </div class="topbar_Buttons">
-      <button class="btn-topbar" id="theme-btn">Toggle theme</button>
-      <button class="btn-topbar" id="share-btn">Share</button>
-    </div>
+      </div>
+      <div class="topbar_Buttons">
+        <button class="btn-topbar" id="theme-btn">Toggle theme</button>
+        <button class="btn-topbar" id="share-btn">Share us!</button>
+      </div>
     </div>
   </header>
 
@@ -94,9 +141,6 @@
       </section>
 
       <aside class="aside">
-
-
-        <!-- Quick start instructions -->
         <h2 class="mt-small">Quick start</h2>
         <ol class="hint">
           <li><b>Add files:</b> drag & drop into the box or click <em>Add files</em>.</li>
@@ -117,12 +161,9 @@
           </ul>
         </div>
 
-
-
         <h2 class="mt-small">Detected capabilities</h2>
         <div id="caps" class="cap-list"></div>
       </aside>
-
     </div>
   </main>
 
@@ -131,7 +172,7 @@
     <div class="ad-slot">
       <div class="ad-note">Ad</div>
       <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6251303109610053" data-ad-slot="5450299774"
-        data-ad-format="auto" data-full-width-responsive="true" data-adtest="on"></ins>
+        data-ad-format="auto" data-full-width-responsive="true"></ins>
     </div>
   </div>
 
@@ -141,7 +182,7 @@
       <div class="ad-note">Ad</div>
       <button class="ad-close" aria-label="Hide ad" title="Hide ad">×</button>
       <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6251303109610053" data-ad-slot="5450299774"
-        data-ad-format="horizontal" data-full-width-responsive="true" data-adtest="on"></ins>
+        data-ad-format="horizontal" data-full-width-responsive="true"></ins>
     </div>
   </div>
 
@@ -151,14 +192,14 @@
       <div class="ad-slot ad-rail">
         <div class="ad-note">Ad</div>
         <ins class="adsbygoogle" style="display:inline-block;width:300px;height:600px"
-          data-ad-client="ca-pub-6251303109610053" data-ad-slot="7685580873" data-adtest="on"></ins>
+          data-ad-client="ca-pub-6251303109610053" data-ad-slot="7685580873"></ins>
       </div>
     </aside>
     <aside class="rail right" role="complementary" aria-label="Sponsored (right)">
       <div class="ad-slot ad-rail">
         <div class="ad-note">Ad</div>
         <ins class="adsbygoogle" style="display:inline-block;width:300px;height:600px"
-          data-ad-client="ca-pub-6251303109610053" data-ad-slot="7685580873" data-adtest="on"></ins>
+          data-ad-client="ca-pub-6251303109610053" data-ad-slot="7685580873"></ins>
       </div>
     </aside>
   </div>
@@ -173,7 +214,7 @@
         const footer = document.querySelector('.footer-ads');   // mobile
         const bottom = document.getElementById('bottom-ads');   // desktop
         if (footer) footer.style.display = isWide() ? 'none' : '';
-        if (bottom) bottom.style.display = isWide() ? '' : '';
+        if (bottom) bottom.style.display = isWide() ? '' : 'none';
 
         const rails = document.getElementById('side-ads');      // desktop only
         if (rails) rails.style.display = isWide() ? '' : 'none';
@@ -183,12 +224,10 @@
       const box = el => el.closest('.ad-slot') || el.parentElement || el;
 
       function readyToPush(ins) {
-        // must have a real slot and not already processed by AdSense
         if (!ins.getAttribute('data-ad-slot')) return false;
-        if (ins.hasAttribute('data-adsbygoogle-status')) return false; // already filled
-        if (ins.dataset.adsInit === '1') return false;                 // we already tried
+        if (ins.hasAttribute('data-adsbygoogle-status')) return false;
+        if (ins.dataset.adsInit === '1') return false;
 
-        // must be visible and have width > 0
         const host = box(ins);
         const cs = getComputedStyle(host);
         const w = Math.round(host.getBoundingClientRect().width);
@@ -196,19 +235,16 @@
       }
 
       function normalizeIns(ins) {
-        // Give AdSense something to work with (prevents availableWidth=0)
         const host = box(ins);
         if (ins.style.display === '') ins.style.display = 'block';
         if (ins.style.width === '') ins.style.width = '100%';
-        // Horizontal min-heights are set in CSS. Rails are fixed-size.
-        // Make sure host is not zero-height:
         if (host.style.minHeight === '') host.style.minHeight = '1px';
       }
 
       function pushWhenReady(ins, tries = 16) {
-        if (!window.adsbygoogle) return;                 // loader blocked
-        if (ins.hasAttribute('data-adsbygoogle-status')) return; // already processed
-        if (ins.dataset.adsInit === '1') return;         // avoid double init
+        if (!window.adsbygoogle) return;
+        if (ins.hasAttribute('data-adsbygoogle-status')) return;
+        if (ins.dataset.adsInit === '1') return;
 
         if (!readyToPush(ins)) {
           if (tries > 0) setTimeout(() => pushWhenReady(ins, tries - 1), 250);
@@ -220,13 +256,11 @@
           (adsbygoogle = window.adsbygoogle || []).push({});
           ins.dataset.adsInit = '1';
         } catch (e) {
-          const msg = String(e && e.message || e);
-          // If everything is already filled, just mark done
+          const msg = String((e && e.message) || e);
           if (msg.includes("already have ads")) {
             ins.dataset.adsInit = '1';
             return;
           }
-          // Width race: retry a few times
           if (tries > 0 && (msg.includes('No slot size') || msg.includes('availableWidth=0'))) {
             setTimeout(() => pushWhenReady(ins, tries - 1), 350);
             return;
@@ -240,18 +274,16 @@
         document.querySelectorAll('ins.adsbygoogle[data-ad-slot]').forEach(pushWhenReady);
       }
 
-      // One-time cleanup: remove any slot-less <ins> so global errors disappear
       document.querySelectorAll('ins.adsbygoogle:not([data-ad-slot])').forEach(el => el.remove());
 
-      // Observe layout/size changes so slots init when they *become* visible
       const ro = 'ResizeObserver' in window ? new ResizeObserver(initAll) : null;
 
       window.addEventListener('load', () => {
-        toggleFrames();           // pick mobile vs desktop bar
-        initAll();                // first pass
+        toggleFrames();
+        initAll();
         if (ro) document.querySelectorAll('.ad-slot').forEach(el => ro.observe(el));
-        setTimeout(initAll, 500); // after fonts/layout settle
-        setTimeout(initAll, 1200);// after images
+        setTimeout(initAll, 500);
+        setTimeout(initAll, 1200);
       });
 
       window.addEventListener('resize', () => {
@@ -261,17 +293,126 @@
     })();
   </script>
 
+  <script>
+    (function () {
+      const REQUIRE_ADS = false;
+      const REMEMBER_CHOICE = true;
+      const ADSENSE_REVIEW_MODE = true;
+      const CHOICE_KEY = 'ads_ok_continue';
+      let bypassThisPage = false;
+
+      const getModal = () => document.getElementById('adblock-modal');
+
+      function bindModalOnce() {
+        const modal = getModal();
+        if (!modal || modal.dataset.bound) return;
+        modal.dataset.bound = '1';
+        modal.addEventListener('click', (e) => {
+          const reloadBtn = e.target.closest('#ad-ok-reload');
+          const contBtn = e.target.closest('#ad-continue');
+          if (reloadBtn) location.reload();
+          if (contBtn) {
+            bypassThisPage = true;
+            if (REMEMBER_CHOICE) localStorage.setItem(CHOICE_KEY, '1');
+            hideModal();
+          }
+        });
+      }
+
+      function showModal() {
+        const m = getModal();
+        if (!m) return;
+        bindModalOnce();
+        m.hidden = false;
+        try { m.style.display = 'flex'; } catch { }
+        document.documentElement.style.overflow = REQUIRE_ADS ? 'hidden' : '';
+        try { if (REQUIRE_ADS) m.querySelector('#ad-continue')?.style?.setProperty('display', 'none'); } catch { }
+      }
+      function hideModal() {
+        const m = getModal();
+        if (!m) return;
+        m.hidden = true;
+        try { m.style.display = 'none'; } catch { }
+        document.documentElement.style.overflow = '';
+      }
+
+      if (REMEMBER_CHOICE && !REQUIRE_ADS && localStorage.getItem(CHOICE_KEY) === '1') {
+        window.addEventListener('DOMContentLoaded', bindModalOnce);
+        return;
+      }
+
+      const everProcessed = () =>
+        !!document.querySelector('ins.adsbygoogle[data-ad-status], ins.adsbygoogle[data-adsbygoogle-status]');
+
+      function pingAdsDomain(timeout = 1600) {
+        return new Promise((resolve) => {
+          let done = false;
+          const finish = (v) => { if (!done) { done = true; resolve(v); } };
+          const img = new Image();
+          const t = setTimeout(() => finish(null), timeout);
+          img.onload = () => { clearTimeout(t); finish(true); };
+          img.onerror = () => { clearTimeout(t); finish(false); };
+          img.src = 'https://pagead2.googlesyndication.com/pagead/gen_204?id=adcheck&' + Date.now();
+        });
+      }
+
+      function baitHidden() {
+        const bait = document.createElement('div');
+        bait.className = 'ads ad adsbox ad-banner adsbygoogle';
+        bait.style.cssText = 'position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;';
+        document.body.appendChild(bait);
+        const hidden = getComputedStyle(bait).display === 'none' || bait.offsetParent === null || bait.clientHeight === 0;
+        bait.remove();
+        return hidden;
+      }
+
+      window.addEventListener('load', () => {
+        setTimeout(async () => {
+          if (bypassThisPage) return;
+          if (everProcessed()) return;
+
+          const [reach, bait] = await Promise.all([pingAdsDomain(1600), Promise.resolve(baitHidden())]);
+          console.log('[adblock check]', { reach, bait, processed: everProcessed(), review: ADSENSE_REVIEW_MODE });
+          const blocked = (ADSENSE_REVIEW_MODE
+            ? (bait && !everProcessed())
+            : ((reach === false) && bait && !everProcessed()));
+          if (!bypassThisPage && blocked) showModal();
+        }, 3500);
+      });
+    })();
+  </script>
+
   <!-- Vendor libs (load before app.js) -->
   <script src="vendor/mammoth.browser.min.js"></script>
-
-  <!-- keep it as a classic script (NOT type="module") -->
-  <script src="ffmpeg-esm-shim.js"></script>
-
-
   <script src="vendor/jszip.min.js"></script>
   <script src="vendor/xlsx.full.min.js"></script>
   <script src="vendor/jspdf.umd.min.js"></script>
   <script src="vendor/docx.min.js"></script>
+
+  <!-- FFmpeg wrapper: use the local UMD you have -->
+  <script src="vendor/ffmpeg/ffmpeg.js"></script>
+
+  <!-- Shim: exposes window.FFmpeg.createFFmpeg even for UMD/class builds -->
+  <script src="ffmpeg-esm-shim.js"></script>
+
+  <!-- Single loader used by the app to actually load the core/worker -->
+
+
+  <!-- Your app -->
+  <script src="app.js"></script>
+
+  <script>
+    (function ensureFFmpegGlobal(next) {
+      function done() { if (typeof next === 'function') next(); }
+      if (window.FFmpeg && window.FFmpeg.createFFmpeg) return done();
+      var s = document.createElement('script');
+      s.src = 'https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js';
+      s.async = false; // keep order
+      s.onload = done;
+      s.onerror = done; // even if blocked, our loader may still try CDN/core later
+      document.currentScript.parentNode.insertBefore(s, document.currentScript.nextSibling);
+    })(function () { });
+  </script>
 
   <!-- Tesseract (offline) -->
   <script src="vendor/tesseract.min.js"></script>
@@ -284,8 +425,9 @@
     };
   </script>
 
-  <!-- Your app -->
-  <script src="app.js"></script>
+
+
+
   <style>
     /* Horizontal containers stretch */
     .footer-ads,
@@ -327,6 +469,24 @@
   <noscript>
     <p>Please enable JavaScript.</p>
   </noscript>
+
+  <div id="adblock-modal" hidden style="
+    position:fixed;inset:0;z-index:10000;
+    display:flex;align-items:center;justify-content:center;
+    background:rgba(0,0,0,.55);backdrop-filter:blur(2px);">
+    <div style="max-width:560px;width:min(92vw,560px);border-radius:14px;
+                border:1px solid var(--border);background:var(--panel);padding:18px;">
+      <h3 style="margin:0 0 8px">Please allow ads to support this site</h3>
+      <p class="hint" style="margin:0 0 12px">
+        We detected an ad blocker. Ads keep this free. You can allow ads and reload,
+        or continue without ads if you prefer.
+      </p>
+      <div class="row" style="gap:8px">
+        <button id="ad-ok-reload" class="btn">I allowed ads — Reload</button>
+        <button id="ad-continue" class="btn-ghost">Continue without ads</button>
+      </div>
+    </div>
+  </div>
 </body>
 
 </html>
