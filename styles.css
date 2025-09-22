@@ -27,7 +27,6 @@
     --button_background_colour: #10182e;
     --choose_file_background: #10182e;
 
-
     --body_background_colour: radial-gradient(1200px 800px at 20% -10%, #162044, transparent 60%), radial-gradient(1200px 800px at 120% 20%, #112042, transparent 60%), var(--bg);
 
 }
@@ -120,14 +119,12 @@ body {
 
 /* Dark theme fade */
 
-
 header {
     position: sticky;
     top: 0;
     z-index: 5;
     background: var(--topbar_background_colour);
     border-bottom: 1px solid var(--border);
-
 
 }
 
@@ -244,61 +241,44 @@ button:focus {
     border-color: var(--accent)
 }
 
-/* Light theme button for <input type="file" class="file-input"> */
+/* File input: panel-colored text field + distinct button */
 .file-input {
     font: 500 14px/1 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
     color: var(--text);
-    background-color: var(--choose_file_background);
-    /* label text (e.g., “No file chosen”) */
+    background: var(--panel);
+    /* ← matches panel */
+
+    border-radius: 10px;
+    padding: 10px 12px;
 }
 
-/* Modern browsers */
-.file-input {
-    font: 500 14px/1 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-    color: var(--text);
-    /* affects filename text */
-    background: var(--choose_file_background);
-    /* field area behind the button */
-}
-
+/* Keep the button looking like the rest of your UI (not the panel) */
 .file-input::file-selector-button,
 .file-input::-webkit-file-upload-button {
     font: inherit;
-    color: inherit;
-    background: var(--choose_file_background);
+    color: var(--text);
+    background: var(--button_background_colour);
+    /* ← keep your button color */
     border: 1px solid var(--convert_border);
-    /* add 'solid' so it shows */
     border-radius: 10px;
     padding: 8px 14px;
+    margin-right: 10px;
+    /* breathing room before “No file chosen” */
     cursor: pointer;
 }
 
-/* Hover / active / focus */
-
-.file-input:focus-visible::file-selector-button {
-    border-color: #80a6ff;
-    border: 1px var(--convert_border);
-    border-color: var(--convert_border);
-
-    box-shadow: 0 0 0 3px rgba(99, 132, 255, .2);
+/* Focus/hover polish (optional) */
+.file-input:focus-visible {
+    outline: none;
+    border-color: var(--accent);
 }
 
-/* Disabled */
-.file-input:disabled::file-selector-button {
-    opacity: .6;
-    cursor: not-allowed;
-}
-
-/* Safari/WebKit fallback */
-
-
-
-
-
+.file-input:focus-visible::file-selector-button,
 .file-input:focus-visible::-webkit-file-upload-button {
-    border-color: #80a6ff;
+
     box-shadow: 0 0 0 3px rgba(99, 132, 255, .2);
 }
+
 
 button {
     cursor: pointer;
@@ -324,8 +304,6 @@ button:hover {
 
     max-width: 150px;
 }
-
-
 
 .dropzone {
     margin-top: 10px;
@@ -353,12 +331,15 @@ button:hover {
 }
 
 .filecard {
-    display: grid;
-    grid-template-columns: 1fr 120px 120px 180px;
+    display: flex;
     gap: 12px;
     align-items: center;
     padding: 12px 16px;
-    border-top: 1px solid var(--border)
+    border-top: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--panel);
+    flex-wrap: nowrap;
+    /* keep one line by default */
 }
 
 .filecard:first-child {
@@ -384,10 +365,7 @@ button:hover {
     color: var(--muted)
 }
 
-progress {
-    width: 100%;
-    height: 10px
-}
+/* removed global progress width (conflicted with file rows) */
 
 .downloads {
     padding: 16px;
@@ -523,7 +501,6 @@ progress {
     border: 1px dashed var(--border)
 }
 
-
 /* Center badge text */
 .badge {
     display: inline-flex;
@@ -539,23 +516,9 @@ progress {
     position: relative;
 }
 
-.filecard .file-remove {
-    position: absolute;
-    top: 6px;
-    right: 6px;
-    width: 22px;
-    height: 22px;
-    line-height: 20px;
-    border: 0;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.08);
-    color: var(--text);
-    cursor: pointer;
-}
+/* removed absolute-positioned .file-remove (we use inline button) */
 
-.filecard .file-remove:hover {
-    background: rgba(255, 255, 255, 0.18);
-}
+/* removed duplicate .file-remove:hover */
 
 .f-name.clickable {
     cursor: pointer;
@@ -602,7 +565,6 @@ body::after {
     display: block;
     height: calc(var(--bottom-safe) + var(--scroll-slack));
 }
-
 
 /* --- Side rail ads (fixed rails) --- */
 .side-ads {
@@ -658,6 +620,10 @@ body::after {
     pointer-events: none;
 }
 
+.file-progress {
+    margin-top: 4px;
+}
+
 .bottom-ads .ad-bottom {
     pointer-events: auto;
     position: relative;
@@ -698,7 +664,6 @@ body::after {
     color: #fff;
 }
 
-
 /* Prevent mobile+desktop overlap by default */
 .footer-ads {
     display: none;
@@ -720,37 +685,13 @@ body::after {
     }
 }
 
-
 #downloads {
     display: none !important;
 }
 
-.filecard {
-    display: grid;
-    grid-template-columns: minmax(340px, 1fr) 84px minmax(220px, 2fr) 120px;
-    align-items: center;
-    gap: 12px;
-    position: relative;
-}
+/* removed absolute-positioned .file-remove (we use inline button) */
 
-
-.filecard .file-remove {
-    position: absolute;
-    top: 6px;
-    right: 6px;
-    width: 22px;
-    height: 22px;
-    line-height: 20px;
-    border: 0;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.08);
-    color: var(--text, #fff);
-    cursor: pointer;
-}
-
-.filecard .file-remove:hover {
-    background: rgba(255, 255, 255, 0.18);
-}
+/* removed duplicate .file-remove:hover */
 
 .f-name.clickable {
     cursor: pointer;
@@ -760,10 +701,8 @@ body::after {
     text-decoration: underline;
 }
 
-
-.progwrap progress {
-    width: 100%;
-}
+.progwrap
+/* removed global progress width (conflicted with file rows) */
 
 /* --- Enhancements: file remove + name truncation --- */
 .filecard {
@@ -778,23 +717,9 @@ body::after {
     white-space: nowrap;
 }
 
-.filecard .file-remove {
-    position: absolute;
-    top: 6px;
-    right: 6px;
-    width: 22px;
-    height: 22px;
-    line-height: 20px;
-    border: 0;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.08);
-    color: var(--text);
-    cursor: pointer;
-}
+/* removed absolute-positioned .file-remove (we use inline button) */
 
-.filecard .file-remove:hover {
-    background: rgba(255, 255, 255, 0.16);
-}
+/* removed duplicate .file-remove:hover */
 
 .filecard .file-remove:focus-visible {
     outline: 2px solid var(--accent);
@@ -818,7 +743,7 @@ body::after {
 #file-list .filecard {
     width: min(100%, var(--filecard-max));
     margin-inline: auto;
-    display: flex;
+
     align-items: center;
     gap: 10px;
     flex-wrap: nowrap;
@@ -925,17 +850,7 @@ body::after {
     box-shadow: none;
 }
 
-/* Optional: on very small screens, allow wrapping to avoid overflow */
-@media (max-width: 560px) {
-    #file-list .filecard {
-        flex-wrap: wrap;
-    }
 
-    #file-list .filecard progress {
-        flex-basis: 100%;
-        inline-size: 100%;
-    }
-}
 
 /* Progress width defaults + smaller while converting */
 #file-list {
@@ -1036,6 +951,7 @@ body::after {
     white-space: nowrap;
     text-overflow: ellipsis;
     text-align: right;
+    padding-bottom: 3px;
 }
 
 /* Control the progress-bar shrink during "Converting…" */
@@ -1080,10 +996,6 @@ body::after {
     margin-bottom: auto;
     z-index: 1000;
 
-
-
-
-
     position: fixed;
     z-index: 2;
 
@@ -1113,6 +1025,7 @@ body::after {
     line-height: 1;
     color: var(--text);
     cursor: pointer;
+    padding-bottom: 3px;
     align-self: center;
     /* aligns with progress/status in the flex row */
 }
@@ -1147,14 +1060,6 @@ body::after {
     flex: 0 1 calc(var(--sub-ch) * 1ch);
 }
 
-
-
-
-
-
-
-
-/* ===== Mobile layout overrides ===== */
 @media (max-width: 720px) {
 
     /* make room for the mobile footer ad (+ iOS notch) */
@@ -1196,7 +1101,7 @@ body::after {
         padding: 14px;
         border-left: 0;
         border-top: 1px solid var(--border);
-        /* becomes a divider when stacked */
+        /* divider when stacked */
     }
 
     /* stack every control row */
@@ -1232,31 +1137,81 @@ body::after {
         width: 100%;
     }
 
-    /* file list: turn the 4-column grid into a simple stacked card */
+    /* ===== FILE LIST: single-line row; progress fills leftover space ===== */
     .filecard {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto auto auto auto;
+        display: flex;
+        /* flex, not grid */
+        align-items: center;
         gap: 8px;
-        align-items: start;
         padding: 12px 12px 14px;
+        flex-wrap: nowrap;
+        /* never wrap */
+        overflow: hidden;
+        /* clip any stray overflow */
+        border-top: 1px solid var(--border);
+        border-radius: 10px;
+        background: var(--panel);
+    }
+
+    /* Left: name + meta */
+    .filecard .file-meta {
+        min-width: 0;
+        flex: 1 1 auto;
     }
 
     .f-name {
-        white-space: normal;
-        /* allow wrap instead of ellipsis */
-        overflow: visible;
-        text-overflow: clip;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .sub {
+        opacity: .8;
+    }
+
+    /* Right: controls in a single line */
+    .filecard .file-controls {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-width: 0;
+        flex: 0 0 auto;
+        /* intrinsic width; progress will flex */
     }
 
     .badge,
-    .status,
-    progress {
-        justify-self: start;
+    .status {
+        white-space: nowrap;
+        font-size: 12px;
     }
 
+    /* 🔥 Progress fills all remaining space (and shrinks first if tight) */
+    .filecard .file-progress {
+        flex: 1 1 auto;
+        /* grow to fill, shrink when needed */
+        min-width: 48px;
+        /* never vanish */
+        width: auto;
+        /* ignore any global width */
+        height: 8px;
+        margin: 0;
+    }
+
+    /* Close button in flow so it never overlaps or disappears */
     .filecard .file-remove {
-        top: 4px;
-        right: 4px;
+        position: static;
+        /* inline, not absolute */
+        padding: 2px 6px;
+        border: 0;
+        border-radius: 8px;
+        background: transparent;
+        color: var(--text);
+        cursor: pointer;
+    }
+
+    .filecard .file-remove:hover {
+        background: rgba(255, 255, 255, 0.12);
     }
 
     /* downloads area */
@@ -1277,7 +1232,6 @@ body::after {
 
     .footer-ads .ad-slot {
         min-height: 60px;
-        /* compact horizontal slot */
         width: 100%;
     }
 
@@ -1290,6 +1244,289 @@ body::after {
         display: flex;
         gap: 8px;
     }
+
+    /* variables not needed for this layout; kept for compatibility */
+    #file-list {}
+}
+
+/* ====== <= 600px ====== */
+@media (max-width: 600px) {
+
+    /* progress: a bit shorter and allowed to shrink more */
+    .filecard .file-progress {
+        flex: 1 1 auto;
+        min-width: 44px;
+        height: 7px;
+        margin: 0;
+        width: auto;
+    }
+
+    .filecard {
+        gap: 8px;
+        padding: 10px 12px;
+    }
+
+    .filecard .file-controls {
+        gap: 6px;
+    }
+
+    .badge,
+    .status {
+        font-size: 11.5px;
+    }
+}
+
+/* ====== <= 520px ====== */
+@media (max-width: 520px) {
+
+    /* progress: smaller still */
+    .filecard .file-progress {
+        flex: 1 1 auto;
+        min-width: 40px;
+        height: 6px;
+        margin: 0;
+        width: auto;
+    }
+
+    .filecard {
+        gap: 6px;
+        padding: 10px 10px;
+    }
+
+    .filecard .file-controls {
+        gap: 6px;
+    }
+
+    .badge,
+    .status {
+        font-size: 11px;
+    }
+
+    .f-name {
+        font-size: 0.98rem;
+    }
+}
+
+/* ====== <= 420px ====== */
+@media (max-width: 420px) {
+
+    /* progress: compact but still visible */
+    .filecard .file-progress {
+        flex: 1 1 auto;
+        min-width: 36px;
+        height: 5px;
+        margin: 0;
+        width: auto;
+    }
+
+    .filecard {
+        gap: 6px;
+        padding: 8px 10px;
+    }
+
+    .filecard .file-controls {
+        gap: 5px;
+    }
+
+    .badge,
+    .status {
+        font-size: 10.5px;
+    }
+
+    .f-name {
+        font-size: 0.95rem;
+    }
+}
+
+/* ====== <= 360px ====== */
+@media (max-width: 360px) {
+
+    /* progress: smallest preset; still fills leftover space */
+    .filecard .file-progress {
+        flex: 1 1 auto;
+        min-width: 32px;
+        height: 4px;
+        margin: 0;
+        width: auto;
+    }
+
+    .filecard {
+        gap: 5px;
+        padding: 8px 8px;
+    }
+
+    .filecard .file-controls {
+        gap: 4px;
+    }
+
+    .badge,
+    .status {
+        font-size: 10px;
+    }
+
+    .f-name {
+        font-size: 0.9rem;
+    }
+}
+
+/* ====== <= 680px (between 720 and 600) ====== */
+@media (max-width: 680px) {
+    .filecard .file-progress {
+        flex: 1 1 auto;
+        min-width: 46px;
+        height: 7px;
+        width: auto;
+        margin: 0;
+    }
+
+    .filecard {
+        gap: 8px;
+        padding: 11px 12px;
+    }
+
+    .filecard .file-controls {
+        gap: 7px;
+    }
+
+    .badge,
+    .status {
+        font-size: 11.75px;
+    }
+}
+
+/* ====== <= 560px (between 600 and 520) ====== */
+
+
+/* ====== <= 480px (between 520 and 420) ====== */
+@media (max-width: 480px) {
+    .filecard .file-progress {
+        flex: 1 1 auto;
+        min-width: 38px;
+        height: 5px;
+        width: auto;
+        margin: 0;
+    }
+
+    .filecard {
+        gap: 6px;
+        padding: 9px 10px;
+    }
+
+    .filecard .file-controls {
+        gap: 5px;
+    }
+
+    .badge,
+    .status {
+        font-size: 10.75px;
+    }
+
+    .f-name {
+        font-size: 0.96rem;
+    }
+}
+
+/* ====== <= 400px (between 420 and 360) ====== */
+@media (max-width: 400px) {
+    .filecard .file-progress {
+        flex: 1 1 auto;
+        min-width: 34px;
+        height: 4px;
+        width: auto;
+        margin: 0;
+    }
+
+    .filecard {
+        gap: 5px;
+        padding: 8px 9px;
+    }
+
+    .filecard .file-controls {
+        gap: 4px;
+    }
+
+    .badge,
+    .status {
+        font-size: 10.25px;
+    }
+
+    .f-name {
+        font-size: 0.92rem;
+    }
+}
+
+/* ====== <= 540px ====== */
+@media (max-width: 540px) {
+
+    /* progress tweaks FIRST */
+    progress.file-progress {
+        flex: 1 1 200px !important;
+        /* larger base, still flexible */
+        min-width: 52px !important;
+        height: 7px !important;
+        width: auto !important;
+        margin: 0 !important;
+    }
+
+    /* (optional for consistent thickness across engines) */
+    progress.file-progress::-webkit-progress-bar,
+    progress.file-progress::-webkit-progress-value {
+        height: 7px;
+    }
+}
+
+/* ====== <= 500px ====== */
+@media (max-width: 500px) {
+
+    /* progress tweaks FIRST */
+    progress.file-progress {
+        flex: 1 1 180px !important;
+        min-width: 48px !important;
+        height: 6px !important;
+        width: auto !important;
+        margin: 0 !important;
+    }
+
+    progress.file-progress::-webkit-progress-bar,
+    progress.file-progress::-webkit-progress-value {
+        height: 6px;
+    }
+}
+
+/* ====== <= 460px ====== */
+@media (max-width: 460px) {
+
+    /* progress tweaks FIRST */
+    progress.file-progress {
+        flex: 1 1 160px !important;
+        min-width: 42px !important;
+        height: 5px !important;
+        width: auto !important;
+        margin: 0 !important;
+    }
+
+    progress.file-progress::-webkit-progress-bar,
+    progress.file-progress::-webkit-progress-value {
+        height: 5px;
+    }
+}
+
+/* ====== <= 440px ====== */
+@media (max-width: 440px) {
+
+    /* progress tweaks FIRST */
+    progress.file-progress {
+        flex: 1 1 140px !important;
+        min-width: 36px !important;
+        height: 4px !important;
+        width: auto !important;
+        margin: 0 !important;
+    }
+
+    progress.file-progress::-webkit-progress-bar,
+    progress.file-progress::-webkit-progress-value {
+        height: 4px;
+    }
 }
 
 /* extra-small phones */
@@ -1300,5 +1537,662 @@ body::after {
 
     .footer-ads .ad-slot {
         min-height: 50px;
+    }
+
+    #file-list {
+        --prog-w: 30vw;
+        --prog-min: 100vw;
+        --prog-shrink: 12px;
+        --prog-w-conv: 110px;
+        --prog-h: 8px;
+    }
+}
+
+/* keep the row to one visual line */
+.filecard .status {
+    white-space: nowrap;
+}
+
+.filecard .f-name {
+    white-space: nowrap;
+}
+
+/* you already ellipsize; this enforces one line */
+/* Keep text single-line */
+.f-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.badge,
+.status {
+    white-space: nowrap;
+}
+
+/* Progress fills only the available middle column */
+.filecard
+/* removed global progress width (conflicted with file rows) */
+
+/* Make sure the remove button is visible */
+.filecard .file-remove {
+    right: 6px;
+    top: 6px;
+}
+
+/* === FILE ROW (one-line, responsive) === */
+.filecard {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--panel);
+    flex-wrap: nowrap;
+    /* keep one line by default */
+}
+
+/* left side: name + subtext */
+.filecard .file-meta {
+    min-width: 0;
+    /* allow ellipsis */
+}
+
+.filecard .f-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.filecard .sub {
+    opacity: .8;
+}
+
+/* right side: controls grouped together */
+.filecard .file-controls {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+.filecard .badge,
+.filecard .status {
+    white-space: nowrap;
+}
+
+/* progress only grows into remaining room inside controls */
+.filecard progress {
+    height: 6px;
+    width: 160px;
+    /* base width; JS will shrink this if needed */
+    min-width: 72px;
+}
+
+/* inline “×” so it never escapes the card */
+.filecard .file-remove {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 8px;
+}
+
+/* removed duplicate .file-remove:hover */
+
+
+
+/* === Responsive one-line file row === */
+.filecard {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--panel);
+    /* one line by default */
+    flex-wrap: nowrap;
+}
+
+/* Left side: filename + meta */
+.filecard .file-meta {
+    min-width: 0;
+}
+
+/* allow ellipsis */
+.f-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sub {
+    opacity: .8;
+}
+
+/* Right side: controls block */
+.filecard .file-controls {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    /* so progress can shrink */
+}
+
+.badge,
+.status {
+    white-space: nowrap;
+}
+
+/* The secret sauce: let the progress flex */
+.filecard .file-progress {
+    flex: 1 1 160px;
+    /* grow and shrink with room */
+    min-width: 72px;
+    /* never collapse completely */
+    width: auto;
+    /* ignore any global width:100% */
+    height: 10px;
+}
+
+/* Make the close button participate in the flow */
+.filecard .file-remove {
+    position: static;
+    /* was absolute; inline keeps it visible */
+    width: auto;
+    height: auto;
+    line-height: 1;
+    padding: 2px 6px;
+    border-radius: 8px;
+    background: transparent;
+}
+
+/* Optional hover for the close button */
+/* removed duplicate .file-remove:hover */
+
+/* Narrow screens: allow a clean wrap (progress goes full width) */
+/* ===== smooth the 560 → 540px gap ===== */
+
+/* <= 560px */
+@media (max-width: 560px) {
+    #file-list progress.file-progress {
+        flex: 1 1 170px !important;
+        /* smaller base than before */
+        min-width: 46px !important;
+        height: 6px !important;
+        width: auto !important;
+        margin: 0 !important;
+    }
+
+    /* (optional) WebKit height consistency */
+    #file-list progress.file-progress::-webkit-progress-bar,
+    #file-list progress.file-progress::-webkit-progress-value {
+        height: 6px;
+    }
+}
+
+/* <= 555px (tiny step) */
+@media (max-width: 555px) {
+    #file-list progress.file-progress {
+        flex: 1 1 168px !important;
+        min-width: 46px !important;
+        height: 6px !important;
+        width: auto !important;
+        margin: 0 !important;
+    }
+}
+
+/* <= 550px */
+@media (max-width: 550px) {
+    #file-list progress.file-progress {
+        flex: 1 1 166px !important;
+        min-width: 45px !important;
+        height: 6px !important;
+        width: auto !important;
+        margin: 0 !important;
+    }
+}
+
+/* <= 545px (tiny step) */
+@media (max-width: 545px) {
+    #file-list progress.file-progress {
+        flex: 1 1 163px !important;
+        min-width: 45px !important;
+        height: 6px !important;
+        width: auto !important;
+        margin: 0 !important;
+    }
+}
+
+/* <= 540px — now gently lands here instead of jumping */
+@media (max-width: 540px) {
+    #file-list progress.file-progress {
+        flex: 1 1 160px !important;
+        /* was 200px — this caused the jump */
+        min-width: 44px !important;
+        height: 6px !important;
+        width: auto !important;
+        margin: 0 !important;
+    }
+
+    #file-list progress.file-progress::-webkit-progress-bar,
+    #file-list progress.file-progress::-webkit-progress-value {
+        height: 6px;
+    }
+}
+
+
+/* === BEGIN: Responsive one-line file row (patched) === */
+.filecard {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--panel);
+    flex-wrap: nowrap;
+    /* one line by default */
+}
+
+.filecard:first-child {
+    border-top: none;
+}
+
+/* Left side: name + meta */
+.filecard .file-meta {
+    min-width: 0;
+}
+
+.f-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sub {
+    opacity: .8;
+}
+
+/* Right side: controls grouped */
+.filecard .file-controls {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    /* let progress shrink */
+}
+
+.badge,
+.status {
+    white-space: nowrap;
+    font-size: 12px;
+}
+
+/* Progress bar grows/shrinks with space */
+.filecard .file-progress {
+    flex: 1 1 160px;
+    /* base width ~160px; can grow & shrink */
+    min-width: 72px;
+    /* don’t collapse completely */
+    width: auto;
+    /* override any global width */
+    height: 10px;
+    margin: 0;
+}
+
+/* Inline close button */
+.filecard .file-remove {
+    position: static;
+    width: auto;
+    height: auto;
+    line-height: 1;
+    padding: 2px 6px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+}
+
+.filecard .file-remove:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+/* Narrow screens: wrap neatly; progress full width */
+
+
+/* === END: Responsive one-line file row (patched) === */
+
+/* =========================================================
+   FILE CARDS — TWO-ROW LAYOUT (always: controls under meta)
+   ========================================================= */
+#file-list .filecard {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto auto !important;
+    row-gap: 8px !important;
+    align-items: center !important;
+    /* keep existing padding/background/border from earlier rules */
+}
+
+/* Row 1: filename + sub */
+#file-list .filecard .file-meta {
+    grid-column: 1 / -1 !important;
+    grid-row: 1 !important;
+    min-width: 0 !important;
+}
+
+#file-list .filecard .f-name {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+#file-list .filecard .sub {
+    opacity: .8 !important;
+}
+
+/* Row 2: controls block spans full width */
+#file-list .filecard .file-controls {
+    grid-column: 1 / -1 !important;
+    grid-row: 2 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    margin-left: 0 !important;
+    /* cancel earlier auto-right push */
+    justify-content: flex-start !important;
+    flex-wrap: nowrap !important;
+    /* keep controls on one line within this row */
+}
+
+/* Keep short items intrinsic, let progress eat remaining space */
+#file-list .filecard .badge,
+#file-list .filecard .status,
+#file-list .filecard .file-remove {
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
+}
+
+/* Progress fills the row between badge and status */
+#file-list .filecard .file-progress {
+    flex: 1 1 auto !important;
+    /* grow to fill; shrink when tight */
+    min-width: 120px !important;
+    /* sensible floor */
+    width: auto !important;
+    height: 10px !important;
+    margin: 0 !important;
+}
+
+/* Inline close button so it never overlaps */
+#file-list .filecard .file-remove {
+    position: static !important;
+    padding: 2px 6px !important;
+    border: 0 !important;
+    border-radius: 8px !important;
+    background: transparent !important;
+    color: var(--text) !important;
+    cursor: pointer !important;
+}
+
+/* Optional: compact variants for small phones */
+@media (max-width: 520px) {
+    #file-list .filecard .file-progress {
+        min-width: 100px !important;
+        height: 8px !important;
+    }
+}
+
+@media (max-width: 400px) {
+    #file-list .filecard .file-progress {
+        min-width: 80px !important;
+        height: 6px !important;
+    }
+
+    #file-list .filecard .badge,
+    #file-list .filecard .status {
+        font-size: 12px !important;
+    }
+}
+
+
+/* =========================================================
+   FILECARDS — DESKTOP one-row, MOBILE/TABLET two-rows
+   (Place at the END so these win the cascade)
+   ========================================================= */
+
+/* —— DESKTOP (>=960px): keep everything on ONE line ————————————— */
+@media (min-width: 960px) {
+    #file-list .filecard {
+        display: flex !important;
+        align-items: center !important;
+        gap: 10px !important;
+        flex-wrap: nowrap !important;
+        /* single line */
+        overflow: hidden !important;
+    }
+
+    /* left cluster */
+    #file-list .filecard .file-meta {
+        min-width: 0 !important;
+        flex: 0 1 auto !important;
+    }
+
+    #file-list .filecard .f-name {
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+
+    /* right cluster */
+    #file-list .filecard .file-controls {
+        margin-left: auto !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        min-width: 0 !important;
+        flex: 0 1 auto !important;
+    }
+
+    /* short items keep intrinsic size */
+    #file-list .filecard .badge,
+    #file-list .filecard .status,
+    #file-list .filecard .file-remove {
+        flex: 0 0 auto !important;
+        white-space: nowrap !important;
+    }
+
+    /* progress fills all remaining desktop space */
+    #file-list progress.file-progress,
+    #file-list .filecard .file-progress {
+        flex: 1 1 auto !important;
+        min-width: 120px !important;
+        width: auto !important;
+        height: 10px !important;
+        margin: 0 !important;
+    }
+
+    /* inline close button so it never overlaps */
+    #file-list .filecard .file-remove {
+        position: static !important;
+        padding: 2px 6px !important;
+        border: 0 !important;
+        border-radius: 8px !important;
+        background: transparent !important;
+        color: var(--text) !important;
+        cursor: pointer !important;
+    }
+}
+
+/* —— MOBILE/TABLET (<960px): TWO ROWS ———————————————— */
+@media (max-width: 959.98px) {
+
+    /* grid with two rows: meta (row 1), controls (row 2) */
+    #file-list .filecard {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        grid-template-rows: auto auto !important;
+        row-gap: 8px !important;
+        align-items: center !important;
+        overflow: hidden !important;
+    }
+
+    /* Row 1 */
+    #file-list .filecard .file-meta {
+        grid-column: 1 / -1 !important;
+        grid-row: 1 !important;
+        min-width: 0 !important;
+    }
+
+    #file-list .filecard .f-name {
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+
+    #file-list .filecard .sub {
+        opacity: .8 !important;
+    }
+
+    /* Row 2: full-width controls */
+    #file-list .filecard .file-controls {
+        grid-column: 1 / -1 !important;
+        grid-row: 2 !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 10px !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        margin-left: 0 !important;
+        justify-content: flex-start !important;
+        flex-wrap: nowrap !important;
+        /* keep controls on one line within this row */
+    }
+
+    #file-list .filecard .badge,
+    #file-list .filecard .status,
+    #file-list .filecard .file-remove {
+        flex: 0 0 auto !important;
+        white-space: nowrap !important;
+    }
+
+    #file-list progress.file-progress,
+    #file-list .filecard .file-progress {
+        flex: 1 1 auto !important;
+        /* fill the row */
+        min-width: 140px !important;
+        width: auto !important;
+        height: 10px !important;
+        margin: 0 !important;
+    }
+
+    #file-list .filecard .file-remove {
+        position: static !important;
+        padding: 2px 6px !important;
+        border: 0 !important;
+        border-radius: 8px !important;
+        background: transparent !important;
+        color: var(--text) !important;
+        cursor: pointer !important;
+    }
+}
+
+/* —— Compact tweaks (phones) ————————————————————— */
+@media (max-width: 520px) {
+    #file-list .filecard .file-progress {
+        min-width: 100px !important;
+        height: 8px !important;
+    }
+}
+
+@media (max-width: 400px) {
+    #file-list .filecard .file-progress {
+        min-width: 80px !important;
+        height: 6px !important;
+    }
+
+    #file-list .filecard .badge,
+    #file-list .filecard .status {
+        font-size: 12px !important;
+    }
+}
+
+/* === Topbar buttons: equal size + same baseline === */
+:root {
+    --topbar-btn-w: 140px;
+    /* tweak width here */
+    --topbar-btn-h: 38px;
+    /* tweak height here */
+}
+
+/* container holds them on one y level */
+.header-row {
+    align-items: center;
+}
+
+/* already present, reinforce */
+.header-tools,
+.topbar_Buttons {
+    display: flex;
+    align-items: center;
+    /* same baseline */
+    gap: 8px;
+}
+
+/* make each topbar button identical dimensions */
+.btn-topbar {
+    display: inline-flex;
+    /* centers content */
+    align-items: center;
+    justify-content: center;
+    width: var(--topbar-btn-w);
+    /* equal width */
+    min-width: var(--topbar-btn-w);
+    height: var(--topbar-btn-h);
+    /* equal height */
+    line-height: 1;
+    /* no extra vertical wobble */
+    width: 48%;
+    /* consistent padding */
+    max-width: none !important;
+    /* override earlier 150px cap */
+    white-space: nowrap;
+    /* keep labels on one line */
+}
+
+/* if buttons include icons, keep them centered nicely */
+
+
+/* optional: on small screens let them wrap but keep size */
+@media (max-width: 600px) {
+    .topbar_Buttons {
+        flex-wrap: wrap;
+        width: 100%;
+    }
+}
+
+/* Show the inline square only on small screens */
+@media (max-width: 767px) {
+    .mobile-inline-ad {
+        display: block;
+    }
+}
+
+/* Hide it on tablets/desktop to avoid crowding with other placements */
+@media (min-width: 768px) {
+    .mobile-inline-ad {
+        display: none !important;
     }
 }

@@ -2,7 +2,7 @@
 async function needFFmpeg() {
   if (window.__ffmpeg?.loaded) return window.__ffmpeg;
 
-  const VER   = '0.12.10';
+  const VER = '0.12.10';
   const LOCAL = 'vendor/ffmpeg/';
 
   const CDN_WRAP = `https://unpkg.com/@ffmpeg/ffmpeg@${VER}/dist/umd/ffmpeg.js`;
@@ -18,7 +18,7 @@ async function needFFmpeg() {
 
   // 1) Wrapper: local → CDN
   if (!(window.FFmpeg && window.FFmpeg.createFFmpeg)) {
-    try { await loadScript(LOCAL + 'ffmpeg.js'); } catch {}
+    try { await loadScript(LOCAL + 'ffmpeg.js'); } catch { }
     if (!(window.FFmpeg && window.FFmpeg.createFFmpeg)) await loadScript(CDN_WRAP);
   }
   if (!(window.FFmpeg && window.FFmpeg.createFFmpeg)) throw new Error('FFmpeg wrapper failed to load');
@@ -29,7 +29,7 @@ async function needFFmpeg() {
   // 3) Worker: always local bootstrap (prevents cross-origin Worker errors)
   const workerPath = LOCAL + 'worker.js';
 
-  const ffmpeg = window.FFmpeg.createFFmpeg({ log: true, corePath, workerPath });
+  const ffmpeg = window.FFmpeg.createFFmpeg({ log: true, corePath });
   await ffmpeg.load();
 
   if (!window.fetchFile && window.FFmpeg?.fetchFile) window.fetchFile = window.FFmpeg.fetchFile;

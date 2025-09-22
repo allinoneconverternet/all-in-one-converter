@@ -7,9 +7,11 @@ function DBGE() { try { if (window.DEBUG_CONVERTER) console.error.apply(console,
 // --- FFmpeg wrapper bootstrap (drop-in) ---
 // Guard against double-injection during dev
 window.FFMPEG_VER = window.FFMPEG_VER || '0.12.10';
-const FFMPEG_VER = window.FFMPEG_VER;
+var FFMPEG_VER = window.FFMPEG_VER;  // <— was 'const', change to 'var'
 
-let _warmFFmpegOnce = null;
+var _warmFFmpegOnce = window._warmFFmpegOnce || null;  // ⬅️ change this line
+if (window.__APP_ALREADY_LOADED__) throw new Error('app.js loaded twice');
+window.__APP_ALREADY_LOADED__ = true;
 
 // adopt any known global shape
 function adoptFFmpegGlobal() {
@@ -278,13 +280,16 @@ async function needFFmpeg() {
   if (!(window.FFmpeg && window.FFmpeg.createFFmpeg)) {
     throw new Error('Local FFmpeg wrapper not found at ' + BASE + 'ffmpeg.js');
   }
-
   const ffmpeg = window.FFmpeg.createFFmpeg({
     log: false,
-    corePath: BASE + 'ffmpeg-core.js',
-    workerPath: BASE + 'worker.js'
+    // ⬇️ absolute URL so blob worker can importScripts() correctly
+    corePath: new URL(BASE + 'ffmpeg-core.js', location.href).href
+    // ⛔ remove workerPath – let the library spawn its own blob worker
   });
   await ffmpeg.load();
+
+
+
   if (!window.fetchFile && window.FFmpeg?.fetchFile) window.fetchFile = window.FFmpeg.fetchFile;
 
   window.__ffmpeg = ffmpeg;
@@ -508,9 +513,8 @@ async function diagnoseFFmpeg() {
 window.diagnoseFFmpeg = diagnoseFFmpeg;
 
 function registerOutputs(index, outs, runId, target) {
-  if (isStale(runId)) return; // ignore late results from a cancelled run
+  if (isStale(runId)) return;
 
-  // store object URLs for this run
   state.outputsByFile[index] = outs.map(o => ({
     name: o.name,
     blob: o.blob,
@@ -524,10 +528,9 @@ function registerOutputs(index, outs, runId, target) {
     const pr = document.getElementById('prog-' + index);
     const badgeEl = card.querySelector('.badge');
 
-    // 🔄 Update the visible filename to the output name
     const newLabel = displayNameForOutputs(state.files[index], outs, target);
     if (nameEl) {
-      nameEl.classList.add('clickable');       // NOW clickable
+      nameEl.classList.add('clickable');
       nameEl.setAttribute('tabindex', '0');
       nameEl.setAttribute('role', 'button');
       nameEl.setAttribute('aria-disabled', 'false');
@@ -535,23 +538,76 @@ function registerOutputs(index, outs, runId, target) {
       nameEl.innerHTML = `<strong>${newLabel}</strong>`;
     }
 
-    // 🔄 Update badge to output type/extension
     if (badgeEl) badgeEl.textContent = badgeForOutputs(outs, target);
 
-    // Status + progress
     if (status) status.textContent = outs.length > 1 ? `Ready (${outs.length} files)` : 'Ready';
     if (pr) pr.value = 100;
 
     card.classList.remove('is-converting');
+
+    // 🔧 ensure the row still fits on one line after text changes
+    if (window.sizeProgress) window.sizeProgress(card);
+
   }
 }
 
+
+function createFileCard(index, file, badgeText = '', statusText = 'Queued') {
+  const card = document.createElement('div');
+  card.className = 'filecard is-converting';  // you can drop is-converting if not needed
+
+  card.innerHTML = `
+    <div class="file-meta">
+      <div class="f-name" title="${file.name}" aria-disabled="true">
+        <strong>${file.name}</strong>
+      </div>
+      <div class="sub">${prettySize(file.size)} • ${file.type || 'unknown'}</div>
+    </div>
+
+    <div class="file-controls">
+      <div class="badge">${badgeText}</div>
+      <progress class="file-progress" id="prog-${index}" max="100" value="0"></progress>
+      <div class="status" id="status-${index}">${statusText}</div>
+      <button type="button" class="file-remove" data-index="${index}" aria-label="Remove ${file.name}" title="Remove">×</button>
+    </div>
+  `;
+
+  // remove button
+  card.querySelector('.file-remove').addEventListener('click', (e) => {
+    const i = +e.currentTarget.dataset.index;
+    // remove from DOM
+    card.remove();
+    // TODO: also remove from your state if needed (state.files.splice(i,1), etc.)
+  });
+
+  return card;
+}
 
 // one-time: click on the filename downloads its outputs (when ready)
 document.addEventListener('DOMContentLoaded', () => {
   const list = document.getElementById('file-list');
   if (!list) return;
+  const tagAll = (root) => {
+    root.querySelectorAll('progress:not(.file-progress)').forEach(p => {
+      p.classList.add('file-progress');
+    });
+  };
+  tagAll(list);
 
+  // observe for newly added file cards/progress bars
+  const mo = new MutationObserver((mutations) => {
+    for (const m of mutations) {
+      m.addedNodes.forEach((n) => {
+        if (n.nodeType !== 1) return;                    // elements only
+        if (n.tagName === 'PROGRESS') {                  // a progress itself
+          n.classList.add('file-progress');
+        } else {                                         // a card subtree
+          tagAll(n);
+        }
+      });
+    }
+  });
+  mo.observe(list, { childList: true, subtree: true });
   // Click to download (only after conversion)
   list.addEventListener('click', (e) => {
     const nameEl = e.target.closest('.f-name');
@@ -631,8 +687,19 @@ const targetFormat = $('#target-format'); const qualityWrap = $('#quality-wrap')
 const fileInput = $('#file-input'); const dropzone = $('#dropzone'); const fileList = $('#file-list'); const banner = $('#banner');
 const convertBtn = $('#convert-btn'); const saveAllBtn = $('#save-all-btn'); const downloads = $('#downloads'); const downloadLinks = $('#download-links');
 
-function refreshMemoryPill() { const mode = state.useAuto ? 'Auto' : 'Manual'; const mb = Math.round(state.budget / 1048576); memoryPill.innerHTML = `<strong>Memory:</strong> <small>${mode}</small> <span>•</span> <span>${mb} MB</span>`; }
-function showBanner(msg, tone = 'info') { const color = tone === 'error' ? 'var(--danger)' : (tone === 'ok' ? 'var(--ok)' : 'var(--muted)'); banner.innerHTML = `<span style="color:${color}">${msg}</span>`; }
+function refreshMemoryPill() {
+  if (!memoryPill) return;               // <— guard
+  const mode = state.useAuto ? 'Auto' : 'Manual';
+  const mb = Math.round(state.budget / 1048576);
+  memoryPill.innerHTML = `<strong>Memory:</strong> <small>${mode}</small> <span>•</span> <span>${mb} MB</span>`;
+}
+
+function showBanner(msg, tone = 'info') {
+  if (!banner) return;                   // <— guard
+  const color = tone === 'error' ? 'var(--danger)' : (tone === 'ok' ? 'var(--ok)' : 'var(--muted)');
+  banner.innerHTML = `<span style="color:${color}">${msg}</span>`;
+}
+
 // === Dynamic targets (build from actual capabilities) ===
 
 // order + labels reused to build <optgroup>s
@@ -965,12 +1032,10 @@ async function convertMediaFile(file, target, kind, index) {
     if (!(window.FFmpeg && window.FFmpeg.createFFmpeg)) {
       throw new Error('Local FFmpeg wrapper not found. Check path: ' + BASE + 'ffmpeg.js');
     }
-    const ffmpeg = window.FFmpeg.createFFmpeg({
-      log: false,
-      corePath: BASE + 'ffmpeg-core.js',
-      workerPath: BASE + 'worker.js'
-    });
+    const ffmpeg = window.FFmpeg.createFFmpeg({ log: true, corePath });
+
     await ffmpeg.load();
+
     if (!window.fetchFile && window.FFmpeg?.fetchFile) window.fetchFile = window.FFmpeg.fetchFile;
     return ffmpeg;
   }
@@ -1156,19 +1221,27 @@ async function convertMediaFile(file, target, kind, index) {
     catch { await loadScript('https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js'); }
 
     // Pick core (local → CDN)
+    // Pick core (local → CDN)
     let corePath = 'vendor/ffmpeg/ffmpeg-core.js';
     try {
-      const res = await fetch(corePath, { cache: 'no-store' }); // GET instead of HEAD
+      const res = await fetch(corePath, { cache: 'no-store' });
       if (!res.ok) corePath = 'https://unpkg.com/@ffmpeg/core@0.12.10/dist/umd/ffmpeg-core.js';
     } catch {
       corePath = 'https://unpkg.com/@ffmpeg/core@0.12.10/dist/umd/ffmpeg-core.js';
     }
 
+    // ⬇️ make local corePath absolute so blob worker can import it
+    if (!/^https?:/i.test(corePath)) {
+      corePath = new URL(corePath, location.href).href;
+    }
+
     const FF = window.FFmpeg;
     if (!FF?.createFFmpeg) throw new Error('FFmpeg wrapper failed to load');
 
-    const ffmpeg = FF.createFFmpeg({ log: true, corePath });
+    const ffmpeg = window.FFmpeg.createFFmpeg({ log: true, corePath });
+
     await ffmpeg.load();
+
 
     if (!window.fetchFile && FF.fetchFile) window.fetchFile = FF.fetchFile; // convenience
     (typeof features === 'object') && (features.ffmpeg = true);

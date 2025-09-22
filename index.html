@@ -29,8 +29,10 @@
   <!-- Performance -->
   <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossorigin>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" href="/vendor/ffmpeg/ffmpeg-core.js" as="script" crossorigin>
+  <link rel="preload" href="/vendor/ffmpeg/ffmpeg.js" as="script">
+  <link rel="preload" href="/vendor/ffmpeg/ffmpeg-core.js" as="script">
   <link rel="preload" href="/vendor/ffmpeg/ffmpeg-core.wasm" as="fetch" type="application/wasm" crossorigin>
+
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="stylesheet" href="/styles.css" />
 
@@ -64,12 +66,14 @@
 </head>
 
 <body>
+  <script src="vendor/ffmpeg/ffmpeg.js"></script> <!-- wrapper -->
+  <script src="ffmpeg-esm-shim.js"></script> <!-- shim -->
+  <script src="app.js"></script> <!-- your app -->
+
   <header>
-    <div class="wrap row header-row">
+    <div class="wrap  header-row">
       <h1>All-in-one converter</h1>
-      <div class="row header-tools">
-        <div class="pill" id="memory-pill">Detecting memory…</div>
-      </div>
+
       <div class="topbar_Buttons">
         <button class="btn-topbar" id="theme-btn">Toggle theme</button>
         <button class="btn-topbar" id="share-btn">Share us!</button>
@@ -82,6 +86,14 @@
       <h2 id="pair-title">Offline document converter</h2>
       <p id="pair-desc" class="hint">Drop files and choose an output. Everything runs on your device.</p>
     </section>
+    <!-- Mobile inline square (300x250) under the intro, above the app) -->
+    <div class="inline-ad mobile-inline-ad" role="complementary" aria-label="Sponsored (inline)">
+      <div class="ad-slot">
+        <div class="ad-note">Ad</div>
+        <ins class="adsbygoogle" style="display:block;width:300px;height:250px" data-ad-client="ca-pub-6251303109610053"
+          data-ad-slot="1188563081"></ins> <!-- Square_Ads -->
+      </div>
+    </div>
 
     <div class="panel grid" id="app">
       <section class="controls">
@@ -293,6 +305,7 @@
     })();
   </script>
 
+
   <script>
     (function () {
       const REQUIRE_ADS = false;
@@ -301,6 +314,8 @@
       const CHOICE_KEY = 'ads_ok_continue';
       let bypassThisPage = false;
 
+      // ---- helpers ----
+      const $all = (sel, root = document) => Array.from(root.querySelectorAll(sel));
       const getModal = () => document.getElementById('adblock-modal');
 
       function bindModalOnce() {
@@ -336,14 +351,41 @@
         document.documentElement.style.overflow = '';
       }
 
+      // If the user previously chose to continue, don't block the page with the modal,
+      // but still let the detection run so we can collapse empty slots.
       if (REMEMBER_CHOICE && !REQUIRE_ADS && localStorage.getItem(CHOICE_KEY) === '1') {
+        bypassThisPage = true;
         window.addEventListener('DOMContentLoaded', bindModalOnce);
-        return;
       }
 
+      // Was any ad slot ever processed by AdSense?
       const everProcessed = () =>
         !!document.querySelector('ins.adsbygoogle[data-ad-status], ins.adsbygoogle[data-adsbygoogle-status]');
 
+      // Collapse/hide ad containers when ads are blocked or the script never ran.
+      function collapseAds() {
+        // Add a body/html class for optional CSS hooks
+        document.documentElement.classList.add('ads-blocked');
+
+        // Hide individual ad slots
+        $all('.ad-slot, ins.adsbygoogle').forEach(el => {
+          el.classList?.add('is-collapsed');
+          // force-hide even if site CSS is missing
+          el.style.setProperty('display', 'none', 'important');
+          el.style.setProperty('visibility', 'hidden', 'important');
+          el.style.setProperty('height', '0px', 'important');
+          el.style.setProperty('min-height', '0px', 'important');
+          el.style.setProperty('margin', '0', 'important');
+          el.style.setProperty('padding', '0', 'important');
+        });
+
+        // Optionally remove common wrappers/rails
+        ['#side-ads', '#bottom-ads', '.footer-ads'].forEach(sel => {
+          $all(sel).forEach(el => el.remove());
+        });
+      }
+
+      // Try to reach the ads domain quickly. Returns: true/false/null (null = timeout/uncertain)
       function pingAdsDomain(timeout = 1600) {
         return new Promise((resolve) => {
           let done = false;
@@ -356,6 +398,7 @@
         });
       }
 
+      // Classic adblock "bait" check
       function baitHidden() {
         const bait = document.createElement('div');
         bait.className = 'ads ad adsbox ad-banner adsbygoogle';
@@ -366,17 +409,35 @@
         return hidden;
       }
 
+      // After page load, give AdSense a short window to process. If not, we decide.
       window.addEventListener('load', () => {
         setTimeout(async () => {
-          if (bypassThisPage) return;
+          // If any ad processed, do nothing.
           if (everProcessed()) return;
 
+          // Run detection
           const [reach, bait] = await Promise.all([pingAdsDomain(1600), Promise.resolve(baitHidden())]);
-          console.log('[adblock check]', { reach, bait, processed: everProcessed(), review: ADSENSE_REVIEW_MODE });
           const blocked = (ADSENSE_REVIEW_MODE
-            ? (bait && !everProcessed())
-            : ((reach === false) && bait && !everProcessed()));
-          if (!bypassThisPage && blocked) showModal();
+            ? (bait && !everProcessed())                        // review mode is more permissive (no network dependency)
+            : ((reach === false) && bait && !everProcessed())); // normal: must be unreachable + bait hidden + no processing
+
+          // Log for debugging
+          try {
+            console.log('[adblock check]', {
+              reach, bait, processed: everProcessed(),
+              review: ADSENSE_REVIEW_MODE, bypassThisPage
+            });
+          } catch { }
+
+          if (blocked) {
+            // Always collapse the empty frames
+            collapseAds();
+
+            // Only show the modal if we are not bypassing this page and ads are required (or you want to nudge)
+            if (!bypassThisPage && (REQUIRE_ADS || !REMEMBER_CHOICE)) {
+              showModal();
+            }
+          }
         }, 3500);
       });
     })();
@@ -389,30 +450,18 @@
   <script src="vendor/jspdf.umd.min.js"></script>
   <script src="vendor/docx.min.js"></script>
 
-  <!-- FFmpeg wrapper: use the local UMD you have -->
-  <script src="vendor/ffmpeg/ffmpeg.js"></script>
+
 
   <!-- Shim: exposes window.FFmpeg.createFFmpeg even for UMD/class builds -->
-  <script src="ffmpeg-esm-shim.js"></script>
 
+  <script src="/ffmpeg-esm-shim.js"></script>
   <!-- Single loader used by the app to actually load the core/worker -->
 
 
-  <!-- Your app -->
-  <script src="app.js"></script>
 
-  <script>
-    (function ensureFFmpegGlobal(next) {
-      function done() { if (typeof next === 'function') next(); }
-      if (window.FFmpeg && window.FFmpeg.createFFmpeg) return done();
-      var s = document.createElement('script');
-      s.src = 'https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js';
-      s.async = false; // keep order
-      s.onload = done;
-      s.onerror = done; // even if blocked, our loader may still try CDN/core later
-      document.currentScript.parentNode.insertBefore(s, document.currentScript.nextSibling);
-    })(function () { });
-  </script>
+
+
+
 
   <!-- Tesseract (offline) -->
   <script src="vendor/tesseract.min.js"></script>
@@ -425,7 +474,63 @@
     };
   </script>
 
+  <script>
+    (function () {
+      const list = document.getElementById('file-list');
+      if (!list) return;
 
+      // Compute and set the exact width for the <progress> in one card
+      function sizeProgress(card) {
+        const prog = card.querySelector('progress');
+        const name = card.querySelector('.f-name');
+        const badge = card.querySelector('.badge');
+        const status = card.querySelector('.status');
+        if (!prog || !name || !badge || !status) return;
+
+        // Card measurements
+        const cs = getComputedStyle(card);
+        const gap = parseFloat(cs.columnGap || '0');
+        const pad = parseFloat(cs.paddingLeft || '0') + parseFloat(cs.paddingRight || '0');
+        const removeBtn = card.querySelector('.file-remove');
+        const removeW = removeBtn ? (removeBtn.offsetWidth || 0) + 8 : 0; // small breathing room
+
+        // Current occupied widths
+        const wCard = card.clientWidth;
+        const wName = name.offsetWidth;   // already clipped with ellipsis
+        const wBadge = badge.offsetWidth;
+        const wStatus = status.offsetWidth;
+
+        // 4 columns → there are 3 gaps between them
+        const gaps = gap * 3;
+
+        // Remaining space for progress
+        let wAvail = wCard - pad - gaps - removeW - wName - wBadge - wStatus;
+
+        // Constrain to sane bounds
+        const MIN_W = 80;     // look good, never collapse completely
+        const MAX_W = Math.max(120, wCard); // defensive cap
+        wAvail = Math.max(MIN_W, Math.min(MAX_W, Math.floor(wAvail)));
+
+        // Apply width (override the stylesheet's 100%)
+        prog.style.width = wAvail + 'px';
+      }
+
+      function sizeAll() {
+        [...list.children].forEach(sizeProgress);
+      }
+      window.sizeProgress = sizeProgress;
+      window.sizeAll = sizeAll;
+      // Recalculate on resize (layout can change)
+      window.addEventListener('resize', sizeAll);
+
+      // Watch for new/updated cards and status text changes
+      const mo = new MutationObserver(() => sizeAll());
+      mo.observe(list, { childList: true, subtree: true, characterData: true });
+
+      // Initial pass (in case cards already exist)
+      window.addEventListener('load', sizeAll);
+    })();
+  </script>
 
 
   <style>
