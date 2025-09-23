@@ -109,6 +109,38 @@ function show(msg, kind = 'info') {
 }
 
 // === END DEBUG INSTRUMENTATION v3 ===
+// Show an actionable error in the banner and clean up the row UI.
+function friendlyCatch(err, { status, card, runId }) {
+  try {
+    if (typeof isStale === 'function' && isStale(runId)) return; // a newer run started
+
+    if (status) {
+      status.textContent = 'Failed';
+      status.style.color = 'var(--danger)';
+    }
+    card?.classList?.remove('is-converting');
+
+    // Try to present a specific reason
+    const msg =
+      (err && (err.message || err.details)) ||
+      (typeof err === 'string' ? err : '') ||
+      'Unknown error';
+
+    // If it smells like a PDF.js version mismatch, add a hint
+    const hint = /version|Worker|API/i.test(msg)
+      ? ' (Check that your PDF.js main library and worker are the same major version.)'
+      : '';
+
+    if (typeof showBanner === 'function') {
+      showBanner(`Couldn’t convert: ${msg}${hint}`, 'error');
+    } else {
+      console.error('[ui suppressed]', `Couldn’t convert: ${msg}${hint}`);
+    }
+  } catch (uiErr) {
+    // Never let the error handler throw
+    console.error('Error while showing error:', uiErr, 'Original:', err);
+  }
+}
 
 /* app.js — full, fixed, copy-paste ready (waits for vendor libs) */
 
@@ -129,10 +161,12 @@ async function needMammoth() {
 }
 
 // Robust PDF.js loader: UMD or ESM, local first then CDN. No script tag for the worker.
+// Robust PDF.js loader that keeps the main lib and the worker on the *same major version*.
 async function needPdf() {
+  // Already loaded?
   if (window.pdfjsLib?.getDocument) { features.pdf = true; ensureVendors?.(); return; }
 
-  // helper to load a script tag
+  // Small helper
   const loadScript = (src) => new Promise((res, rej) => {
     const s = document.createElement('script');
     s.src = src; s.async = true;
@@ -140,37 +174,59 @@ async function needPdf() {
     document.head.appendChild(s);
   });
 
-  // 1) main library: local UMD → CDN UMD → local ESM → CDN ESM
-  const tryMain = [
+  // Try to load the *main* library (UMD first; if you only ship ESM, swap order)
+  const mainCandidates = [
+    // local UMD → CDN UMD → local ESM → CDN ESM
     () => loadScript('vendor/pdf.min.js'),
     () => loadScript('https://unpkg.com/pdfjs-dist@4/legacy/build/pdf.min.js'),
     async () => { window.pdfjsLib = await import('vendor/pdf.min.mjs'); },
-    async () => { window.pdfjsLib = await import('https://unpkg.com/pdfjs-dist@4/build/pdf.min.mjs'); },
+    async () => { window.pdfjsLib = await import('https://unpkg.com/pdfjs-dist@4/build/pdf.mjs'); },
   ];
-  for (const step of tryMain) { try { await step(); break; } catch { } }
-  if (!window.pdfjsLib?.getDocument) throw new Error('Unable to load PDF.js');
 
-  // 2) worker: choose a reachable URL (don’t inject it as a <script>)
-  const candidates = [
-    'vendor/pdf.worker.min.js',
-    'vendor/pdf.worker.min.mjs',
-    'https://unpkg.com/pdfjs-dist@4/legacy/build/pdf.worker.min.js',
-    'https://unpkg.com/pdfjs-dist@4/build/pdf.worker.min.mjs',
-  ];
-  let workerSrc = candidates[0];
-  for (const url of candidates) {
+  let mainLoaded = false, lastErr = null;
+  for (const attempt of mainCandidates) {
+    try { await attempt(); mainLoaded = true; break; }
+    catch (e) { lastErr = e; }
+  }
+  if (!mainLoaded || !window.pdfjsLib?.getDocument) {
+    throw lastErr || new Error('Unable to load pdfjs main library');
+  }
+
+  // Decide worker version based on the *main library* we just loaded.
+  const version = String(window.pdfjsLib?.version || '');
+  const isV4 = version.startsWith('4.');
+  const workerCandidates = isV4
+    ? [
+      // Prefer your local v4 worker if you ship it; otherwise the CDN v4 worker
+      'vendor/pdf.worker.min.js', // make sure this is v4 if present
+      'https://unpkg.com/pdfjs-dist@4/legacy/build/pdf.worker.min.js',
+      'https://unpkg.com/pdfjs-dist@4/build/pdf.worker.min.mjs',
+    ]
+    : [
+      // v3 track (use if you intentionally pin to 3.x)
+      'vendor/pdf.worker.min.js',
+      'https://unpkg.com/pdfjs-dist@3/legacy/build/pdf.worker.min.js',
+      'https://unpkg.com/pdfjs-dist@3/build/pdf.worker.min.mjs',
+    ];
+
+  // Pick the first reachable worker (HEAD request when possible; file:// may throw)
+  let workerSrc = workerCandidates[0];
+  for (const url of workerCandidates) {
     try {
       const ok = await fetch(url, { method: 'HEAD', cache: 'no-store' }).then(r => r.ok);
       if (ok) { workerSrc = url; break; }
-    } catch { /* file:// or offline -> keep default */ }
+    } catch { /* offline or file:// → keep default */ }
   }
+
+  // Bind worker to the main lib (only if that API exists on this build)
   if (window.pdfjsLib?.GlobalWorkerOptions) {
     window.pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc;
   }
 
   features.pdf = true;
-  ensureVendors?.();   // refresh the red/green badges
+  ensureVendors?.();   // (optional) refresh any UI badges you show
 }
+
 
 
 async function needXLSX() { if (window.XLSX) return; await loadScriptTry(CDN.xlsx[0], CDN.xlsx[1]); }
@@ -495,48 +551,118 @@ async function ensureVendors() {
     return { issues, checks };
   }
 
-  // --- render capability list ---
+  // --- render capability list (simple labels, no library names) ---
   const caps = document.querySelector('#caps');
   if (caps) {
     caps.innerHTML = '';
-    [
-      ['Images & Text (built-in)', true],
-      ['PDF.js (read PDF)', features.pdf],
-      ['mammoth.js (read DOCX)', features.docx],
-      ['SheetJS (XLSX)', features.xlsx],
-      ['JSZip (PPTX/ZIP)', features.pptx],
-      ['Tesseract OCR (optional)', features.ocr],
-      ['jsPDF (make PDF)', features.makePdf],
-      ['docx lib (make DOCX)', features.makeDocx],
-      ['FFmpeg.wasm (media)', features.ffmpeg],
-    ].forEach(([label, ok]) => {
-      const p = document.createElement('div');
-      p.className = 'cap ' + (ok ? 'ok' : 'miss');
-      p.textContent = (ok ? '✓ ' : '⨯ ') + label;
+    const CAP_LIST = [
+      ['Images', true],                     // built-in client rendering
+      ['PDF', features.pdf],
+      ['Word (DOCX)', features.docx],
+      ['Excel (XLSX)', features.xlsx],
+      ['ZIP', features.pptx],
+      ['OCR', features.ocr],
+      ['Make PDF', features.makePdf],
+      ['Make DOCX', features.makeDocx],
+      ['Media', features.ffmpeg],           // FFmpeg.wasm
+    ];
 
-      // Make the FFmpeg row actionable
-      if (label.startsWith('FFmpeg.wasm')) {
-        p.title = ok ? 'FFmpeg detected' : 'Click to diagnose FFmpeg';
-        if (!ok) {
-          p.style.cursor = 'pointer';
-          p.addEventListener('click', () => diagnoseFFmpeg());
-        }
+    CAP_LIST.forEach(([label, ok]) => {
+      const row = document.createElement('div');
+      row.className = 'cap ' + (ok ? 'ok' : 'miss');
+      row.textContent = (ok ? '✓ ' : '⨯ ') + label;
+
+      // For "Media" only: let advanced users click to diagnose, but don't show banners automatically.
+      if (label === 'Media' && !ok) {
+        row.title = 'Click to run a quick check (console only)';
+        row.style.cursor = 'pointer';
+        row.addEventListener('click', () => {
+          // keep diagnostics in console unless DEBUG_CONVERTER is true
+          const oldShow = window.showBanner;
+          if (!window.DEBUG_CONVERTER) {
+            // temporarily silence banners during diagnostics
+            window.showBanner = (m, t) => console[(t === 'error') ? 'error' : 'log']('[diag]', m);
+          }
+          diagnoseFFmpeg().finally(() => { window.showBanner = oldShow; });
+        });
       }
 
-      caps.append(p);
+      caps.append(row);
     });
   }
 
-  // If FFmpeg is missing, proactively run diagnostics once so the banner explains why.
-  if (!features.ffmpeg) {
-    // let the UI render first
+  // --- do NOT auto-run FFmpeg diagnostics or auto-show errors in quiet mode ---
+  if (!features.ffmpeg && !window.DEBUG_CONVERTER) {
+    // no banner here; just keep it quiet.
+    // (Advanced users can click "Media" to run diagnoseFFmpeg() manually.)
+  } else if (!features.ffmpeg && window.DEBUG_CONVERTER) {
+    // in debug mode, still run it so you see console details
     setTimeout(() => diagnoseFFmpeg().catch(() => { }), 0);
   }
 
-  // Optional: expose the helper for manual use in DevTools
+  // Optional: expose for DevTools
   window.diagnoseFFmpeg = diagnoseFFmpeg;
 
   return features;
+
+}
+// --- Row progress helpers (paste once) ---
+
+// app.js — replace your existing setRowProgress with this version
+function setRowProgress(index, frac = 0) {
+  // sanitize & clamp
+  if (!Number.isFinite(frac)) frac = 0;
+  if (frac < 0) frac = 0;
+  if (frac > 1) frac = 1;
+  const pct = Math.round(frac * 100);
+
+  // elements
+  const pr = document.getElementById('prog-' + index);
+  const st = document.getElementById('status-' + index);
+  const list = document.getElementById('file-list');
+  const card = list ? list.children[index] : null;
+
+  if (pr && 'value' in pr) pr.value = pct;
+
+  // constant label during conversion; switch at completion
+  if (st) st.textContent = (pct >= 100 ? 'Finishing…' : 'Converting…');
+
+  // class drives the CSS base width used while converting
+  if (card) {
+    if (pct >= 100) card.classList.remove('is-converting');
+    else card.classList.add('is-converting');
+  }
+
+  // measure status width so CSS can subtract it exactly
+  if (card && st) {
+    const w = Math.ceil(st.getBoundingClientRect().width);
+    card.style.setProperty('--status-w', w + 'px');
+  }
+
+  if (window.sizeProgress && card) window.sizeProgress(card);
+}
+
+
+/** Convenience: show some coarse steps for libraries that don't expose granular progress. */
+function stepper(index, steps = [
+  ['Reading…', 0.10],
+  ['Processing…', 0.50],
+  ['Encoding…', 0.90],
+]) {
+  let i = 0;
+  return {
+    next() {
+      if (i < steps.length) {
+        const [label, frac] = steps[i++];
+        setRowProgress(index, frac, label);
+      }
+    },
+    done() {
+      setRowProgress(index, 1, 'Done');
+      const card = document.getElementById('file-list')?.children[index];
+      if (card) card.classList.remove('is-converting');
+    }
+  };
 }
 
 // --- FFmpeg diagnostics (paste once) ---
@@ -792,10 +918,28 @@ function refreshMemoryPill() {
   memoryPill.innerHTML = `<strong>Memory:</strong> <small>${mode}</small> <span>•</span> <span>${mb} MB</span>`;
 }
 
+// --- Quiet UI config ---
+window.DEBUG_CONVERTER = window.DEBUG_CONVERTER ?? false;  // keep console debug off in prod
+const QUIET_UI = true;       // suppress scary banners for end users
+const SHOW_ERRORS_AS_TOAST = false; // set true if you want a subtle visible error line instead of full suppression
+
 function showBanner(msg, tone = 'info') {
-  if (!banner) return;                   // <— guard
+  // In quiet mode, don't show error banners to end users.
+  if (QUIET_UI && tone === 'error') {
+    if (SHOW_ERRORS_AS_TOAST) {
+      // minimal, neutral line (optional)
+      const b = document.getElementById('banner');
+      if (b) b.innerHTML = `<span style="color:var(--muted)">${msg}</span>`;
+    } else {
+      // log to console only
+      console.warn('[ui suppressed]', msg);
+    }
+    return;
+  }
+  const b = document.getElementById('banner');
+  if (!b) { console[tone === 'error' ? 'error' : 'log'](msg); return; }
   const color = tone === 'error' ? 'var(--danger)' : (tone === 'ok' ? 'var(--ok)' : 'var(--muted)');
-  banner.innerHTML = `<span style="color:${color}">${msg}</span>`;
+  b.innerHTML = `<span style="color:${color}">${msg}</span>`;
 }
 
 // === Dynamic targets (build from actual capabilities) ===
@@ -1158,7 +1302,7 @@ async function convertMediaFile(file, target, kind, index) {
     const pr = document.getElementById('prog-' + index);
     const st = document.getElementById('status-' + index);
     if (pr) pr.value = pct;
-    if (st) st.textContent = pct >= 100 ? 'Finishing…' : `Converting… ${pct}%`;
+    if (st) st.textContent = pct >= 100 ? 'Finishing…' : `Converting…`;
   };
   if (typeof ff.setProgress === 'function') ff.setProgress(update);
   else if (typeof ff.on === 'function') {
@@ -1792,15 +1936,9 @@ async function runJob(file, index, target, runId) {
       state.outputs.push({ name, blob, url });
     });
 
-  } catch (err) {
-    if (isStale(runId)) return; // cancelled mid-flight; don't touch UI
-    if (status) {
-      status.textContent = 'Failed';
-      status.style.color = 'var(--danger)';
-    }
-    card?.classList.remove('is-converting');
-    console.error(err);
-    throw err;
+  }
+  catch (err) {
+    friendlyCatch(err, { status, card, runId });
   }
 }
 

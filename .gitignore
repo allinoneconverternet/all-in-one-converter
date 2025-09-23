@@ -3,3 +3,7 @@
 .DS_Store
 Thumbs.db
 *.log
+
+# local backups
+*.bak
+vendor/*.bak
