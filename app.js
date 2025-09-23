@@ -33,21 +33,37 @@ function adoptFFmpegGlobal() {
   return false;
 }
 
+// Local-only: adopt/create a FFmpeg global from the local UMD wrapper.
+// No CDN, no ESM import — prevents cross-origin Worker.
 async function ensureFFmpegGlobal() {
-  if (adoptFFmpegGlobal()) return true;
+  // already present?
+  if (window.FFmpeg?.createFFmpeg) return true;
 
-  // Final fallback: ESM (+esm) – handle both default/named exports
+  // load the local classic UMD wrapper
   try {
-    const mod = await import(`https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@${FFMPEG_VER}/+esm`);
-    const g = (typeof mod?.createFFmpeg === 'function') ? mod
-      : (typeof mod?.default?.createFFmpeg === 'function') ? mod.default
-        : null;
-    if (g) { window.FFmpeg = g; return true; }
+    await (function loadClassicScript(src) {
+      return new Promise((res, rej) => {
+        const s = document.createElement('script');
+        s.src = src; s.async = true;
+        s.onload = res; s.onerror = () => rej(new Error('Failed to load ' + src));
+        document.head.appendChild(s);
+      });
+    })('vendor/ffmpeg/ffmpeg.js');
   } catch (e) {
-    console.warn('ensureFFmpegGlobal: ESM import failed', e);
+    console.error('Local ffmpeg.js failed to load:', e);
+    return false;
   }
-  return adoptFFmpegGlobal();
+
+  // normalize alt namespace (some builds export as FFmpegWASM)
+  if (!window.FFmpeg?.createFFmpeg && window.FFmpegWASM?.FFmpeg) {
+    const FFmpegClass = window.FFmpegWASM.FFmpeg;
+    const fetchFile = window.FFmpegWASM.fetchFile;
+    window.FFmpeg = { createFFmpeg: (opts = {}) => new FFmpegClass(opts), fetchFile };
+  }
+
+  return !!(window.FFmpeg && window.FFmpeg.createFFmpeg);
 }
+
 
 function show(msg, kind = 'info') {
   if (typeof showBanner === 'function') return showBanner(msg, kind);
@@ -255,46 +271,128 @@ function loadedSrcContains(substr) {
 
 let ffmpegInstance = null;
 
-// One unified loader for FFmpeg.wasm (UMD build)
-// - prefers local wrapper + core
-// - falls back to CDN
-// - always uses same-origin worker to avoid cross-origin Worker errors
-// app.ffmpeg-loader.js — fast local-first loader
-// app.ffmpeg-loader.js — LOCAL ONLY (no CDN, no external downloads)
-// LOCAL-ONLY loader: wrapper/core/worker from your project (no CDN)
+
+// needFFmpeg(): cross-browser loader with MT (if isolated) and ST fallback
+// Robust FFmpeg loader: CDN wrapper, normalize globals, MT when isolated, ST fallback
+// Robust FFmpeg loader: LOCAL wrapper -> CDN fallback, MT when isolated, ST fallback
 async function needFFmpeg() {
   if (window.__ffmpeg?.loaded || window.__ffmpeg?.isLoaded?.()) return window.__ffmpeg;
 
-  const BASE = 'vendor/ffmpeg/'; // adjust if you use a different path
-  // Ensure local UMD wrapper is present
-  if (!(window.FFmpeg && window.FFmpeg.createFFmpeg)) {
-    await new Promise((resolve, reject) => {
-      const s = document.createElement('script');
-      s.src = BASE + 'ffmpeg.js';
-      s.async = true;
-      s.onload = resolve;
-      s.onerror = () => reject(new Error('Failed to load local ' + s.src));
-      document.head.appendChild(s);
-    });
-  }
-  if (!(window.FFmpeg && window.FFmpeg.createFFmpeg)) {
-    throw new Error('Local FFmpeg wrapper not found at ' + BASE + 'ffmpeg.js');
-  }
-  const ffmpeg = window.FFmpeg.createFFmpeg({
-    log: false,
-    // ⬇️ absolute URL so blob worker can importScripts() correctly
-    corePath: new URL(BASE + 'ffmpeg-core.js', location.href).href
-    // ⛔ remove workerPath – let the library spawn its own blob worker
+  const VER = '0.12.10';
+
+  // 1) Wrapper candidates (LOCAL first to avoid cross-origin Worker error)
+  const WRAPPERS = [
+    'vendor/ffmpeg/ffmpeg.js',                                                  // ← local official UMD (0.12.10)
+    `https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@${VER}/dist/umd/ffmpeg.js`,
+    `https://unpkg.com/@ffmpeg/ffmpeg@${VER}/dist/umd/ffmpeg.js`
+  ];
+
+  // 2) Cores (UMD). Use MT only when SharedArrayBuffer is allowed
+  const CORE_ST = `https://unpkg.com/@ffmpeg/core@${VER}/dist/umd/ffmpeg-core.js`;
+  const CORE_MT = `https://unpkg.com/@ffmpeg/core-mt@${VER}/dist/umd/ffmpeg-core.js`;
+  const useMT = !!window.crossOriginIsolated;
+  const coreURL = useMT ? CORE_MT : CORE_ST;
+  const wasmURL = coreURL.replace(/\.js$/, '.wasm');
+  const workerURL = coreURL.replace(/\.js$/, '.worker.js');
+
+  const loadScript = (src) => new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = src; s.async = true; s.crossOrigin = 'anonymous';
+    s.onload = () => queueMicrotask(resolve);
+    s.onerror = () => reject(new Error('Failed to load ' + src));
+    document.head.appendChild(s);
   });
-  await ffmpeg.load();
 
+  const pickApi = () => {
+    if (window.FFmpeg?.FFmpeg || window.FFmpeg?.createFFmpeg) {
+      return { ns: window.FFmpeg, hasClass: !!window.FFmpeg.FFmpeg, hasFactory: !!window.FFmpeg.createFFmpeg };
+    }
+    if (window.FFmpegWASM?.FFmpeg || window.FFmpegWASM?.createFFmpeg) {
+      window.FFmpeg = window.FFmpegWASM; // normalize
+      return { ns: window.FFmpegWASM, hasClass: !!window.FFmpegWASM.FFmpeg, hasFactory: !!window.FFmpegWASM.createFFmpeg };
+    }
+    return null;
+  };
 
+  let api = pickApi();
+  for (const url of (!api ? WRAPPERS : [])) {
+    try {
+      console.log('[FFmpeg wrapper] loading', url);
+      await loadScript(url);
+      api = pickApi();
+      if (api) break;
+    } catch (e) {
+      console.warn('[FFmpeg wrapper] failed', url, e);
+    }
+  }
+  if (!api) {
+    console.error('[FFmpeg] diagnostics: crossOriginIsolated=', window.crossOriginIsolated);
+    throw new Error('FFmpeg UMD wrapper failed to load');
+  }
 
-  if (!window.fetchFile && window.FFmpeg?.fetchFile) window.fetchFile = window.FFmpeg.fetchFile;
+  let ff;
+  if (api.hasClass) ff = new api.ns.FFmpeg();              // 0.12 class
+  else if (api.hasFactory) ff = api.ns.createFFmpeg();     // legacy factory
+  else throw new Error('FFmpeg wrapper exposes neither class nor factory');
 
-  window.__ffmpeg = ffmpeg;
-  return ffmpeg;
+  // ---- replace your onProgress handler with this ----
+  const onProgress = (payload = {}) => {
+    // 0.12 sends {progress: 0..1, time, fps, ...}; older sends {ratio: 0..1}
+    let val = Number.isFinite(payload.progress) ? payload.progress
+      : Number.isFinite(payload.ratio) ? payload.ratio
+        : 0;
+
+    // clamp and sanitize
+    if (!Number.isFinite(val)) val = 0;
+    if (val < 0) val = 0;
+    if (val > 1) val = 1;
+
+    const pct = Math.round(val * 100);
+    console.log('[ffmpeg] progress', pct + '%');
+
+    const g = document.getElementById('global-ffmpeg-progress');
+    if (g && 'value' in g) g.value = pct;
+  };
+  // wire it (keep both models)
+  if (typeof ff.on === 'function') {
+    ff.on('progress', onProgress);
+    ff.on('log', ({ type, message }) => {
+      if (type === 'info' || type === 'fferr' || type === 'ffout') console.log('[ffmpeg]', type, message);
+    });
+  } else if (typeof ff.setProgress === 'function') {
+    ff.setProgress(onProgress);
+  }
+
+  if (typeof ff.on === 'function') {
+    ff.on('log', ({ type, message }) => {
+      if (type === 'info' || type === 'fferr' || type === 'ffout') console.log('[ffmpeg]', type, message);
+    });
+    ff.on('progress', onProgress);
+  } else if (typeof ff.setProgress === 'function') {
+    ff.setProgress(onProgress);
+  }
+
+  if (typeof ff.load === 'function') {
+    await ff.load({
+      log: true,
+      coreURL: coreURL,
+      wasmURL: wasmURL,
+      workerURL: workerURL
+    });
+  } else {
+    // ancient factory fallback
+    ff = api.ns.createFFmpeg({ log: true, corePath: coreURL });
+    await ff.load();
+  }
+
+  if (!window.fetchFile && api.ns?.fetchFile) window.fetchFile = api.ns.fetchFile;
+
+  window.__ffmpeg = ff;
+  return ff;
 }
+
+
+
 
 
 (function prewarmFFmpeg() {
@@ -818,9 +916,11 @@ function getFileListEl() {
   return document.querySelector('#file-list, #files, [data-role="file-list"]');
 }
 /* ========= 5) Build target dropdown ========= */
-(function buildTargets() {
-  const groupsOrder = ['text', 'documents', 'spreadsheets', 'images', 'media'];
+/* ========= 5) Build target dropdown ========= */
+function buildTargets() {
+  if (!targetFormat || !qualityWrap) return; // guard if DOM not ready
 
+  const groupsOrder = ['text', 'documents', 'spreadsheets', 'images', 'media'];
   const labels = { text: 'Text', documents: 'Documents', spreadsheets: 'Spreadsheets', images: 'Images', media: 'Media' };
 
   targetFormat.innerHTML = '';
@@ -828,15 +928,24 @@ function getFileListEl() {
     if (!ENABLE_OUTPUTS[key]) continue;
     const items = TARGET_GROUPS[key]; if (!items) continue;
     const og = document.createElement('optgroup'); og.label = labels[key];
-    items.forEach(([val, label]) => { const o = document.createElement('option'); o.value = val; o.textContent = label; og.appendChild(o); });
+    items.forEach(([val, label]) => {
+      const o = document.createElement('option'); o.value = val; o.textContent = label; og.appendChild(o);
+    });
     targetFormat.appendChild(og);
   }
   if (ENABLE_OUTPUTS.images && [...targetFormat.querySelectorAll('option')].some(o => o.value === 'jpeg')) {
     targetFormat.value = 'jpeg';
   }
-  qualityWrap.style.display =
-    (targetFormat.value === 'jpeg' || targetFormat.value === 'webp') ? '' : 'none';
-})();
+  qualityWrap.style.display = (targetFormat.value === 'jpeg' || targetFormat.value === 'webp') ? '' : 'none';
+}
+
+// Call it once the DOM is ready (works with or without <script defer>)
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', buildTargets);
+} else {
+  buildTargets();
+}
+
 
 refreshMemoryPill();
 
@@ -1000,46 +1109,32 @@ async function ensureFFmpegWrapperLocal() {
 }
 
 // Warm only the wrapper (no WASM yet), locally
+// Warm only the local wrapper (no WASM yet), *local only*
 async function warmFFmpegWrapper() {
+  console.log('warmFFmpegWrapper: start');
   try {
-    const ok = await ensureFFmpegWrapperLocal();
-    if (ok && typeof ensureVendors === 'function') ensureVendors();
+    const ok = await ensureFFmpegGlobal();
+    if (ok) { features.ffmpeg = true; typeof ensureVendors === 'function' && ensureVendors(); }
   } catch { }
 }
+
 
 // Kick off warm-up once
 warmFFmpegWrapper();
 
+// Exec shim: accepts (...args) or an array; uses exec() if present, else run()
+async function ffExec(ff, ...args) {
+  // allow ffExec(ff, ['-i','in','out']) and ffExec(ff, '-i','in','out')
+  const argv = (args.length === 1 && Array.isArray(args[0])) ? args[0] : args;
+  if (typeof ff.exec === 'function') return ff.exec(argv);
+  return ff.run(...argv);
+}
 
 /* ---- Text → many ---- */
-// Media (audio/video) → audio/video/gif — uses LOCAL ffmpeg only
-// Media (audio/video) → audio/video/gif — LOCAL ONLY + per-row progress
+// Media (audio/video) → audio/video/gif — MT when possible, ST otherwise
+
+// Drop-in: replaces your entire convertMediaFile(...)
 async function convertMediaFile(file, target, kind, index) {
-  async function getFF() {
-    if (typeof needFFmpeg === 'function') return await needFFmpeg();
-
-    const BASE = 'vendor/ffmpeg/'; // adjust if your path differs
-    if (!(window.FFmpeg && window.FFmpeg.createFFmpeg)) {
-      await new Promise((resolve, reject) => {
-        const s = document.createElement('script');
-        s.src = BASE + 'ffmpeg.js';
-        s.async = true;
-        s.onload = resolve;
-        s.onerror = () => reject(new Error('Failed to load local ' + s.src));
-        document.head.appendChild(s);
-      });
-    }
-    if (!(window.FFmpeg && window.FFmpeg.createFFmpeg)) {
-      throw new Error('Local FFmpeg wrapper not found. Check path: ' + BASE + 'ffmpeg.js');
-    }
-    const ffmpeg = window.FFmpeg.createFFmpeg({ log: true, corePath });
-
-    await ffmpeg.load();
-
-    if (!window.fetchFile && window.FFmpeg?.fetchFile) window.fetchFile = window.FFmpeg.fetchFile;
-    return ffmpeg;
-  }
-
   // Status: Preparing…
   try {
     const s = document.getElementById('status-' + index);
@@ -1048,46 +1143,63 @@ async function convertMediaFile(file, target, kind, index) {
     if (p && typeof p.value === 'number') p.value = 0;
   } catch { }
 
-  const ff = await getFF();
+  const ff = await needFFmpeg();
 
-  // Progress → this row
-  if (typeof wireFFmpegProgress === 'function') {
-    wireFFmpegProgress(ff, index);
-  } else {
-    const update = ({ ratio, progress }) => {
-      const pct = Math.max(0, Math.min(100, Math.round(((ratio ?? progress) || 0) * 100)));
-      const progEl = document.getElementById('prog-' + index);
-      const statusEl = document.getElementById('status-' + index);
-      if (progEl) progEl.value = pct;
-      if (statusEl) statusEl.textContent = pct >= 100 ? 'Finishing…' : `Converting… ${pct}%`;
-    };
-    try { ff.setProgress?.(update); } catch { }
-    try { ff.on?.('progress', update); } catch { }
+  // Per-row progress (clamped & robust for both 0.12 'progress' and legacy 'ratio')
+  const update = ({ ratio, progress } = {}) => {
+    let val = Number.isFinite(progress) ? progress
+      : Number.isFinite(ratio) ? ratio
+        : 0;
+    if (!Number.isFinite(val)) val = 0;
+    if (val < 0) val = 0;
+    if (val > 1) val = 1;
+
+    const pct = Math.round(val * 100);
+    const pr = document.getElementById('prog-' + index);
+    const st = document.getElementById('status-' + index);
+    if (pr) pr.value = pct;
+    if (st) st.textContent = pct >= 100 ? 'Finishing…' : `Converting… ${pct}%`;
+  };
+  if (typeof ff.setProgress === 'function') ff.setProgress(update);
+  else if (typeof ff.on === 'function') {
+    try { ff.off?.('progress', ff._rowHandlers?.[index]); } catch { }
+    (ff._rowHandlers ||= {});
+    ff._rowHandlers[index] = update;
+    ff.on('progress', update);
   }
 
+  // Basic validation
   const audioTargets = new Set(['mp3', 'wav', 'ogg', 'm4a']);
   const videoTargets = new Set(['mp4', 'webm', 'gif']);
   const isAudioIn = kind === 'audio';
   const isVideoIn = kind === 'video';
-
   if (isAudioIn && !audioTargets.has(target)) throw new Error('Audio → ' + target.toUpperCase() + ' not supported');
   if (isVideoIn && !(videoTargets.has(target) || audioTargets.has(target))) throw new Error('Video → ' + target.toUpperCase() + ' not supported');
   if (target === 'gif' && !isVideoIn) throw new Error('GIF is only from video input');
 
+  // --- IO helpers (fixed) ---
+  // pick a safe fetchFile that returns ArrayBuffer/Uint8Array; DO NOT call it yet
   const fetchFileFn =
-    (window.FFmpeg && window.FFmpeg.fetchFile) ||
+    window.FFmpeg?.fetchFile ||
     window.fetchFile ||
-    (blob => blob.arrayBuffer());
+    ((blob) => blob.arrayBuffer());
 
-  // Names
-  const inExt = (file.name.match(/\.([^.]+)$/)?.[1] || (isAudioIn ? 'audio' : 'video')).toLowerCase();
+  if (!file || typeof file.arrayBuffer !== 'function') {
+    throw new Error('Input file is missing or not a Blob/File.');
+  }
+
+  const inExt = (file.name?.match(/\.([^.]+)$/)?.[1] || (isAudioIn ? 'audio' : 'video')).toLowerCase();
   const inName = `in.${inExt}`;
   const outName = `out.${target}`;
 
-  // Write input
-  const data = await fetchFileFn(file);
+  // Write input (prefer new API; fallback to FS)
+  const data = await fetchFileFn(file);            // ArrayBuffer or Uint8Array
   const inputU8 = data instanceof Uint8Array ? data : new Uint8Array(data);
-  ff.FS('writeFile', inName, inputU8);
+  if (typeof ff.writeFile === 'function') {
+    await ff.writeFile(inName, inputU8);
+  } else {
+    ff.FS('writeFile', inName, inputU8);
+  }
 
   // Build args
   let args = ['-i', inName];
@@ -1103,19 +1215,22 @@ async function convertMediaFile(file, target, kind, index) {
       args.push('-c:v', 'libvpx-vp9', '-b:v', '0', '-crf', '32', '-row-mt', '1');
       args.push('-c:a', 'libopus', '-b:a', '128k');
     } else if (target === 'mp4') {
-      args.push('-c:v', 'libx264', '-preset', 'fast', '-crf', '23');
-      args.push('-c:a', 'aac', '-b:a', '160k', '-movflags', 'faststart');
+      args.push('-c:v', 'libx264', '-preset', 'fast', '-crf', '23', '-pix_fmt', 'yuv420p');
+      args.push('-c:a', 'aac', '-b:a', '160k', '-movflags', '+faststart');
     } else if (target === 'gif') {
       args.push('-t', '10', '-vf', 'fps=12,scale=480:-1:flags=lanczos');
     }
     args.push(outName);
   }
 
-  // Run
-  await ff.run(...args);
+  // Run (uses exec() on 0.12+, run() on older via your shim)
+  await ffExec(ff, args);
 
-  // Read output
-  const out = ff.FS('readFile', outName);
+  // Read output (prefer new API; fallback to FS)
+  const outBytes = (typeof ff.readFile === 'function')
+    ? await ff.readFile(outName)
+    : ff.FS('readFile', outName);
+
   const mime =
     target === 'mp3' ? 'audio/mpeg' :
       target === 'wav' ? 'audio/wav' :
@@ -1126,12 +1241,15 @@ async function convertMediaFile(file, target, kind, index) {
                 target === 'gif' ? 'image/gif' : 'application/octet-stream';
 
   // Cleanup (best effort)
-  try { ff.FS('unlink', inName); } catch { }
-  try { ff.FS('unlink', outName); } catch { }
+  try { typeof ff.unlink === 'function' ? await ff.unlink(inName) : ff.FS('unlink', inName); } catch { }
+  try { typeof ff.unlink === 'function' ? await ff.unlink(outName) : ff.FS('unlink', outName); } catch { }
 
-  const blob = new Blob([out], { type: mime });
-  return [{ blob, name: swapExt(file.name, target) }];
+  const blob = new Blob([outBytes], { type: mime });
+  return [{ blob, name: (file.name.replace(/\.[^.]+$/, '') || 'output') + '.' + target }];
 }
+
+
+
 
 
 
@@ -1202,161 +1320,7 @@ warmFFmpegWrapper().catch(() => { });
 
 
 
-/* ---- DOCX → textish / images ---- */
-// Media (audio/video) → audio/video/gif  — with per-row progress updates
-async function convertMediaFile(file, target, kind, index) {
-  // --- tiny loader: prefer local UMD → fall back to CDN core ---
-  async function getFF() {
-    // If you already have a global loader, use it
-    if (typeof needFFmpeg === 'function') return await needFFmpeg();
 
-    // Load UMD wrapper (local → CDN)
-    const loadScript = (src) => new Promise((res, rej) => {
-      const s = document.createElement('script');
-      s.src = src; s.async = true;
-      s.onload = res; s.onerror = () => rej(new Error('Failed to load ' + src));
-      document.head.appendChild(s);
-    });
-    try { await loadScript('vendor/ffmpeg/ffmpeg.js'); }
-    catch { await loadScript('https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js'); }
-
-    // Pick core (local → CDN)
-    // Pick core (local → CDN)
-    let corePath = 'vendor/ffmpeg/ffmpeg-core.js';
-    try {
-      const res = await fetch(corePath, { cache: 'no-store' });
-      if (!res.ok) corePath = 'https://unpkg.com/@ffmpeg/core@0.12.10/dist/umd/ffmpeg-core.js';
-    } catch {
-      corePath = 'https://unpkg.com/@ffmpeg/core@0.12.10/dist/umd/ffmpeg-core.js';
-    }
-
-    // ⬇️ make local corePath absolute so blob worker can import it
-    if (!/^https?:/i.test(corePath)) {
-      corePath = new URL(corePath, location.href).href;
-    }
-
-    const FF = window.FFmpeg;
-    if (!FF?.createFFmpeg) throw new Error('FFmpeg wrapper failed to load');
-
-    const ffmpeg = window.FFmpeg.createFFmpeg({ log: true, corePath });
-
-    await ffmpeg.load();
-
-
-    if (!window.fetchFile && FF.fetchFile) window.fetchFile = FF.fetchFile; // convenience
-    (typeof features === 'object') && (features.ffmpeg = true);
-    try { typeof ensureVendors === 'function' && ensureVendors(); } catch { }
-    return ffmpeg;
-  }
-
-  // ---- basic compatibility checks ----
-  const audioTargets = new Set(['mp3', 'wav', 'ogg', 'm4a']); // audio extensions only
-  const videoTargets = new Set(['mp4', 'webm', 'gif']);
-  const isAudioIn = (kind === 'audio');
-  const isVideoIn = (kind === 'video');
-
-  if (isAudioIn && !audioTargets.has(target))
-    throw new Error('Audio → ' + target.toUpperCase() + ' not supported');
-  if (isVideoIn && !(videoTargets.has(target) || audioTargets.has(target)))
-    throw new Error('Video → ' + target.toUpperCase() + ' not supported');
-  if (target === 'gif' && !isVideoIn)
-    throw new Error('GIF is only from video input');
-
-  // ---- UI: nudge row to "Preparing…" ----
-  try {
-    const s = document.getElementById('status-' + index);
-    if (s) s.textContent = 'Preparing…';
-    const p = document.getElementById('prog-' + index);
-    if (p && typeof p.value === 'number') p.value = 0;
-  } catch { }
-
-  // ---- load ffmpeg + wire progress for THIS row ----
-  const ff = await getFF();
-  if (typeof wireFFmpegProgress === 'function') {
-    wireFFmpegProgress(ff, index); // <- important: pass the index!
-  } else {
-    // Fallback progress hook (if helper not present)
-    const update = ({ ratio, progress }) => {
-      const pct = Math.max(0, Math.min(100, Math.round(((ratio ?? progress) || 0) * 100)));
-      const progEl = document.getElementById('prog-' + index);
-      const statusEl = document.getElementById('status-' + index);
-      if (progEl) progEl.value = pct;
-      if (statusEl) statusEl.textContent = pct >= 100 ? 'Finishing…' : `Converting… ${pct}%`;
-    };
-    try { ff.setProgress?.(update); } catch { }
-    try { ff.on?.('progress', update); } catch { }
-  }
-
-  const fetchFileFn =
-    (window.FFmpeg && window.FFmpeg.fetchFile) ||
-    window.fetchFile ||
-    (blob => blob.arrayBuffer());
-
-  // ---- names ----
-  const inExt = (file.name.match(/\.([^.]+)$/)?.[1] || (isAudioIn ? 'audio' : 'video')).toLowerCase();
-  const inName = `in.${inExt}`;
-  const outName = `out.${target}`;
-
-  // ---- write input ----
-  const data = await fetchFileFn(file);
-  const inputU8 = data instanceof Uint8Array ? data : new Uint8Array(data);
-  ff.FS('writeFile', inName, inputU8);
-
-  // ---- build args ----
-  let args = ['-i', inName];
-
-  if (audioTargets.has(target)) {
-    // audio encodes & video→audio extraction
-    args.push('-vn');
-    if (target === 'mp3') args.push('-c:a', 'libmp3lame', '-b:a', '192k');
-    if (target === 'wav') args.push('-c:a', 'pcm_s16le', '-ar', '44100');
-    if (target === 'ogg') args.push('-c:a', 'libvorbis', '-q:a', '5');
-    if (target === 'm4a') args.push('-c:a', 'aac', '-b:a', '192k');
-    args.push(outName);
-  } else {
-    // video encodes
-    if (target === 'webm') {
-      args.push('-c:v', 'libvpx-vp9', '-b:v', '0', '-crf', '32', '-row-mt', '1');
-      args.push('-c:a', 'libopus', '-b:a', '128k');
-    } else if (target === 'mp4') {
-      args.push('-c:v', 'libx264', '-preset', 'fast', '-crf', '23');
-      args.push('-c:a', 'aac', '-b:a', '160k', '-movflags', 'faststart');
-    } else if (target === 'gif') {
-      // Quick GIF example (tweak as needed)
-      args.push('-t', '10', '-vf', 'fps=12,scale=480:-1:flags=lanczos');
-    }
-    args.push(outName);
-  }
-
-  // ---- run & read ----
-  try {
-    await ff.run(...args);
-  } catch (e) {
-    if (target === 'mp4') {
-      // coarse fallback for browsers without wasm SIMD
-      await ff.run('-i', inName, '-c:v', 'mpeg4', '-qscale:v', '3', '-c:a', 'aac', '-b:a', '160k', '-movflags', 'faststart', outName);
-    } else {
-      throw e;
-    }
-  }
-
-  const out = ff.FS('readFile', outName);
-  const mime =
-    target === 'mp3' ? 'audio/mpeg' :
-      target === 'wav' ? 'audio/wav' :
-        target === 'ogg' ? 'audio/ogg' :
-          target === 'm4a' ? 'audio/mp4' :
-            target === 'webm' ? 'video/webm' :
-              target === 'mp4' ? 'video/mp4' :
-                target === 'gif' ? 'image/gif' : 'application/octet-stream';
-
-  // tidy up (best effort)
-  try { ff.FS('unlink', inName); } catch { }
-  try { ff.FS('unlink', outName); } catch { }
-
-  const blob = new Blob([out], { type: mime });
-  return [{ blob, name: swapExt(file.name, target) }];
-}
 
 
 /* ---- PPTX → textish / images-per-slide ---- */

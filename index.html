@@ -29,9 +29,7 @@
   <!-- Performance -->
   <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossorigin>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" href="/vendor/ffmpeg/ffmpeg.js" as="script">
-  <link rel="preload" href="/vendor/ffmpeg/ffmpeg-core.js" as="script">
-  <link rel="preload" href="/vendor/ffmpeg/ffmpeg-core.wasm" as="fetch" type="application/wasm" crossorigin>
+
 
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="stylesheet" href="/styles.css" />
@@ -66,9 +64,12 @@
 </head>
 
 <body>
-  <script src="vendor/ffmpeg/ffmpeg.js"></script> <!-- wrapper -->
-  <script src="ffmpeg-esm-shim.js"></script> <!-- shim -->
-  <script src="app.js"></script> <!-- your app -->
+
+
+  <!-- good -->
+  <script src="ffmpeg-esm-shim.js"></script>
+  <script defer src="app.js"></script>
+
 
   <header>
     <div class="wrap  header-row">
@@ -220,12 +221,13 @@
     (() => {
       // Viewport helpers
       const isWide = () => matchMedia('(min-width:1200px)').matches;
+      const isPhone = () => matchMedia('(max-width:767px)').matches; // NEW
 
       // Show only the bars that match the viewport (prevents width=0)
       function toggleFrames() {
-        const footer = document.querySelector('.footer-ads');   // mobile
-        const bottom = document.getElementById('bottom-ads');   // desktop
-        if (footer) footer.style.display = isWide() ? 'none' : '';
+        const footer = document.querySelector('.footer-ads');   // mobile/tablet bar
+        const bottom = document.getElementById('bottom-ads');   // desktop bar
+        if (footer) footer.style.display = (isWide() || isPhone()) ? 'none' : ''; // HIDE on phones + desktop
         if (bottom) bottom.style.display = isWide() ? '' : 'none';
 
         const rails = document.getElementById('side-ads');      // desktop only
@@ -254,6 +256,12 @@
       }
 
       function pushWhenReady(ins, tries = 16) {
+        // Skip initializing the mobile footer ad on phones
+        if (ins.closest('.footer-ads') && isPhone()) {
+          ins.dataset.adsInit = '1';
+          return;
+        }
+
         if (!window.adsbygoogle) return;
         if (ins.hasAttribute('data-adsbygoogle-status')) return;
         if (ins.dataset.adsInit === '1') return;
@@ -304,6 +312,7 @@
       });
     })();
   </script>
+
 
 
   <script>
@@ -452,17 +461,11 @@
 
 
 
-  <!-- Shim: exposes window.FFmpeg.createFFmpeg even for UMD/class builds -->
-
-  <script src="/ffmpeg-esm-shim.js"></script>
-  <!-- Single loader used by the app to actually load the core/worker -->
 
 
 
 
-
-
-
+  <!-- Tesseract (offline) -->
   <!-- Tesseract (offline) -->
   <script src="vendor/tesseract.min.js"></script>
   <script>
@@ -473,6 +476,11 @@
       gzip: true
     };
   </script>
+
+  <!-- FFmpeg will be loaded by needFFmpeg() from CDN -->
+
+
+
 
   <script>
     (function () {

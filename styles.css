@@ -231,8 +231,10 @@ button {
 }
 
 :root[data-theme="light"] select,
-:root[data-theme="light"] input {
-    background: var(--choose_file_background);
+:root[data-theme="light"] select,
+input[type="number"],
+button {
+    background-color: var(--choose_file_background);
 }
 
 select:focus,
@@ -2194,5 +2196,20 @@ body::after {
 @media (min-width: 768px) {
     .mobile-inline-ad {
         display: none !important;
+    }
+}
+
+@media (max-width: 767px) {
+    .footer-ads {
+        display: none !important;
+
+    }
+
+    .dropzone {
+        display: none !important;
+    }
+
+    .file-input {
+        width: 100%;
     }
 }
