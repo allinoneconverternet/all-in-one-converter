@@ -1,0 +1,17 @@
+{
+  "lang": "pt-BR",
+  "site_name": "All-in-One Converter",
+  "cta_open_converter": "Abrir o conversor",
+  "faq_heading": "Perguntas frequentes",
+  "related_heading": "ConversÃµes relacionadas",
+  "home_label": "InÃ­cio",
+  "noscript_html": "<noscript><div class=\"noscript-note\" role=\"note\">Este conversor roda inteiramente no seu navegador. Ative o JavaScript para usÃ¡-lo. VocÃª ainda pode navegar no site ou abrir <a href=\"/\">a pÃ¡gina inicial</a>.</div></noscript>",
+  "title_tpl": "{SRC} para {DST} â€” Conversor rÃ¡pido e privado (sem upload)",
+  "h1_tpl": "Converter {SRC} para {DST} â€” No navegador",
+  "meta_description_tpl": "Conversor {SRC}â†’{DST} gratuito e privado. Funciona 100% no navegador; nenhum arquivo Ã© enviado.",
+  "intro_paragraph_tpl": "Solte um ou mais arquivos {SRC} e converta para {DST}. Tudo acontece localmente no seu navegador â€” nada Ã© enviado.",
+  "faq_q1_tpl": "Meus arquivos {SRC} sÃ£o enviados para convertÃª-los em {DST}?",
+  "faq_a1_tpl": "NÃ£o. Todo o processamento acontece no seu navegador com WebAssembly/Web Workers. Seus arquivos nunca saem do seu dispositivo.",
+  "faq_q2_tpl": "Como converter {SRC} em {DST} offline?",
+  "faq_a2_tpl": "Abra esta pÃ¡gina, adicione os arquivos, escolha a saÃ­da e inicie. Depois de carregar, vocÃª pode atÃ© desconectar da internet."
+}

@@ -1,0 +1,200 @@
+{
+  "/convert/3gp-to-mp4": {
+    "es": "/es/convertir/3gp-a-mp4",
+    "de": "/de/konvertieren/3gp-zu-mp4",
+    "fr": "/fr/convertir/3gp-en-mp4",
+    "it": "/it/convertire/3gp-in-mp4",
+    "pt-BR": "/pt-BR/converter/3gp-para-mp4",
+    "pl": "/pl/konwertuj/3gp-na-mp4",
+    "ja": "/ja/henkan/3gp-ni-mp4"
+  },
+  "/convert/7z-to-zip": {
+    "es": "/es/convertir/7z-a-zip",
+    "de": "/de/konvertieren/7z-zu-zip",
+    "fr": "/fr/convertir/7z-en-zip",
+    "it": "/it/convertire/7z-in-zip",
+    "pt-BR": "/pt-BR/converter/7z-para-zip",
+    "pl": "/pl/konwertuj/7z-na-zip",
+    "ja": "/ja/henkan/7z-ni-zip"
+  },
+  "/convert/aac-to-mp3": {
+    "es": "/es/convertir/aac-a-mp3",
+    "de": "/de/konvertieren/aac-zu-mp3",
+    "fr": "/fr/convertir/aac-en-mp3",
+    "it": "/it/convertire/aac-in-mp3",
+    "pt-BR": "/pt-BR/converter/aac-para-mp3",
+    "pl": "/pl/konwertuj/aac-na-mp3",
+    "ja": "/ja/henkan/aac-ni-mp3"
+  },
+  "/convert/ai-to-svg": {
+    "es": "/es/convertir/ai-a-svg",
+    "de": "/de/konvertieren/ai-zu-svg",
+    "fr": "/fr/convertir/ai-en-svg",
+    "it": "/it/convertire/ai-in-svg",
+    "pt-BR": "/pt-BR/converter/ai-para-svg",
+    "pl": "/pl/konwertuj/ai-na-svg",
+    "ja": "/ja/henkan/ai-ni-svg"
+  },
+  "/convert/aiff-to-mp3": {
+    "es": "/es/convertir/aiff-a-mp3",
+    "de": "/de/konvertieren/aiff-zu-mp3",
+    "fr": "/fr/convertir/aiff-en-mp3",
+    "it": "/it/convertire/aiff-in-mp3",
+    "pt-BR": "/pt-BR/converter/aiff-para-mp3",
+    "pl": "/pl/konwertuj/aiff-na-mp3",
+    "ja": "/ja/henkan/aiff-ni-mp3"
+  },
+  "/convert/apng-to-gif": {
+    "es": "/es/convertir/apng-a-gif",
+    "de": "/de/konvertieren/apng-zu-gif",
+    "fr": "/fr/convertir/apng-en-gif",
+    "it": "/it/convertire/apng-in-gif",
+    "pt-BR": "/pt-BR/converter/apng-para-gif",
+    "pl": "/pl/konwertuj/apng-na-gif",
+    "ja": "/ja/henkan/apng-ni-gif"
+  },
+  "/convert/avif-to-jpg": {
+    "es": "/es/convertir/avif-a-jpg",
+    "de": "/de/konvertieren/avif-zu-jpg",
+    "fr": "/fr/convertir/avif-en-jpg",
+    "it": "/it/convertire/avif-in-jpg",
+    "pt-BR": "/pt-BR/converter/avif-para-jpg",
+    "pl": "/pl/konwertuj/avif-na-jpg",
+    "ja": "/ja/henkan/avif-ni-jpg"
+  },
+  "/convert/avif-to-png": {
+    "es": "/es/convertir/avif-a-png",
+    "de": "/de/konvertieren/avif-zu-png",
+    "fr": "/fr/convertir/avif-en-png",
+    "it": "/it/convertire/avif-in-png",
+    "pt-BR": "/pt-BR/converter/avif-para-png",
+    "pl": "/pl/konwertuj/avif-na-png",
+    "ja": "/ja/henkan/avif-ni-png"
+  },
+  "/convert/avi-to-gif": {
+    "es": "/es/convertir/avi-a-gif",
+    "de": "/de/konvertieren/avi-zu-gif",
+    "fr": "/fr/convertir/avi-en-gif",
+    "it": "/it/convertire/avi-in-gif",
+    "pt-BR": "/pt-BR/converter/avi-para-gif",
+    "pl": "/pl/konwertuj/avi-na-gif",
+    "ja": "/ja/henkan/avi-ni-gif"
+  },
+  "/convert/avi-to-mp4": {
+    "es": "/es/convertir/avi-a-mp4",
+    "de": "/de/konvertieren/avi-zu-mp4",
+    "fr": "/fr/convertir/avi-en-mp4",
+    "it": "/it/convertire/avi-in-mp4",
+    "pt-BR": "/pt-BR/converter/avi-para-mp4",
+    "pl": "/pl/konwertuj/avi-na-mp4",
+    "ja": "/ja/henkan/avi-ni-mp4"
+  },
+  "/convert/azw3-to-epub": {
+    "es": "/es/convertir/azw3-a-epub",
+    "de": "/de/konvertieren/azw3-zu-epub",
+    "fr": "/fr/convertir/azw3-en-epub",
+    "it": "/it/convertire/azw3-in-epub",
+    "pt-BR": "/pt-BR/converter/azw3-para-epub",
+    "pl": "/pl/konwertuj/azw3-na-epub",
+    "ja": "/ja/henkan/azw3-ni-epub"
+  },
+  "/convert/bmp-to-jpg": {
+    "es": "/es/convertir/bmp-a-jpg",
+    "de": "/de/konvertieren/bmp-zu-jpg",
+    "fr": "/fr/convertir/bmp-en-jpg",
+    "it": "/it/convertire/bmp-in-jpg",
+    "pt-BR": "/pt-BR/converter/bmp-para-jpg",
+    "pl": "/pl/konwertuj/bmp-na-jpg",
+    "ja": "/ja/henkan/bmp-ni-jpg"
+  },
+  "/convert/bmp-to-png": {
+    "es": "/es/convertir/bmp-a-png",
+    "de": "/de/konvertieren/bmp-zu-png",
+    "fr": "/fr/convertir/bmp-en-png",
+    "it": "/it/convertire/bmp-in-png",
+    "pt-BR": "/pt-BR/converter/bmp-para-png",
+    "pl": "/pl/konwertuj/bmp-na-png",
+    "ja": "/ja/henkan/bmp-ni-png"
+  },
+  "/convert/csv-to-json": {
+    "es": "/es/convertir/csv-a-json",
+    "de": "/de/konvertieren/csv-zu-json",
+    "fr": "/fr/convertir/csv-en-json",
+    "it": "/it/convertire/csv-in-json",
+    "pt-BR": "/pt-BR/converter/csv-para-json",
+    "pl": "/pl/konwertuj/csv-na-json",
+    "ja": "/ja/henkan/csv-ni-json"
+  },
+  "/convert/doc-to-pdf": {
+    "es": "/es/convertir/doc-a-pdf",
+    "de": "/de/konvertieren/doc-zu-pdf",
+    "fr": "/fr/convertir/doc-en-pdf",
+    "it": "/it/convertire/doc-in-pdf",
+    "pt-BR": "/pt-BR/converter/doc-para-pdf",
+    "pl": "/pl/konwertuj/doc-na-pdf",
+    "ja": "/ja/henkan/doc-ni-pdf"
+  },
+  "/convert/docx-to-pdf": {
+    "es": "/es/convertir/docx-a-pdf",
+    "de": "/de/konvertieren/docx-zu-pdf",
+    "fr": "/fr/convertir/docx-en-pdf",
+    "it": "/it/convertire/docx-in-pdf",
+    "pt-BR": "/pt-BR/converter/docx-para-pdf",
+    "pl": "/pl/konwertuj/docx-na-pdf",
+    "ja": "/ja/henkan/docx-ni-pdf"
+  },
+  "/convert/epub-to-pdf": {
+    "es": "/es/convertir/epub-a-pdf",
+    "de": "/de/konvertieren/epub-zu-pdf",
+    "fr": "/fr/convertir/epub-en-pdf",
+    "it": "/it/convertire/epub-in-pdf",
+    "pt-BR": "/pt-BR/converter/epub-para-pdf",
+    "pl": "/pl/konwertuj/epub-na-pdf",
+    "ja": "/ja/henkan/epub-ni-pdf"
+  },
+  "/convert/gif-to-mp4": {
+    "es": "/es/convertir/gif-a-mp4",
+    "de": "/de/konvertieren/gif-zu-mp4",
+    "fr": "/fr/convertir/gif-en-mp4",
+    "it": "/it/convertire/gif-in-mp4",
+    "pt-BR": "/pt-BR/converter/gif-para-mp4",
+    "pl": "/pl/konwertuj/gif-na-mp4",
+    "ja": "/ja/henkan/gif-ni-mp4"
+  },
+  "/convert/heic-to-jpg": {
+    "es": "/es/convertir/heic-a-jpg",
+    "de": "/de/konvertieren/heic-zu-jpg",
+    "fr": "/fr/convertir/heic-en-jpg",
+    "it": "/it/convertire/heic-in-jpg",
+    "pt-BR": "/pt-BR/converter/heic-para-jpg",
+    "pl": "/pl/konwertuj/heic-na-jpg",
+    "ja": "/ja/henkan/heic-ni-jpg"
+  },
+  "/convert/jpg-to-png": {
+    "es": "/es/convertir/jpg-a-png",
+    "de": "/de/konvertieren/jpg-zu-png",
+    "fr": "/fr/convertir/jpg-en-png",
+    "it": "/it/convertire/jpg-in-png",
+    "pt-BR": "/pt-BR/converter/jpg-para-png",
+    "pl": "/pl/konwertuj/jpg-na-png",
+    "ja": "/ja/henkan/jpg-ni-png"
+  },
+  "/convert/mp3-to-wav": {
+    "es": "/es/convertir/mp3-a-wav",
+    "de": "/de/konvertieren/mp3-zu-wav",
+    "fr": "/fr/convertir/mp3-en-wav",
+    "it": "/it/convertire/mp3-in-wav",
+    "pt-BR": "/pt-BR/converter/mp3-para-wav",
+    "pl": "/pl/konwertuj/mp3-na-wav",
+    "ja": "/ja/henkan/mp3-ni-wav"
+  },
+  "/convert/pdf-to-docx": {
+    "es": "/es/convertir/pdf-a-docx",
+    "de": "/de/konvertieren/pdf-zu-docx",
+    "fr": "/fr/convertir/pdf-en-docx",
+    "it": "/it/convertire/pdf-in-docx",
+    "pt-BR": "/pt-BR/converter/pdf-para-docx",
+    "pl": "/pl/konwertuj/pdf-na-docx",
+    "ja": "/ja/henkan/pdf-ni-docx"
+  }
+}

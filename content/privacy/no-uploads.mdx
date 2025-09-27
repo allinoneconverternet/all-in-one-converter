@@ -1,0 +1,78 @@
+﻿# Privacy: No Uploads — How It Works
+
+When you convert a file here, **nothing is uploaded to our servers**. All processing happens *locally in your browser* using WebAssembly (WASM) and Web Workers. That’s why there are no file-size limits and it even works offline after the page loads.
+
+<div class="callout"><strong>TL;DR</strong> — Your files stay on your device. We send you code, not your data.</div>
+
+## The architecture at a glance
+
+<figure>
+  <img src="/assets/no-uploads/local-processing.svg" alt="Local-only processing: file flows from disk to browser to WebAssembly and back, never to the network">
+  <figcaption>WASM runs the converter entirely inside your browser sandbox. No network calls touch your files.</figcaption>
+</figure>
+
+1. You open a converter page (e.g., “MP4 → MP3”).  
+2. The page downloads the converter **code** (WASM bundle + JS glue).  
+3. The converter runs **on your device** in a Web Worker — your file bytes never leave the browser.  
+4. The resulting file is offered back as a local download.
+
+### Why WebAssembly?
+
+- **Near-native speed** in a secure browser sandbox.  
+- **Portability** — the same binary runs on Windows, macOS, Linux, iOS, Android.  
+- **Privacy by design** — the WASM module processes bytes in memory; no server round-trip is required.
+
+### Workers, not servers
+
+WASM executes inside a **Web Worker** (separate thread) to keep the UI responsive. Workers don’t get arbitrary network access to your files — they receive only the ArrayBuffers you send them.
+
+## How we avoid uploads
+
+<figure>
+  <img src="/assets/no-uploads/server-vs-local.svg" alt="Comparison diagram: traditional server upload vs. in-browser WebAssembly conversion">
+  <figcaption>Left: legacy “upload to server, process, download result.” Right: **in-browser** conversion with zero data exfiltration.</figcaption>
+</figure>
+
+- We never `POST` your file to an API.  
+- We don’t create shadow copies on a backend.  
+- Network requests only fetch static assets (HTML, JS, WASM) and optional help images — **never your files**.
+
+## Offline & airplane-mode
+
+After the page loads once, the converter can work **offline**:
+- The UI and WASM are cached by the browser.  
+- You can disconnect from the internet and finish the conversion.  
+- Re-open the page later; if it’s cached, it still works.
+
+## What we log (and what we don’t)
+
+We keep usage metrics at the **page level** (e.g., “/convert/mp4-to-mp3 was opened”) to improve quality. We do **not** log or transmit:
+- File contents or filenames  
+- Thumbnails/previews derived from your file  
+- Partial file chunks or hashes tied to a user
+
+## Security boundaries in the browser
+
+- Files are handled as **blobs / ArrayBuffers**; they never leave the browser unless you export them.  
+- WebAssembly runs in the browser’s **sandbox** — no raw disk access, no privileged syscalls.  
+- You always stay in control: close the tab to stop processing; clear your browser cache to remove code assets.
+
+## FAQ
+
+### Are my files ever uploaded?
+No. The converter runs locally in your browser using WebAssembly. Your files never leave your device.
+
+### Can you see which files I convert?
+No. We don’t receive filenames, contents, or previews. Aggregate, page-level metrics only.
+
+### Does it work offline?
+Yes. Once the page and WASM have loaded, you can go offline and complete conversions.
+
+### Why do I still see network activity?
+That’s your browser fetching **static assets** (like the WASM binary or this documentation). Those requests don’t contain your files.
+
+### Is this as accurate as a server converter?
+Yes for most formats. We ship the same open-source engines (e.g., FFmpeg, PDF tooling) compiled to WASM.
+
+### Is it safe to close the tab during a conversion?
+Yes. You’re in control locally. Closing the tab cancels processing; no data leaves your device.

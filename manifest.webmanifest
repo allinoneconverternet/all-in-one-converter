@@ -1,0 +1,11 @@
+﻿{
+  "name": "All-in-one Converter",
+  "short_name": "AIOC",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#111111",
+  "theme_color": "#111111",
+  "icons": [
+    { "src": "/favicon.ico", "sizes": "48x48 64x64 96x96", "type": "image/x-icon" }
+  ]
+}

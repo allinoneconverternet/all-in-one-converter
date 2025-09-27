@@ -1,0 +1,8 @@
+﻿[
+  { "label": "mp4→mp3", "ms": 1320 },
+  { "label": "wav→mp3", "ms": 890 },
+  { "label": "pdf→docx", "ms": 2410 },
+  { "label": "png→jpg", "ms": 410 },
+  { "label": "jpg→webp", "ms": 520 },
+  { "label": "pptx→pdf", "ms": 1700 }
+]
