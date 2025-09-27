@@ -1,6 +1,6 @@
-type,url_or_slug,extra
-duplicate_title,http://127.0.0.1:5173/,"All-in-One Converter â€” Fast, Private, In-Browser (MP3, MP4, PDF, DOCX, JPGâ€¦)"
-duplicate_title,http://127.0.0.1:5173/index.html,"All-in-One Converter â€” Fast, Private, In-Browser (MP3, MP4, PDF, DOCX, JPGâ€¦)"
+﻿type,url_or_slug,extra
+duplicate_title,http://127.0.0.1:5173/,"All-in-One Converter — Fast, Private, In-Browser (MP3, MP4, PDF, DOCX, JPG…)"
+duplicate_title,http://127.0.0.1:5173/index.html,"All-in-One Converter — Fast, Private, In-Browser (MP3, MP4, PDF, DOCX, JPG…)"
 missing_link,/convert/3gp-to-mp4,
 missing_link,/convert/7z-to-zip,
 missing_link,/convert/aac-to-mp3,

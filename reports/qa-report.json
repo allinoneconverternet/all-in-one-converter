@@ -1,4 +1,4 @@
-{
+﻿{
   "summary": {
     "pagesCrawled": 3,
     "errors": 0,
@@ -8,7 +8,7 @@
   "errors": [],
   "duplicates": [
     {
-      "title": "All-in-One Converter â€” Fast, Private, In-Browser (MP3, MP4, PDF, DOCX, JPGâ€¦)",
+      "title": "All-in-One Converter — Fast, Private, In-Browser (MP3, MP4, PDF, DOCX, JPG…)",
       "urls": [
         "http://127.0.0.1:5173/",
         "http://127.0.0.1:5173/index.html"

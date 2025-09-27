@@ -1,4 +1,4 @@
-{
+﻿{
   "lang": "de",
   "site_name": "All-in-One Converter",
   "cta_open_converter": "Konverter Ã¶ffnen",
@@ -6,12 +6,13 @@
   "related_heading": "Verwandte Konvertierungen",
   "home_label": "Startseite",
   "noscript_html": "<noscript><div class=\"noscript-note\" role=\"note\">Dieser Konverter lÃ¤uft vollstÃ¤ndig in Ihrem Browser. Aktivieren Sie JavaScript, um ihn zu nutzen. Sie kÃ¶nnen die Website trotzdem besuchen oder <a href=\"/\">die Startseite</a> Ã¶ffnen.</div></noscript>",
-  "title_tpl": "{SRC} zu {DST} â€” Schneller, privater Konverter (kein Upload)",
-  "h1_tpl": "{SRC} zu {DST} konvertieren â€” Im Browser",
+  "title_tpl": "{SRC} zu {DST} — Schneller, privater Konverter (kein Upload)",
+  "h1_tpl": "{SRC} zu {DST} konvertieren — Im Browser",
   "meta_description_tpl": "Kostenloser, privater {SRC}â†’{DST}-Konverter. LÃ¤uft 100% im Browser; keine Dateien werden hochgeladen.",
-  "intro_paragraph_tpl": "Ziehen Sie eine oder mehrere {SRC}-Dateien hierher und konvertieren Sie sie in {DST}. Alles passiert lokal in Ihrem Browser â€” nichts wird hochgeladen.",
+  "intro_paragraph_tpl": "Ziehen Sie eine oder mehrere {SRC}-Dateien hierher und konvertieren Sie sie in {DST}. Alles passiert lokal in Ihrem Browser — nichts wird hochgeladen.",
   "faq_q1_tpl": "Werden meine {SRC}-Dateien hochgeladen, um sie in {DST} zu konvertieren?",
   "faq_a1_tpl": "Nein. Die Verarbeitung erfolgt im Browser mit WebAssembly/Web Workers. Ihre Dateien verlassen Ihr GerÃ¤t nie.",
   "faq_q2_tpl": "Wie konvertiere ich {SRC} in {DST} offline?",
   "faq_a2_tpl": "Ã–ffnen Sie diese Seite, fÃ¼gen Sie Dateien hinzu, wÃ¤hlen Sie das Ausgabeformat und starten Sie. Nach dem Laden kÃ¶nnen Sie sogar offline gehen."
 }
+
