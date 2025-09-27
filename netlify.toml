@@ -14,3 +14,91 @@
   for = "/apple-touch-icon.png"
   [headers.values]
   Content-Type = "image/png"
+
+# --- SEO: consolidate locale paths ---
+[[redirects]]; /pt-BR
+from = "/br/*"
+to = "/pt-BR/:splat"
+status = 301
+force = true
+[[redirects]]
+from = "/brazil/*"
+to = "/pt-BR/:splat"
+status = 301
+force = true
+[[redirects]]
+from = "/brasil/*"
+to = "/pt-BR/:splat"
+status = 301
+force = true
+[[redirects]]; /fr
+from = "/french/*"
+to = "/fr/:splat"
+status = 301
+force = true
+[[redirects]]
+from = "/francais/*"
+to = "/fr/:splat"
+status = 301
+force = true
+[[redirects]]; /de
+from = "/german/*"
+to = "/de/:splat"
+status = 301
+force = true
+[[redirects]]
+from = "/deutsch/*"
+to = "/de/:splat"
+status = 301
+force = true
+[[redirects]]; /es
+from = "/spanish/*"
+to = "/es/:splat"
+status = 301
+force = true
+[[redirects]]
+from = "/espanol/*"
+to = "/es/:splat"
+status = 301
+force = true
+[[redirects]]; /it
+from = "/italian/*"
+to = "/it/:splat"
+status = 301
+force = true
+[[redirects]]
+from = "/italiano/*"
+to = "/it/:splat"
+status = 301
+force = true
+[[redirects]]; /pl
+from = "/polish/*"
+to = "/pl/:splat"
+status = 301
+force = true
+[[redirects]]
+from = "/polski/*"
+to = "/pl/:splat"
+status = 301
+force = true
+
+# --- SEO: keep noisy folders out of the index ---
+[[headers]]
+for = "/archives/*"
+  [headers.values]
+  X-Robots-Tag = "noindex, nofollow"
+
+[[headers]]
+for = "/.backups/*"
+  [headers.values]
+  X-Robots-Tag = "noindex, nofollow"
+
+[[headers]]
+for = "/tests/*"
+  [headers.values]
+  X-Robots-Tag = "noindex, nofollow"
+
+[[headers]]
+for = "/vendor/*"
+  [headers.values]
+  X-Robots-Tag = "noindex, nofollow"
