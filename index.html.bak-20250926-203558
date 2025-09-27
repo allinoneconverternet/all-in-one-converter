@@ -1,0 +1,201 @@
+﻿<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>All-in-One Converter â€” Fast, Private, In-Browser (MP3, MP4, PDF, DOCX, JPGâ€¦)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description"
+    content="Convert audio, video, documents and images (MP3, MP4, WAV, PDF, DOCX, XLSX, JPG, PNG, WebPâ€¦) instantly in your browser. No uploads â€” files never leave your device. Free and private.">
+  <meta name="robots" content="index,follow">
+  <!-- Basic favicon -->
+  <link rel="icon" href="/favicon.ico">
+
+  <!-- PNG fallbacks (some setups prefer explicit sizes) -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+
+  <!-- iOS home screen icon -->
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <!-- PWA / Android -->
+  <link rel="manifest" href="/site.webmanifest">
+
+  <!-- Optional UI colors (set to your brand) -->
+  <meta name="theme-color" content="#0b1020">
+  <meta name="msapplication-TileColor" content="#0b1020">
+
+  <!-- Canonical / hreflang -->
+  <link rel="canonical" href="https://www.all-in-one-converter.net/">
+  <link rel="alternate" href="https://www.all-in-one-converter.net/" hreflang="en" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="All-in-One Converter â€” Fast, Private, In-Browser">
+  <meta property="og:description" content="Convert MP3, MP4, PDF, DOCX, JPG and more â€” no uploads.">
+  <meta property="og:url" content="https://www.all-in-one-converter.net/">
+  <meta property="og:image" content="https://www.all-in-one-converter.net/og/home.png">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="All-in-One Converter â€” Fast, Private, In-Browser">
+  <meta name="twitter:description" content="Convert MP3, MP4, PDF, DOCX, JPG and more â€” no uploads.">
+  <meta name="twitter:image" content="https://www.all-in-one-converter.net/og/home.png">
+
+  <!-- Performance -->
+  <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="preload" href="/styles.css" as="style" fetchpriority="high">
+<link rel="stylesheet" href="/styles.css" />
+
+  <!-- Ads (your tag) --><!-- Vendor libs (load before app.js) -->
+  <script defer src="vendor/mammoth.browser.min.js"></script>
+  <script defer src="vendor/jszip.min.js"></script>
+  <script defer src="vendor/xlsx.full.min.js"></script>
+  <script defer src="vendor/jspdf.umd.min.js"></script>
+  <script defer src="vendor/docx.min.js"></script>
+
+
+
+
+
+
+
+  <!-- Tesseract (offline) -->
+  <!-- Tesseract (offline) -->
+  <script defer src="vendor/tesseract.min.js"></script>
+  <script>
+    window.OCR_OPTS = {
+      workerPath: 'vendor/tesseract/worker.min.js',
+      corePath: 'vendor/tesseract/tesseract-core-simd.wasm.js',
+      langPath: 'vendor/tessdata',
+      gzip: true
+    };
+  </script>
+
+  <!-- FFmpeg will be loaded by needFFmpeg() from CDN -->
+
+
+
+
+  <script>
+    (function () {
+      const list = document.getElementById('file-list');
+      if (!list) return;
+
+      // Compute and set the exact width for the <progress> in one card
+      function sizeProgress(card) {
+        const prog = card.querySelector('progress');
+        const name = card.querySelector('.f-name');
+        const badge = card.querySelector('.badge');
+        const status = card.querySelector('.status');
+        if (!prog || !name || !badge || !status) return;
+
+        // Card measurements
+        const cs = getComputedStyle(card);
+        const gap = parseFloat(cs.columnGap || '0');
+        const pad = parseFloat(cs.paddingLeft || '0') + parseFloat(cs.paddingRight || '0');
+        const removeBtn = card.querySelector('.file-remove');
+        const removeW = removeBtn ? (removeBtn.offsetWidth || 0) + 8 : 0; // small breathing room
+
+        // Current occupied widths
+        const wCard = card.clientWidth;
+        const wName = name.offsetWidth;   // already clipped with ellipsis
+        const wBadge = badge.offsetWidth;
+        const wStatus = status.offsetWidth;
+
+        // 4 columns â†’ there are 3 gaps between them
+        const gaps = gap * 3;
+
+        // Remaining space for progress
+        let wAvail = wCard - pad - gaps - removeW - wName - wBadge - wStatus;
+
+        // Constrain to sane bounds
+        const MIN_W = 80;     // look good, never collapse completely
+        const MAX_W = Math.max(120, wCard); // defensive cap
+        wAvail = Math.max(MIN_W, Math.min(MAX_W, Math.floor(wAvail)));
+
+        // Apply width (override the stylesheet's 100%)
+        prog.style.width = wAvail + 'px';
+      }
+
+      function sizeAll() {
+        [...list.children].forEach(sizeProgress);
+      }
+      window.sizeProgress = sizeProgress;
+      window.sizeAll = sizeAll;
+      // Recalculate on resize (layout can change)
+      window.addEventListener('resize', sizeAll);
+
+      // Watch for new/updated cards and status text changes
+      const mo = new MutationObserver(() => sizeAll());
+      mo.observe(list, { childList: true, subtree: true, characterData: true });
+
+      // Initial pass (in case cards already exist)
+      window.addEventListener('load', sizeAll);
+    })();
+  </script>
+
+
+  <style>
+    /* Horizontal containers stretch */
+    .footer-ads,
+    .bottom-ads {
+      width: 100%;
+    }
+
+    .footer-ads .ad-slot,
+    .bottom-ads .ad-slot {
+      width: 100%;
+      max-width: 970px;
+      margin: 0 auto;
+    }
+
+    .bottom-ads .ad-slot>ins.adsbygoogle {
+      display: block;
+      width: 100%;
+      min-height: 90px;
+    }
+
+    .footer-ads .ad-slot>ins.adsbygoogle {
+      display: block;
+      width: 100%;
+      min-height: 50px;
+    }
+
+    /* Rails fixed size so they never init at 0 */
+    .rail .ad-slot {
+      width: 300px;
+    }
+
+    .rail .ad-slot>ins.adsbygoogle {
+      display: inline-block;
+      width: 300px;
+      height: 600px;
+    }
+  </style>
+
+  <noscript>
+    <p>Please enable JavaScript.</p>
+  </noscript>
+
+    <script defer src="banner.js"></script>  <script defer src="/web-vitals.js"></script>
+
+    <!-- Small, dismissible support banner (under hero) -->
+    <div id="support-banner" class="notice-banner" role="region" aria-label="Site support notice" hidden>
+      <div class="notice-content">
+        <strong>Free &amp; private:</strong> This converter runs entirely in your browser. If you find it useful,
+        <a href="#support" rel="nofollow">consider supporting the site</a>.
+      </div>
+      <button id="support-banner-dismiss" class="btn-ghost small" aria-label="Dismiss support notice">Dismiss</button>
+    </div>
+</body>
+
+</html>
+
+
+
+

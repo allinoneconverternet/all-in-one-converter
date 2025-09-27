@@ -1,17 +1,43 @@
 {
-  "name": "converter",
-  "version": "1.0.0",
-  "main": "app.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
-  "dependencies": {
-    "@ffmpeg/core": "^0.12.10",
-    "@ffmpeg/ffmpeg": "^0.12.10",
-    "pdfjs-dist": "^4.10.38"
-  }
+    "name": "converter",
+    "version": "1.0.0",
+    "main": "app.js",
+    "scripts": {
+        "test": "node tests/test-breadcrumbs.mjs",
+        "generate:clean": "node scripts/generate-conversion-pages.mjs --clean",
+        "generate:all": "node scripts/generate-conversion-pages.mjs --all",
+        "build": "npm run generate:clean && npm run generate:all && npm run generate:markdown && npm run generate:hubs && npm run generate:i18n && npm run generate:sitemaps && npm run generate:icons",
+        "generate:i18n": "node scripts/generate-i18n.mjs",
+        "generate:sitemaps": "node scripts/generate-sitemaps.mjs",
+        "generate:formats": "node scripts/generate-formats.mjs --all",
+        "generate:markdown": "node scripts/generate-markdown-pages.mjs",
+        "generate:hubs": "node scripts/generate-category-hubs.mjs",
+        "generate:icons": "node scripts/generate-icons.mjs",
+        "qa:crawl": "node scripts/qa-crawl.mjs",
+        "serve:static": "node scripts/mini-static-server.js 5173",
+        "build:ci": "npm ci && npm run build && npm run qa:crawl",
+        "lhci": "lhci autorun || echo 'LHCI finished with non-zero exit (allowed in CI)'",
+        "deploy:netlify": "netlify deploy --dir=. --prod"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "description": "",
+    "dependencies": {
+        "@aws-sdk/client-s3": "^3.896.0",
+        "@ffmpeg/core": "^0.12.10",
+        "@ffmpeg/ffmpeg": "^0.12.10",
+        "pdfjs-dist": "^4.10.38"
+    },
+    "engines": {
+        "node": ">=18"
+    },
+    "devDependencies": {
+        "@lhci/cli": "^0.15.1",
+        "csv-parse": "^5.6.0",
+        "fast-glob": "^3.3.3",
+        "favicons": "^7.2.0",
+        "marked": "^12.0.2",
+        "netlify-cli": "^23.8.0"
+    }
 }

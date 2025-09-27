@@ -1,0 +1,242 @@
+{
+  "summary": {
+    "pagesCrawled": 3,
+    "errors": 0,
+    "duplicateTitleGroups": 1,
+    "missingLinks": 74
+  },
+  "errors": [],
+  "duplicates": [
+    {
+      "title": "All-in-One Converter â€” Fast, Private, In-Browser (MP3, MP4, PDF, DOCX, JPGâ€¦)",
+      "urls": [
+        "http://127.0.0.1:5173/",
+        "http://127.0.0.1:5173/index.html"
+      ]
+    }
+  ],
+  "missingLinks": [
+    {
+      "slug": "/convert/3gp-to-mp4"
+    },
+    {
+      "slug": "/convert/7z-to-zip"
+    },
+    {
+      "slug": "/convert/aac-to-mp3"
+    },
+    {
+      "slug": "/convert/ai-to-svg"
+    },
+    {
+      "slug": "/convert/aiff-to-mp3"
+    },
+    {
+      "slug": "/convert/apk-to-zip"
+    },
+    {
+      "slug": "/convert/avi-to-mp4"
+    },
+    {
+      "slug": "/convert/avif-to-jpg"
+    },
+    {
+      "slug": "/convert/azw3-to-epub"
+    },
+    {
+      "slug": "/convert/bmp-to-jpg"
+    },
+    {
+      "slug": "/convert/cr2-to-jpg"
+    },
+    {
+      "slug": "/convert/csv-to-json"
+    },
+    {
+      "slug": "/convert/csv-to-xlsx"
+    },
+    {
+      "slug": "/convert/djvu-to-pdf"
+    },
+    {
+      "slug": "/convert/dng-to-jpg"
+    },
+    {
+      "slug": "/convert/doc-to-docx"
+    },
+    {
+      "slug": "/convert/docx-to-pdf"
+    },
+    {
+      "slug": "/convert/eps-to-svg"
+    },
+    {
+      "slug": "/convert/epub-to-pdf"
+    },
+    {
+      "slug": "/convert/flac-to-mp3"
+    },
+    {
+      "slug": "/convert/flv-to-mp4"
+    },
+    {
+      "slug": "/convert/gif-to-mp4"
+    },
+    {
+      "slug": "/convert/gif-to-webp"
+    },
+    {
+      "slug": "/convert/heic-to-jpg"
+    },
+    {
+      "slug": "/convert/heic-to-png"
+    },
+    {
+      "slug": "/convert/html-to-pdf"
+    },
+    {
+      "slug": "/convert/icns-to-png"
+    },
+    {
+      "slug": "/convert/ico-to-png"
+    },
+    {
+      "slug": "/convert/jpg-to-pdf"
+    },
+    {
+      "slug": "/convert/jpg-to-png"
+    },
+    {
+      "slug": "/convert/jpg-to-webp"
+    },
+    {
+      "slug": "/convert/json-to-csv"
+    },
+    {
+      "slug": "/convert/m4a-to-mp3"
+    },
+    {
+      "slug": "/convert/m4v-to-mp4"
+    },
+    {
+      "slug": "/convert/mkv-to-mp4"
+    },
+    {
+      "slug": "/convert/mobi-to-epub"
+    },
+    {
+      "slug": "/convert/mov-to-mp4"
+    },
+    {
+      "slug": "/convert/mp3-to-m4a"
+    },
+    {
+      "slug": "/convert/mp3-to-wav"
+    },
+    {
+      "slug": "/convert/mp4-to-gif"
+    },
+    {
+      "slug": "/convert/mp4-to-mp3"
+    },
+    {
+      "slug": "/convert/mts-to-mp4"
+    },
+    {
+      "slug": "/convert/nef-to-jpg"
+    },
+    {
+      "slug": "/convert/odt-to-docx"
+    },
+    {
+      "slug": "/convert/ogg-to-mp3"
+    },
+    {
+      "slug": "/convert/opus-to-mp3"
+    },
+    {
+      "slug": "/convert/pdf-to-docx"
+    },
+    {
+      "slug": "/convert/pdf-to-epub"
+    },
+    {
+      "slug": "/convert/pdf-to-jpg"
+    },
+    {
+      "slug": "/convert/pdf-to-png"
+    },
+    {
+      "slug": "/convert/pdf-to-pptx"
+    },
+    {
+      "slug": "/convert/pdf-to-txt"
+    },
+    {
+      "slug": "/convert/pdf-to-xlsx"
+    },
+    {
+      "slug": "/convert/png-to-jpg"
+    },
+    {
+      "slug": "/convert/png-to-pdf"
+    },
+    {
+      "slug": "/convert/png-to-webp"
+    },
+    {
+      "slug": "/convert/pptx-to-pdf"
+    },
+    {
+      "slug": "/convert/psd-to-png"
+    },
+    {
+      "slug": "/convert/rar-to-zip"
+    },
+    {
+      "slug": "/convert/raw-to-jpg"
+    },
+    {
+      "slug": "/convert/rtf-to-docx"
+    },
+    {
+      "slug": "/convert/svg-to-png"
+    },
+    {
+      "slug": "/convert/tar.gz-to-zip"
+    },
+    {
+      "slug": "/convert/tiff-to-jpg"
+    },
+    {
+      "slug": "/convert/ttf-to-woff"
+    },
+    {
+      "slug": "/convert/txt-to-pdf"
+    },
+    {
+      "slug": "/convert/wav-to-mp3"
+    },
+    {
+      "slug": "/convert/webm-to-mp4"
+    },
+    {
+      "slug": "/convert/webp-to-jpg"
+    },
+    {
+      "slug": "/convert/wma-to-mp3"
+    },
+    {
+      "slug": "/convert/wmv-to-mp4"
+    },
+    {
+      "slug": "/convert/xlsx-to-csv"
+    },
+    {
+      "slug": "/convert/xlsx-to-pdf"
+    },
+    {
+      "slug": "/convert/zip-to-7z"
+    }
+  ]
+}

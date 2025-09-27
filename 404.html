@@ -1,0 +1,79 @@
+﻿<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Redirecting…</title>
+<style>body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,sans-serif;padding:2rem;line-height:1.4}</style>
+</head><body>
+<h1>Redirecting…</h1>
+<p>If you are not redirected automatically, <a id="a" href="/">click here</a>.</p>
+<script>
+(function(){
+  function clean(s){return (s||'').toLowerCase().replace(/\/+$/,'');}
+  var aliasToLocale = {
+    "espanol": "es",
+    "spanish": "es",
+    "castellano": "es",
+    "deutsch": "de",
+    "german": "de",
+    "francais": "fr",
+    "french": "fr",
+    "italiano": "it",
+    "italian": "it",
+    "polski": "pl",
+    "polish": "pl",
+    "portugues": "pt-BR",
+    "portuguese": "pt-BR",
+    "br": "pt-BR",
+    "brasil": "pt-BR",
+    "brazil": "pt-BR",
+    "pt": "pt-BR",
+  };
+  var verbs = {
+    "en": {verb:"convert", join:"-to-"},
+    "es": {verb:"convertir", join:"-a-"},
+    "de": {verb:"konvertieren", join:"-zu-"},
+    "fr": {verb:"convertir", join:"-en-"},
+    "it": {verb:"convertire", join:"-in-"},
+    "pl": {verb:"konwertuj", join:"-na-"},
+    "pt-BR": {verb:"converter", join:"-para-"},
+  };
+
+  var p = clean(location.pathname);
+  if(!p){ location.replace('/'); return; }
+  var segs = p.split('/').filter(Boolean);
+
+  var first = segs[0];
+  var locale = (verbs[first] ? first : (aliasToLocale[first]||""));
+  if(aliasToLocale[first]){ segs.shift(); }
+  else if(verbs[first]){ segs.shift(); }
+
+  // Locale root → homepage
+  if(segs.length===0){ location.replace(locale && locale!=="en" ? ("/"+locale+"/") : "/"); return; }
+
+  // Normalise shape (pdftoword, pdf2word, pdf-to-word, docx-a-pdf, etc.)
+  var synonyms = { word:"docx", excel:"xlsx", powerpoint:"pptx", jpeg:"jpg", tif:"tiff" };
+  function norm(x){ x=(x||"").toLowerCase().replace(/[^a-z0-9.]/g,''); return synonyms[x]||x; }
+  var slug = segs.join('-').toLowerCase();
+  var from=null, to=null;
+
+  var m = slug.match(/^([a-z0-9.]+)(?:[-_ ]?(?:to|2|a|en|in|na|para)[-_ ]?)([a-z0-9.]+)$/);
+  if(m){ from=norm(m[1]); to=norm(m[2]); }
+  if(!from||!to){
+    m = slug.match(/^([a-z0-9.]+)(?:to|2)([a-z0-9.]+)$/);
+    if(m){ from=norm(m[1]); to=norm(m[2]); }
+  }
+  if(!from||!to){ location.replace(locale && locale!=="en" ? ("/"+locale+"/") : "/"); return; }
+
+  var L = locale || "en";
+  var v = verbs[L] || verbs["en"];
+  var base = (L!=="en") ? ("/"+L+"/"+v.verb+"/") : "/convert/";
+  var target = base + from + v.join + to + "/";
+
+  if(location.pathname !== target){
+    document.getElementById("a").href = target;
+    location.replace(target);
+  } else {
+    location.replace("/");
+  }
+})();
+</script>
+</body></html>

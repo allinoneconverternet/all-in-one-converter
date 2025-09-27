@@ -1,0 +1,13 @@
+{
+  "defaultLocale": "en",
+  "locales": [
+    { "code": "es",   "hreflang": "es",   "basePath": "convertir",   "toToken": "a",    "langAttr": "es" },
+    { "code": "de",   "hreflang": "de",   "basePath": "konvertieren","toToken": "zu",   "langAttr": "de" },
+    { "code": "fr",   "hreflang": "fr",   "basePath": "convertir",   "toToken": "en",   "langAttr": "fr" },
+    { "code": "it",   "hreflang": "it",   "basePath": "convertire",  "toToken": "in",   "langAttr": "it" },
+    { "code": "pt-BR","hreflang": "pt-BR","basePath": "converter",   "toToken": "para", "langAttr": "pt-BR" },
+    { "code": "pl",   "hreflang": "pl",   "basePath": "konwertuj",   "toToken": "na",   "langAttr": "pl" },
+    { "code": "ja",   "hreflang": "ja",   "basePath": "henkan",      "toToken": "ni",   "langAttr": "ja" }
+  ],
+  "mode": "map-only"
+}

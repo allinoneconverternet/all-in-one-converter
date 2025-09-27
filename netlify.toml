@@ -1,0 +1,16 @@
+﻿[build]
+  publish = "."
+  command = "npm run build:ci"
+
+[functions]
+  directory = "netlify/functions"
+
+[[headers]]
+  for = "/android-chrome-*.png"
+  [headers.values]
+  Content-Type = "image/png"
+
+[[headers]]
+  for = "/apple-touch-icon.png"
+  [headers.values]
+  Content-Type = "image/png"

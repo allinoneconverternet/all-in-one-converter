@@ -1,9 +1,20 @@
-﻿node_modules/
-.vscode/
+﻿# OS cruft
 .DS_Store
 Thumbs.db
-*.log
 
-# local backups
-*.bak
-vendor/*.bak
+# Backups & builds
+.backup/
+node_modules/
+coverage/
+dist/
+build/
+.cache/
+.lighthouseci/
+
+# Logs / temps
+*.log
+*.tmp
+
+# Local env
+.env
+.env.*
