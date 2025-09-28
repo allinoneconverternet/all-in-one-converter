@@ -1,6 +1,7 @@
 ﻿User-agent: *
 Allow: /
-Sitemap: https://www.all-in-one-converter.net/sitemap_index.xml
+Sitemap: https://www.all-in-one-converter.net/sitemap-index.xml
+
 
 
 
