@@ -1,5 +1,5 @@
 ﻿<!doctype html>
-<html   lang="es">
+<html lang="es">
 
 <head>
   <meta charset="utf-8" />
@@ -26,7 +26,7 @@
   <meta name="msapplication-TileColor" content="#0b1020">
 
   <!-- Canonical / hreflang -->
-  <link rel="canonical" href="https://www.all-in-one-converter.net/es/"/>
+  <link rel="canonical" href="https://www.all-in-one-converter.net/es/" />
   <link rel="alternate" hreflang="es" href="https://www.all-in-one-converter.net/es/">
   <link rel="alternate" hreflang="x-default" href="https://www.all-in-one-converter.net/">
 
@@ -59,7 +59,7 @@
     "@context":"https://schema.org",
     "@type":"WebSite",
     "url":"https://www.all-in-one-converter.net/",
-    "name":"All-in-One Convertirer",
+    "name":"Conversor todo-en-uno",
     "potentialAction":{
       "@type":"SearchAction",
       "target":"https://www.all-in-one-converter.net/search?q={search_term_string}",
@@ -71,28 +71,33 @@
   {
     "@context":"https://schema.org",
     "@type":"Organization",
-    "name":"All-in-One Convertirer",
+    "name":"Conversor todo-en-uno",
     "url":"https://www.all-in-one-converter.net/",
     "logo":"https://www.all-in-one-converter.net/og/logo.png"
   }
   </script>
-  <link rel="canonical" href="https://www.all-in-one-converter.net/es/"/>
-<style id="pair-page-guard">
-/* Disable only navigation links on pair pages; keep downloads and ads clickable */
-body.pair-page header a,
-body.pair-page nav a,
-body.pair-page .breadcrumbs a { pointer-events:none; text-decoration:none; cursor:default }
+  <link rel="canonical" href="https://www.all-in-one-converter.net/es/" />
+  <style id="pair-page-guard">
+    /* Disable only navigation links on pair pages; keep downloads and ads clickable */
+    body.pair-page header a,
+    body.pair-page nav a,
+    body.pair-page .breadcrumbs a {
+      pointer-events: none;
+      text-decoration: none;
+      cursor: default
+    }
 
-/* Always clickable: download CTAs and ad iframes/containers */
-body.pair-page #download-links a,
-body.pair-page .adsbygoogle,
-body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
-</style>
-<link rel="stylesheet" href="../styles.min.css">
-<link rel="stylesheet" href="../styles.css">
-<!-- hreflang-start -->
-<link rel="alternate" href="https://www.all-in-one-converter.net/ar/" hreflang="x-default">
-<!-- hreflang-end -->
+    /* Always clickable: download CTAs and ad iframes/containers */
+    body.pair-page #download-links a,
+    body.pair-page .adsbygoogle,
+    body.pair-page .adsbygoogle * {
+      pointer-events: auto;
+      cursor: pointer
+    }
+  </style>
+  <link rel="stylesheet" href="../styles.min.css">
+  <link rel="stylesheet" href="../styles.css">
+
 </head>
 
 <body>
@@ -100,7 +105,7 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
 
   <!-- good -->
   <script src="ffmpeg-esm-shim.js"></script>
-  
+
 
 
   <header>
@@ -109,7 +114,7 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
 
       <div class="topbar_Buttons">
         <button class="btn-topbar" id="theme-btn">Cambiar tema</button>
-        <button class="btn-topbar" id="share-btn">¡Compártenos!</button>
+        <button class="btn-topbar" id="share-btn">Recomendar!</button>
       </div>
     </div>
   </header>
@@ -135,14 +140,14 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
           <div class="flex2"><input class="file-input" id="file-input" type="file" multiple></div>
           <div class="flex1"><button class="btn-ghost" id="clear-btn">Limpiar</button></div>
         </div>
-        <div id="dropzone" class="dropzone" aria-label="Drag and drop files here">
+        <div id="dropzone" class="dropzone" aria-label="Arrastra y suelta archivos aquí">
           Suelta archivos aquí o haz clic arriba para seleccionarlos
         </div>
 
         <h2 class="mt">2) Elegir tipo de salida</h2>
         <div class="row">
           <div class="flex1">
-            <label for="target-format">Convertirir a</label>
+            <label for="target-format">Convertir a</label>
             <select id="target-format"></select>
           </div>
           <div id="quality-wrap" class="quality-wrap">
@@ -172,13 +177,14 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
 
         <div class="row mt">
           <button class="convert" id="convert-btn">Convertir</button>
-          <button class="btn-ghost" id="save-all-btn" title="Guardar todas las salidas en una carpeta (si es compatible)">Save
+          <button class="btn-ghost" id="save-all-btn"
+            title="Guardar todas las salidas en una carpeta (si es compatible)">Save
             All</button>
         </div>
 
         <div id="banner" class="hint mt-small"></div>
 
-        <div class="filelist" id="file-list" aria-live="polite" aria-label="Selected files"></div>
+        <div class="filelist" id="file-list" aria-live="polite" aria-label="Archivos seleccionados"></div>
         <div class="downloads" id="downloads" hidden>
           <div class="hint">Resultados</div>
           <div id="download-links"></div>
@@ -189,9 +195,11 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
         <h2 class="mt-small">Inicio rápido</h2>
         <ol class="hint">
           <li><b>Añadir archivos:</b> arrastra y suelta en el cuadro o haz clic en <em>Añadir archivos</em>.</li>
-          <li><b>Elegir salida:</b> selecciona un formato en <em>Convertirir a</em> (ajusta la <em>Calidad</em> para JPEG/WebP).</li>
-          <li><b>Convertirir:</b> pulsa <b>Convertirir</b>. La fila muestra una insignia, progreso y estado.</li>
-          <li><b>Descargar:</b> cuando el estado sea <b>Listo</b>, <b>haz clic en el nombre del archivo</b> para descargar ese resultado.
+          <li><b>Elegir salida:</b> selecciona un formato en <em>Convertir a</em> (ajusta la <em>Calidad</em> para
+            JPEG/WebP).</li>
+          <li><b>Convertir:</b> pulsa <b>Convertir</b>. La fila muestra una insignia, el progreso y el estado.</li>
+          <li><b>Descargar:</b> cuando el estado sea <b>Listo</b>, <b>haz clic en el nombre del archivo</b> para
+            descargar ese resultado.
             Usa <b>Guardar todo</b> para guardar todas las salidas a la vez.</li>
           <li><b>Eliminar:</b> haz clic en <b>×</b> en un archivo para quitarlo de la lista.</li>
         </ol>
@@ -497,8 +505,7 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
 
 
 
-  <!-- Tesseract (offline) -->
-  <!-- Tesseract (offline) -->
+
   <script src="vendor/tesseract.min.js"></script>
   <script>
     window.OCR_OPTS = {
@@ -540,7 +547,7 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
         const wBadge = badge.offsetWidth;
         const wStatus = status.offsetWidth;
 
-        // 4 columns â†’ there are 3 gaps between them
+        // 4 columns ’ there are 3 gaps between them
         const gaps = gap * 3;
 
         // Remaining space for progress
@@ -632,26 +639,7 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
       </div>
     </div>
   </div>
-<script src="/app.js" defer></script>
+  <script src="/app.js" defer></script>
 </body>
 
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,5 +1,5 @@
 ﻿<!doctype html>
-<html   lang="ko">
+<html lang="ko">
 
 <head>
   <meta charset="utf-8" />
@@ -26,7 +26,7 @@
   <meta name="msapplication-TileColor" content="#0b1020">
 
   <!-- Canonical / hreflang -->
-  <link rel="canonical" href="https://www.all-in-one-converter.net/ko/"/>
+  <link rel="canonical" href="https://www.all-in-one-converter.net/ko/" />
   <link rel="alternate" hreflang="ko" href="https://www.all-in-one-converter.net/ko/">
   <link rel="alternate" hreflang="x-default" href="https://www.all-in-one-converter.net/">
 
@@ -59,7 +59,7 @@
     "@context":"https://schema.org",
     "@type":"WebSite",
     "url":"https://www.all-in-one-converter.net/",
-    "name":"All-in-One 변환er",
+    "name":"올인원 변환기",
     "potentialAction":{
       "@type":"SearchAction",
       "target":"https://www.all-in-one-converter.net/search?q={search_term_string}",
@@ -71,28 +71,35 @@
   {
     "@context":"https://schema.org",
     "@type":"Organization",
-    "name":"All-in-One 변환er",
+    "name":"올인원 변환기",
     "url":"https://www.all-in-one-converter.net/",
     "logo":"https://www.all-in-one-converter.net/og/logo.png"
   }
   </script>
-  <link rel="canonical" href="https://www.all-in-one-converter.net/ko/"/>
-<style id="pair-page-guard">
-/* Disable only navigation links on pair pages; keep downloads and ads clickable */
-body.pair-page header a,
-body.pair-page nav a,
-body.pair-page .breadcrumbs a { pointer-events:none; text-decoration:none; cursor:default }
 
-/* Always clickable: download CTAs and ad iframes/containers */
-body.pair-page #download-links a,
-body.pair-page .adsbygoogle,
-body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
-</style>
-<link rel="stylesheet" href="../styles.min.css">
-<link rel="stylesheet" href="../styles.css">
-<!-- hreflang-start -->
-<link rel="alternate" href="https://www.all-in-one-converter.net/ar/" hreflang="x-default">
-<!-- hreflang-end -->
+  <style id="pair-page-guard">
+    /* Disable only navigation links on pair pages; keep downloads and ads clickable */
+    body.pair-page header a,
+    body.pair-page nav a,
+    body.pair-page .breadcrumbs a {
+      pointer-events: none;
+      text-decoration: none;
+      cursor: default
+    }
+
+    /* Always clickable: download CTAs and ad iframes/containers */
+    body.pair-page #download-links a,
+    body.pair-page .adsbygoogle,
+    body.pair-page .adsbygoogle * {
+      pointer-events: auto;
+      cursor: pointer
+    }
+  </style>
+  <link rel="stylesheet" href="../styles.min.css">
+  <link rel="stylesheet" href="../styles.css">
+  <!-- hreflang-start -->
+  <link rel="alternate" href="https://www.all-in-one-converter.net/ar/" hreflang="x-default">
+  <!-- hreflang-end -->
 </head>
 
 <body>
@@ -100,12 +107,12 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
 
   <!-- good -->
   <script src="ffmpeg-esm-shim.js"></script>
-  
+
 
 
   <header>
     <div class="wrap  header-row">
-      <h1>올인원 변환</h1>
+      <h1>올인원 변환기</h1>
 
       <div class="topbar_Buttons">
         <button class="btn-topbar" id="theme-btn">테마 전환</button>
@@ -135,7 +142,7 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
           <div class="flex2"><input class="file-input" id="file-input" type="file" multiple></div>
           <div class="flex1"><button class="btn-ghost" id="clear-btn">지우기</button></div>
         </div>
-        <div id="dropzone" class="dropzone" aria-label="Drag and drop files here">
+        <div id="dropzone" class="dropzone" aria-label="여기에 파일을 드래그 앤 드롭하세요">
           여기에 파일을 놓거나 위를 클릭해 선택
         </div>
 
@@ -151,7 +158,7 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
           </div>
         </div>
 
-        <h2 class="mt">3) 한계 & 성능</h2>
+        <h2 class="mt">3) 제한 및 성능</h2>
         <div class="row">
           <div>
             <label for="limit-mode">메모리 예산</label>
@@ -172,13 +179,12 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
 
         <div class="row mt">
           <button class="convert" id="convert-btn">변환</button>
-          <button class="btn-ghost" id="save-all-btn" title="모든 출력을 한 폴더에 저장 (지원 시)">Save
-            All</button>
+          <button class="btn-ghost" id="save-all-btn" title="모든 출력을 한 폴더에 저장 (지원 시)">모두 저장</button>
         </div>
 
         <div id="banner" class="hint mt-small"></div>
 
-        <div class="filelist" id="file-list" aria-live="polite" aria-label="Selected files"></div>
+        <div class="filelist" id="file-list" aria-live="polite" aria-label="선택한 파일"></div>
         <div class="downloads" id="downloads" hidden>
           <div class="hint">출력</div>
           <div id="download-links"></div>
@@ -192,7 +198,8 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
           <li><b>출력 선택:</b> <em>다음으로 변환</em>에서 형식을 고릅니다 (JPEG/WebP는 <em>품질</em> 조정).</li>
           <li><b>변환:</b> <b>변환</b> 버튼을 누르세요. 행에 배지, 진행률, 상태가 표시됩니다.</li>
           <li><b>다운로드:</b> 상태가 <b>준비 완료</b>가 되면 <b>파일 이름을 클릭</b>해 결과를 내려받습니다.
-            <b>모두 저장</b>으로 한 번에 저장할 수 있습니다.</li>
+            <b>모두 저장</b>으로 한 번에 저장할 수 있습니다.
+          </li>
           <li><b>제거:</b> 파일의 <b>×</b>를 눌러 목록에서 제거합니다.</li>
         </ol>
 
@@ -201,7 +208,7 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
           <ul style="margin:.4rem 0 0 1.1em">
             <li><b>동시 변환:</b> 동시에 실행할 개수를 조정하세요.</li>
             <li><b>메모리 예산:</b> 한계에 도달하면 <em>수동</em>으로 전환하세요.</li>
-            <li><b>긴 이름:</b> 카드에서 줄여 표시됩니다. 호버하여 전체 이름을 확인하세요.</li>
+            <li><b>긴 이름:</b> 카드에서 줄여 표시됩니다. 이름 위에 마우스를 올려 전체 이름을 확인하세요.</li>
             <li><b>프라이버시:</b> 모든 것이 브라우저에서 실행 — 업로드 없음.</li>
           </ul>
         </div>
@@ -540,7 +547,7 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
         const wBadge = badge.offsetWidth;
         const wStatus = status.offsetWidth;
 
-        // 4 columns â†’ there are 3 gaps between them
+        // 4 columns’ there are 3 gaps between them
         const gaps = gap * 3;
 
         // Remaining space for progress
@@ -632,25 +639,7 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
       </div>
     </div>
   </div>
-<script src="/app.js" defer></script>
+  <script src="/app.js" defer></script>
 </body>
 
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

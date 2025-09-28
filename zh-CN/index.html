@@ -1,5 +1,5 @@
 ﻿<!doctype html>
-<html   lang="zh-CN">
+<html lang="zh-CN">
 
 <head>
   <meta charset="utf-8" />
@@ -26,7 +26,7 @@
   <meta name="msapplication-TileColor" content="#0b1020">
 
   <!-- Canonical / hreflang -->
-  <link rel="canonical" href="https://www.all-in-one-converter.net/zh-CN/"/>
+  <link rel="canonical" href="https://www.all-in-one-converter.net/zh-CN/" />
   <link rel="alternate" hreflang="zh-CN" href="https://www.all-in-one-converter.net/zh-CN/">
   <link rel="alternate" hreflang="x-default" href="https://www.all-in-one-converter.net/">
 
@@ -59,7 +59,7 @@
     "@context":"https://schema.org",
     "@type":"WebSite",
     "url":"https://www.all-in-one-converter.net/",
-    "name":"All-in-One 转换er",
+    "name":"全能转换器",
     "potentialAction":{
       "@type":"SearchAction",
       "target":"https://www.all-in-one-converter.net/search?q={search_term_string}",
@@ -71,28 +71,35 @@
   {
     "@context":"https://schema.org",
     "@type":"Organization",
-    "name":"All-in-One 转换er",
+    "name":"全能转换器",
     "url":"https://www.all-in-one-converter.net/",
     "logo":"https://www.all-in-one-converter.net/og/logo.png"
   }
   </script>
-  <link rel="canonical" href="https://www.all-in-one-converter.net/zh-CN/"/>
-<style id="pair-page-guard">
-/* Disable only navigation links on pair pages; keep downloads and ads clickable */
-body.pair-page header a,
-body.pair-page nav a,
-body.pair-page .breadcrumbs a { pointer-events:none; text-decoration:none; cursor:default }
 
-/* Always clickable: download CTAs and ad iframes/containers */
-body.pair-page #download-links a,
-body.pair-page .adsbygoogle,
-body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
-</style>
-<link rel="stylesheet" href="../styles.min.css">
-<link rel="stylesheet" href="../styles.css">
-<!-- hreflang-start -->
-<link rel="alternate" href="https://www.all-in-one-converter.net/ar/" hreflang="x-default">
-<!-- hreflang-end -->
+  <style id="pair-page-guard">
+    /* Disable only navigation links on pair pages; keep downloads and ads clickable */
+    body.pair-page header a,
+    body.pair-page nav a,
+    body.pair-page .breadcrumbs a {
+      pointer-events: none;
+      text-decoration: none;
+      cursor: default
+    }
+
+    /* Always clickable: download CTAs and ad iframes/containers */
+    body.pair-page #download-links a,
+    body.pair-page .adsbygoogle,
+    body.pair-page .adsbygoogle * {
+      pointer-events: auto;
+      cursor: pointer
+    }
+  </style>
+  <link rel="stylesheet" href="../styles.min.css">
+  <link rel="stylesheet" href="../styles.css">
+  <!-- hreflang-start -->
+  <link rel="alternate" href="https://www.all-in-one-converter.net/ar/" hreflang="x-default">
+  <!-- hreflang-end -->
 </head>
 
 <body>
@@ -100,7 +107,7 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
 
   <!-- good -->
   <script src="ffmpeg-esm-shim.js"></script>
-  
+
 
 
   <header>
@@ -109,7 +116,7 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
 
       <div class="topbar_Buttons">
         <button class="btn-topbar" id="theme-btn">切换主题</button>
-        <button class="btn-topbar" id="share-btn">分享我们！</button>
+        <button class="btn-topbar" id="share-btn">分享链接</button>
       </div>
     </div>
   </header>
@@ -135,11 +142,11 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
           <div class="flex2"><input class="file-input" id="file-input" type="file" multiple></div>
           <div class="flex1"><button class="btn-ghost" id="clear-btn">清除</button></div>
         </div>
-        <div id="dropzone" class="dropzone" aria-label="Drag and drop files here">
+        <div id="dropzone" class="dropzone" aria-label="将文件拖拽到此处">
           将文件拖到这里，或点击上方选择
         </div>
 
-        <h2 class="mt">2）选择输出类型</h2>
+        <h2 class="mt">2）选择输出格式</h2>
         <div class="row">
           <div class="flex1">
             <label for="target-format">转换为</label>
@@ -172,13 +179,12 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
 
         <div class="row mt">
           <button class="convert" id="convert-btn">转换</button>
-          <button class="btn-ghost" id="save-all-btn" title="将所有输出保存到一个文件夹（若支持）">Save
-            All</button>
+          <button class="btn-ghost" id="save-all-btn" title="将所有输出保存到一个文件夹（若支持）">全部保存</button>
         </div>
 
         <div id="banner" class="hint mt-small"></div>
 
-        <div class="filelist" id="file-list" aria-live="polite" aria-label="Selected files"></div>
+        <div class="filelist" id="file-list" aria-live="polite" aria-label="已选择的文件"></div>
         <div class="downloads" id="downloads" hidden>
           <div class="hint">输出</div>
           <div id="download-links"></div>
@@ -190,7 +196,7 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
         <ol class="hint">
           <li><b>添加文件：</b> 拖拽到框内或点击 <em>添加文件</em>。</li>
           <li><b>选择输出：</b> 在 <em>转换为</em> 中选择格式（JPEG/WebP 可设置 <em>质量</em>）。</li>
-          <li><b>开始转换：</b> 点击 <b>转换</b>。该行会显示徽标、进度和状态。</li>
+          <li><b>开始转换：</b> 点击 <b>转换</b>。该行会显示徽章、进度和状态。</li>
           <li><b>下载：</b> 状态为 <b>就绪</b> 时，<b>点击文件名</b> 下载结果。
             使用 <b>全部保存</b> 可一次性保存所有输出。</li>
           <li><b>移除：</b> 点击文件上的 <b>×</b> 从列表中移除。</li>
@@ -632,25 +638,7 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
       </div>
     </div>
   </div>
-<script src="/app.js" defer></script>
+  <script src="/app.js" defer></script>
 </body>
 
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

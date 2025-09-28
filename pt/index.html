@@ -1,5 +1,5 @@
 ﻿<!doctype html>
-<html   lang="pt">
+<html lang="pt">
 
 <head>
   <meta charset="utf-8" />
@@ -26,7 +26,7 @@
   <meta name="msapplication-TileColor" content="#0b1020">
 
   <!-- Canonical / hreflang -->
-  <link rel="canonical" href="https://www.all-in-one-converter.net/pt/"/>
+  <link rel="canonical" href="https://www.all-in-one-converter.net/pt/" />
   <link rel="alternate" hreflang="pt" href="https://www.all-in-one-converter.net/pt/">
   <link rel="alternate" hreflang="x-default" href="https://www.all-in-one-converter.net/">
 
@@ -59,7 +59,7 @@
     "@context":"https://schema.org",
     "@type":"WebSite",
     "url":"https://www.all-in-one-converter.net/",
-    "name":"All-in-One Converterer",
+    "name":"AConversor tudo-em-um",
     "potentialAction":{
       "@type":"SearchAction",
       "target":"https://www.all-in-one-converter.net/search?q={search_term_string}",
@@ -71,28 +71,35 @@
   {
     "@context":"https://schema.org",
     "@type":"Organization",
-    "name":"All-in-One Converterer",
+    "name":"AConversor tudo-em-um",
     "url":"https://www.all-in-one-converter.net/",
     "logo":"https://www.all-in-one-converter.net/og/logo.png"
   }
   </script>
-  <link rel="canonical" href="https://www.all-in-one-converter.net/pt/"/>
-<style id="pair-page-guard">
-/* Disable only navigation links on pair pages; keep downloads and ads clickable */
-body.pair-page header a,
-body.pair-page nav a,
-body.pair-page .breadcrumbs a { pointer-events:none; text-decoration:none; cursor:default }
 
-/* Always clickable: download CTAs and ad iframes/containers */
-body.pair-page #download-links a,
-body.pair-page .adsbygoogle,
-body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
-</style>
-<link rel="stylesheet" href="../styles.min.css">
-<link rel="stylesheet" href="../styles.css">
-<!-- hreflang-start -->
-<link rel="alternate" href="https://www.all-in-one-converter.net/ar/" hreflang="x-default">
-<!-- hreflang-end -->
+  <style id="pair-page-guard">
+    /* Disable only navigation links on pair pages; keep downloads and ads clickable */
+    body.pair-page header a,
+    body.pair-page nav a,
+    body.pair-page .breadcrumbs a {
+      pointer-events: none;
+      text-decoration: none;
+      cursor: default
+    }
+
+    /* Always clickable: download CTAs and ad iframes/containers */
+    body.pair-page #download-links a,
+    body.pair-page .adsbygoogle,
+    body.pair-page .adsbygoogle * {
+      pointer-events: auto;
+      cursor: pointer
+    }
+  </style>
+  <link rel="stylesheet" href="../styles.min.css">
+  <link rel="stylesheet" href="../styles.css">
+  <!-- hreflang-start -->
+  <link rel="alternate" href="https://www.all-in-one-converter.net/ar/" hreflang="x-default">
+  <!-- hreflang-end -->
 </head>
 
 <body>
@@ -100,7 +107,7 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
 
   <!-- good -->
   <script src="ffmpeg-esm-shim.js"></script>
-  
+
 
 
   <header>
@@ -130,19 +137,19 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
 
     <div class="panel grid" id="app">
       <section class="controls">
-        <h2>1) Anúncioicionar ficheiros</h2>
+        <h2>1) Adicionar ficheiross</h2>
         <div class="row">
           <div class="flex2"><input class="file-input" id="file-input" type="file" multiple></div>
           <div class="flex1"><button class="btn-ghost" id="clear-btn">Limpar</button></div>
         </div>
-        <div id="dropzone" class="dropzone" aria-label="Drag and drop files here">
+        <div id="dropzone" class="dropzone" aria-label="Arraste e largue ficheiros aqui">
           Largue os ficheiros aqui ou clique acima para selecionar
         </div>
 
-        <h2 class="mt">2) Escolher tipo de saída</h2>
+        <h2 class="mt">2) Escolher formato de saída</h2>
         <div class="row">
           <div class="flex1">
-            <label for="target-format">Converterer para</label>
+            <label for="target-format">Converter para</label>
             <select id="target-format"></select>
           </div>
           <div id="quality-wrap" class="quality-wrap">
@@ -172,13 +179,13 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
 
         <div class="row mt">
           <button class="convert" id="convert-btn">Converter</button>
-          <button class="btn-ghost" id="save-all-btn" title="Guardar todas as saídas numa pasta (se suportado)">Save
-            All</button>
+          <button class="btn-ghost" id="save-all-btn" title="Guardar todas as saídas numa pasta (se suportado)">Guardar
+            tudo</button>
         </div>
 
         <div id="banner" class="hint mt-small"></div>
 
-        <div class="filelist" id="file-list" aria-live="polite" aria-label="Selected files"></div>
+        <div class="filelist" id="file-list" aria-live="polite" aria-label="Ficheiros selecionados"></div>
         <div class="downloads" id="downloads" hidden>
           <div class="hint">Resultados</div>
           <div id="download-links"></div>
@@ -188,10 +195,14 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
       <aside class="aside">
         <h2 class="mt-small">Início rápido</h2>
         <ol class="hint">
-          <li><b>Anúncioicionar ficheiros:</b> arraste e largue na caixa ou clique em <em>Anúncioicionar ficheiros</em>.</li>
-          <li><b>Escolher saída:</b> selecione um formato em <em>Converterer para</em> (defina a <em>Qualidade</em> para JPEG/WebP).</li>
-          <li><b>Converterer:</b> clique em <b>Converterer</b>. A linha mostra uma insígnia, o progresso e o estado.</li>
-          <li><b>Transferir:</b> quando o estado for <b>Pronto</b>, <b>clique no nome do ficheiro</b> para descarregar esse resultado.
+          <li><b>Adicionar ficheiross:</b> arraste e largue na caixa ou clique em <em>Adicionar ficheiross</em>.
+          </li>
+          <li><b>Escolher saída:</b> selecione um formato em <em>Converter para</em> (defina a <em>Qualidade</em> para
+            JPEG/WebP).</li>
+          <li><b>Converter:</b> clique em <b>Converter</b>. A linha mostra uma insígnia, o progresso e o estado.
+          </li>
+          <li><b>Transferir:</b> quando o estado for <b>Pronto</b>, <b>clique no nome do ficheiro</b> para descarregar
+            esse resultado.
             Utilize <b>Guardar tudo</b> para guardar todas as saídas de uma vez.</li>
           <li><b>Remover:</b> clique no <b>×</b> num ficheiro para o remover da lista.</li>
         </ol>
@@ -632,26 +643,7 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
       </div>
     </div>
   </div>
-<script src="/app.js" defer></script>
+  <script src="/app.js" defer></script>
 </body>
 
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

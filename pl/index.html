@@ -1,5 +1,5 @@
 ﻿<!doctype html>
-<html   lang="pl">
+<html lang="pl">
 
 <head>
   <meta charset="utf-8" />
@@ -26,7 +26,7 @@
   <meta name="msapplication-TileColor" content="#0b1020">
 
   <!-- Canonical / hreflang -->
-  <link rel="canonical" href="https://www.all-in-one-converter.net/pl/"/>
+  <link rel="canonical" href="https://www.all-in-one-converter.net/pl/" />
   <link rel="alternate" hreflang="pl" href="https://www.all-in-one-converter.net/pl/">
   <link rel="alternate" hreflang="x-default" href="https://www.all-in-one-converter.net/">
 
@@ -59,7 +59,7 @@
     "@context":"https://schema.org",
     "@type":"WebSite",
     "url":"https://www.all-in-one-converter.net/",
-    "name":"All-in-One Konwertujer",
+    "name":"AKonwerter wszystko-w-jednym",
     "potentialAction":{
       "@type":"SearchAction",
       "target":"https://www.all-in-one-converter.net/search?q={search_term_string}",
@@ -71,28 +71,35 @@
   {
     "@context":"https://schema.org",
     "@type":"Organization",
-    "name":"All-in-One Konwertujer",
+    "name":"AKonwerter wszystko-w-jednym",
     "url":"https://www.all-in-one-converter.net/",
     "logo":"https://www.all-in-one-converter.net/og/logo.png"
   }
   </script>
-  <link rel="canonical" href="https://www.all-in-one-converter.net/pl/"/>
-<style id="pair-page-guard">
-/* Disable only navigation links on pair pages; keep downloads and ads clickable */
-body.pair-page header a,
-body.pair-page nav a,
-body.pair-page .breadcrumbs a { pointer-events:none; text-decoration:none; cursor:default }
+  <link rel="canonical" href="https://www.all-in-one-converter.net/pl/" />
+  <style id="pair-page-guard">
+    /* Disable only navigation links on pair pages; keep downloads and ads clickable */
+    body.pair-page header a,
+    body.pair-page nav a,
+    body.pair-page .breadcrumbs a {
+      pointer-events: none;
+      text-decoration: none;
+      cursor: default
+    }
 
-/* Always clickable: download CTAs and ad iframes/containers */
-body.pair-page #download-links a,
-body.pair-page .adsbygoogle,
-body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
-</style>
-<link rel="stylesheet" href="../styles.min.css">
-<link rel="stylesheet" href="../styles.css">
-<!-- hreflang-start -->
-<link rel="alternate" href="https://www.all-in-one-converter.net/ar/" hreflang="x-default">
-<!-- hreflang-end -->
+    /* Always clickable: download CTAs and ad iframes/containers */
+    body.pair-page #download-links a,
+    body.pair-page .adsbygoogle,
+    body.pair-page .adsbygoogle * {
+      pointer-events: auto;
+      cursor: pointer
+    }
+  </style>
+  <link rel="stylesheet" href="../styles.min.css">
+  <link rel="stylesheet" href="../styles.css">
+  <!-- hreflang-start -->
+  <link rel="alternate" href="https://www.all-in-one-converter.net/ar/" hreflang="x-default">
+  <!-- hreflang-end -->
 </head>
 
 <body>
@@ -100,7 +107,7 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
 
   <!-- good -->
   <script src="ffmpeg-esm-shim.js"></script>
-  
+
 
 
   <header>
@@ -116,7 +123,7 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
 
   <main>
     <section class="panel prepanel">
-      <h2 id="pair-title">Offline’owy konwerter plików</h2>
+      <h2 id="pair-title">Konwerter plików offline</h2>
       <p id="pair-desc" class="hint">Upuść pliki i wybierz format wyjściowy. Wszystko działa na Twoim urządzeniu.</p>
     </section>
     <!-- Mobile inline square (300x250) under the intro, above the app) -->
@@ -135,7 +142,7 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
           <div class="flex2"><input class="file-input" id="file-input" type="file" multiple></div>
           <div class="flex1"><button class="btn-ghost" id="clear-btn">Wyczyść</button></div>
         </div>
-        <div id="dropzone" class="dropzone" aria-label="Drag and drop files here">
+        <div id="dropzone" class="dropzone" aria-label="Przeciągnij i upuść pliki tutaj">
           Upuść pliki tutaj lub kliknij powyżej, aby wybrać
         </div>
 
@@ -172,13 +179,13 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
 
         <div class="row mt">
           <button class="convert" id="convert-btn">Konwertuj</button>
-          <button class="btn-ghost" id="save-all-btn" title="Zapisz wszystkie wyniki do folderu (jeśli obsługiwane)">Save
-            All</button>
+          <button class="btn-ghost" id="save-all-btn"
+            title="Zapisz wszystkie wyniki do folderu (jeśli obsługiwane)">Zapisz wszystko</button>
         </div>
 
         <div id="banner" class="hint mt-small"></div>
 
-        <div class="filelist" id="file-list" aria-live="polite" aria-label="Selected files"></div>
+        <div class="filelist" id="file-list" aria-live="polite" aria-label="Wybrane pliki"></div>
         <div class="downloads" id="downloads" hidden>
           <div class="hint">Wyniki</div>
           <div id="download-links"></div>
@@ -632,26 +639,7 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
       </div>
     </div>
   </div>
-<script src="/app.js" defer></script>
+  <script src="/app.js" defer></script>
 </body>
 
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

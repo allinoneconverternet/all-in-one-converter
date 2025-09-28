@@ -1,5 +1,5 @@
 ﻿<!doctype html>
-<html   lang="hi">
+<html lang="hi">
 
 <head>
   <meta charset="utf-8" />
@@ -26,7 +26,7 @@
   <meta name="msapplication-TileColor" content="#0b1020">
 
   <!-- Canonical / hreflang -->
-  <link rel="canonical" href="https://www.all-in-one-converter.net/hi/"/>
+  <link rel="canonical" href="https://www.all-in-one-converter.net/hi/" />
   <link rel="alternate" hreflang="hi" href="https://www.all-in-one-converter.net/hi/">
   <link rel="alternate" hreflang="x-default" href="https://www.all-in-one-converter.net/">
 
@@ -59,7 +59,7 @@
     "@context":"https://schema.org",
     "@type":"WebSite",
     "url":"https://www.all-in-one-converter.net/",
-    "name":"All-in-One कनवर्ट करेंer",
+    "name":"ऑल-इन-वन कनवर्टर",
     "potentialAction":{
       "@type":"SearchAction",
       "target":"https://www.all-in-one-converter.net/search?q={search_term_string}",
@@ -71,28 +71,35 @@
   {
     "@context":"https://schema.org",
     "@type":"Organization",
-    "name":"All-in-One कनवर्ट करेंer",
+    "name":"ऑल-इन-वन कनवर्टर",
     "url":"https://www.all-in-one-converter.net/",
     "logo":"https://www.all-in-one-converter.net/og/logo.png"
   }
   </script>
-  <link rel="canonical" href="https://www.all-in-one-converter.net/hi/"/>
-<style id="pair-page-guard">
-/* Disable only navigation links on pair pages; keep downloads and ads clickable */
-body.pair-page header a,
-body.pair-page nav a,
-body.pair-page .breadcrumbs a { pointer-events:none; text-decoration:none; cursor:default }
+  <link rel="canonical" href="https://www.all-in-one-converter.net/hi/" />
+  <style id="pair-page-guard">
+    /* Disable only navigation links on pair pages; keep downloads and ads clickable */
+    body.pair-page header a,
+    body.pair-page nav a,
+    body.pair-page .breadcrumbs a {
+      pointer-events: none;
+      text-decoration: none;
+      cursor: default
+    }
 
-/* Always clickable: download CTAs and ad iframes/containers */
-body.pair-page #download-links a,
-body.pair-page .adsbygoogle,
-body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
-</style>
-<link rel="stylesheet" href="../styles.min.css">
-<link rel="stylesheet" href="../styles.css">
-<!-- hreflang-start -->
-<link rel="alternate" href="https://www.all-in-one-converter.net/ar/" hreflang="x-default">
-<!-- hreflang-end -->
+    /* Always clickable: download CTAs and ad iframes/containers */
+    body.pair-page #download-links a,
+    body.pair-page .adsbygoogle,
+    body.pair-page .adsbygoogle * {
+      pointer-events: auto;
+      cursor: pointer
+    }
+  </style>
+  <link rel="stylesheet" href="../styles.min.css">
+  <link rel="stylesheet" href="../styles.css">
+  <!-- hreflang-start -->
+  <link rel="alternate" href="https://www.all-in-one-converter.net/ar/" hreflang="x-default">
+  <!-- hreflang-end -->
 </head>
 
 <body>
@@ -100,7 +107,7 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
 
   <!-- good -->
   <script src="ffmpeg-esm-shim.js"></script>
-  
+
 
 
   <header>
@@ -133,9 +140,9 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
         <h2>1) फाइलें जोड़ें</h2>
         <div class="row">
           <div class="flex2"><input class="file-input" id="file-input" type="file" multiple></div>
-          <div class="flex1"><button class="btn-ghost" id="clear-btn">क्लीयर</button></div>
+          <div class="flex1"><button class="btn-ghost" id="clear-btn">साफ़ करें</button></div>
         </div>
-        <div id="dropzone" class="dropzone" aria-label="Drag and drop files here">
+        <div id="dropzone" class="dropzone" aria-label="यहाँ फ़ाइलें खींचें और छोड़ें">
           फाइलें यहाँ ड्रॉप करें या ऊपर क्लिक करके चुनें
         </div>
 
@@ -146,12 +153,12 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
             <select id="target-format"></select>
           </div>
           <div id="quality-wrap" class="quality-wrap">
-            <label for="quality">क्वालिटी (JPEG/WebP)</label>
+            <label for="quality">गुणवत्ता (JPEG/WebP)</label>
             <input id="quality" type="range" min="0.4" max="1" step="0.02" value="0.92" />
           </div>
         </div>
 
-        <h2 class="mt">3) लिमिट्स व प्रदर्शन</h2>
+        <h2 class="mt">3) सीमाएँ और प्रदर्शन</h2>
         <div class="row">
           <div>
             <label for="limit-mode">मेमोरी बजट</label>
@@ -172,13 +179,13 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
 
         <div class="row mt">
           <button class="convert" id="convert-btn">कनवर्ट करें</button>
-          <button class="btn-ghost" id="save-all-btn" title="सभी आउटपुट एक फ़ोल्डर में सेव करें (यदि समर्थित)">Save
-            All</button>
+          <button class="btn-ghost" id="save-all-btn" title="सभी आउटपुट एक फ़ोल्डर में सेव करें (यदि समर्थित)">सभी
+            सहेजें</button>
         </div>
 
         <div id="banner" class="hint mt-small"></div>
 
-        <div class="filelist" id="file-list" aria-live="polite" aria-label="Selected files"></div>
+        <div class="filelist" id="file-list" aria-live="polite" aria-label="चयनित फ़ाइलें"></div>
         <div class="downloads" id="downloads" hidden>
           <div class="hint">आउटपुट</div>
           <div id="download-links"></div>
@@ -189,10 +196,12 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
         <h2 class="mt-small">त्वरित शुरुआत</h2>
         <ol class="hint">
           <li><b>फाइलें जोड़ें:</b> बॉक्स में ड्रैग‑ड्रॉप करें या <em>फाइलें जोड़ें</em> पर क्लिक करें।</li>
-          <li><b>आउटपुट चुनें:</b> <em>में कनवर्ट करें</em> में फ़ॉर्मेट चुनें (JPEG/WebP के लिए <em>क्वालिटी</em> सेट करें)।</li>
+          <li><b>आउटपुट चुनें:</b> <em>में कनवर्ट करें</em> में फ़ॉर्मेट चुनें (JPEG/WebP के लिए <em>गुणवत्ता</em> सेट
+            करें)।</li>
           <li><b>कनवर्ट करें:</b> <b>कनवर्ट करें</b> दबाएँ। पंक्ति में बैज, प्रगति व स्थिति दिखेगी।</li>
           <li><b>डाउनलोड:</b> जब स्थिति <b>तैयार</b> हो, तो <b>फ़ाइल नाम पर क्लिक</b> कर परिणाम डाउनलोड करें।
-            <b>सब सेव करें</b> से एक साथ सभी आउटपुट सेव करें।</li>
+            <b>सब सेव करें</b> से एक साथ सभी आउटपुट सेव करें।
+          </li>
           <li><b>हटाएँ:</b> सूची से हटाने के लिए फ़ाइल पर <b>×</b> क्लिक करें।</li>
         </ol>
 
@@ -540,7 +549,7 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
         const wBadge = badge.offsetWidth;
         const wStatus = status.offsetWidth;
 
-        // 4 columns â†’ there are 3 gaps between them
+        // 4 columns’ there are 3 gaps between them
         const gaps = gap * 3;
 
         // Remaining space for progress
@@ -632,25 +641,7 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
       </div>
     </div>
   </div>
-<script src="/app.js" defer></script>
+  <script src="/app.js" defer></script>
 </body>
 
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,5 +1,5 @@
 ﻿<!doctype html>
-<html   lang="ru">
+<html lang="ru">
 
 <head>
   <meta charset="utf-8" />
@@ -26,7 +26,7 @@
   <meta name="msapplication-TileColor" content="#0b1020">
 
   <!-- Canonical / hreflang -->
-  <link rel="canonical" href="https://www.all-in-one-converter.net/ru/"/>
+  <link rel="canonical" href="https://www.all-in-one-converter.net/ru/" />
   <link rel="alternate" hreflang="ru" href="https://www.all-in-one-converter.net/ru/">
   <link rel="alternate" hreflang="x-default" href="https://www.all-in-one-converter.net/">
 
@@ -59,7 +59,7 @@
     "@context":"https://schema.org",
     "@type":"WebSite",
     "url":"https://www.all-in-one-converter.net/",
-    "name":"All-in-One Конвертироватьer",
+    "name":"Универсальный конвертер",
     "potentialAction":{
       "@type":"SearchAction",
       "target":"https://www.all-in-one-converter.net/search?q={search_term_string}",
@@ -71,28 +71,35 @@
   {
     "@context":"https://schema.org",
     "@type":"Organization",
-    "name":"All-in-One Конвертироватьer",
+    "name":"Универсальный конвертер",
     "url":"https://www.all-in-one-converter.net/",
     "logo":"https://www.all-in-one-converter.net/og/logo.png"
   }
   </script>
-  <link rel="canonical" href="https://www.all-in-one-converter.net/ru/"/>
-<style id="pair-page-guard">
-/* Disable only navigation links on pair pages; keep downloads and ads clickable */
-body.pair-page header a,
-body.pair-page nav a,
-body.pair-page .breadcrumbs a { pointer-events:none; text-decoration:none; cursor:default }
+  <link rel="canonical" href="https://www.all-in-one-converter.net/ru/" />
+  <style id="pair-page-guard">
+    /* Disable only navigation links on pair pages; keep downloads and ads clickable */
+    body.pair-page header a,
+    body.pair-page nav a,
+    body.pair-page .breadcrumbs a {
+      pointer-events: none;
+      text-decoration: none;
+      cursor: default
+    }
 
-/* Always clickable: download CTAs and ad iframes/containers */
-body.pair-page #download-links a,
-body.pair-page .adsbygoogle,
-body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
-</style>
-<link rel="stylesheet" href="../styles.min.css">
-<link rel="stylesheet" href="../styles.css">
-<!-- hreflang-start -->
-<link rel="alternate" href="https://www.all-in-one-converter.net/ar/" hreflang="x-default">
-<!-- hreflang-end -->
+    /* Always clickable: download CTAs and ad iframes/containers */
+    body.pair-page #download-links a,
+    body.pair-page .adsbygoogle,
+    body.pair-page .adsbygoogle * {
+      pointer-events: auto;
+      cursor: pointer
+    }
+  </style>
+  <link rel="stylesheet" href="../styles.min.css">
+  <link rel="stylesheet" href="../styles.css">
+  <!-- hreflang-start -->
+  <link rel="alternate" href="https://www.all-in-one-converter.net/ar/" hreflang="x-default">
+  <!-- hreflang-end -->
 </head>
 
 <body>
@@ -100,7 +107,7 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
 
   <!-- good -->
   <script src="ffmpeg-esm-shim.js"></script>
-  
+
 
 
   <header>
@@ -120,7 +127,7 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
       <p id="pair-desc" class="hint">Перетащите файлы и выберите формат. Всё выполняется на вашем устройстве.</p>
     </section>
     <!-- Mobile inline square (300x250) under the intro, above the app) -->
-    <div class="inline-ad mobile-inline-ad" role="complementary" aria-label="Спонсировано (встроенно)">
+    <div class="inline-ad mobile-inline-ad" role="complementary" aria-label="Спонсируемый (встроенный)">
       <div class="ad-slot">
         <div class="ad-note">Реклама</div>
         <ins class="adsbygoogle" style="display:block;width:300px;height:250px" data-ad-client="ca-pub-6251303109610053"
@@ -139,7 +146,7 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
           Перетащите файлы сюда или нажмите выше, чтобы выбрать
         </div>
 
-        <h2 class="mt">2) Выбрать тип вывода</h2>
+        <h2 class="mt">2) Выбрать формат вывода</h2>
         <div class="row">
           <div class="flex1">
             <label for="target-format">Конвертировать в</label>
@@ -172,13 +179,13 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
 
         <div class="row mt">
           <button class="convert" id="convert-btn">Конвертировать</button>
-          <button class="btn-ghost" id="save-all-btn" title="Сохранить все результаты в папку (если поддерживается)">Save
-            All</button>
+          <button class="btn-ghost" id="save-all-btn"
+            title="Сохранить все результаты в папку (если поддерживается)">Сохранить всё</button>
         </div>
 
         <div id="banner" class="hint mt-small"></div>
 
-        <div class="filelist" id="file-list" aria-live="polite" aria-label="Selected files"></div>
+        <div class="filelist" id="file-list" aria-live="polite" aria-label="Выбранные файлы"></div>
         <div class="downloads" id="downloads" hidden>
           <div class="hint">Результаты</div>
           <div id="download-links"></div>
@@ -189,7 +196,9 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
         <h2 class="mt-small">Быстрый старт</h2>
         <ol class="hint">
           <li><b>Добавьте файлы:</b> перетащите их в область или нажмите <em>Добавить файлы</em>.</li>
-          <li><b>Выберите вывод:</b> укажите формат в <em>Конвертировать в</em> (для JPEG/WebP настройте <em>Качество</em>).</li>
+          <li><b>Выберите вывод:</b> укажите формат в <em>Конвертировать в</em> (для JPEG/WebP настройте
+            <em>Качество</em>).
+          </li>
           <li><b>Конвертируйте:</b> нажмите <b>Конвертировать</b>. В строке появятся значок, прогресс и статус.</li>
           <li><b>Скачайте:</b> когда статус станет <b>Готово</b>, <b>нажмите имя файла</b>, чтобы скачать результат.
             Используйте <b>Сохранить всё</b> для сохранения всех результатов сразу.</li>
@@ -623,7 +632,8 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
                 border:1px solid var(--border);background:var(--panel);padding:18px;">
       <h3 style="margin:0 0 8px">Разрешите рекламу, чтобы поддержать сайт</h3>
       <p class="hint" style="margin:0 0 12px">
-        Мы обнаружили блокировщик рекламы. Реклама помогает делать сервис бесплатным. Вы можете разрешить рекламу и перезагрузить
+        Мы обнаружили блокировщик рекламы. Реклама помогает делать сервис бесплатным. Вы можете разрешить рекламу и
+        перезагрузить
         или продолжить без неё, если хотите.
       </p>
       <div class="row" style="gap:8px">
@@ -632,25 +642,7 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
       </div>
     </div>
   </div>
-<script src="/app.js" defer></script>
+  <script src="/app.js" defer></script>
 </body>
 
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,5 +1,5 @@
 ﻿<!doctype html>
-<html   lang="uk">
+<html lang="uk">
 
 <head>
   <meta charset="utf-8" />
@@ -26,7 +26,7 @@
   <meta name="msapplication-TileColor" content="#0b1020">
 
   <!-- Canonical / hreflang -->
-  <link rel="canonical" href="https://www.all-in-one-converter.net/uk/"/>
+  <link rel="canonical" href="https://www.all-in-one-converter.net/uk/" />
   <link rel="alternate" hreflang="uk" href="https://www.all-in-one-converter.net/uk/">
   <link rel="alternate" hreflang="x-default" href="https://www.all-in-one-converter.net/">
 
@@ -59,7 +59,7 @@
     "@context":"https://schema.org",
     "@type":"WebSite",
     "url":"https://www.all-in-one-converter.net/",
-    "name":"All-in-One Конвертуватиer",
+    "name":"Конвертер все-в-одному",
     "potentialAction":{
       "@type":"SearchAction",
       "target":"https://www.all-in-one-converter.net/search?q={search_term_string}",
@@ -71,28 +71,35 @@
   {
     "@context":"https://schema.org",
     "@type":"Organization",
-    "name":"All-in-One Конвертуватиer",
+    "name":"Конвертер все-в-одному",
     "url":"https://www.all-in-one-converter.net/",
     "logo":"https://www.all-in-one-converter.net/og/logo.png"
   }
   </script>
-  <link rel="canonical" href="https://www.all-in-one-converter.net/uk/"/>
-<style id="pair-page-guard">
-/* Disable only navigation links on pair pages; keep downloads and ads clickable */
-body.pair-page header a,
-body.pair-page nav a,
-body.pair-page .breadcrumbs a { pointer-events:none; text-decoration:none; cursor:default }
 
-/* Always clickable: download CTAs and ad iframes/containers */
-body.pair-page #download-links a,
-body.pair-page .adsbygoogle,
-body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
-</style>
-<link rel="stylesheet" href="../styles.min.css">
-<link rel="stylesheet" href="../styles.css">
-<!-- hreflang-start -->
-<link rel="alternate" href="https://www.all-in-one-converter.net/ar/" hreflang="x-default">
-<!-- hreflang-end -->
+  <style id="pair-page-guard">
+    /* Disable only navigation links on pair pages; keep downloads and ads clickable */
+    body.pair-page header a,
+    body.pair-page nav a,
+    body.pair-page .breadcrumbs a {
+      pointer-events: none;
+      text-decoration: none;
+      cursor: default
+    }
+
+    /* Always clickable: download CTAs and ad iframes/containers */
+    body.pair-page #download-links a,
+    body.pair-page .adsbygoogle,
+    body.pair-page .adsbygoogle * {
+      pointer-events: auto;
+      cursor: pointer
+    }
+  </style>
+  <link rel="stylesheet" href="../styles.min.css">
+  <link rel="stylesheet" href="../styles.css">
+  <!-- hreflang-start -->
+  <link rel="alternate" href="https://www.all-in-one-converter.net/ar/" hreflang="x-default">
+  <!-- hreflang-end -->
 </head>
 
 <body>
@@ -100,7 +107,7 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
 
   <!-- good -->
   <script src="ffmpeg-esm-shim.js"></script>
-  
+
 
 
   <header>
@@ -135,11 +142,11 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
           <div class="flex2"><input class="file-input" id="file-input" type="file" multiple></div>
           <div class="flex1"><button class="btn-ghost" id="clear-btn">Очистити</button></div>
         </div>
-        <div id="dropzone" class="dropzone" aria-label="Drag and drop files here">
+        <div id="dropzone" class="dropzone" aria-label="Перетягніть файли сюди">
           Перетягніть файли сюди або натисніть вище, щоб вибрати
         </div>
 
-        <h2 class="mt">2) Обрати тип виводу</h2>
+        <h2 class="mt">2) Вибрати формат виводу</h2>
         <div class="row">
           <div class="flex1">
             <label for="target-format">Конвертувати в</label>
@@ -172,13 +179,13 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
 
         <div class="row mt">
           <button class="convert" id="convert-btn">Конвертувати</button>
-          <button class="btn-ghost" id="save-all-btn" title="Зберегти всі результати в папку (якщо підтримується)">Save
-            All</button>
+          <button class="btn-ghost" id="save-all-btn"
+            title="Зберегти всі результати в папку (якщо підтримується)">Зберегти все</button>
         </div>
 
         <div id="banner" class="hint mt-small"></div>
 
-        <div class="filelist" id="file-list" aria-live="polite" aria-label="Selected files"></div>
+        <div class="filelist" id="file-list" aria-live="polite" aria-label="Вибрані файли"></div>
         <div class="downloads" id="downloads" hidden>
           <div class="hint">Результати</div>
           <div id="download-links"></div>
@@ -189,7 +196,8 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
         <h2 class="mt-small">Швидкий старт</h2>
         <ol class="hint">
           <li><b>Додайте файли:</b> перетягніть у поле або натисніть <em>Додати файли</em>.</li>
-          <li><b>Оберіть вихід:</b> виберіть формат у <em>Конвертувати в</em> (налаштуйте <em>Якість</em> для JPEG/WebP).</li>
+          <li><b>Оберіть вихід:</b> виберіть формат у <em>Конвертувати в</em> (налаштуйте <em>Якість</em> для
+            JPEG/WebP).</li>
           <li><b>Конвертуйте:</b> натисніть <b>Конвертувати</b>. Рядок показує значок, прогрес і статус.</li>
           <li><b>Завантажте:</b> коли статус <b>Готово</b>, <b>натисніть назву файлу</b>, щоб завантажити результат.
             Використовуйте <b>Зберегти все</b>, щоб зберегти всі результати одразу.</li>
@@ -201,7 +209,7 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
           <ul style="margin:.4rem 0 0 1.1em">
             <li><b>Паралельні конвертації:</b> відрегулюйте, скільки задач виконуються одночасно.</li>
             <li><b>Бюджет пам’яті:</b> перемкніться на <em>Вручну</em>, якщо досягаєте меж.</li>
-            <li><b>Довгі назви:</b> на картці назви скорочуються; наведіть, щоб побачити повну.</li>
+            <li><b>Довгі назви:</b> на картці назви скорочуються; наведіть курсор, щоб побачити повну назву.</li>
             <li><b>Конфіденційність:</b> все працює у вашому браузері — без завантажень.</li>
           </ul>
         </div>
@@ -623,7 +631,8 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
                 border:1px solid var(--border);background:var(--panel);padding:18px;">
       <h3 style="margin:0 0 8px">Будь ласка, дозвольте рекламу, щоб підтримати сайт</h3>
       <p class="hint" style="margin:0 0 12px">
-        Ми виявили блокувальник реклами. Реклама допомагає зберігати сервіс безкоштовним. Дозвольте рекламу й перезавантажте,
+        Ми виявили блокувальник реклами. Реклама допомагає зберігати сервіс безкоштовним. Дозвольте рекламу й
+        перезавантажте,
         або продовжуйте без неї, якщо бажаєте.
       </p>
       <div class="row" style="gap:8px">
@@ -632,25 +641,7 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
       </div>
     </div>
   </div>
-<script src="/app.js" defer></script>
+  <script src="/app.js" defer></script>
 </body>
 
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

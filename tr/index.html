@@ -1,5 +1,5 @@
 ﻿<!doctype html>
-<html   lang="tr">
+<html lang="tr">
 
 <head>
   <meta charset="utf-8" />
@@ -26,7 +26,7 @@
   <meta name="msapplication-TileColor" content="#0b1020">
 
   <!-- Canonical / hreflang -->
-  <link rel="canonical" href="https://www.all-in-one-converter.net/tr/"/>
+  <link rel="canonical" href="https://www.all-in-one-converter.net/tr/" />
   <link rel="alternate" hreflang="tr" href="https://www.all-in-one-converter.net/tr/">
   <link rel="alternate" hreflang="x-default" href="https://www.all-in-one-converter.net/">
 
@@ -59,7 +59,7 @@
     "@context":"https://schema.org",
     "@type":"WebSite",
     "url":"https://www.all-in-one-converter.net/",
-    "name":"All-in-One Dönüştürer",
+    "name":"Hepsi Bir Arada Dönüştürücü",
     "potentialAction":{
       "@type":"SearchAction",
       "target":"https://www.all-in-one-converter.net/search?q={search_term_string}",
@@ -71,28 +71,35 @@
   {
     "@context":"https://schema.org",
     "@type":"Organization",
-    "name":"All-in-One Dönüştürer",
+    "name":"Hepsi Bir Arada Dönüştürücü",
     "url":"https://www.all-in-one-converter.net/",
     "logo":"https://www.all-in-one-converter.net/og/logo.png"
   }
   </script>
-  <link rel="canonical" href="https://www.all-in-one-converter.net/tr/"/>
-<style id="pair-page-guard">
-/* Disable only navigation links on pair pages; keep downloads and ads clickable */
-body.pair-page header a,
-body.pair-page nav a,
-body.pair-page .breadcrumbs a { pointer-events:none; text-decoration:none; cursor:default }
 
-/* Always clickable: download CTAs and ad iframes/containers */
-body.pair-page #download-links a,
-body.pair-page .adsbygoogle,
-body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
-</style>
-<link rel="stylesheet" href="../styles.min.css">
-<link rel="stylesheet" href="../styles.css">
-<!-- hreflang-start -->
-<link rel="alternate" href="https://www.all-in-one-converter.net/ar/" hreflang="x-default">
-<!-- hreflang-end -->
+  <style id="pair-page-guard">
+    /* Disable only navigation links on pair pages; keep downloads and ads clickable */
+    body.pair-page header a,
+    body.pair-page nav a,
+    body.pair-page .breadcrumbs a {
+      pointer-events: none;
+      text-decoration: none;
+      cursor: default
+    }
+
+    /* Always clickable: download CTAs and ad iframes/containers */
+    body.pair-page #download-links a,
+    body.pair-page .adsbygoogle,
+    body.pair-page .adsbygoogle * {
+      pointer-events: auto;
+      cursor: pointer
+    }
+  </style>
+  <link rel="stylesheet" href="../styles.min.css">
+  <link rel="stylesheet" href="../styles.css">
+  <!-- hreflang-start -->
+  <link rel="alternate" href="https://www.all-in-one-converter.net/ar/" hreflang="x-default">
+  <!-- hreflang-end -->
 </head>
 
 <body>
@@ -100,7 +107,7 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
 
   <!-- good -->
   <script src="ffmpeg-esm-shim.js"></script>
-  
+
 
 
   <header>
@@ -130,16 +137,16 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
 
     <div class="panel grid" id="app">
       <section class="controls">
-        <h2>1) Dosya ekle</h2>
+        <h2>1) Dosya Seç</h2>
         <div class="row">
           <div class="flex2"><input class="file-input" id="file-input" type="file" multiple></div>
           <div class="flex1"><button class="btn-ghost" id="clear-btn">Temizle</button></div>
         </div>
-        <div id="dropzone" class="dropzone" aria-label="Drag and drop files here">
+        <div id="dropzone" class="dropzone" aria-label="Dosyaları buraya sürükleyip bırakın">
           Dosyaları buraya bırakın ya da seçmek için yukarı tıklayın
         </div>
 
-        <h2 class="mt">2) Çıktı türünü seçin</h2>
+        <h2 class="mt">2) Çıktı formatını seçin</h2>
         <div class="row">
           <div class="flex1">
             <label for="target-format">Şuna dönüştür</label>
@@ -172,13 +179,13 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
 
         <div class="row mt">
           <button class="convert" id="convert-btn">Dönüştür</button>
-          <button class="btn-ghost" id="save-all-btn" title="Tüm çıktıları bir klasöre kaydet (destekleniyorsa)">Save
-            All</button>
+          <button class="btn-ghost" id="save-all-btn" title="Tüm çıktıları bir klasöre kaydet (destekleniyorsa)">Tümünü
+            kaydet</button>
         </div>
 
         <div id="banner" class="hint mt-small"></div>
 
-        <div class="filelist" id="file-list" aria-live="polite" aria-label="Selected files"></div>
+        <div class="filelist" id="file-list" aria-live="polite" aria-label="Seçili dosyala"></div>
         <div class="downloads" id="downloads" hidden>
           <div class="hint">Çıktılar</div>
           <div id="download-links"></div>
@@ -188,11 +195,13 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
       <aside class="aside">
         <h2 class="mt-small">Hızlı başlangıç</h2>
         <ol class="hint">
-          <li><b>Dosya ekle:</b> kutuya sürükleyip bırakın ya da <em>Dosya ekle</em>ye tıklayın.</li>
-          <li><b>Çıktı seç:</b> <em>Şuna dönüştür</em> bölümünde bir format seçin (JPEG/WebP için <em>Kalite</em> ayarlayın).</li>
+          <li><b>Dosya Seç:</b> kutuya sürükleyip bırakın ya da <em>Dosya Seç</em>ye tıklayın.</li>
+          <li><b>Çıktı seç:</b> <em>Şuna dönüştür</em> bölümünde bir format seçin (JPEG/WebP için <em>Kalite</em>
+            ayarlayın).</li>
           <li><b>Dönüştür:</b> <b>Dönüştür</b>e basın. Satırda rozet, ilerleme ve durum görünür.</li>
           <li><b>İndir:</b> durum <b>Hazır</b> olduğunda sonucu indirmek için <b>dosya adına tıklayın</b>.
-            <b>Tümünü kaydet</b> ile hepsini bir kerede kaydedin.</li>
+            <b>Tümünü kaydet</b> ile hepsini bir kerede kaydedin.
+          </li>
           <li><b>Kaldır:</b> listeden çıkarmak için dosyadaki <b>×</b> işaretine tıklayın.</li>
         </ol>
 
@@ -206,7 +215,7 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
           </ul>
         </div>
 
-        <h2 class="mt-small">Algılanan yetenekler</h2>
+        <h2 class="mt-small">Algılanan özellikler</h2>
         <div id="caps" class="cap-list"></div>
       </aside>
     </div>
@@ -632,25 +641,7 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
       </div>
     </div>
   </div>
-<script src="/app.js" defer></script>
+  <script src="/app.js" defer></script>
 </body>
 
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

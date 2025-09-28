@@ -1,5 +1,5 @@
 ﻿<!doctype html>
-<html dir="rtl"   lang="ar">
+<html dir="rtl" lang="ar">
 
 <head>
   <meta charset="utf-8" />
@@ -26,8 +26,9 @@
   <meta name="msapplication-TileColor" content="#0b1020">
 
   <!-- Canonical / hreflang -->
-  <link rel="canonical" href="https://www.all-in-one-converter.net/ar/"/>
+  <link rel="canonical" href="https://www.all-in-one-converter.net/ar/">
   <link rel="alternate" hreflang="ar" href="https://www.all-in-one-converter.net/ar/">
+  <!-- If Arabic is NOT your default, use x-default to the main site: -->
   <link rel="alternate" hreflang="x-default" href="https://www.all-in-one-converter.net/">
 
   <!-- Open Graph -->
@@ -55,53 +56,60 @@
 
   <!-- Structured data: WebSite + Organization -->
   <script type="application/ld+json">
-  {
-    "@context":"https://schema.org",
-    "@type":"WebSite",
-    "url":"https://www.all-in-one-converter.net/",
-    "name":"All-in-One حوِّلer",
-    "potentialAction":{
-      "@type":"SearchAction",
-      "target":"https://www.all-in-one-converter.net/search?q={search_term_string}",
-      "query-input":"required name=search_term_string"
+    {
+      "@context":"https://schema.org",
+      "@type":"WebSite",
+      "url":"https://www.all-in-one-converter.net/",
+      "name":"All-in-One Converter",
+      "potentialAction":{
+        "@type":"SearchAction",
+        "target":"https://www.all-in-one-converter.net/search?q={search_term_string}",
+        "query-input":"required name=search_term_string"
+      }
     }
-  }
-  </script>
-  <script type="application/ld+json">
-  {
-    "@context":"https://schema.org",
-    "@type":"Organization",
-    "name":"All-in-One حوِّلer",
-    "url":"https://www.all-in-one-converter.net/",
-    "logo":"https://www.all-in-one-converter.net/og/logo.png"
-  }
-  </script>
-  <link rel="canonical" href="https://www.all-in-one-converter.net/ar/"/>
-<style id="pair-page-guard">
-/* Disable only navigation links on pair pages; keep downloads and ads clickable */
-body.pair-page header a,
-body.pair-page nav a,
-body.pair-page .breadcrumbs a { pointer-events:none; text-decoration:none; cursor:default }
+    </script>
 
-/* Always clickable: download CTAs and ad iframes/containers */
-body.pair-page #download-links a,
-body.pair-page .adsbygoogle,
-body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
-</style>
-<link rel="stylesheet" href="../styles.min.css">
-<link rel="stylesheet" href="../styles.css">
-<!-- hreflang-start -->
-<link rel="alternate" href="https://www.all-in-one-converter.net/ar/" hreflang="x-default">
-<!-- hreflang-end -->
+  <script type="application/ld+json">
+    {
+      "@context":"https://schema.org",
+      "@type":"Organization",
+      "name":"All-in-One Converter",
+      "url":"https://www.all-in-one-converter.net/",
+      "logo":"https://www.all-in-one-converter.net/og/logo.png"
+    }
+    </script>
+
+  </script>
+  <link rel="canonical" href="https://www.all-in-one-converter.net/ar/" />
+  <style id="pair-page-guard">
+    /* Disable only navigation links on pair pages; keep downloads and ads clickable */
+    body.pair-page header a,
+    body.pair-page nav a,
+    body.pair-page .breadcrumbs a {
+      pointer-events: none;
+      text-decoration: none;
+      cursor: default
+    }
+
+    /* Always clickable: download CTAs and ad iframes/containers */
+    body.pair-page #download-links a,
+    body.pair-page .adsbygoogle,
+    body.pair-page .adsbygoogle * {
+      pointer-events: auto;
+      cursor: pointer
+    }
+  </style>
+  <link rel="stylesheet" href="../styles.min.css">
+  <link rel="stylesheet" href="../styles.css">
+  <!-- hreflang-start -->
+  <link rel="alternate" href="https://www.all-in-one-converter.net/ar/" hreflang="x-default">
+  <!-- hreflang-end -->
 </head>
 
 <body>
 
-
   <!-- good -->
   <script src="ffmpeg-esm-shim.js"></script>
-  
-
 
   <header>
     <div class="wrap  header-row">
@@ -135,7 +143,7 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
           <div class="flex2"><input class="file-input" id="file-input" type="file" multiple></div>
           <div class="flex1"><button class="btn-ghost" id="clear-btn">مسح</button></div>
         </div>
-        <div id="dropzone" class="dropzone" aria-label="Drag and drop files here">
+        <div id="dropzone" class="dropzone" aria-label="اسحب وأفلِت الملفات هنا">
           أسقط الملفات هنا أو انقر أعلاه للاختيار
         </div>
 
@@ -172,13 +180,12 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
 
         <div class="row mt">
           <button class="convert" id="convert-btn">حوِّل</button>
-          <button class="btn-ghost" id="save-all-btn" title="احفظ كل النواتج في مجلد (إن كان مدعومًا)">Save
-            All</button>
+          <button class="btn-ghost" id="save-all-btn" title="احفظ كل النواتج في مجلد (إن كان مدعومًا)">حفظ الكل</button>
         </div>
 
         <div id="banner" class="hint mt-small"></div>
 
-        <div class="filelist" id="file-list" aria-live="polite" aria-label="Selected files"></div>
+        <div class="filelist" id="file-list" aria-live="polite" aria-label="الملفات المحددة"></div>
         <div class="downloads" id="downloads" hidden>
           <div class="hint">النواتج</div>
           <div id="download-links"></div>
@@ -188,11 +195,11 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
       <aside class="aside">
         <h2 class="mt-small">البدء السريع</h2>
         <ol class="hint">
-          <li><b>إضافة ملفات:</b> اسحب وأفلِت داخل الصندوق أو انقر <em>إضافة ملفات</em>.</li>
+          <li><b>إضافة ملفات:</b> اسحب وأفلِت داخل الصندوق أو انقر <em>اختر ملفات</em>.</li>
           <li><b>اختر الناتج:</b> اختر صيغة في <em>تحويل إلى</em> (اضبط <em>الجودة</em> لـ JPEG/WebP).</li>
-          <li><b>التحويل:</b> اضغط <b>حوِّل</b>. تُظهر الصفّ شارةً وتقدّمًا وحالة.</li>
-          <li><b>التنزيل:</b> عندما تكون الحالة <b>جاهز</b>، <b>انقر اسم الملف</b> لتنزيل النتيجة.
-            استخدم <b>حفظ الكل</b> لحفظ كل النواتج دفعة واحدة.</li>
+          <li><b>التحويل:</b> اضغط <b>حوِّل</b>. يُظهر الصف شارةً والتقدّم والحالة.</li>
+          <li><b>التنزيل:</b> عندما تكون الحالة <b>جاهزة</b>، <b>انقر اسم الملف</b> لتنزيل النتيجة.
+            استخدم <b>حفظ الكل</b> لحفظ كل النواتج دفعةً واحدة.</li>
           <li><b>إزالة:</b> انقر <b>×</b> على الملف لإزالته من القائمة.</li>
         </ol>
 
@@ -632,25 +639,7 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
       </div>
     </div>
   </div>
-<script src="/app.js" defer></script>
+  <script src="/app.js" defer></script>
 </body>
 
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

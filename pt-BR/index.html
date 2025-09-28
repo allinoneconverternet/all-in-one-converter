@@ -1,12 +1,12 @@
 ﻿<!doctype html>
-<html   lang="pt-BR">
+<html lang="pt-BR">
 
 <head>
   <meta charset="utf-8" />
   <title>Conversor Tudo‑em‑Um — Rápido, Privado, no Navegador (MP3, MP4, PDF, DOCX, JPG…)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description"
-    content="Convertera áudio, vídeo, documentos e imagens (MP3, MP4, WAV, PDF, DOCX, XLSX, JPG, PNG, WebP…) instantaneamente no navegador. Sem upload — os arquivos nunca saem do seu dispositivo. Grátis e privado.">
+    content="Converta áudio, vídeo, documentos e imagens (MP3, MP4, WAV, PDF, DOCX, XLSX, JPG, PNG, WebP…) instantaneamente no navegador. Sem upload — os arquivos nunca saem do seu dispositivo. Grátis e privado.">
   <meta name="robots" content="index,follow">
   <!-- Basic favicon -->
   <link rel="icon" href="/favicon.ico">
@@ -26,21 +26,21 @@
   <meta name="msapplication-TileColor" content="#0b1020">
 
   <!-- Canonical / hreflang -->
-  <link rel="canonical" href="https://www.all-in-one-converter.net/pt-BR/"/>
+  <link rel="canonical" href="https://www.all-in-one-converter.net/pt-BR/" />
   <link rel="alternate" hreflang="pt-BR" href="https://www.all-in-one-converter.net/pt-BR/">
   <link rel="alternate" hreflang="x-default" href="https://www.all-in-one-converter.net/">
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="Conversor Tudo‑em‑Um — Rápido, Privado, no Navegador">
-  <meta property="og:description" content="Convertera MP3, MP4, PDF, DOCX, JPG e muito mais — sem upload.">
+  <meta property="og:description" content="Converta MP3, MP4, PDF, DOCX, JPG e muito mais — sem upload.">
   <meta property="og:url" content="https://www.all-in-one-converter.net/pt-BR/">
   <meta property="og:image" content="https://www.all-in-one-converter.net/og/home.png">
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Conversor Tudo‑em‑Um — Rápido, Privado, no Navegador">
-  <meta name="twitter:description" content="Convertera MP3, MP4, PDF, DOCX, JPG e muito mais — sem upload.">
+  <meta name="twitter:description" content="Converta MP3, MP4, PDF, DOCX, JPG e muito mais — sem upload.">
   <meta name="twitter:image" content="https://www.all-in-one-converter.net/og/home.png">
 
   <!-- Performance -->
@@ -59,7 +59,7 @@
     "@context":"https://schema.org",
     "@type":"WebSite",
     "url":"https://www.all-in-one-converter.net/",
-    "name":"All-in-One Converterer",
+    "name":"Conversor tudo-em-um",
     "potentialAction":{
       "@type":"SearchAction",
       "target":"https://www.all-in-one-converter.net/search?q={search_term_string}",
@@ -71,28 +71,35 @@
   {
     "@context":"https://schema.org",
     "@type":"Organization",
-    "name":"All-in-One Converterer",
+    "name":"Conversor tudo-em-um",
     "url":"https://www.all-in-one-converter.net/",
     "logo":"https://www.all-in-one-converter.net/og/logo.png"
   }
   </script>
-  <link rel="canonical" href="https://www.all-in-one-converter.net/pt-BR/"/>
-<style id="pair-page-guard">
-/* Disable only navigation links on pair pages; keep downloads and ads clickable */
-body.pair-page header a,
-body.pair-page nav a,
-body.pair-page .breadcrumbs a { pointer-events:none; text-decoration:none; cursor:default }
+  <link rel="canonical" href="https://www.all-in-one-converter.net/pt-BR/" />
+  <style id="pair-page-guard">
+    /* Disable only navigation links on pair pages; keep downloads and ads clickable */
+    body.pair-page header a,
+    body.pair-page nav a,
+    body.pair-page .breadcrumbs a {
+      pointer-events: none;
+      text-decoration: none;
+      cursor: default
+    }
 
-/* Always clickable: download CTAs and ad iframes/containers */
-body.pair-page #download-links a,
-body.pair-page .adsbygoogle,
-body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
-</style>
-<link rel="stylesheet" href="../styles.min.css">
-<link rel="stylesheet" href="../styles.css">
-<!-- hreflang-start -->
-<link rel="alternate" href="https://www.all-in-one-converter.net/ar/" hreflang="x-default">
-<!-- hreflang-end -->
+    /* Always clickable: download CTAs and ad iframes/containers */
+    body.pair-page #download-links a,
+    body.pair-page .adsbygoogle,
+    body.pair-page .adsbygoogle * {
+      pointer-events: auto;
+      cursor: pointer
+    }
+  </style>
+  <link rel="stylesheet" href="../styles.min.css">
+  <link rel="stylesheet" href="../styles.css">
+  <!-- hreflang-start -->
+  <link rel="alternate" href="https://www.all-in-one-converter.net/ar/" hreflang="x-default">
+  <!-- hreflang-end -->
 </head>
 
 <body>
@@ -100,7 +107,7 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
 
   <!-- good -->
   <script src="ffmpeg-esm-shim.js"></script>
-  
+
 
 
   <header>
@@ -130,19 +137,19 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
 
     <div class="panel grid" id="app">
       <section class="controls">
-        <h2>1) Anúncioicionar arquivos</h2>
+        <h2>1) Adicionar arquivos</h2>
         <div class="row">
           <div class="flex2"><input class="file-input" id="file-input" type="file" multiple></div>
           <div class="flex1"><button class="btn-ghost" id="clear-btn">Limpar</button></div>
         </div>
-        <div id="dropzone" class="dropzone" aria-label="Drag and drop files here">
+        <div id="dropzone" class="dropzone" aria-label=Arraste e solte arquivos aqui">
           Solte os arquivos aqui ou clique acima para selecionar
         </div>
 
-        <h2 class="mt">2) Escolher tipo de saída</h2>
+        <h2 class="mt">2) Escolher formato de saída</h2>
         <div class="row">
           <div class="flex1">
-            <label for="target-format">Converterer para</label>
+            <label for="target-format">Converter para</label>
             <select id="target-format"></select>
           </div>
           <div id="quality-wrap" class="quality-wrap">
@@ -172,13 +179,13 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
 
         <div class="row mt">
           <button class="convert" id="convert-btn">Converter</button>
-          <button class="btn-ghost" id="save-all-btn" title="Salvar todas as saídas em uma pasta (se houver suporte)">Save
-            All</button>
+          <button class="btn-ghost" id="save-all-btn"
+            title="Salvar todas as saídas em uma pasta (se houver suporte)">Salvar tudo</button>
         </div>
 
         <div id="banner" class="hint mt-small"></div>
 
-        <div class="filelist" id="file-list" aria-live="polite" aria-label="Selected files"></div>
+        <div class="filelist" id="file-list" aria-live="polite" aria-label="Arquivos selecionados"></div>
         <div class="downloads" id="downloads" hidden>
           <div class="hint">Resultados</div>
           <div id="download-links"></div>
@@ -188,10 +195,12 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
       <aside class="aside">
         <h2 class="mt-small">Início rápido</h2>
         <ol class="hint">
-          <li><b>Anúncioicionar arquivos:</b> arraste e solte na caixa ou clique em <em>Anúncioicionar arquivos</em>.</li>
-          <li><b>Escolher saída:</b> selecione um formato em <em>Converterer para</em> (defina a <em>Qualidade</em> para JPEG/WebP).</li>
-          <li><b>Converterer:</b> clique em <b>Converterer</b>. A linha mostra um selo, progresso e status.</li>
-          <li><b>Baixar:</b> quando o status estiver <b>Pronto</b>, <b>clique no nome do arquivo</b> para baixar o resultado.
+          <li><b>Adicionar arquivos:</b> arraste e solte na caixa ou clique em <em>Adicionar arquivos</em>.</li>
+          <li><b>Escolher saída:</b> selecione um formato em <em>Converter para</em> (defina a <em>Qualidade</em> para
+            JPEG/WebP).</li>
+          <li><b>Converter:</b> clique em <b>Converter</b>. A linha mostra um selo, progresso e status.</li>
+          <li><b>Baixar:</b> quando o status estiver <b>Pronto</b>, <b>clique no nome do arquivo</b> para baixar o
+            resultado.
             Use <b>Salvar tudo</b> para salvar todas as saídas de uma vez.</li>
           <li><b>Remover:</b> clique no <b>×</b> em um arquivo para removê‑lo da lista.</li>
         </ol>
@@ -632,26 +641,7 @@ body.pair-page .adsbygoogle * { pointer-events:auto; cursor:pointer }
       </div>
     </div>
   </div>
-<script src="/app.js" defer></script>
+  <script src="/app.js" defer></script>
 </body>
 
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
