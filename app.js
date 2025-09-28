@@ -1,4 +1,4 @@
-// === DEBUG INSTRUMENTATION v3 ===
+﻿// === DEBUG INSTRUMENTATION v3 ===
 window.DEBUG_CONVERTER = true;
 function DBG() { try { if (window.DEBUG_CONVERTER) console.log.apply(console, arguments); } catch (e) { } }
 function DBGW() { try { if (window.DEBUG_CONVERTER) console.warn.apply(console, arguments); } catch (e) { } }
@@ -102,12 +102,6 @@ async function diagnoseWrapper(src, reason) {
     show(reason || 'ffmpeg.js loaded but did not expose createFFmpeg (wrong build/namespace).', 'error');
   }
 }
-
-function show(msg, kind = 'info') {
-  if (typeof showBanner === 'function') return showBanner(msg, kind);
-  console[kind === 'error' ? 'error' : 'log'](msg);
-}
-
 // === END DEBUG INSTRUMENTATION v3 ===
 // Show an actionable error in the banner and clean up the row UI.
 function friendlyCatch(err, { status, card, runId }) {
@@ -115,7 +109,7 @@ function friendlyCatch(err, { status, card, runId }) {
     if (typeof isStale === 'function' && isStale(runId)) return; // a newer run started
 
     if (status) {
-      status.textContent = 'Failed';
+      status.textContent = t('failed');
       status.style.color = 'var(--danger)';
     }
     card?.classList?.remove('is-converting');
@@ -124,7 +118,7 @@ function friendlyCatch(err, { status, card, runId }) {
     const msg =
       (err && (err.message || err.details)) ||
       (typeof err === 'string' ? err : '') ||
-      'Unknown error';
+      t('unknownError');
 
     // If it smells like a PDF.js version mismatch, add a hint
     const hint = /version|Worker|API/i.test(msg)
@@ -292,6 +286,162 @@ function estimateSafeBudgetBytes() {
 
 /* ========= 3) Vendor loader with local+CDN fallback ========= */
 const features = { pdf: false, docx: false, xlsx: false, pptx: false, ocr: false, makePdf: false, makeDocx: false, ffmpeg: false };
+
+/* ========= i18n: light-weight runtime translations ========= */
+const I18N = {
+  en: {
+    // statuses / controls
+    queued: 'Queued',
+    preparing: 'Preparing…',
+    converting: 'Converting…',
+    convertingPct: 'Converting… {pct}%',
+    finishing: 'Finishing…',
+    ready: 'Ready',
+    readyN: 'Ready ({n} files)',
+    failed: 'Failed',
+    remove: 'Remove',
+    unknown: 'unknown',
+    downloadX: 'Download {name}',
+
+    // groups
+    group_text: 'Text', group_documents: 'Documents', group_spreadsheets: 'Spreadsheets', group_images: 'Images', group_media: 'Media',
+
+    // options (simple)
+    'opt.txt': 'Plain text (.txt)', 'opt.md': 'Markdown (.md)', 'opt.html': 'HTML (.html)',
+    'opt.csv': 'CSV (.csv)', 'opt.json': 'JSON (.json)', 'opt.jsonl': 'JSON Lines (.jsonl)', 'opt.rtf': 'Rich Text (.rtf)',
+    'opt.pdf': 'PDF (.pdf)', 'opt.docx': 'Word DOCX (.docx)', 'opt.xlsx': 'Excel XLSX (.xlsx)',
+    'opt.png': 'PNG (.png)', 'opt.jpeg': 'JPEG (.jpg)', 'opt.webp': 'WebP (.webp)', 'opt.svg': 'SVG (.svg)',
+    'opt.gif': 'GIF from video (.gif)',
+    'opt.audioGeneric': 'Audio {fmt} ({ext})',
+    'opt.videoGeneric': 'Video {fmt} ({ext})',
+
+    // banners
+    'banner.cleared': 'Cleared.',
+    'banner.noOutputs': 'No outputs yet. Convert first.',
+    'banner.addFirst': 'Add some files first.',
+    'banner.doneSummary': 'Done. {s} succeeded{f, plural, =0{} other{, {f} failed}}.',
+    'banner.tooMuchData': 'Too much data at once ({total}). Budget {budget}.',
+    'banner.exceedsBudget': 'Total selected {total} exceeds budget {budget}. Will process sequentially.',
+    'banner.triggeredDownloads': 'Triggered downloads for each file.',
+    'banner.savedAll': 'Saved all files to your chosen folder.',
+    'banner.saveCancelled': 'Save cancelled.',
+    'banner.linkCopied': 'Link copied to clipboard.',
+    'banner.openFolderFail': 'Couldn’t open the folder. Try again or download individually below.',
+
+    // errors
+    couldntConvert: 'Couldn’t convert: {msg}',
+    unknownError: 'Unknown error'
+  },
+
+  // --- Add localized keys. (Only the different words; rest fall back to English) ---
+  de: { queued: 'Wartet', preparing: 'Wird vorbereitet…', converting: 'Wird konvertiert…', convertingPct: 'Wird konvertiert… {pct}%', finishing: 'Wird abgeschlossen…', ready: 'Fertig', readyN: 'Fertig ({n} Dateien)', failed: 'Fehlgeschlagen', remove: 'Entfernen', unknown: 'unbekannt', downloadX: '{name} herunterladen', group_text: 'Text', group_documents: 'Dokumente', group_spreadsheets: 'Tabellen', group_images: 'Bilder', group_media: 'Medien', 'opt.txt': 'Klartext (.txt)', 'opt.md': 'Markdown (.md)', 'opt.html': 'HTML (.html)', 'opt.csv': 'CSV (.csv)', 'opt.json': 'JSON (.json)', 'opt.jsonl': 'JSON Lines (.jsonl)', 'opt.rtf': 'Rich Text (.rtf)', 'opt.pdf': 'PDF (.pdf)', 'opt.docx': 'Word DOCX (.docx)', 'opt.xlsx': 'Excel XLSX (.xlsx)', 'opt.png': 'PNG (.png)', 'opt.jpeg': 'JPEG (.jpg)', 'opt.webp': 'WebP (.webp)', 'opt.svg': 'SVG (.svg)', 'opt.gif': 'GIF aus Video (.gif)', 'opt.audioGeneric': 'Audio {fmt} ({ext})', 'opt.videoGeneric': 'Video {fmt} ({ext})', 'banner.cleared': 'Gelöscht.', 'banner.noOutputs': 'Noch keine Ausgaben. Bitte zuerst konvertieren.', 'banner.addFirst': 'Fügen Sie zuerst Dateien hinzu.', 'banner.doneSummary': 'Fertig. {s} erfolgreich{f, plural, =0{} other{, {f} fehlgeschlagen}}.', 'banner.tooMuchData': 'Zu viele Daten auf einmal ({total}). Budget {budget}.', 'banner.exceedsBudget': 'Gesamt {total} überschreitet Budget {budget}. Verarbeitung nacheinander.', 'banner.triggeredDownloads': 'Downloads für jede Datei gestartet.', 'banner.savedAll': 'Alle Dateien in den gewählten Ordner gespeichert.', 'banner.saveCancelled': 'Speichern abgebrochen.', 'banner.linkCopied': 'Link in die Zwischenablage kopiert.', 'banner.openFolderFail': 'Ordner konnte nicht geöffnet werden. Versuchen Sie es erneut oder laden Sie einzeln herunter.', couldntConvert: 'Konnte nicht konvertieren: {msg}', unknownError: 'Unbekannter Fehler' },
+
+  es: { queued: 'En cola', preparing: 'Preparando…', converting: 'Convirtiendo…', convertingPct: 'Convirtiendo… {pct}%', finishing: 'Finalizando…', ready: 'Listo', readyN: 'Listo ({n} archivos)', failed: 'Error', remove: 'Quitar', unknown: 'desconocido', downloadX: 'Descargar {name}', group_text: 'Texto', group_documents: 'Documentos', group_spreadsheets: 'Hojas de cálculo', group_images: 'Imágenes', group_media: 'Medios', 'opt.txt': 'Texto sin formato (.txt)', 'opt.md': 'Markdown (.md)', 'opt.html': 'HTML (.html)', 'opt.csv': 'CSV (.csv)', 'opt.json': 'JSON (.json)', 'opt.jsonl': 'JSON Lines (.jsonl)', 'opt.rtf': 'Rich Text (.rtf)', 'opt.pdf': 'PDF (.pdf)', 'opt.docx': 'Word DOCX (.docx)', 'opt.xlsx': 'Excel XLSX (.xlsx)', 'opt.png': 'PNG (.png)', 'opt.jpeg': 'JPEG (.jpg)', 'opt.webp': 'WebP (.webp)', 'opt.svg': 'SVG (.svg)', 'opt.gif': 'GIF desde video (.gif)', 'opt.audioGeneric': 'Audio {fmt} ({ext})', 'opt.videoGeneric': 'Vídeo {fmt} ({ext})', 'banner.cleared': 'Borrado.', 'banner.noOutputs': 'Aún no hay archivos de salida. Primero convierta.', 'banner.addFirst': 'Añade archivos primero.', 'banner.doneSummary': 'Listo. {s} correctos{f, plural, =0{} other{, {f} fallidos}}.', 'banner.tooMuchData': 'Demasiados datos a la vez ({total}). Límite {budget}.', 'banner.exceedsBudget': 'Total {total} supera el límite {budget}. Se procesará secuencialmente.', 'banner.triggeredDownloads': 'Descargas iniciadas para cada archivo.', 'banner.savedAll': 'Todos los archivos guardados en la carpeta elegida.', 'banner.saveCancelled': 'Guardado cancelado.', 'banner.linkCopied': 'Enlace copiado al portapapeles.', 'banner.openFolderFail': 'No se pudo abrir la carpeta. Inténtalo de nuevo o descarga individualmente.', couldntConvert: 'No se pudo convertir: {msg}', unknownError: 'Error desconocido' },
+
+  fr: { queued: 'En file d’attente', preparing: 'Préparation…', converting: 'Conversion en cours…', convertingPct: 'Conversion… {pct} %', finishing: 'Finalisation…', ready: 'Prêt', readyN: 'Prêt ({n} fichiers)', failed: 'Échec', remove: 'Supprimer', unknown: 'inconnu', downloadX: 'Télécharger {name}', group_text: 'Texte', group_documents: 'Documents', group_spreadsheets: 'Feuilles de calcul', group_images: 'Images', group_media: 'Médias', 'opt.txt': 'Texte brut (.txt)', 'opt.md': 'Markdown (.md)', 'opt.html': 'HTML (.html)', 'opt.csv': 'CSV (.csv)', 'opt.json': 'JSON (.json)', 'opt.jsonl': 'JSON Lines (.jsonl)', 'opt.rtf': 'Texte enrichi (.rtf)', 'opt.pdf': 'PDF (.pdf)', 'opt.docx': 'Word DOCX (.docx)', 'opt.xlsx': 'Excel XLSX (.xlsx)', 'opt.png': 'PNG (.png)', 'opt.jpeg': 'JPEG (.jpg)', 'opt.webp': 'WebP (.webp)', 'opt.svg': 'SVG (.svg)', 'opt.gif': 'GIF depuis une vidéo (.gif)', 'opt.audioGeneric': 'Audio {fmt} ({ext})', 'opt.videoGeneric': 'Vidéo {fmt} ({ext})', 'banner.cleared': 'Effacé.', 'banner.noOutputs': 'Aucun résultat pour l’instant. Lancez une conversion.', 'banner.addFirst': 'Ajoutez des fichiers d’abord.', 'banner.doneSummary': 'Terminé. {s} réussis{f, plural, =0{} other{, {f} échecs}}.', 'banner.tooMuchData': 'Trop de données à la fois ({total}). Budget {budget}.', 'banner.exceedsBudget': 'Le total {total} dépasse le budget {budget}. Traitement séquentiel.', 'banner.triggeredDownloads': 'Téléchargements déclenchés pour chaque fichier.', 'banner.savedAll': 'Tous les fichiers enregistrés dans le dossier choisi.', 'banner.saveCancelled': 'Enregistrement annulé.', 'banner.linkCopied': 'Lien copié dans le presse-papiers.', 'banner.openFolderFail': 'Impossible d’ouvrir le dossier. Réessayez ou téléchargez individuellement.', couldntConvert: 'Conversion impossible : {msg}', unknownError: 'Erreur inconnue' },
+
+  it: { queued: 'In coda', preparing: 'Preparazione…', converting: 'Conversione in corso…', convertingPct: 'Conversione… {pct}%', finishing: 'Finalizzazione…', ready: 'Pronto', readyN: 'Pronto ({n} file)', failed: 'Non riuscito', remove: 'Rimuovi', unknown: 'sconosciuto', downloadX: 'Scarica {name}', group_text: 'Testo', group_documents: 'Documenti', group_spreadsheets: 'Fogli di calcolo', group_images: 'Immagini', group_media: 'Media' },
+
+  pl: { queued: 'W kolejce', preparing: 'Przygotowywanie…', converting: 'Konwertowanie…', convertingPct: 'Konwertowanie… {pct}%', finishing: 'Finalizowanie…', ready: 'Gotowe', readyN: 'Gotowe ({n} pliki/ów)', failed: 'Niepowodzenie', remove: 'Usuń', unknown: 'nieznany', downloadX: 'Pobierz {name}', group_text: 'Tekst', group_documents: 'Dokumenty', group_spreadsheets: 'Arkusze', group_images: 'Obrazy', group_media: 'Multimedia' },
+
+  pt: { queued: 'Na fila', preparing: 'Preparando…', converting: 'Convertendo…', convertingPct: 'Convertendo… {pct}%', finishing: 'Finalizando…', ready: 'Pronto', readyN: 'Pronto ({n} ficheiros)', failed: 'Falhou', remove: 'Remover', unknown: 'desconhecido', downloadX: 'Transferir {name}', group_text: 'Texto', group_documents: 'Documentos', group_spreadsheets: 'Folhas de cálculo', group_images: 'Imagens', group_media: 'Multimédia' },
+  'pt-BR': { queued: 'Na fila', preparing: 'Preparando…', converting: 'Convertendo…', convertingPct: 'Convertendo… {pct}%', finishing: 'Finalizando…', ready: 'Pronto', readyN: 'Pronto ({n} arquivos)', failed: 'Falhou', remove: 'Remover', unknown: 'desconhecido', downloadX: 'Baixar {name}', group_text: 'Texto', group_documents: 'Documentos', group_spreadsheets: 'Planilhas', group_images: 'Imagens', group_media: 'Mídia' },
+
+  ja: { queued: 'キュー', preparing: '準備中…', converting: '変換中…', convertingPct: '変換中… {pct}%', finishing: '完了処理中…', ready: '完了', readyN: '完了（{n} ファイル）', failed: '失敗', remove: '削除', unknown: '不明', downloadX: '{name} をダウンロード', group_text: 'テキスト', group_documents: 'ドキュメント', group_spreadsheets: 'スプレッドシート', group_images: '画像', group_media: 'メディア' },
+
+  ru: { queued: 'В очереди', preparing: 'Подготовка…', converting: 'Преобразование…', convertingPct: 'Преобразование… {pct}%', finishing: 'Завершение…', ready: 'Готово', readyN: 'Готово ({n} файлов)', failed: 'Сбой', remove: 'Удалить', unknown: 'неизвестно', downloadX: 'Скачать {name}', group_text: 'Текст', group_documents: 'Документы', group_spreadsheets: 'Таблицы', group_images: 'Изображения', group_media: 'Медиа' },
+
+  'zh-CN': { queued: '排队中', preparing: '准备中…', converting: '正在转换…', convertingPct: '正在转换… {pct}%', finishing: '正在完成…', ready: '就绪', readyN: '就绪（{n} 个文件）', failed: '失败', remove: '移除', unknown: '未知', downloadX: '下载 {name}', group_text: '文本', group_documents: '文档', group_spreadsheets: '表格', group_images: '图片', group_media: '媒体' },
+
+  ko: { queued: '대기 중', preparing: '준비 중…', converting: '변환 중…', convertingPct: '변환 중… {pct}%', finishing: '마무리 중…', ready: '완료', readyN: '완료 ({n}개 파일)', failed: '실패', remove: '제거', unknown: '알 수 없음', downloadX: '{name} 다운로드', group_text: '텍스트', group_documents: '문서', group_spreadsheets: '스프레드시트', group_images: '이미지', group_media: '미디어' },
+
+  hi: { queued: 'प्रतीक्षा में', preparing: 'तैयारी…', converting: 'कनवर्ट हो रहा है…', convertingPct: 'कनवर्ट हो रहा है… {pct}%', finishing: 'समाप्ति…', ready: 'तैयार', readyN: 'तैयार ({n} फ़ाइलें)', failed: 'असफल', remove: 'हटाएँ', unknown: 'अज्ञात', downloadX: '{name} डाउनलोड करें', group_text: 'टेक्स्ट', group_documents: 'दस्तावेज़', group_spreadsheets: 'स्प्रेडशीट', group_images: 'छवियाँ', group_media: 'मीडिया' },
+
+  ar: { queued: 'في قائمة الانتظار', preparing: 'جارٍ التحضير…', converting: 'جارٍ التحويل…', convertingPct: 'جارٍ التحويل… {pct}%', finishing: 'جارٍ الإنهاء…', ready: 'جاهز', readyN: 'جاهز ({n} ملفات)', failed: 'فشل', remove: 'إزالة', unknown: 'غير معروف', downloadX: 'تنزيل {name}', group_text: 'نص', group_documents: 'مستندات', group_spreadsheets: 'جداول بيانات', group_images: 'صور', group_media: 'وسائط' },
+
+  uk: { queued: 'У черзі', preparing: 'Підготовка…', converting: 'Перетворення…', convertingPct: 'Перетворення… {pct}%', finishing: 'Завершення…', ready: 'Готово', readyN: 'Готово ({n} файлів)', failed: 'Помилка', remove: 'Вилучити', unknown: 'невідомо', downloadX: 'Завантажити {name}', group_text: 'Текст', group_documents: 'Документи', group_spreadsheets: 'Таблиці', group_images: 'Зображення', group_media: 'Медіа' },
+
+  tr: { queued: 'Kuyrukta', preparing: 'Hazırlanıyor…', converting: 'Dönüştürülüyor…', convertingPct: 'Dönüştürülüyor… {pct}%', finishing: 'Tamamlanıyor…', ready: 'Hazır', readyN: 'Hazır ({n} dosya)', failed: 'Başarısız', remove: 'Kaldır', unknown: 'bilinmiyor', downloadX: '{name} indir', group_text: 'Metin', group_documents: 'Belgeler', group_spreadsheets: 'Hesap tabloları', group_images: 'Görseller', group_media: 'Medya' },
+
+  nl: { queued: 'In de wachtrij', preparing: 'Voorbereiden…', converting: 'Bezig met converteren…', convertingPct: 'Converteren… {pct}%', finishing: 'Bezig met afronden…', ready: 'Klaar', readyN: 'Klaar ({n} bestanden)', failed: 'Mislukt', remove: 'Verwijderen', unknown: 'onbekend', downloadX: '{name} downloaden', group_text: 'Tekst', group_documents: 'Documenten', group_spreadsheets: 'Spreadsheets', group_images: 'Afbeeldingen', group_media: 'Media' },
+};
+
+(function initI18N() {
+  const htmlLang = (document.documentElement.lang || 'en').trim();
+  const norm = htmlLang.toLowerCase();
+  const LANG_ALIAS = {
+    'pt-br': 'pt-BR', 'pt_pt': 'pt', 'zh': 'zh-CN', 'zh-hans': 'zh-CN', 'zh-cn': 'zh-CN',
+    'he': 'ar', // fallback RTL if needed
+  };
+  const lang = (() => {
+    if (I18N[htmlLang]) return htmlLang;
+    if (I18N[norm]) return norm;
+    if (I18N[LANG_ALIAS[norm]]) return LANG_ALIAS[norm];
+    const base = norm.split('-')[0];
+    return I18N[base] ? base : 'en';
+  })();
+
+  function fmt(s, vars) {
+    return String(s).replace(/\{(\w+)\}/g, (_, k) => (vars && k in vars) ? vars[k] : '{' + k + '}');
+  }
+
+  window.t = function t(key, vars) {
+    const pack = I18N[lang] || I18N.en;
+    const s = (pack[key] ?? I18N.en[key] ?? key);
+    return fmt(s, vars);
+  };
+
+  // Build option labels without inflating the dictionary
+  window.optLabel = function optLabel(val) {
+    const simple = {
+      txt: 'opt.txt', md: 'opt.md', html: 'opt.html', csv: 'opt.csv',
+      json: 'opt.json', jsonl: 'opt.jsonl', rtf: 'opt.rtf',
+      pdf: 'opt.pdf', docx: 'opt.docx', xlsx: 'opt.xlsx',
+      png: 'opt.png', jpeg: 'opt.jpeg', webp: 'opt.webp', svg: 'opt.svg',
+      gif: 'opt.gif'
+    };
+    if (simple[val]) return t(simple[val]);
+    // audio/video family
+    if (['mp3', 'wav', 'ogg', 'm4a'].includes(val)) return t('opt.audioGeneric', { fmt: val.toUpperCase(), ext: '.' + val });
+    if (['mp4', 'webm'].includes(val)) return t('opt.videoGeneric', { fmt: val.toUpperCase(), ext: '.' + val });
+    return val.toUpperCase() + ' (.' + val + ')';
+  };
+
+  // Intercept showBanner to translate common messages without touching call sites
+  const _show = (typeof window.showBanner === 'function') ? window.showBanner : null;
+  window.showBanner = function (msg, kind = 'info') {
+    try {
+      let m = String(msg);
+
+      if (m === 'Cleared.') m = t('banner.cleared');
+      else if (m === 'No outputs yet. Convert first.') m = t('banner.noOutputs');
+      else if (m === 'Add some files first.') m = t('banner.addFirst');
+      else if (/^Done\.\s+(\d+)\s+succeeded(?:,\s+(\d+)\s+failed)?\./.test(m)) {
+        const m2 = m.match(/^Done\.\s+(\d+)\s+succeeded(?:,\s+(\d+)\s+failed)?\./);
+        const s = m2[1] | 0; const f = (m2[2] | 0) || 0;
+        m = t('banner.doneSummary', { s: s, f: f });
+      } else if (/^Too much data at once \((.+)\)\. Budget (.+)\.\$/.test(m)) {
+        const mm = m.match(/^Too much data at once \((.+)\)\. Budget (.+)\./);
+        if (mm) m = t('banner.tooMuchData', { total: mm[1], budget: mm[2] });
+      } else if (/^Total selected (.+) exceeds budget (.+)\. Will process sequentially\.$/.test(m)) {
+        const mm = m.match(/^Total selected (.+) exceeds budget (.+)\. Will process sequentially\.$/);
+        if (mm) m = t('banner.exceedsBudget', { total: mm[1], budget: mm[2] });
+      } else if (m === 'Triggered downloads for each file.') m = t('banner.triggeredDownloads');
+      else if (m === 'Saved all files to your chosen folder.') m = t('banner.savedAll');
+      else if (m === 'Save cancelled.') m = t('banner.saveCancelled');
+      else if (m === 'Link copied to clipboard.') m = t('banner.linkCopied');
+      else if (/^Couldn’t open the folder\./.test(m)) m = t('banner.openFolderFail');
+
+      if (_show) return _show(m, kind);
+      console[kind === 'error' ? 'error' : 'log'](m);
+    } catch { if (_show) return _show(msg, kind); }
+  };
+
+  // expose lang for debugging
+  window.APP_LANG = lang;
+})();
+
+// Translation packs (minimal keys used by runtime)
 
 
 function loadScript(url) {
@@ -472,7 +622,7 @@ async function ensureVendors() {
   features.ocr = !!window.Tesseract;
   features.makePdf = !!(window.jspdf && window.jspdf.jsPDF);
   features.makeDocx = !!window.docx;
-  features.ffmpeg = !!(window.FFmpeg && window.FFmpeg.createFFmpeg);
+  features.ffmpeg = !!(window.FFmpeg && (window.FFmpeg.createFFmpeg || window.FFmpeg.FFmpeg));
 
   // --- tiny banner helper (falls back to console if your app doesn't have showBanner) ---
   const show = (msg, kind = 'info') => {
@@ -625,7 +775,7 @@ function setRowProgress(index, frac = 0) {
   if (pr && 'value' in pr) pr.value = pct;
 
   // constant label during conversion; switch at completion
-  if (st) st.textContent = (pct >= 100 ? 'Finishing…' : 'Converting…');
+  if (st) st.textContent = (pct >= 100 ? t('finishing') : t('converting'));
 
   // class drives the CSS base width used while converting
   if (card) {
@@ -645,9 +795,9 @@ function setRowProgress(index, frac = 0) {
 
 /** Convenience: show some coarse steps for libraries that don't expose granular progress. */
 function stepper(index, steps = [
-  ['Reading…', 0.10],
-  ['Processing…', 0.50],
-  ['Encoding…', 0.90],
+  [t('preparing'), 0.10],
+  [t('processing'), 0.50],
+  [t('encoding'), 0.90],
 ]) {
   let i = 0;
   return {
@@ -658,7 +808,7 @@ function stepper(index, steps = [
       }
     },
     done() {
-      setRowProgress(index, 1, 'Done');
+      setRowProgress(index, 1, t('finishing'));
       const card = document.getElementById('file-list')?.children[index];
       if (card) card.classList.remove('is-converting');
     }
@@ -764,7 +914,7 @@ function registerOutputs(index, outs, runId, target) {
 
     if (badgeEl) badgeEl.textContent = badgeForOutputs(outs, target);
 
-    if (status) status.textContent = outs.length > 1 ? `Ready (${outs.length} files)` : 'Ready';
+    if (status) status.textContent = outs.length > 1 ? t('readyN', { n: outs.length }) : t('ready');
     if (pr) pr.value = 100;
 
     card.classList.remove('is-converting');
@@ -776,32 +926,32 @@ function registerOutputs(index, outs, runId, target) {
 }
 
 
-function createFileCard(index, file, badgeText = '', statusText = 'Queued') {
+function createFileCard(index, file, badgeText = '', statusText = t('queued')) {
   const card = document.createElement('div');
-  card.className = 'filecard is-converting';  // you can drop is-converting if not needed
+  card.className = 'filecard is-converting';
 
+  const typeLabel = file.type || t('unknown');
   card.innerHTML = `
     <div class="file-meta">
       <div class="f-name" title="${file.name}" aria-disabled="true">
         <strong>${file.name}</strong>
       </div>
-      <div class="sub">${prettySize(file.size)} • ${file.type || 'unknown'}</div>
+      <div class="sub">${fmtBytes(file.size)} • ${typeLabel}</div>
     </div>
 
     <div class="file-controls">
       <div class="badge">${badgeText}</div>
       <progress class="file-progress" id="prog-${index}" max="100" value="0"></progress>
       <div class="status" id="status-${index}">${statusText}</div>
-      <button type="button" class="file-remove" data-index="${index}" aria-label="Remove ${file.name}" title="Remove">×</button>
+      <button type="button" class="file-remove" data-index="${index}" aria-label="${t('remove')} ${file.name}" title="${t('remove')}">×</button>
     </div>
   `;
 
   // remove button
   card.querySelector('.file-remove').addEventListener('click', (e) => {
     const i = +e.currentTarget.dataset.index;
-    // remove from DOM
     card.remove();
-    // TODO: also remove from your state if needed (state.files.splice(i,1), etc.)
+    // also remove from app state if you keep one (e.g., files.splice(i,1))
   });
 
   return card;
@@ -1036,7 +1186,7 @@ function refreshTargetDropdown() {
   const allowed = possibleTargetsForFiles(state.files);
   rebuildTargetDropdown(allowed);
   if (allowed.size === 0 && state.files.length) {
-    showBanner('No common output for the selected files.', 'error');
+    showBanner(t('banner.noCommonOutput'));
   }
 }
 
@@ -1062,26 +1212,34 @@ function getFileListEl() {
 /* ========= 5) Build target dropdown ========= */
 /* ========= 5) Build target dropdown ========= */
 function buildTargets() {
-  if (!targetFormat || !qualityWrap) return; // guard if DOM not ready
+  if (!targetFormat || !qualityWrap) return;
 
   const groupsOrder = ['text', 'documents', 'spreadsheets', 'images', 'media'];
-  const labels = { text: 'Text', documents: 'Documents', spreadsheets: 'Spreadsheets', images: 'Images', media: 'Media' };
+  const groupLabelKey = { text: 'group_text', documents: 'group_documents', spreadsheets: 'group_spreadsheets', images: 'group_images', media: 'group_media' };
 
   targetFormat.innerHTML = '';
   for (const key of groupsOrder) {
     if (!ENABLE_OUTPUTS[key]) continue;
     const items = TARGET_GROUPS[key]; if (!items) continue;
-    const og = document.createElement('optgroup'); og.label = labels[key];
-    items.forEach(([val, label]) => {
-      const o = document.createElement('option'); o.value = val; o.textContent = label; og.appendChild(o);
+
+    const og = document.createElement('optgroup');
+    og.label = t(groupLabelKey[key]);
+    items.forEach(([val/*, labelIgnored*/]) => {
+      const o = document.createElement('option');
+      o.value = val;
+      o.textContent = optLabel(val);            // ← localized label
+      og.appendChild(o);
     });
     targetFormat.appendChild(og);
   }
   if (ENABLE_OUTPUTS.images && [...targetFormat.querySelectorAll('option')].some(o => o.value === 'jpeg')) {
     targetFormat.value = 'jpeg';
   }
-  qualityWrap.style.display = (targetFormat.value === 'jpeg' || targetFormat.value === 'webp') ? '' : 'none';
+  const v = targetFormat.value;
+  qualityWrap.style.display = (v === 'jpeg' || v === 'webp') ? '' : 'none';
 }
+window.refreshTargetDropdown = buildTargets; // allow external refresh
+
 
 // Call it once the DOM is ready (works with or without <script defer>)
 if (document.readyState === 'loading') {
@@ -1167,7 +1325,7 @@ function renderFileList() {
     const meta = el('div', 'file-meta');
     meta.innerHTML =
       `<div class="f-name" title="${f.name}" aria-disabled="true"><strong>${f.name}</strong></div>
-       <div class="sub">${fmtBytes(f.size)} • ${f.type || 'unknown'}</div>`;
+       <div class="sub">${fmtBytes(f.size)} • ${f.type || t('unknown')}</div>`;
 
     // Right controls (grouped): badge + progress + status
     const ctrls = el('div', 'file-controls');
@@ -1230,11 +1388,12 @@ function wireFFmpegProgress(ff, index) {
     const progEl = document.getElementById('prog-' + index);
     const statusEl = document.getElementById('status-' + index);
     if (progEl) progEl.value = p;
-    if (statusEl) statusEl.textContent = p >= 100 ? 'Finishing…' : `Converting… ${p}%`;
+    if (statusEl) statusEl.textContent = p >= 100 ? t('finishing') : t('convertingPct', { pct: p });
   };
   if (typeof ff.setProgress === 'function') ff.setProgress(handler);
   else if (typeof ff.on === 'function') { try { ff.off?.('progress', ff._progressHandler); } catch { } ff._progressHandler = handler; ff.on('progress', handler); }
 }
+
 
 
 // Local-only: ensure the UMD wrapper is present (no CDN)
@@ -1302,7 +1461,7 @@ async function convertMediaFile(file, target, kind, index) {
     const pr = document.getElementById('prog-' + index);
     const st = document.getElementById('status-' + index);
     if (pr) pr.value = pct;
-    if (st) st.textContent = pct >= 100 ? 'Finishing…' : `Converting…`;
+    if (st) st.textContent = pct >= 100 ? t('finishing') : `Converting…`;
   };
   if (typeof ff.setProgress === 'function') ff.setProgress(update);
   else if (typeof ff.on === 'function') {
@@ -1910,11 +2069,11 @@ async function runJob(file, index, target, runId) {
     nameEl.removeAttribute('tabindex');
     nameEl.removeAttribute('role');
   }
-  if (status) status.textContent = 'Converting…';
+  if (status) status.textContent = t('converting');
   if (prog) prog.value = 0;
 
   try {
-    if (status) status.textContent = 'Converting…';
+    if (status) status.textContent = t('converting');
     if (prog) prog.value = 0;
 
     // let the progress handler know which row to update
@@ -1993,7 +2152,7 @@ saveAllBtn.addEventListener('click', async () => {
   if (dl) obs.observe(dl, { childList: true });
 })();
 
-showBanner('Ready. Add files, pick output, and hit Convert.');
+showBanner(t('banner.readyHint'));
 
 /* ========= 9) Ads toggles (unchanged) ========= */
 (function () {
@@ -2097,4 +2256,242 @@ showBanner('Ready. Add files, pick output, and hit Convert.');
     }
   };
   window.requestAnimationFrame(watch);
+})();
+
+/* I18N AUTO PATCH */
+// Ensure English pack has the new keys; other languages will fall back to these.
+try {
+  Object.assign(I18N.en, {
+    preparing: 'Preparing…',
+    processing: 'Processing…',
+    encoding: 'Encoding…',
+    pdfjsHint: ' (Check that your PDF.js main library and worker are the same major version.)',
+    'banner.couldntConvert': 'Couldn’t convert: {msg}{hint}',
+    'banner.readyHint': 'Ready. Add files, pick output, and hit Convert.',
+    'banner.removedX': 'Removed {name}.',
+    'banner.noCommonOutput': 'No common output for the selected files.'
+  });
+} catch (e) { /* I18N.en not found? ignore */ }
+
+// Localized target dropdown override (groups + options)
+(function () {
+  function buildTargetsLocalized() {
+    try {
+      const targetFormat = window.targetFormat || document.querySelector('#targetFormat, select[name=target], select#target');
+      const qualityWrap = window.qualityWrap || document.querySelector('#qualityWrap, .quality-wrap, [data-role="quality"]');
+      if (!targetFormat || !qualityWrap) return;
+
+      const groupsOrder = ['text', 'documents', 'spreadsheets', 'images', 'media'];
+      const groupLabelKey = { text: 'group_text', documents: 'group_documents', spreadsheets: 'group_spreadsheets', images: 'group_images', media: 'group_media' };
+
+      targetFormat.innerHTML = '';
+      for (const key of groupsOrder) {
+        if (!window.ENABLE_OUTPUTS || !window.ENABLE_OUTPUTS[key]) continue;
+        const items = (window.TARGET_GROUPS && window.TARGET_GROUPS[key]) || null;
+        if (!items) continue;
+
+        const og = document.createElement('optgroup');
+        og.label = (typeof t === 'function') ? t(groupLabelKey[key]) : key;
+
+        items.forEach(([val]) => {
+          const o = document.createElement('option');
+          o.value = val;
+          o.textContent = (typeof optLabel === 'function') ? optLabel(val) : (val.toUpperCase() + ' (.' + val + ')');
+          og.appendChild(o);
+        });
+
+        targetFormat.appendChild(og);
+      }
+
+      // default to JPEG if present (for quality control)
+      if ([...targetFormat.querySelectorAll('option')].some(o => o.value === 'jpeg')) {
+        targetFormat.value = 'jpeg';
+      }
+      const v = targetFormat.value;
+      qualityWrap.style.display = (v === 'jpeg' || v === 'webp') ? '' : 'none';
+    } catch (e) { console.warn('i18n buildTargets failed:', e); }
+  }
+  window.buildTargets = buildTargetsLocalized;
+  window.refreshTargetDropdown = buildTargetsLocalized;
+})();
+
+/* I18N UI KEYS */
+(function () {
+  try {
+    // English fallbacks
+    I18N.en = I18N.en || {};
+    Object.assign(I18N.en, {
+      'ui.addFiles': 'Add files',
+      'ui.saveAll': 'Save All',
+      'ui.saveAllTitle': 'Save all outputs to a folder (if supported)'
+    });
+
+    // De
+    if (I18N.de) Object.assign(I18N.de, {
+      'ui.addFiles': 'Dateien hinzufügen',
+      'ui.saveAll': 'Alles speichern',
+      'ui.saveAllTitle': 'Alle Ausgaben in einen Ordner speichern (falls unterstützt)'
+    });
+
+    // Es
+    if (I18N.es) Object.assign(I18N.es, {
+      'ui.addFiles': 'Añadir archivos',
+      'ui.saveAll': 'Guardar todo',
+      'ui.saveAllTitle': 'Guardar todas las salidas en una carpeta (si es compatible)'
+    });
+
+    // Fr
+    if (I18N.fr) Object.assign(I18N.fr, {
+      'ui.addFiles': 'Ajouter des fichiers',
+      'ui.saveAll': 'Tout enregistrer',
+      'ui.saveAllTitle': 'Enregistrer toutes les sorties dans un dossier (si pris en charge)'
+    });
+
+    // It
+    if (I18N.it) Object.assign(I18N.it, {
+      'ui.addFiles': 'Aggiungi file',
+      'ui.saveAll': 'Salva tutto',
+      'ui.saveAllTitle': 'Salva tutte le uscite in una cartella (se supportato)'
+    });
+
+    // Pl
+    if (I18N.pl) Object.assign(I18N.pl, {
+      'ui.addFiles': 'Dodaj pliki',
+      'ui.saveAll': 'Zapisz wszystko',
+      'ui.saveAllTitle': 'Zapisz wszystkie wyniki do folderu (jeśli obsługiwane)'
+    });
+
+    // pt (Portugal)
+    if (I18N.pt) Object.assign(I18N.pt, {
+      'ui.addFiles': 'Adicionar ficheiros',
+      'ui.saveAll': 'Guardar tudo',
+      'ui.saveAllTitle': 'Guardar todas as saídas numa pasta (se suportado)'
+    });
+
+    // pt-BR
+    if (I18N['pt-BR']) Object.assign(I18N['pt-BR'], {
+      'ui.addFiles': 'Adicionar arquivos',
+      'ui.saveAll': 'Salvar tudo',
+      'ui.saveAllTitle': 'Salvar todas as saídas numa pasta (se suportado)'
+    });
+
+    // Ja
+    if (I18N.ja) Object.assign(I18N.ja, {
+      'ui.addFiles': 'ファイルを追加',
+      'ui.saveAll': 'すべて保存',
+      'ui.saveAllTitle': 'すべての出力をフォルダーに保存（対応している場合）'
+    });
+
+    // Ru
+    if (I18N.ru) Object.assign(I18N.ru, {
+      'ui.addFiles': 'Добавить файлы',
+      'ui.saveAll': 'Сохранить всё',
+      'ui.saveAllTitle': 'Сохранить все результаты в папку (если поддерживается)'
+    });
+
+    // zh-CN
+    if (I18N['zh-CN']) Object.assign(I18N['zh-CN'], {
+      'ui.addFiles': '添加文件',
+      'ui.saveAll': '全部保存',
+      'ui.saveAllTitle': '将所有输出保存到一个文件夹（若支持）'
+    });
+
+    // Ko
+    if (I18N.ko) Object.assign(I18N.ko, {
+      'ui.addFiles': '파일 추가',
+      'ui.saveAll': '모두 저장',
+      'ui.saveAllTitle': '모든 출력을 폴더에 저장(지원되는 경우)'
+    });
+
+    // Hi
+    if (I18N.hi) Object.assign(I18N.hi, {
+      'ui.addFiles': 'फ़ाइलें जोड़ें',
+      'ui.saveAll': 'सब सेव करें',
+      'ui.saveAllTitle': 'सभी आउटपुट एक फ़ोल्डर में सेव करें (यदि समर्थित)'
+    });
+
+    // Ar
+    if (I18N.ar) Object.assign(I18N.ar, {
+      'ui.addFiles': 'إضافة ملفات',
+      'ui.saveAll': 'حفظ الكل',
+      'ui.saveAllTitle': 'احفظ كل النواتج في مجلد (إن كان مدعومًا)'
+    });
+
+    // Uk
+    if (I18N.uk) Object.assign(I18N.uk, {
+      'ui.addFiles': 'Додати файли',
+      'ui.saveAll': 'Зберегти все',
+      'ui.saveAllTitle': 'Зберегти всі результати в папку (якщо підтримується)'
+    });
+
+    // Tr
+    if (I18N.tr) Object.assign(I18N.tr, {
+      'ui.addFiles': 'Dosya ekle',
+      'ui.saveAll': 'Tümünü kaydet',
+      'ui.saveAllTitle': 'Tüm çıktıları bir klasöre kaydet (destekleniyorsa)'
+    });
+
+    // Nl
+    if (I18N.nl) Object.assign(I18N.nl, {
+      'ui.addFiles': 'Bestanden toevoegen',
+      'ui.saveAll': 'Alles opslaan',
+      'ui.saveAllTitle': 'Sla alle uitvoer op in een map (indien ondersteund)'
+    });
+  } catch (e) { console.warn('i18n ui keys patch failed', e); }
+})();
+
+
+
+
+// === URL <-> target dropdown sync + quality toggle ===
+function presetTargetFromURL() {
+  try {
+    var target = document.querySelector("#target-format, #targetFormat, select[name=target], select#target");
+    var wrap = document.querySelector("#quality-wrap, #qualityWrap, .quality-wrap, [data-role='quality']");
+    if (!target) return;
+
+    var params = new URLSearchParams(location.search);
+    var q = (params.get("to") || params.get("target") || "").toLowerCase();
+    var alias = { jpg: "jpeg" };
+    var wanted = alias[q] || q;
+
+    if (!wanted) {
+      var path = location.pathname.replace(/\/index\.html$/i, "");
+      var seg = (path.split("/").filter(Boolean).pop() || "").toLowerCase();
+      var m = seg.match(/([a-z0-9.]+)$/i);
+      var cand = (m ? m[1] : "").replace(/\.$/, "");
+      wanted = alias[cand] || cand;
+    }
+
+    if (wanted && target.querySelector('option[value="' + wanted + '"]')) {
+      target.value = wanted;
+    }
+    if (wrap) wrap.style.display = (target.value === "jpeg" || target.value === "webp") ? "" : "none";
+  } catch (e) { }
+}
+
+(function () {
+  function $(s) { return document.querySelector(s); }
+  function applyQualityVisibility() {
+    var t = $("#target-format, #targetFormat, select[name=target], select#target");
+    var w = $("#quality-wrap, #qualityWrap, .quality-wrap, [data-role='quality']");
+    if (!t || !w) return;
+    w.style.display = (t.value === "jpeg" || t.value === "webp") ? "" : "none";
+  }
+  document.addEventListener("change", function (ev) {
+    var el = ev.target;
+    if (!el || el.tagName !== "SELECT") return;
+    if (el.matches("#target-format, #targetFormat, select[name=target], select#target")) {
+      try {
+        var u = new URL(location.href);
+        u.searchParams.set("to", el.value);
+        history.replaceState(null, "", u.toString());
+      } catch (e) { }
+      applyQualityVisibility();
+    }
+  });
+  document.addEventListener("DOMContentLoaded", function () {
+    try { presetTargetFromURL(); } catch (e) { }
+    applyQualityVisibility();
+  });
 })();

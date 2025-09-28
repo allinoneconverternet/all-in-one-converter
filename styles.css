@@ -1,4 +1,4 @@
-/* styles.css */
+﻿/* styles.css */
 :root {
     --bottom-safe: 0px;
     --rail-offset: 24px;
@@ -2213,3 +2213,36 @@ body::after {
         width: 100%;
     }
 }
+
+#file-add-wrap {
+    --file-picked-ch: 20;
+}
+
+/* Row layout for the custom file picker */
+.file-add-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Keep the button from stretching or wrapping */
+.file-add-wrap .btn-ghost {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    width: auto;
+    /* in case a global rule sets button{width:100%} */
+}
+
+/* Filename label: single line, ellipsis, char-limited width */
+.file-add-wrap .file-picked {
+    /* change the 28 to whatever “character” cap you want */
+    max-width: calc(var(--file-picked-ch, 28) * 1ch);
+    flex: 1 1 auto;
+    min-width: 0;
+    /* enables ellipsis inside flex rows */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* show up to ~40 characters before ellipsis for this widget */

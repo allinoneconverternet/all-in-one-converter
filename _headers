@@ -1,0 +1,11 @@
+﻿/*/*/*/
+  Cache-Control: public, max-age=300
+
+/sitemaps/*
+  Cache-Control: public, max-age=86400
+
+/sitemap_index.xml
+  Cache-Control: public, max-age=86400
+
+/robots.txt
+  Cache-Control: public, max-age=86400

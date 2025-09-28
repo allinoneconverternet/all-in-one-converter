@@ -1,0 +1,2111 @@
+﻿:root {
+    --bottom-safe: 0px;
+    --rail-offset: 24px;
+    --scroll-slack: 5vh;
+    --bg: #0b1020;
+    --panel: #141a2f;
+    --panel-2: #0f1528;
+    --text: #e6ebff;
+    --muted: #a7b0d6;
+    --accent: #6ea8fe;
+    --danger: #ff6b6b;
+    --ok: #69db7c;
+    --border: #263154;
+    --shadow: 0 10px 30px rgba(0, 0, 0, .25);
+    --radius: 16px;
+    --cap_okay_colour: rgb(0, 252, 42);
+    --topbar_background_colour: linear-gradient(180deg, rgb(11, 16, 32), rgb(11, 16, 32));
+    --advert_background_colour: #0b1226;
+    --topbar_button_background_colour: #10182e;
+    --panel_background_colour: linear-gradient(180deg, var(--panel), var(--panel-2));
+    --dropzone_background_colour: #0b1226;
+    --convert_border: #2a3a6a;
+    --convert_button_background_colour: linear-gradient(180deg, #1b2b59, #12234b);
+    --button_background_colour: #10182e;
+    --choose_file_background: #10182e;
+    --body_background_colour: radial-gradient(1200px 800px at 20% -10%, #162044, transparent 60%), radial-gradient(1200px 800px at 120% 20%, #112042, transparent 60%), var(--bg);
+}
+
+:root[data-theme="light"] {
+    --bg: #f6f8ff;
+    --panel: #ffffff;
+    --panel-2: #f2f4ff;
+    --text: #0b1020;
+    --muted: #4a5677;
+    --accent: #3056d3;
+    --danger: #b00020;
+    --ok: #0b8e2a;
+    --border: #dbe1ff;
+    --choose_file_background: #f7f9ff;
+    --button_background_colour: #f7f9ff;
+    --convert_border: #dbe1ff;
+    --topbar_background_colour: #F9F9FB;
+    --body_background_colour: #FAFDFF;
+    --advert_background_colour: #FEFEFE;
+    --topbar_button_background_colour: #FEFFFF;
+    --panel_background_colour: #FFFFFF;
+    --dropzone_background_colour: #FDFDFF;
+    --cap_okay_colour: rgba(5, 235, 43, 0.377);
+    --convert_button_background_colour: #5589D2;
+}
+
+:root {
+    --bg: #0b1020;
+    --body_background_colour: radial-gradient(1200px 800px at 20% -10%, #162044 0%, rgba(22, 32, 68, 0) 60%), radial-gradient(1200px 800px at 120% 20%, #112042 0%, rgba(17, 32, 66, 0) 60%), var(--bg);
+}
+
+ins.adsbygoogle[data-ad-status="unfilled"] {
+    display: none !important;
+}
+
+.ad-slot.is-collapsed {
+    display: none !important;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+html {
+    background: var(--body_background_colour);
+    background-attachment: fixed, fixed, fixed;
+    background-repeat: no-repeat;
+    background-color: var(--bg);
+}
+
+body,
+body::after {
+    background: transparent;
+}
+
+* {
+    box-sizing: border-box
+}
+
+html,
+body {
+    height: 100%
+}
+
+body {
+    margin: 0;
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+    background: var(--body_background_colour);
+    color: var(--text);
+    overflow: visible;
+}
+
+header {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: var(--topbar_background_colour);
+    border-bottom: 1px solid var(--border);
+}
+
+.wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 18px 20px
+}
+
+.header-row {
+    justify-content: space-between;
+    align-items: center;
+    display: flex
+}
+
+.header-tools {
+    gap: 10px;
+    align-items: center;
+    display: flex
+}
+
+h1 {
+    margin: 0;
+    font-size: clamp(20px, 2.4vw, 28px)
+}
+
+main {
+    max-width: 1100px;
+    margin: 18px auto 140px;
+    padding: 0 20px
+}
+
+.panel {
+    background: var(--panel_background_colour);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden
+}
+
+.grid {
+    display: grid;
+    gap: 16px
+}
+
+@media (min-width:960px) {
+    .grid {
+        grid-template-columns: 1.2fr .8fr
+    }
+}
+
+.controls {
+    padding: 18px
+}
+
+.controls h2 {
+    margin: 4px 0 10px;
+    font-size: 18px;
+    color: var(--muted)
+}
+
+.row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center
+}
+
+.row>* {
+    flex: 1
+}
+
+.flex2 {
+    flex: 2
+}
+
+.flex1 {
+    flex: 1
+}
+
+.mt {
+    margin-top: 18px
+}
+
+.mt-small {
+    margin-top: 12px
+}
+
+label {
+    font-size: 12px;
+    color: var(--muted)
+}
+
+select,
+input[type="number"],
+button {
+    width: 100%;
+    background: #0b1226;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    outline: none
+}
+
+:root[data-theme="light"] select,
+:root[data-theme="light"] select,
+input[type="number"],
+button {
+    background-color: var(--choose_file_background);
+}
+
+select:focus,
+input:focus,
+button:focus {
+    border-color: var(--accent)
+}
+
+.file-input {
+    font: 500 14px/1 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    color: var(--text);
+    background: var(--panel);
+    border-radius: 10px;
+    padding: 10px 12px;
+}
+
+.file-input::file-selector-button,
+.file-input::-webkit-file-upload-button {
+    font: inherit;
+    color: var(--text);
+    background: var(--button_background_colour);
+    border: 1px solid var(--convert_border);
+    border-radius: 10px;
+    padding: 8px 14px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.file-input:focus-visible {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.file-input:focus-visible::file-selector-button,
+.file-input:focus-visible::-webkit-file-upload-button {
+    box-shadow: 0 0 0 3px rgba(99, 132, 255, .2);
+}
+
+button {
+    cursor: pointer;
+    transition: transform .02s ease, background .2s ease
+}
+
+button:hover {
+    transform: translateY(-1px)
+}
+
+.btn {
+    background: var(--convert_button_background_colour);
+    border-color: var(--convert_border);
+}
+
+.btn-ghost {
+    background: var(--button_background_colour);
+}
+
+.btn-topbar {
+    background: var(--topbar_button_background_colour);
+    max-width: 150px;
+}
+
+.dropzone {
+    margin-top: 10px;
+    border: 1px dashed var(--border);
+    border-radius: 14px;
+    padding: 18px;
+    text-align: center;
+    background: var(--dropzone_background_colour);
+    transition: border-color .2s ease, background .2s ease
+}
+
+:root[data-theme="light"] .dropzone {
+    background: var(--choose_file_background);
+}
+
+.dropzone.drag {
+    border-color: var(--accent);
+    background: #0f1a38
+}
+
+.filelist {
+    padding: 0;
+    list-style: none;
+    margin: 0
+}
+
+.filecard {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--panel);
+    flex-wrap: nowrap;
+}
+
+.filecard:first-child {
+    border-top: none
+}
+
+.f-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap
+}
+
+.badge {
+    font-size: 11px;
+    background: var(--convert_button_background_colour);
+    border: 1px solid var(--border);
+    padding: 4px 8px;
+    border-radius: 999px
+}
+
+.status {
+    font-size: 12px;
+    color: var(--muted)
+}
+
+.downloads {
+    padding: 16px;
+    border-top: 1px solid var(--border);
+    background: #0e1430
+}
+
+:root[data-theme="light"] .downloads {
+    background: #ffffff
+}
+
+.downloads a {
+    display: inline-block;
+    margin: 6px 8px 0 0;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--text)
+}
+
+.aside {
+    padding: 18px;
+    border-left: 1px solid var(--border)
+}
+
+.hint {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5
+}
+
+.footer-ads {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    border-top: 1px solid var(--border);
+    background: linear-gradient(180deg, rgba(20, 26, 47, .92), rgba(20, 26, 47, .98));
+    padding: 10px 16px;
+    display: flex;
+    justify-content: center
+}
+
+:root[data-theme="light"] .footer-ads {
+    background: #ffffff
+}
+
+.ad-slot {
+    width: min(100%, 970px);
+    min-height: 90px;
+    border: 1px dashed var(--border);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    background: #0b1226;
+    position: relative
+}
+
+:root[data-theme="light"] .ad-slot {
+    background: var(--choose_file_background);
+}
+
+.ad-note {
+    position: absolute;
+    left: 12px;
+    top: 8px;
+    font-size: 11px;
+    color: #8b93bf
+}
+
+.pill {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: #0f1a38;
+    font-size: 13px
+}
+
+:root[data-theme="light"] .pill {
+    background: #eef2ff
+}
+
+.cap-list {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 8px
+}
+
+.cap {
+    font-size: 12px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: #0e1430
+}
+
+:root[data-theme="light"] .cap {
+    background: #f4f7ff
+}
+
+.cap.ok {
+    border-color: var(--cap_okay_colour);
+    background: rgba(105, 219, 124, .08)
+}
+
+.cap.miss {
+    border-color: rgba(255, 107, 107, .4);
+    background: rgba(255, 107, 107, .08)
+}
+
+.prepanel {
+    margin-bottom: 16px;
+    padding: 16px
+}
+
+.quality-wrap {
+    display: none
+}
+
+.inline-ad {
+    display: none;
+    max-width: 1100px;
+    margin: 12px auto 120px;
+    padding: 16px;
+    border: 1px dashed var(--border)
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 4px 8px;
+    min-width: 84px;
+}
+
+.filecard {
+    position: relative;
+}
+
+.f-name.clickable {
+    cursor: pointer;
+}
+
+.f-name.clickable:hover {
+    text-decoration: underline;
+}
+
+.btn.btn-small,
+.btn-small {
+    font-size: 12px;
+    padding: 6px 10px;
+    margin-left: 8px;
+}
+
+#download-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+#download-links .dl-chip {
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px dashed rgba(255, 255, 255, 0.15);
+    text-decoration: none;
+    white-space: nowrap;
+    max-width: 280px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#download-links .dl-chip:hover {
+    background: rgba(255, 255, 255, 0.16);
+}
+
+body::after {
+    content: "";
+    display: block;
+    height: calc(var(--bottom-safe) + var(--scroll-slack));
+}
+
+.side-ads {
+    pointer-events: none;
+}
+
+.side-ads .rail {
+    position: fixed;
+    top: calc(var(--header-safe, 72px) + var(--rail-offset, 24px));
+    z-index: 9;
+    width: var(--rail-w, 160px);
+    pointer-events: auto;
+}
+
+.side-ads .rail.left {
+    left: calc(50% - 550px - var(--rail-w, 160px) - 24px);
+}
+
+.side-ads .rail.right {
+    right: calc(50% - 550px - var(--rail-w, 160px) - 24px);
+}
+
+.side-ads .ad-slot {
+    width: var(--rail-w, 160px) !important;
+    min-height: 600px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.side-ads .ad-slot img,
+.side-ads .ad-slot iframe {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+@media (min-width:1400px) {
+    .side-ads {
+        --rail-w: 300px;
+    }
+}
+
+.bottom-ads {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.file-progress {
+    margin-top: 4px;
+}
+
+.bottom-ads .ad-bottom {
+    pointer-events: auto;
+    position: relative;
+    width: min(var(--leader-w, 970px), calc(100vw - 48px));
+    max-width: 970px;
+}
+
+@media (max-width:1280px) {
+    .bottom-ads .ad-bottom {
+        --leader-w: 728px;
+        max-width: 728px;
+    }
+}
+
+.bottom-ads .ad-close {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    border: 0;
+    padding: 0;
+    background: none;
+    border-radius: 0;
+    width: auto;
+    height: auto;
+    line-height: 1;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--muted);
+    cursor: pointer;
+    z-index: 2;
+}
+
+.bottom-ads .ad-close:hover {
+    color: #fff;
+}
+
+.footer-ads {
+    display: none;
+}
+
+@media (max-width:1199px) {
+    .footer-ads {
+        display: flex;
+    }
+}
+
+@media (min-width:1200px) {
+    .bottom-ads {
+        display: flex;
+    }
+
+    .footer-ads {
+        display: none !important;
+    }
+}
+
+#downloads {
+    display: none !important;
+}
+
+.f-name.clickable {
+    cursor: pointer;
+}
+
+.f-name.clickable:hover {
+    text-decoration: underline;
+}
+
+.progwrap .filecard {
+    max-width: 100%;
+}
+
+.filecard .f-name {
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.filecard .file-remove:focus-visible {
+    outline: 2px solid var(--accent);
+}
+
+#file-list {
+    --filecard-max: 820px;
+    --name-ch: 36;
+    --prog-w: 160px;
+    --prog-h: 8px;
+}
+
+#file-list .filecard {
+    width: min(100%, var(--filecard-max));
+    margin-inline: auto;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: nowrap;
+    padding: 10px 12px;
+    border: 1px solid var(--border, #2a2a2a);
+    border-radius: 12px;
+    background: var(--panel, rgba(255, 255, 255, 0.04));
+}
+
+#file-list .filecard>* {
+    min-width: 0;
+}
+
+#file-list {
+    --name-ch: 24;
+}
+
+#file-list .f-name {
+    max-inline-size: calc(var(--name-ch) * 1ch);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    min-width: 0;
+    flex: 0 1 calc(var(--name-ch) * 1ch);
+}
+
+#file-list .filecard progress {
+    flex: 0 0 var(--prog-w);
+    inline-size: var(--prog-w);
+    block-size: var(--prog-h);
+    height: var(--prog-h);
+    margin-bottom: 4px;
+}
+
+#file-list .filecard progress::-webkit-progress-bar {
+    height: var(--prog-h);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .08);
+}
+
+#file-list .filecard progress::-webkit-progress-value {
+    height: var(--prog-h);
+    border-radius: 999px;
+    background: var(--accent, #4b8aff);
+}
+
+#file-list .filecard progress::-moz-progress-bar {
+    height: var(--prog-h);
+    border-radius: 999px;
+    background: var(--accent, #4b8aff);
+}
+
+#file-list .filecard [id^="status-"] {
+    flex: 0 0 auto;
+    max-width: 14ch;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    opacity: .8;
+    font-size: .9em;
+}
+
+.file-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.file-remove {
+    appearance: none;
+    -webkit-appearance: none;
+    background: none;
+    border: 0;
+    padding: 0 0 0 8px;
+    margin: 0;
+    font: inherit;
+    font-size: 18px;
+    line-height: 1;
+    color: var(--text, #0f172a);
+    cursor: pointer;
+}
+
+.file-controls .file-remove:hover {
+    opacity: .8;
+}
+
+.file-controls .file-remove:focus,
+.file-controls .file-remove:focus-visible,
+.file-controls .file-remove:active {
+    outline: none;
+    box-shadow: none;
+}
+
+#file-list {
+    --prog-w: 160px;
+    --prog-w-conv: 110px;
+    --prog-h: 8px;
+}
+
+#file-list .filecard progress {
+    flex: 0 0 var(--prog-w);
+    inline-size: var(--prog-w);
+    block-size: var(--prog-h);
+    height: var(--prog-h);
+    transition: inline-size 180ms ease;
+}
+
+#file-list .filecard.is-converting progress {
+    flex-basis: var(--prog-w-conv);
+    inline-size: var(--prog-w-conv);
+}
+
+#file-list .filecard [id^="status-"] {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.convert {
+    background-color: var(--convert_button_background_colour);
+}
+
+#file-list {
+    --prog-w: 160px;
+    --prog-w-conv: 110px;
+    --prog-h: 8px;
+}
+
+#file-list .filecard progress {
+    flex: 0 0 var(--prog-w);
+    inline-size: var(--prog-w);
+    block-size: var(--prog-h);
+    height: var(--prog-h);
+    transition: none;
+}
+
+#file-list .filecard.is-converting progress {
+    flex-basis: var(--prog-w-conv);
+    inline-size: var(--prog-w-conv);
+}
+
+@media (prefers-reduced-motion:no-preference) {
+    #file-list .filecard progress {
+        transition: inline-size 90ms ease;
+    }
+}
+
+#file-list .f-name {
+    cursor: default;
+}
+
+#file-list .f-name.clickable {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+#file-list .file-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: auto;
+    justify-content: flex-end;
+}
+
+#file-list .file-controls .status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: var(--status-w);
+    min-width: var(--status-w);
+    max-width: var(--status-w);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: right;
+    padding-bottom: 3px;
+}
+
+#file-list {
+    --prog-w: 160px;
+    --prog-min: 140px;
+    --prog-shrink: 12px;
+}
+
+#file-list {
+    --prog-w: 160px;
+    --prog-w-conv: 119.5px;
+}
+
+#file-list .filecard.is-converting .file-controls progress {
+    inline-size: var(--prog-w-conv);
+    flex-basis: var(--prog-w-conv);
+    transition: inline-size 150ms ease;
+}
+
+.side-ads .rail {
+    position: fixed;
+}
+
+.side-ads .rail {
+    position: relative;
+    top: var(--rail-offset, 24px);
+    margin-top: auto;
+    margin-bottom: auto;
+    z-index: 1000;
+    position: fixed;
+    z-index: 2;
+    top: 75px;
+    overflow: hidden;
+}
+
+.hint {
+    padding-right: 50px;
+}
+
+#file-list .filecard .file-controls .file-remove {
+    position: static !important;
+    width: auto;
+    height: auto;
+    padding: 0 0 0 8px;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    background: none !important;
+    box-shadow: none;
+    font: inherit;
+    font-size: 18px;
+    line-height: 1;
+    color: var(--text);
+    cursor: pointer;
+    padding-bottom: 3px;
+    align-self: center;
+}
+
+#file-list .filecard .file-controls .file-remove:hover {
+    opacity: .8;
+    background: none !important;
+}
+
+#file-list .filecard .file-controls .file-remove:focus,
+#file-list .filecard .file-controls .file-remove:focus-visible,
+#file-list .filecard .file-controls .file-remove:active {
+    outline: none;
+    box-shadow: none;
+}
+
+#file-list {
+    --sub-ch: 24;
+}
+
+#file-list .sub {
+    max-inline-size: calc(var(--sub-ch) * 1ch);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    min-width: 0;
+    opacity: .8;
+    flex: 0 1 calc(var(--sub-ch) * 1ch);
+}
+
+@media (max-width:720px) {
+    :root {
+        --bottom-safe: calc(84px + env(safe-area-inset-bottom, 0px));
+        --radius: 12px;
+        --rail-offset: 0px;
+    }
+
+    header .wrap {
+        padding: 12px 14px;
+    }
+
+    .header-row {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    h1 {
+        font-size: clamp(18px, 5.4vw, 24px);
+    }
+
+    main {
+        margin: 12px auto calc(24px + var(--bottom-safe));
+        padding: 0 14px;
+        max-width: 1100px;
+    }
+
+    .panel {
+        border-radius: var(--radius);
+    }
+
+    .controls {
+        padding: 14px;
+    }
+
+    .aside {
+        padding: 14px;
+        border-left: 0;
+        border-top: 1px solid var(--border);
+    }
+
+    .row {
+        gap: 8px;
+    }
+
+    .row>* {
+        flex: 1 1 100%;
+    }
+
+    select,
+    input[type="number"],
+    button {
+        padding: 12px;
+        font-size: 16px;
+    }
+
+    input[type="range"] {
+        width: 100%;
+    }
+
+    #dropzone {
+        padding: 14px;
+    }
+
+    .convert,
+    .btn-ghost,
+    .btn {
+        width: 100%;
+    }
+
+    .filecard {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 12px 14px;
+        flex-wrap: nowrap;
+        overflow: hidden;
+        border-top: 1px solid var(--border);
+        border-radius: 10px;
+        background: var(--panel);
+    }
+
+    .filecard .file-meta {
+        min-width: 0;
+        flex: 1 1 auto;
+    }
+
+    .f-name {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .sub {
+        opacity: .8;
+    }
+
+    .filecard .file-controls {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-width: 0;
+        flex: 0 0 auto;
+    }
+
+    .badge,
+    .status {
+        white-space: nowrap;
+        font-size: 12px;
+    }
+
+    .filecard .file-progress {
+        flex: 1 1 auto;
+        min-width: 48px;
+        width: auto;
+        height: 8px;
+        margin: 0;
+    }
+
+    .filecard .file-remove {
+        position: static;
+        padding: 2px 6px;
+        border: 0;
+        border-radius: 8px;
+        background: transparent;
+        color: var(--text);
+        cursor: pointer;
+    }
+
+    .filecard .file-remove:hover {
+        background: rgba(255, 255, 255, 0.12);
+    }
+
+    .downloads {
+        padding: 12px;
+    }
+
+    #bottom-ads,
+    .side-ads {
+        display: none !important;
+    }
+
+    .footer-ads {
+        display: flex !important;
+        padding: 8px 10px;
+    }
+
+    .footer-ads .ad-slot {
+        min-height: 60px;
+        width: 100%;
+    }
+
+    .btn-topbar {
+        max-width: none;
+    }
+
+    .topbar_Buttons {
+        display: flex;
+        gap: 8px;
+    }
+
+    #file-list {}
+}
+
+@media (max-width:600px) {
+    .filecard .file-progress {
+        flex: 1 1 auto;
+        min-width: 44px;
+        height: 7px;
+        margin: 0;
+        width: auto;
+    }
+
+    .filecard {
+        gap: 8px;
+        padding: 10px 12px;
+    }
+
+    .filecard .file-controls {
+        gap: 6px;
+    }
+
+    .badge,
+    .status {
+        font-size: 11.5px;
+    }
+}
+
+@media (max-width:520px) {
+    .filecard .file-progress {
+        flex: 1 1 auto;
+        min-width: 40px;
+        height: 6px;
+        margin: 0;
+        width: auto;
+    }
+
+    .filecard {
+        gap: 6px;
+        padding: 10px 10px;
+    }
+
+    .filecard .file-controls {
+        gap: 6px;
+    }
+
+    .badge,
+    .status {
+        font-size: 11px;
+    }
+
+    .f-name {
+        font-size: 0.98rem;
+    }
+}
+
+@media (max-width:420px) {
+    .filecard .file-progress {
+        flex: 1 1 auto;
+        min-width: 36px;
+        height: 5px;
+        margin: 0;
+        width: auto;
+    }
+
+    .filecard {
+        gap: 6px;
+        padding: 8px 10px;
+    }
+
+    .filecard .file-controls {
+        gap: 5px;
+    }
+
+    .badge,
+    .status {
+        font-size: 10.5px;
+    }
+
+    .f-name {
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width:360px) {
+    .filecard .file-progress {
+        flex: 1 1 auto;
+        min-width: 32px;
+        height: 4px;
+        margin: 0;
+        width: auto;
+    }
+
+    .filecard {
+        gap: 5px;
+        padding: 8px 8px;
+    }
+
+    .filecard .file-controls {
+        gap: 4px;
+    }
+
+    .badge,
+    .status {
+        font-size: 10px;
+    }
+
+    .f-name {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width:680px) {
+    .filecard .file-progress {
+        flex: 1 1 auto;
+        min-width: 46px;
+        height: 7px;
+        width: auto;
+        margin: 0;
+    }
+
+    .filecard {
+        gap: 8px;
+        padding: 11px 12px;
+    }
+
+    .filecard .file-controls {
+        gap: 7px;
+    }
+
+    .badge,
+    .status {
+        font-size: 11.75px;
+    }
+}
+
+@media (max-width:480px) {
+    .filecard .file-progress {
+        flex: 1 1 auto;
+        min-width: 38px;
+        height: 5px;
+        width: auto;
+        margin: 0;
+    }
+
+    .filecard {
+        gap: 6px;
+        padding: 9px 10px;
+    }
+
+    .filecard .file-controls {
+        gap: 5px;
+    }
+
+    .badge,
+    .status {
+        font-size: 10.75px;
+    }
+
+    .f-name {
+        font-size: 0.96rem;
+    }
+}
+
+@media (max-width:400px) {
+    .filecard .file-progress {
+        flex: 1 1 auto;
+        min-width: 34px;
+        height: 4px;
+        width: auto;
+        margin: 0;
+    }
+
+    .filecard {
+        gap: 5px;
+        padding: 8px 9px;
+    }
+
+    .filecard .file-controls {
+        gap: 4px;
+    }
+
+    .badge,
+    .status {
+        font-size: 10.25px;
+    }
+
+    .f-name {
+        font-size: 0.92rem;
+    }
+}
+
+@media (max-width:540px) {
+    progress.file-progress {
+        flex: 1 1 200px !important;
+        min-width: 52px !important;
+        height: 7px !important;
+        width: auto !important;
+        margin: 0 !important;
+    }
+
+    progress.file-progress::-webkit-progress-bar,
+    progress.file-progress::-webkit-progress-value {
+        height: 7px;
+    }
+}
+
+@media (max-width:500px) {
+    progress.file-progress {
+        flex: 1 1 180px !important;
+        min-width: 48px !important;
+        height: 6px !important;
+        width: auto !important;
+        margin: 0 !important;
+    }
+
+    progress.file-progress::-webkit-progress-bar,
+    progress.file-progress::-webkit-progress-value {
+        height: 6px;
+    }
+}
+
+@media (max-width:460px) {
+    progress.file-progress {
+        flex: 1 1 160px !important;
+        min-width: 42px !important;
+        height: 5px !important;
+        width: auto !important;
+        margin: 0 !important;
+    }
+
+    progress.file-progress::-webkit-progress-bar,
+    progress.file-progress::-webkit-progress-value {
+        height: 5px;
+    }
+}
+
+@media (max-width:440px) {
+    progress.file-progress {
+        flex: 1 1 140px !important;
+        min-width: 36px !important;
+        height: 4px !important;
+        width: auto !important;
+        margin: 0 !important;
+    }
+
+    progress.file-progress::-webkit-progress-bar,
+    progress.file-progress::-webkit-progress-value {
+        height: 4px;
+    }
+}
+
+@media (max-width:380px) {
+    .badge {
+        min-width: auto;
+    }
+
+    .footer-ads .ad-slot {
+        min-height: 50px;
+    }
+
+    #file-list {
+        --prog-w: 30vw;
+        --prog-min: 100vw;
+        --prog-shrink: 12px;
+        --prog-w-conv: 110px;
+        --prog-h: 8px;
+    }
+}
+
+.filecard .status {
+    white-space: nowrap;
+}
+
+.filecard .f-name {
+    white-space: nowrap;
+}
+
+.f-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.badge,
+.status {
+    white-space: nowrap;
+}
+
+.filecard .filecard .file-remove {
+    right: 6px;
+    top: 6px;
+}
+
+.filecard {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--panel);
+    flex-wrap: nowrap;
+}
+
+.filecard .file-meta {
+    min-width: 0;
+}
+
+.filecard .f-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.filecard .sub {
+    opacity: .8;
+}
+
+.filecard .file-controls {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+.filecard .badge,
+.filecard .status {
+    white-space: nowrap;
+}
+
+.filecard progress {
+    height: 6px;
+    width: 160px;
+    min-width: 72px;
+}
+
+.filecard .file-remove {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 8px;
+}
+
+.filecard {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--panel);
+    flex-wrap: nowrap;
+}
+
+.filecard .file-meta {
+    min-width: 0;
+}
+
+.f-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sub {
+    opacity: .8;
+}
+
+.filecard .file-controls {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+.badge,
+.status {
+    white-space: nowrap;
+}
+
+.filecard .file-progress {
+    flex: 1 1 160px;
+    min-width: 72px;
+    width: auto;
+    height: 10px;
+}
+
+.filecard .file-remove {
+    position: static;
+    width: auto;
+    height: auto;
+    line-height: 1;
+    padding: 2px 6px;
+    border-radius: 8px;
+    background: transparent;
+}
+
+@media (max-width:560px) {
+    #file-list progress.file-progress {
+        flex: 1 1 170px !important;
+        min-width: 46px !important;
+        height: 6px !important;
+        width: auto !important;
+        margin: 0 !important;
+    }
+
+    #file-list progress.file-progress::-webkit-progress-bar,
+    #file-list progress.file-progress::-webkit-progress-value {
+        height: 6px;
+    }
+}
+
+@media (max-width:555px) {
+    #file-list progress.file-progress {
+        flex: 1 1 168px !important;
+        min-width: 46px !important;
+        height: 6px !important;
+        width: auto !important;
+        margin: 0 !important;
+    }
+}
+
+@media (max-width:550px) {
+    #file-list progress.file-progress {
+        flex: 1 1 166px !important;
+        min-width: 45px !important;
+        height: 6px !important;
+        width: auto !important;
+        margin: 0 !important;
+    }
+}
+
+@media (max-width:545px) {
+    #file-list progress.file-progress {
+        flex: 1 1 163px !important;
+        min-width: 45px !important;
+        height: 6px !important;
+        width: auto !important;
+        margin: 0 !important;
+    }
+}
+
+@media (max-width:540px) {
+    #file-list progress.file-progress {
+        flex: 1 1 160px !important;
+        min-width: 44px !important;
+        height: 6px !important;
+        width: auto !important;
+        margin: 0 !important;
+    }
+
+    #file-list progress.file-progress::-webkit-progress-bar,
+    #file-list progress.file-progress::-webkit-progress-value {
+        height: 6px;
+    }
+}
+
+.filecard {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--panel);
+    flex-wrap: nowrap;
+}
+
+.filecard:first-child {
+    border-top: none;
+}
+
+.filecard .file-meta {
+    min-width: 0;
+}
+
+.f-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sub {
+    opacity: .8;
+}
+
+.filecard .file-controls {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+.badge,
+.status {
+    white-space: nowrap;
+    font-size: 12px;
+}
+
+.filecard .file-progress {
+    flex: 1 1 160px;
+    min-width: 72px;
+    width: auto;
+    height: 10px;
+    margin: 0;
+}
+
+.filecard .file-remove {
+    position: static;
+    width: auto;
+    height: auto;
+    line-height: 1;
+    padding: 2px 6px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+}
+
+.filecard .file-remove:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+#file-list .filecard {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto auto !important;
+    row-gap: 8px !important;
+    align-items: center !important;
+}
+
+#file-list .filecard .file-meta {
+    grid-column: 1 / -1 !important;
+    grid-row: 1 !important;
+    min-width: 0 !important;
+}
+
+#file-list .filecard .f-name {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+#file-list .filecard .sub {
+    opacity: .8 !important;
+}
+
+#file-list .filecard .file-controls {
+    grid-column: 1 / -1 !important;
+    grid-row: 2 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    margin-left: 0 !important;
+    justify-content: flex-start !important;
+    flex-wrap: nowrap !important;
+}
+
+#file-list .filecard .badge,
+#file-list .filecard .status,
+#file-list .filecard .file-remove {
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
+}
+
+#file-list .filecard .file-progress {
+    flex: 1 1 auto !important;
+    min-width: 120px !important;
+    width: auto !important;
+    height: 10px !important;
+    margin: 0 !important;
+}
+
+#file-list .filecard .file-remove {
+    position: static !important;
+    padding: 2px 6px !important;
+    border: 0 !important;
+    border-radius: 8px !important;
+    background: transparent !important;
+    color: var(--text) !important;
+    cursor: pointer !important;
+}
+
+@media (max-width:520px) {
+    #file-list .filecard .file-progress {
+        min-width: 100px !important;
+        height: 8px !important;
+    }
+}
+
+@media (max-width:400px) {
+    #file-list .filecard .file-progress {
+        min-width: 80px !important;
+        height: 6px !important;
+    }
+
+    #file-list .filecard .badge,
+    #file-list .filecard .status {
+        font-size: 12px !important;
+    }
+}
+
+@media (min-width:960px) {
+    #file-list .filecard {
+        display: flex !important;
+        align-items: center !important;
+        gap: 10px !important;
+        flex-wrap: nowrap !important;
+        overflow: hidden !important;
+    }
+
+    #file-list .filecard .file-meta {
+        min-width: 0 !important;
+        flex: 0 1 auto !important;
+    }
+
+    #file-list .filecard .f-name {
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+
+    #file-list .filecard .file-controls {
+        margin-left: auto !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        min-width: 0 !important;
+        flex: 0 1 auto !important;
+    }
+
+    #file-list .filecard .badge,
+    #file-list .filecard .status,
+    #file-list .filecard .file-remove {
+        flex: 0 0 auto !important;
+        white-space: nowrap !important;
+    }
+
+    #file-list progress.file-progress,
+    #file-list .filecard .file-progress {
+        flex: 1 1 auto !important;
+        min-width: 120px !important;
+        width: auto !important;
+        height: 10px !important;
+        margin: 0 !important;
+    }
+
+    #file-list .filecard .file-remove {
+        position: static !important;
+        padding: 2px 6px !important;
+        border: 0 !important;
+        border-radius: 8px !important;
+        background: transparent !important;
+        color: var(--text) !important;
+        cursor: pointer !important;
+    }
+}
+
+@media (max-width:959.98px) {
+    #file-list .filecard {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        grid-template-rows: auto auto !important;
+        row-gap: 8px !important;
+        align-items: center !important;
+        overflow: hidden !important;
+    }
+
+    #file-list .filecard .file-meta {
+        grid-column: 1 / -1 !important;
+        grid-row: 1 !important;
+        min-width: 0 !important;
+    }
+
+    #file-list .filecard .f-name {
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+
+    #file-list .filecard .sub {
+        opacity: .8 !important;
+    }
+
+    #file-list .filecard .file-controls {
+        grid-column: 1 / -1 !important;
+        grid-row: 2 !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 10px !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        margin-left: 0 !important;
+        justify-content: flex-start !important;
+        flex-wrap: nowrap !important;
+    }
+
+    #file-list .filecard .badge,
+    #file-list .filecard .status,
+    #file-list .filecard .file-remove {
+        flex: 0 0 auto !important;
+        white-space: nowrap !important;
+    }
+
+    #file-list progress.file-progress,
+    #file-list .filecard .file-progress {
+        flex: 1 1 auto !important;
+        min-width: 140px !important;
+        width: auto !important;
+        height: 10px !important;
+        margin: 0 !important;
+    }
+
+    #file-list .filecard .file-remove {
+        position: static !important;
+        padding: 2px 6px !important;
+        border: 0 !important;
+        border-radius: 8px !important;
+        background: transparent !important;
+        color: var(--text) !important;
+        cursor: pointer !important;
+    }
+}
+
+@media (max-width:520px) {
+    #file-list .filecard .file-progress {
+        min-width: 100px !important;
+        height: 8px !important;
+    }
+}
+
+@media (max-width:400px) {
+    #file-list .filecard .file-progress {
+        min-width: 80px !important;
+        height: 6px !important;
+    }
+
+    #file-list .filecard .badge,
+    #file-list .filecard .status {
+        font-size: 12px !important;
+    }
+}
+
+:root {
+    --topbar-btn-w: 140px;
+    --topbar-btn-h: 38px;
+}
+
+.header-row {
+    align-items: center;
+}
+
+.header-tools,
+.topbar_Buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-topbar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--topbar-btn-w);
+    min-width: var(--topbar-btn-w);
+    height: var(--topbar-btn-h);
+    line-height: 1;
+    width: 48%;
+    max-width: none !important;
+    white-space: nowrap;
+}
+
+@media (max-width:600px) {
+    .topbar_Buttons {
+        flex-wrap: wrap;
+        width: 100%;
+    }
+}
+
+@media (max-width:767px) {
+    .mobile-inline-ad {
+        display: block;
+    }
+}
+
+@media (min-width:768px) {
+    .mobile-inline-ad {
+        display: none !important;
+    }
+}
+
+@media (max-width:767px) {
+    .footer-ads {
+        display: none !important;
+    }
+
+    .dropzone {
+        display: none !important;
+    }
+
+    .file-input {
+        width: 100%;
+    }
+}
+
+@media (max-width: 720px) {
+
+    /* Paint it once on html, no fixed attachment on phones */
+    html {
+        background: var(--body_background_colour);
+        background-attachment: scroll;
+        /* was fixed */
+        background-repeat: no-repeat;
+        background-color: var(--bg);
+    }
+
+    /* Let html show through */
+    body,
+    body::after {
+        background: transparent !important;
+    }
+}
+
+/* I18N-BTN-ROW-FIX */
+/* Keep 'Add files' and 'Clear' on one row in the controls header */
+.controls .row .flex1 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: nowrap;
+    /* never break to a second row unless container truly overflows */
+}
+
+.controls .row .flex1>button {
+    width: auto !important;
+    /* override the global 'button { width:100% }' rule */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.controls .row .flex1>#clear-btn {
+    margin-left: 0;
+}
+
+/* keep spacing tidy */
+/* I18N-BTN-LEFT-WRAP */
+/* Left controls: 'Add files' + selected filename on one row (like original) */
+.file-add-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.file-add-wrap .btn-ghost {
+    width: auto !important;
+    /* don't stretch */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.file-add-wrap .file-picked {
+    max-width: 420px;
+    color: var(--muted-2, #aab);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+/* I18N-BTN-LEFT-WRAP v2 */
+/* Left cluster: localized 'Add files' + filename, like original */
+.file-add-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.file-add-wrap .btn-ghost {
+    width: auto !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.file-add-wrap .file-picked {
+    max-width: 420px;
+    color: var(--muted-2, #aab);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Make the CLEAR button a bit wider for visual balance */
+#clear-btn {
+    min-width: 132px;
+    padding-left: 18px;
+    padding-right: 18px;
+}
+
+
+/* I18N-BTN-LEFT-WRAP v3 */
+/* Left cluster: 'Add files' + filename (always visible, with placeholder) */
+.file-add-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.file-add-wrap .btn-ghost {
+    width: auto !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.file-add-wrap .file-picked {
+    max-width: 480px;
+    color: var(--muted-2, #aab);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Make the CLEAR button a bit wider for visual balance */
+#clear-btn {
+    min-width: 160px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+/* FILE-INPUT-MIMIC */
+.file-add-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    /* space between button and filename */
+    vertical-align: middle;
+}
+
+.file-add-wrap .btn-ghost {
+    height: var(--control-h, 36px);
+    line-height: var(--control-h, 36px);
+    padding: 0 16px;
+    border-radius: 10px;
+    /* same pill look as before */
+    width: auto !important;
+    /* don't stretch full width */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.file-add-wrap .file-picked {
+    max-width: 34ch;
+    /* match native: short, single line */
+    color: var(--muted-2, #aab);
+    /* muted like native filename text */
+    line-height: var(--control-h, 36px);
+    height: var(--control-h, 36px);
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* keep Clear visually balanced on the right */
+#clear-btn {
+    min-width: 160px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+/* On small screens, native pickers often hide the filename — do the same */
+@media (max-width: 520px) {
+    .file-add-wrap .file-picked {
+        display: none;
+    }
+}
+
+/* I18N-BTN-NOWRAP */
+/* Keep the left 'Add files' button on a single line and let it grow */
+.file-add-wrap .btn-ghost {
+    width: auto !important;
+    /* don't stretch full width */
+    flex: 0 0 auto;
+    /* don't shrink in flex rows */
+    display: inline-flex;
+    /* size to content */
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap !important;
+    /* NO wrapping of 'Ajouter des fichiers' etc. */
+    word-break: keep-all;
+    max-width: none !important;
+    /* undo any global cap */
+    height: var(--control-h, 36px);
+    line-height: var(--control-h, 36px);
+    padding: 0 16px;
+}
+
+/* Keep filename label aligned with the button */
+.file-add-wrap .file-picked {
+    line-height: var(--control-h, 36px);
+    height: var(--control-h, 36px);
+}
