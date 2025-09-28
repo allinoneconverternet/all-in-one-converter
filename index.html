@@ -1,0 +1,22 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>All-in-One Converter</title>
+  <link rel="canonical" href="https://www.all-in-one-converter.net/en/">
+  <meta http-equiv="refresh" content="0;url=/en/">
+  <script>
+    (function(){
+      try {
+        var map = { "en":"en","en-US":"en","en-GB":"en","es":"es","fr":"fr","de":"de","pt":"pt","pt-BR":"pt-BR","ru":"ru","uk":"uk","hi":"hi","it":"it","ja":"ja","ko":"ko","nl":"nl","pl":"pl","ar":"ar","zh-CN":"zh-CN","tr":"tr" };
+        var langs = (navigator.languages || [navigator.language || "en"]).map(x => (x||"").trim());
+        var best = langs.find(l => map[l]) || langs.map(l => l.split('-')[0]).find(l => map[l]) || "en";
+        location.replace('/' + map[best] + '/');
+      } catch (e) { location.replace('/en/'); }
+    })();
+  </script>
+</head>
+<body>
+  <p>Redirecting to your language… <a href="/en/">Click here if not redirected</a>.</p>
+</body>
+</html>
