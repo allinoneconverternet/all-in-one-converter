@@ -1,9 +1,7 @@
-* text=auto
-*.sh        text eol=lf
-*.mjs       text eol=lf
-*.js        text eol=lf
-*.css       text eol=lf
-*.html      text eol=lf
-*.json      text eol=lf
-*.md        text eol=lf
-*.ps1       text eol=crlf
+﻿* text=auto eol=lf
+*.html text working-tree-encoding=UTF-8
+*.css  text working-tree-encoding=UTF-8
+*.js   text working-tree-encoding=UTF-8
+*.json text working-tree-encoding=UTF-8
+*.svg  text working-tree-encoding=UTF-8
+*.txt  text working-tree-encoding=UTF-8
