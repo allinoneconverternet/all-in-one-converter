@@ -1,0 +1,19 @@
+{
+  "lang": "pl",
+  "site_name": "All-in-One Converter",
+  "cta_open_converter": "Otwórz konwerter",
+  "faq_heading": "NajczÄ™stsze pytania",
+  "related_heading": "PowiÄ…zane konwersje",
+  "home_label": "Strona gÅ‚ówna",
+  "noscript_html": "<noscript><div class=\"noscript-note\" role=\"note\">Ten konwerter dziaÅ‚a w caÅ‚oÅ›ci w Twojej przeglÄ…darce. WÅ‚Ä…cz JavaScript, aby z niego korzystaÄ‡. Nadal moÅ¼esz przeglÄ…daÄ‡ stronÄ™ lub otworzyÄ‡ <a href=\"/\">stronÄ™ gÅ‚ównÄ…</a>.</div></noscript>",
+  "title_tpl": "{SRC} na {DST} — Szybki, prywatny konwerter (bez wysyÅ‚ania)",
+  "h1_tpl": "Konwertuj {SRC} na {DST} — W przeglÄ…darce",
+  "meta_description_tpl": "Darmowy, prywatny konwerter {SRC}â†’{DST}. DziaÅ‚a w 100% w przeglÄ…darce; pliki nie sÄ… wysyÅ‚ane.",
+  "intro_paragraph_tpl": "UpuÅ›Ä‡ jeden lub wiÄ™cej plików {SRC} i przekonwertuj je na {DST}. Wszystko odbywa siÄ™ lokalnie w przeglÄ…darce — nic nie jest wysyÅ‚ane.",
+  "faq_q1_tpl": "Czy moje pliki {SRC} sÄ… wysyÅ‚ane, aby przekonwertowaÄ‡ je na {DST}?",
+  "faq_a1_tpl": "Nie. Przetwarzanie odbywa siÄ™ w przeglÄ…darce przy uÅ¼yciu WebAssembly/Web Workers. Twoje pliki nigdy nie opuszczajÄ… urzÄ…dzenia.",
+  "faq_q2_tpl": "Jak przekonwertowaÄ‡ {SRC} na {DST} offline?",
+  "faq_a2_tpl": "Otwórz tÄ™ stronÄ™, dodaj pliki, wybierz format wyjÅ›ciowy i rozpocznij. Po zaÅ‚adowaniu moÅ¼esz nawet odÅ‚Ä…czyÄ‡ internet."
+}
+
+

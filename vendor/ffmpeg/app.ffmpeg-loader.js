@@ -1,4 +1,4 @@
-﻿// Robust FFmpeg loader: local wrapper (same-origin worker), MT when isolated, ST fallback.
+// Robust FFmpeg loader: local wrapper (same-origin worker), MT when isolated, ST fallback.
 // Handles both UMD "class" (0.12+) and legacy factory builds.
 async function needFFmpeg() {
   if (window.__ffmpeg?.loaded || window.__ffmpeg?.isLoaded?.()) return window.__ffmpeg;
@@ -60,10 +60,10 @@ async function needFFmpeg() {
   // Instantiate depending on API shape
   let ff;
   if (api.hasClass) {
-    // 0.12+ "class" â€” options go to .load()
+    // 0.12+ "class" — options go to .load()
     ff = new api.ns.FFmpeg();
   } else if (api.hasFactory) {
-    // Legacy factory â€” options go to createFFmpeg({...}) (NOT to .load())
+    // Legacy factory — options go to createFFmpeg({...}) (NOT to .load())
     ff = api.ns.createFFmpeg({ log: true, corePath: coreURL });
   } else {
     throw new Error('FFmpeg wrapper exposes neither class nor factory');
