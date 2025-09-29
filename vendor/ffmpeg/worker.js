@@ -1,4 +1,4 @@
-/// <reference no-default-lib="true" />
+﻿/// <reference no-default-lib="true" />
 /// <reference lib="esnext" />
 /// <reference lib="webworker" />
 import { CORE_URL, FFMessageType } from "./const.js";
@@ -149,3 +149,5 @@ self.onmessage = async ({ data: { id, type, data: _data }, }) => {
   }
   self.postMessage({ id, type, data }, trans);
 };
+
+

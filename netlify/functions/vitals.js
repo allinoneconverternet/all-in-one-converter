@@ -1,4 +1,4 @@
-﻿exports.handler = async (event) => {
+exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') return { statusCode: 405, body: 'Method Not Allowed' };
   try {
     const body = JSON.parse(event.body || "{}");
@@ -17,3 +17,5 @@
     return { statusCode: 400, body: "bad request" };
   }
 };
+
+

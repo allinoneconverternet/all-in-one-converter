@@ -99,3 +99,4 @@ async function staleWhileRevalidate(request) {
     .catch(() => undefined);
   return cached || fetchPromise || fetch(request).catch(() => cached);
 }
+

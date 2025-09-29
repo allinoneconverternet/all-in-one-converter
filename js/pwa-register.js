@@ -1,4 +1,4 @@
-﻿(() => {
+(() => {
   if (!("serviceWorker" in navigator)) return;
 
   let refreshing = false;
@@ -27,3 +27,5 @@
       });
   });
 })();
+
+

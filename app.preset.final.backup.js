@@ -48,7 +48,7 @@ async function ensureFFmpegGlobal() {
         s.onload = res; s.onerror = () => rej(new Error('Failed to load ' + src));
         document.head.appendChild(s);
       });
-    })('vendor/ffmpeg/ffmpeg.js');
+    })('/vendor/ffmpeg/ffmpeg.js');
   } catch (e) {
     console.error('Local ffmpeg.js failed to load:', e);
     return false;
@@ -156,7 +156,7 @@ const ENABLE_OUTPUTS = {
 let _ffmpegInstance = null;
 async function needMammoth() {
   if (window.mammoth) return;
-  try { await loadScript('vendor/mammoth.browser.min.js'); }
+  try { await loadScript('/vendor/mammoth.browser.min.js'); }
   catch { await loadScript('https://unpkg.com/mammoth/mammoth.browser.min.js'); }
 }
 
@@ -177,9 +177,9 @@ async function needPdf() {
   // Try to load the *main* library (UMD first; if you only ship ESM, swap order)
   const mainCandidates = [
     // local UMD → CDN UMD → local ESM → CDN ESM
-    () => loadScript('vendor/pdf.min.js'),
+    () => loadScript('/vendor/pdf.min.js'),
     () => loadScript('https://unpkg.com/pdfjs-dist@4/legacy/build/pdf.min.js'),
-    async () => { window.pdfjsLib = await import('vendor/pdf.min.mjs'); },
+    async () => { window.pdfjsLib = await import('/vendor/pdf.min.mjs'); },
     async () => { window.pdfjsLib = await import('https://unpkg.com/pdfjs-dist@4/build/pdf.mjs'); },
   ];
 
@@ -198,13 +198,13 @@ async function needPdf() {
   const workerCandidates = isV4
     ? [
       // Prefer your local v4 worker if you ship it; otherwise the CDN v4 worker
-      'vendor/pdf.worker.min.js', // make sure this is v4 if present
+      '/vendor/pdf.worker.min.js', // make sure this is v4 if present
       'https://unpkg.com/pdfjs-dist@4/legacy/build/pdf.worker.min.js',
       'https://unpkg.com/pdfjs-dist@4/build/pdf.worker.min.mjs',
     ]
     : [
       // v3 track (use if you intentionally pin to 3.x)
-      'vendor/pdf.worker.min.js',
+      '/vendor/pdf.worker.min.js',
       'https://unpkg.com/pdfjs-dist@3/legacy/build/pdf.worker.min.js',
       'https://unpkg.com/pdfjs-dist@3/build/pdf.worker.min.mjs',
     ];
@@ -457,17 +457,17 @@ function loadScript(url) {
 }
 const CDN = {
 
-  pdf: ['vendor/pdf.min.js', 'https://unpkg.com/pdfjs-dist@4/legacy/build/pdf.min.js'],
-  pdfWorker: ['vendor/pdf.worker.min.js', 'https://unpkg.com/pdfjs-dist@4/legacy/build/pdf.worker.min.js'],
+  pdf: ['/vendor/pdf.min.js', 'https://unpkg.com/pdfjs-dist@4/legacy/build/pdf.min.js'],
+  pdfWorker: ['/vendor/pdf.worker.min.js', 'https://unpkg.com/pdfjs-dist@4/legacy/build/pdf.worker.min.js'],
 
-  mammoth: ['vendor/mammoth.browser.min.js', 'https://unpkg.com/mammoth/mammoth.browser.min.js'],
-  xlsx: ['vendor/xlsx.full.min.js', 'https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js'],
-  jszip: ['vendor/jszip.min.js', 'https://cdn.jsdelivr.net/npm/jszip/dist/jszip.min.js'],
-  tesseract: ['vendor/tesseract.min.js', 'https://cdn.jsdelivr.net/npm/tesseract.js/dist/tesseract.min.js'],
-  jspdf: ['vendor/jspdf.umd.min.js', 'https://cdn.jsdelivr.net/npm/jspdf/dist/jspdf.umd.min.js'],
-  docx: ['vendor/docx.min.js', 'https://cdn.jsdelivr.net/npm/docx/build/index.min.js'],
-  ffmpeg: ['vendor/ffmpeg/ffmpeg.js', 'https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js'],
-  ffmpegCore: ['vendor/ffmpeg/ffmpeg-core.js', 'https://unpkg.com/@ffmpeg/core@0.12.10/dist/umd/ffmpeg-core.js'],
+  mammoth: ['/vendor/mammoth.browser.min.js', 'https://unpkg.com/mammoth/mammoth.browser.min.js'],
+  xlsx: ['/vendor/xlsx.full.min.js', 'https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js'],
+  jszip: ['/vendor/jszip.min.js', 'https://cdn.jsdelivr.net/npm/jszip/dist/jszip.min.js'],
+  tesseract: ['/vendor/tesseract.min.js', 'https://cdn.jsdelivr.net/npm/tesseract.js/dist/tesseract.min.js'],
+  jspdf: ['/vendor/jspdf.umd.min.js', 'https://cdn.jsdelivr.net/npm/jspdf/dist/jspdf.umd.min.js'],
+  docx: ['/vendor/docx.min.js', 'https://cdn.jsdelivr.net/npm/docx/build/index.min.js'],
+  ffmpeg: ['/vendor/ffmpeg/ffmpeg.js', 'https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js'],
+  ffmpegCore: ['/vendor/ffmpeg/ffmpeg-core.js', 'https://unpkg.com/@ffmpeg/core@0.12.10/dist/umd/ffmpeg-core.js'],
 };
 async function loadScriptTry(localUrl, cdnUrl) {
   try { await loadScript(localUrl); }
@@ -492,7 +492,7 @@ async function needFFmpeg() {
 
   // 1) Wrapper candidates (LOCAL first to avoid cross-origin Worker error)
   const WRAPPERS = [
-    'vendor/ffmpeg/ffmpeg.js',                                                  // ← local official UMD (0.12.10)
+    '/vendor/ffmpeg/ffmpeg.js',                                                  // ← local official UMD (0.12.10)
     `https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@${VER}/dist/umd/ffmpeg.js`,
     `https://unpkg.com/@ffmpeg/ffmpeg@${VER}/dist/umd/ffmpeg.js`
   ];
@@ -662,7 +662,7 @@ async function ensureVendors() {
 
     // Candidate core URLs (local → any script we see → common CDNs)
     const candidates = new Set();
-    candidates.add('vendor/ffmpeg/ffmpeg-core.js');
+    candidates.add('/vendor/ffmpeg/ffmpeg-core.js');
     const scriptCore = [...document.querySelectorAll('script[src]')]
       .map(s => s.src).filter(src => /ffmpeg-core\.js(\?|$)/.test(src));
     scriptCore.forEach(u => candidates.add(u));
@@ -680,7 +680,7 @@ async function ensureVendors() {
     }
 
     // Probe WASM next to the chosen core (or the local path if none worked)
-    const wasmUrl = (core ? core.url : 'vendor/ffmpeg/ffmpeg-core.js').replace(/\.js(\?.*)?$/, '.wasm');
+    const wasmUrl = (core ? core.url : '/vendor/ffmpeg/ffmpeg-core.js').replace(/\.js(\?.*)?$/, '.wasm');
     const wasm = await headOrGet(wasmUrl); checks.push(wasm);
     if (!wasm.ok) {
       issues.push('ffmpeg-core.wasm not found next to ffmpeg-core.js.');
@@ -842,7 +842,7 @@ async function diagnoseFFmpeg() {
   // Wrapper presence + MIME sanity
   const wrapperSrc =
     ([...document.querySelectorAll('script[src]')].map(s => s.src).find(s => /(^|\/)ffmpeg\.js(\?|$)/.test(s)) ||
-      'vendor/ffmpeg/ffmpeg.js');
+      '/vendor/ffmpeg/ffmpeg.js');
   const wrap = await headOrGet(wrapperSrc); checks.push(wrap);
   const wrapperHasGlobal = !!(window.FFmpeg && window.FFmpeg.createFFmpeg);
   if (!wrap.ok) issues.push('ffmpeg.js (wrapper) not reachable.');
@@ -855,7 +855,7 @@ async function diagnoseFFmpeg() {
 
   // Core + WASM
   const coreCandidates = [
-    'vendor/ffmpeg/ffmpeg-core.js',
+    '/vendor/ffmpeg/ffmpeg-core.js',
     ...[...document.querySelectorAll('script[src]')].map(s => s.src).filter(src => /ffmpeg-core\.js(\?|$)/.test(src)),
     `https://cdn.jsdelivr.net/npm/@ffmpeg/core@${FFMPEG_VER}/dist/umd/ffmpeg-core.js`,
     `https://unpkg.com/@ffmpeg/core@${FFMPEG_VER}/dist/umd/ffmpeg-core.js`,
@@ -1403,7 +1403,7 @@ function wireFFmpegProgress(ff, index) {
 // Local-only: ensure the UMD wrapper is present (no CDN)
 async function ensureFFmpegWrapperLocal() {
   if (window.FFmpeg?.createFFmpeg) return true;
-  const BASE = 'vendor/ffmpeg/';
+  const BASE = '/vendor/ffmpeg/';
   await new Promise((resolve, reject) => {
     const s = document.createElement('script');
     s.src = BASE + 'ffmpeg.js';
@@ -1574,8 +1574,8 @@ async function warmFFmpegWrapper() {
 
     // Try local UMDs we see in your tree
     const localWrappers = [
-      'vendor/ffmpeg/ffmpeg.js',
-      'vendor/ffmpeg/ffmpeg.min.js'
+      '/vendor/ffmpeg/ffmpeg.js',
+      '/vendor/ffmpeg/ffmpeg.min.js'
     ];
 
     for (const src of localWrappers) {
@@ -1685,10 +1685,10 @@ async function convertPdfFile(file, target) {
 
     // Try local UMD → CDN UMD → local ESM → CDN ESM
     const tryOrder = [
-      () => loadScript("vendor/pdf.min.js"),
+      () => loadScript("/vendor/pdf.min.js"),
       () => loadScript("https://unpkg.com/pdfjs-dist@4/legacy/build/pdf.min.js"),
       async () => {
-        const mod = await import("vendor/pdf.min.mjs");
+        const mod = await import("/vendor/pdf.min.mjs");
         window.pdfjsLib = mod; // expose to rest of app
       },
       async () => {
@@ -1707,8 +1707,8 @@ async function convertPdfFile(file, target) {
 
     // Worker: prefer local .js, then local .mjs, then CDN UMD, then CDN ESM
     const workerCandidates = [
-      "vendor/pdf.worker.min.js",
-      "vendor/pdf.worker.min.mjs",
+      "/vendor/pdf.worker.min.js",
+      "/vendor/pdf.worker.min.mjs",
       "https://unpkg.com/pdfjs-dist@4/legacy/build/pdf.worker.min.js",
       "https://unpkg.com/pdfjs-dist@4/build/pdf.worker.min.mjs",
     ];
@@ -2556,5 +2556,6 @@ try {
     localizedRebuild();
   }
 })();
+
 
 

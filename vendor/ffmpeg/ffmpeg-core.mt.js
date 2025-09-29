@@ -1,2 +1,4 @@
-Cross - Origin - Opener - Policy: same - origin
+﻿Cross - Origin - Opener - Policy: same - origin
 Cross - Origin - Embedder - Policy: require - corp
+
+

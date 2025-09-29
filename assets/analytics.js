@@ -1,4 +1,4 @@
-﻿(function () {
+(function () {
   const EP = (typeof window !== 'undefined' && window.__ANALYTICS_ENDPOINT__) || '';
   function post(name, payload) {
     if (!EP) return;
@@ -26,3 +26,5 @@
     post('error', { message: String(e.message || 'err'), source: String(e.filename||''), line: e.lineno||0 });
   });
 })();
+
+

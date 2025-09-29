@@ -1,4 +1,4 @@
-﻿/* js/ffmpeg-worker-client.js
+/* js/ffmpeg-worker-client.js
  * Thin main-thread wrapper around /workers/ffmpeg.worker.js with a typed message protocol.
  * - Lazily spawns the worker on first use
  * - Provides a simple .convert({ args, files, outputs }) API
@@ -92,3 +92,5 @@ export class FFmpegWorkerClient {
     return /** @type {Promise<{ files: OutFile[], timeMs: number }>} */ (p);
   }
 }
+
+

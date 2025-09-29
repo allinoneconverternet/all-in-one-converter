@@ -1,4 +1,4 @@
-﻿(function(){
+(function(){
   try {
     const sec = document.querySelector('section.related[data-cluster]');
     if (!sec) return;
@@ -36,3 +36,5 @@
       .replaceAll("'", '&#39;');
   }
 })();
+
+

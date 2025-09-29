@@ -1,0 +1,3 @@
+﻿AddDefaultCharset utf-8
+AddType 'text/css; charset=utf-8' .css
+AddType 'application/javascript; charset=utf-8' .js

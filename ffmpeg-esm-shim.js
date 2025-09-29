@@ -1,4 +1,4 @@
-/* ffmpeg-esm-shim.local.js — LOCAL ONLY */
+﻿/* ffmpeg-esm-shim.local.js â€” LOCAL ONLY */
 (function () {
   // If already set, do nothing
   if (globalThis.FFmpeg?.createFFmpeg) return;
@@ -11,3 +11,4 @@
     globalThis.FFmpeg = { createFFmpeg, fetchFile };
   }
 })();
+

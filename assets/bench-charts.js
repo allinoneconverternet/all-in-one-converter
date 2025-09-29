@@ -1,4 +1,4 @@
-﻿(function () {
+(function () {
   function render(el, data) {
     const w = Math.max(320, el.clientWidth || 640);
     const h = 180, pad = 28;
@@ -51,3 +51,5 @@
   }
   document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", init) : init();
 })();
+
+

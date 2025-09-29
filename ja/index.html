@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="ja">
 
 <head>
@@ -502,11 +502,11 @@
   </script>
 
   <!-- Vendor libs (load before app.js) -->
-  <script src="vendor/mammoth.browser.min.js"></script>
-  <script src="vendor/jszip.min.js"></script>
-  <script src="vendor/xlsx.full.min.js"></script>
-  <script src="vendor/jspdf.umd.min.js"></script>
-  <script src="vendor/docx.min.js"></script>
+  <script src="/vendor/mammoth.browser.min.js"></script>
+  <script src="/vendor/jszip.min.js"></script>
+  <script src="/vendor/xlsx.full.min.js"></script>
+  <script src="/vendor/jspdf.umd.min.js"></script>
+  <script src="/vendor/docx.min.js"></script>
 
 
 
@@ -516,12 +516,12 @@
 
   <!-- Tesseract (offline) -->
   <!-- Tesseract (offline) -->
-  <script src="vendor/tesseract.min.js"></script>
+  <script src="/vendor/tesseract.min.js"></script>
   <script>
     window.OCR_OPTS = {
-      workerPath: 'vendor/tesseract/worker.min.js',
-      corePath: 'vendor/tesseract/tesseract-core-simd.wasm.js',
-      langPath: 'vendor/tessdata',
+      workerPath: '/vendor/tesseract/worker.min.js',
+      corePath: '/vendor/tesseract/tesseract-core-simd.wasm.js',
+      langPath: '/vendor/tessdata',
       gzip: true
     };
   </script>
@@ -653,3 +653,4 @@
 </body>
 
 </html>
+
