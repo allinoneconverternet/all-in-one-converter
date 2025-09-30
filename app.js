@@ -14,7 +14,24 @@ var FFMPEG_VER = window.FFMPEG_VER;  // <— was 'const', change to 'var'
 var _warmFFmpegOnce = window._warmFFmpegOnce || null;  // ⬅️ change this line
 if (window.__APP_ALREADY_LOADED__) throw new Error('app.js loaded twice');
 window.__APP_ALREADY_LOADED__ = true;
-
+const TB_TONE = {
+  'banner.doneOk': 'ok',
+  'banner.finishedMixed': 'error',
+  'banner.finishedFail': 'error',
+  'banner.noCommonFor': 'error',
+  'banner.unsupportedPresent': 'error',
+  'banner.unsupportedAdded': 'error',
+  'banner.added': 'ok',
+  'banner.removedX': 'ok',
+  'banner.cleared': 'ok',
+  'banner.addFirst': 'error',
+  'banner.noOutputs': 'error',
+  'banner.exceedsBudget': 'error'
+};
+window.tb = function tb(key, vars) {
+  const tone = TB_TONE[key] || 'error';           // default to red if unknown
+  return showBanner(t(key, vars), tone);
+};
 // adopt any known global shape
 function adoptFFmpegGlobal() {
   const cands = [
@@ -300,6 +317,14 @@ window.showBanner = function (msg, kind = 'info') {
       const f = failMatch ? (parseInt(failMatch[1], 10) || 0) : 0;
 
       const L = window.APP_LANG || 'en';
+      if (f === 0) {
+        tb('banner.doneOk', { s, files: wordFiles(s, L) });       // ✅ green
+      } else if (s > 0) {
+        tb('banner.finishedMixed', { s, files: wordFiles(s, L), f });    // ❌ red
+      } else {
+        tb('banner.finishedFail', { f, files: wordFiles(f, L) });       // ❌ red
+      }
+
       const filesS = window.wordFiles(s, L);
       const filesF = window.wordFiles(f, L);
 
@@ -492,7 +517,7 @@ const I18N = {
     const base = norm.split('-')[0];
     return I18N[base] ? base : 'en';
   })();
-
+  window.APP_LANG = lang;
   function fmt(s, vars) {
     return String(s).replace(/\{(\w+)\}/g, (_, k) => (vars && k in vars) ? vars[k] : '{' + k + '}');
   }
@@ -549,6 +574,14 @@ const I18N = {
         const s = parseInt(done[1], 10) || 0;
         const f = (m.match(/,\s*(\d+)\s+failed/i) ? parseInt(RegExp.$1, 10) : 0) || 0;
         const L = window.APP_LANG || 'en';
+        if (f === 0) {
+          tb('banner.doneOk', { s, files: wordFiles(s, L) });       // ✅ green
+        } else if (s > 0) {
+          tb('banner.finishedMixed', { s, files: wordFiles(s, L), f });    // ❌ red
+        } else {
+          tb('banner.finishedFail', { f, files: wordFiles(f, L) });       // ❌ red
+        }
+
         const filesS = wordFiles(s, L), filesF = wordFiles(f, L);
         if (f > 0 && s === 0) m = t('banner.doneFail', { f, files: filesF });
         else if (f > 0) m = t('banner.doneMixed', { s, files: filesS, f });
@@ -2276,18 +2309,34 @@ convertBtn.addEventListener('click', async () => {
 
       // show/hide downloads section
       downloads.hidden = state.outputs.length === 0;
+      // show/hide downloads section is already above
 
-      const s = state.outputs.length;
-      const f = failed;
+      // Count successes by file (robust even if a file emits multiple outputs)
+      const total = state.files.length;
+      const s = Object.values(state.outputsByFile).reduce((n, arr) => n + ((arr && arr.length) ? 1 : 0), 0);
+      const f = failed; // your counter from run loop
+
       const L = window.APP_LANG || 'en';
-      const msg = (f > 0)
-        ? (s > 0
-          ? t('banner.doneMixed', { s, files: wordFiles(s, L), f })
-          : t('banner.doneFail', { f, files: wordFiles(f, L) }))
-        : t('banner.doneOk', { s, files: wordFiles(s, L) });
+      if (f === 0) {
+        tb('banner.doneOk', { s, files: wordFiles(s, L) });       // ✅ green
+      } else if (s > 0) {
+        tb('banner.finishedMixed', { s, files: wordFiles(s, L), f });    // ❌ red
+      } else {
+        tb('banner.finishedFail', { f, files: wordFiles(f, L) });       // ❌ red
+      }
 
-      // Tone: red if there were any failures, otherwise green
-      const tone = (f > 0) ? 'error' : 'ok';
+      let msg, tone;
+      if (f === 0) {
+        // ✅ Only here we say "Done"
+        msg = t('banner.doneOk', { s, files: wordFiles(s, L) });
+        tone = 'ok';
+      } else if (s > 0) {
+        msg = t('banner.finishedMixed', { s, files: wordFiles(s, L), f });
+        tone = 'error';
+      } else {
+        msg = t('banner.finishedFail', { f, files: wordFiles(f, L) });
+        tone = 'error';
+      }
       showBanner(msg, tone);
 
     }
@@ -2504,25 +2553,211 @@ showBanner(t('banner.readyHint'));
 /* I18N AUTO PATCH */
 // Ensure English pack has the new keys; other languages will fall back to these.
 try {
+  // === Banner i18n (adds only the keys we need) ===
   Object.assign(I18N.en, {
-    'banner.added': 'Added {n} {files}. Total: {total}.',
-    'banner.removedX': 'Removed {name}.',
-    'banner.cleared': 'Cleared.',
-    'banner.noOutputs': 'No outputs yet. Convert first.',
-    'banner.addFirst': 'Add some files first.',
-    'banner.tooMuchData': 'Too much data at once ({total}). Budget {budget}.',
-    'banner.exceedsBudget': 'Total selected {total} exceeds budget {budget}. Will process sequentially.',
-    'banner.triggeredDownloads': 'Triggered downloads for each file.',
-    'banner.savedAll': 'Saved all files to your chosen folder.',
-    'banner.saveCancelled': 'Save cancelled.',
+    'banner.added': 'Added {n} {files}.',
     'banner.doneOk': 'Done. {s} {files} converted.',
-    'banner.doneMixed': 'Done. {s} {files} converted, {f} failed.',
-    'banner.doneFail': 'Failed {f} {files}.',
-    // NEW
+    'banner.finishedFail': 'Failed {f} {files}.',
+    'banner.finishedMixed': 'Completed with errors: {s} {files} converted, {f} failed.',
     'banner.noCommonFor': 'No common conversion for: {exts}.',
-    'banner.unsupportedPresent': 'Unsupported file(s) present: {exts}.',
-    'banner.unsupportedAdded': 'Some files are unsupported and may fail: {exts}.'
+    'banner.removedX': 'Removed {name}.',
+    'banner.unsupportedAdded': 'Ignored unsupported files: {names}.',
+    'banner.unsupportedPresent': 'Unsupported file types present: {exts}.'
   });
+
+  // Arabic
+  I18N.ar && Object.assign(I18N.ar, {
+    'banner.added': 'تمت إضافة {n} {files}.',
+    'banner.doneOk': 'تمّ. تمّ تحويل {s} {files}.',
+    'banner.finishedFail': 'فشل {f} {files}.',
+    'banner.finishedMixed': 'اكتمل مع أخطاء: تمّ تحويل {s} {files}، فشل {f}.',
+    'banner.noCommonFor': 'لا يوجد تحويل مشترك لهذه الامتدادات: {exts}.',
+    'banner.removedX': 'تمت إزالة {name}.',
+    'banner.unsupportedAdded': 'تم تجاهل الملفات غير المدعومة: {names}.',
+    'banner.unsupportedPresent': 'أنواع ملفات غير مدعومة موجودة: {exts}.'
+  });
+
+  // German
+  I18N.de && Object.assign(I18N.de, {
+    'banner.added': 'Hinzugefügt {n} {files}.',
+    'banner.doneOk': 'Fertig. {s} {files} konvertiert.',
+    'banner.finishedFail': '{f} {files} fehlgeschlagen.',
+    'banner.finishedMixed': 'Abgeschlossen mit Fehlern: {s} {files} konvertiert, {f} fehlgeschlagen.',
+    'banner.noCommonFor': 'Keine gemeinsame Konvertierung für: {exts}.',
+    'banner.removedX': '{name} entfernt.',
+    'banner.unsupportedAdded': 'Nicht unterstützte Dateien ignoriert: {names}.',
+    'banner.unsupportedPresent': 'Nicht unterstützte Dateitypen vorhanden: {exts}.'
+  });
+
+  // Spanish
+  I18N.es && Object.assign(I18N.es, {
+    'banner.added': 'Añadidos {n} {files}.',
+    'banner.doneOk': 'Listo. {s} {files} convertidos.',
+    'banner.finishedFail': 'Fallaron {f} {files}.',
+    'banner.finishedMixed': 'Completado con errores: {s} {files} convertidos, {f} fallaron.',
+    'banner.noCommonFor': 'Sin conversión común para: {exts}.',
+    'banner.removedX': 'Se eliminó {name}.',
+    'banner.unsupportedAdded': 'Se ignoraron archivos no compatibles: {names}.',
+    'banner.unsupportedPresent': 'Hay tipos de archivo no compatibles: {exts}.'
+  });
+
+  // French
+  I18N.fr && Object.assign(I18N.fr, {
+    'banner.added': 'Ajout de {n} {files}.',
+    'banner.doneOk': 'Terminé. {s} {files} convertis.',
+    'banner.finishedFail': 'Échec pour {f} {files}.',
+    'banner.finishedMixed': 'Terminé avec des erreurs : {s} {files} convertis, {f} échecs.',
+    'banner.noCommonFor': 'Aucune conversion commune pour : {exts}.',
+    'banner.removedX': '{name} supprimé.',
+    'banner.unsupportedAdded': 'Fichiers non pris en charge ignorés : {names}.',
+    'banner.unsupportedPresent': 'Types de fichiers non pris en charge présents : {exts}.'
+  });
+
+  // Hindi
+  I18N.hi && Object.assign(I18N.hi, {
+    'banner.added': '{n} {files} जोड़े गए।',
+    'banner.doneOk': 'सम्पन्न। {s} {files} परिवर्तित।',
+    'banner.finishedFail': '{f} {files} विफल।',
+    'banner.finishedMixed': 'त्रुटियों के साथ पूरा: {s} {files} परिवर्तित, {f} विफल।',
+    'banner.noCommonFor': 'इन फ़ाइलों के लिए कोई सामान्य रूपांतरण संभव नहीं: {exts}।',
+    'banner.removedX': '{name} हटाया गया।',
+    'banner.unsupportedAdded': 'असमर्थित फ़ाइलें अनदेखी: {names}।',
+    'banner.unsupportedPresent': 'असमर्थित फ़ाइल प्रकार मौजूद: {exts}।'
+  });
+
+  // Italian
+  I18N.it && Object.assign(I18N.it, {
+    'banner.added': 'Aggiunti {n} {files}.',
+    'banner.doneOk': 'Fatto. {s} {files} convertiti.',
+    'banner.finishedFail': 'Non riusciti {f} {files}.',
+    'banner.finishedMixed': 'Completato con errori: {s} {files} convertiti, {f} non riusciti.',
+    'banner.noCommonFor': 'Nessuna conversione comune per: {exts}.',
+    'banner.removedX': '{name} rimosso.',
+    'banner.unsupportedAdded': 'File non supportati ignorati: {names}.',
+    'banner.unsupportedPresent': 'Sono presenti tipi di file non supportati: {exts}.'
+  });
+
+  // Japanese
+  I18N.ja && Object.assign(I18N.ja, {
+    'banner.added': '{n} {files}を追加しました。',
+    'banner.doneOk': '完了。{s} {files}を変換しました。',
+    'banner.finishedFail': '{f} {files}の変換に失敗しました。',
+    'banner.finishedMixed': 'エラーありで完了：{s} {files}を変換、{f} 件失敗。',
+    'banner.noCommonFor': '共通の変換先がありません: {exts}。',
+    'banner.removedX': '{name} を削除しました。',
+    'banner.unsupportedAdded': '未対応のファイルを無視しました: {names}。',
+    'banner.unsupportedPresent': '未対応のファイル形式が含まれています: {exts}。'
+  });
+
+  // Korean
+  I18N.ko && Object.assign(I18N.ko, {
+    'banner.added': '{n} {files} 추가됨.',
+    'banner.doneOk': '완료. {s} {files} 변환됨.',
+    'banner.finishedFail': '{f} {files} 실패.',
+    'banner.finishedMixed': '오류와 함께 완료: {s} {files} 변환, {f} 실패.',
+    'banner.noCommonFor': '공통 변환 대상이 없습니다: {exts}.',
+    'banner.removedX': '{name} 제거됨.',
+    'banner.unsupportedAdded': '지원되지 않는 파일을 무시했습니다: {names}.',
+    'banner.unsupportedPresent': '지원되지 않는 파일 형식이 포함되어 있습니다: {exts}.'
+  });
+
+  // Dutch
+  I18N.nl && Object.assign(I18N.nl, {
+    'banner.added': '{n} {files} toegevoegd.',
+    'banner.doneOk': 'Klaar. {s} {files} geconverteerd.',
+    'banner.finishedFail': '{f} {files} mislukt.',
+    'banner.finishedMixed': 'Voltooid met fouten: {s} {files} geconverteerd, {f} mislukt.',
+    'banner.noCommonFor': 'Geen gemeenschappelijke conversie mogelijk voor: {exts}.',
+    'banner.removedX': '{name} verwijderd.',
+    'banner.unsupportedAdded': 'Niet-ondersteunde bestanden genegeerd: {names}.',
+    'banner.unsupportedPresent': 'Niet-ondersteunde bestandstypen aanwezig: {exts}.'
+  });
+
+  // Polish
+  I18N.pl && Object.assign(I18N.pl, {
+    'banner.added': 'Dodano {n} {files}.',
+    'banner.doneOk': 'Gotowe. {s} {files} skonwertowane.',
+    'banner.finishedFail': 'Niepowiodło się {f} {files}.',
+    'banner.finishedMixed': 'Zakończono z błędami: skonwertowano {s} {files}, {f} niepowiodło się.',
+    'banner.noCommonFor': 'Brak wspólnej konwersji dla: {exts}.',
+    'banner.removedX': 'Usunięto {name}.',
+    'banner.unsupportedAdded': 'Pominięto nieobsługiwane pliki: {names}.',
+    'banner.unsupportedPresent': 'Występują nieobsługiwane typy plików: {exts}.'
+  });
+
+  // Portuguese (Portugal)
+  I18N.pt && Object.assign(I18N.pt, {
+    'banner.added': 'Adicionados {n} {files}.',
+    'banner.doneOk': 'Concluído. {s} {files} convertidos.',
+    'banner.finishedFail': 'Falharam {f} {files}.',
+    'banner.finishedMixed': 'Concluído com erros: {s} {files} convertidos, {f} falharam.',
+    'banner.noCommonFor': 'Sem conversão comum para: {exts}.',
+    'banner.removedX': '{name} removido.',
+    'banner.unsupportedAdded': 'Ficheiros não suportados ignorados: {names}.',
+    'banner.unsupportedPresent': 'Existem tipos de ficheiro não suportados: {exts}.'
+  });
+
+  // Portuguese (Brazil)
+  I18N['pt-BR'] && Object.assign(I18N['pt-BR'], {
+    'banner.added': 'Adicionados {n} {files}.',
+    'banner.doneOk': 'Concluído. {s} {files} convertidos.',
+    'banner.finishedFail': 'Falharam {f} {files}.',
+    'banner.finishedMixed': 'Concluído com erros: {s} {files} convertidos, {f} falharam.',
+    'banner.noCommonFor': 'Sem conversão comum para: {exts}.',
+    'banner.removedX': '{name} removido.',
+    'banner.unsupportedAdded': 'Arquivos não compatíveis ignorados: {names}.',
+    'banner.unsupportedPresent': 'Tipos de arquivo não compatíveis presentes: {exts}.'
+  });
+
+  // Russian
+  I18N.ru && Object.assign(I18N.ru, {
+    'banner.added': 'Добавлено {n} {files}.',
+    'banner.doneOk': 'Готово. Конвертировано {s} {files}.',
+    'banner.finishedFail': 'Не удалось {f} {files}.',
+    'banner.finishedMixed': 'Завершено с ошибками: конвертировано {s} {files}, {f} сбоев.',
+    'banner.noCommonFor': 'Нет общего формата конвертации для: {exts}.',
+    'banner.removedX': 'Удалено: {name}.',
+    'banner.unsupportedAdded': 'Неподдерживаемые файлы пропущены: {names}.',
+    'banner.unsupportedPresent': 'Есть неподдерживаемые типы файлов: {exts}.'
+  });
+
+  // Turkish
+  I18N.tr && Object.assign(I18N.tr, {
+    'banner.added': '{n} {files} eklendi.',
+    'banner.doneOk': 'Tamam. {s} {files} dönüştürüldü.',
+    'banner.finishedFail': '{f} {files} başarısız oldu.',
+    'banner.finishedMixed': 'Hatalarla tamamlandı: {s} {files} dönüştürüldü, {f} başarısız.',
+    'banner.noCommonFor': 'Bu dosyalar için ortak bir dönüştürme yok: {exts}.',
+    'banner.removedX': '{name} kaldırıldı.',
+    'banner.unsupportedAdded': 'Desteklenmeyen dosyalar yok sayıldı: {names}.',
+    'banner.unsupportedPresent': 'Desteklenmeyen dosya türleri mevcut: {exts}.'
+  });
+
+  // Ukrainian
+  I18N.uk && Object.assign(I18N.uk, {
+    'banner.added': 'Додано {n} {files}.',
+    'banner.doneOk': 'Готово. Перетворено {s} {files}.',
+    'banner.finishedFail': 'Не вдалося {f} {files}.',
+    'banner.finishedMixed': 'Завершено з помилками: перетворено {s} {files}, збоїв {f}.',
+    'banner.noCommonFor': 'Немає спільного формату перетворення для: {exts}.',
+    'banner.removedX': 'Вилучено {name}.',
+    'banner.unsupportedAdded': 'Непідтримувані файли пропущено: {names}.',
+    'banner.unsupportedPresent': 'Є непідтримувані типи файлів: {exts}.'
+  });
+
+  // Chinese (Simplified)
+  I18N['zh-CN'] && Object.assign(I18N['zh-CN'], {
+    'banner.added': '已添加 {n} {files}。',
+    'banner.doneOk': '完成。已转换 {s} {files}。',
+    'banner.finishedFail': '{f} {files} 失败。',
+    'banner.finishedMixed': '已完成但有错误：已转换 {s} {files}，{f} 个失败。',
+    'banner.noCommonFor': '这些文件没有共同的可转换格式：{exts}。',
+    'banner.removedX': '已移除 {name}。',
+    'banner.unsupportedAdded': '已忽略不受支持的文件：{names}。',
+    'banner.unsupportedPresent': '存在不受支持的文件类型：{exts}。'
+  });
+
+
 } catch (e) { /* I18N.en not found? ignore */ }
 
 // Localized target dropdown override (groups + options)
