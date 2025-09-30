@@ -1283,7 +1283,9 @@ function removeFileAt(index) {
   if (state.files.length === 0) {
     try { downloads.hidden = true; downloadLinks.innerHTML = ''; } catch { }
   }
+  if (fileInput) fileInput.value = ''; // ← add this line
 }
+
 // Find the list container (adjust selector if yours differs)
 function getFileListEl() {
   return document.querySelector('#file-list, #files, [data-role="file-list"]');
@@ -1452,6 +1454,8 @@ document.addEventListener('click', (e) => {
   const idx = Number(btn.dataset.index);
   removeFileAt(idx);
 });
+
+
 
 
 
