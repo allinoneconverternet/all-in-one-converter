@@ -1126,7 +1126,7 @@ function refreshMemoryPill() {
 
 // --- Quiet UI config ---
 window.DEBUG_CONVERTER = window.DEBUG_CONVERTER ?? false;  // keep console debug off in prod
-const QUIET_UI = true;       // suppress scary banners for end users
+const QUIET_UI = false;       // suppress scary banners for end users
 const SHOW_ERRORS_AS_TOAST = false; // set true if you want a subtle visible error line instead of full suppression
 
 function showBanner(msg, tone = 'info') {
@@ -2113,7 +2113,7 @@ convertBtn.addEventListener('click', async () => {
             ? t('banner.doneMixed', { s: ok, files: __files, f: failed })
             : t('banner.doneFail', { f: failed, files: __filesF }))
           : t('banner.doneOk', { s: ok, files: __files });
-        showBanner(__msg, failed ? 'error' : 'ok');
+        showBanner(__msg, failed ? 'info' : 'ok');
       }
     }
   };
@@ -2562,7 +2562,3 @@ function presetTargetFromURL() {
     applyQualityVisibility();
   });
 })();
-
-
-
-
