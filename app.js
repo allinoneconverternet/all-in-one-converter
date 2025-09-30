@@ -229,10 +229,34 @@ function show(msg, kind = 'info') {
 
 
 
-async function needXLSX() { if (window.XLSX) return; await loadScriptTry(CDN.xlsx[0], CDN.xlsx[1]); }
-async function needJSZip() { if (window.JSZip) return; await loadScriptTry(CDN.jszip[0], CDN.jszip[1]); }
-async function needJsPDF() { if (window.jspdf?.jsPDF) return; await loadScriptTry(CDN.jspdf[0], CDN.jspdf[1]); }
-async function needDocx() { if (window.docx) return; await loadScriptTry(CDN.docx[0], CDN.docx[1]); }
+async function needXLSX() {
+  if (window.XLSX) { features.xlsx = true; ensureVendors?.(); return; }
+  await loadScriptTry(CDN.xlsx[0], CDN.xlsx[1]);
+  features.xlsx = !!window.XLSX;
+  ensureVendors?.();
+}
+
+async function needJSZip() {
+  if (window.JSZip) { features.pptx = true; ensureVendors?.(); return; }
+  await loadScriptTry(CDN.jszip[0], CDN.jszip[1]);
+  features.pptx = !!window.JSZip;
+  ensureVendors?.();
+}
+
+async function needJsPDF() {
+  if (window.jspdf?.jsPDF) { features.makePdf = true; ensureVendors?.(); return; }
+  await loadScriptTry(CDN.jspdf[0], CDN.jspdf[1]);
+  features.makePdf = !!(window.jspdf && window.jspdf.jsPDF);
+  ensureVendors?.();
+}
+
+async function needDocx() {
+  if (window.docx) { features.makeDocx = true; ensureVendors?.(); return; }
+  await loadScriptTry(CDN.docx[0], CDN.docx[1]);
+  features.makeDocx = !!window.docx;
+  ensureVendors?.();
+}
+
 // Global helper: returns the localized singular/plural for "file"
 // Global helper: localized singular/plural for "file"
 window.wordFiles = function wordFiles(n, lang) {
@@ -784,9 +808,14 @@ async function ensureVendors() {
   }
 
   // --- render capability list (simple labels, no library names) ---
+  // --- render capability list (simple labels, no library names) ---
   const caps = document.querySelector('#caps');
   if (caps) {
     caps.innerHTML = '';
+
+    // During the grace window, treat all as green unless truly detected red later
+    const inGrace = Date.now() < (window.__capGraceUntil || 0);
+
     const CAP_LIST = [
       ['Images', true],                     // built-in client rendering
       ['PDF', features.pdf],
@@ -801,18 +830,20 @@ async function ensureVendors() {
 
     CAP_LIST.forEach(([label, ok]) => {
       const row = document.createElement('div');
-      row.className = 'cap ' + (ok ? 'ok' : 'miss');
-      row.textContent = (ok ? '✓ ' : '⨯ ') + label;
 
-      // For "Media" only: let advanced users click to diagnose, but don't show banners automatically.
-      if (label === 'Media' && !ok) {
+      // optimistic green while in grace window
+      const green = ok || inGrace;
+
+      row.className = 'cap ' + (green ? 'ok' : 'miss');
+      row.textContent = (green ? '✓ ' : '⨯ ') + label;
+
+      // Only after grace window, let users click "Media" to diagnose when actually red
+      if (!inGrace && label === 'Media' && !ok) {
         row.title = 'Click to run a quick check (console only)';
         row.style.cursor = 'pointer';
         row.addEventListener('click', () => {
-          // keep diagnostics in console unless DEBUG_CONVERTER is true
           const oldShow = window.showBanner;
           if (!window.DEBUG_CONVERTER) {
-            // temporarily silence banners during diagnostics
             window.showBanner = (m, t) => console[(t === 'error') ? 'error' : 'log']('[diag]', m);
           }
           diagnoseFFmpeg().finally(() => { window.showBanner = oldShow; });
@@ -822,6 +853,7 @@ async function ensureVendors() {
       caps.append(row);
     });
   }
+
 
   // --- do NOT auto-run FFmpeg diagnostics or auto-show errors in quiet mode ---
   if (!features.ffmpeg && !window.DEBUG_CONVERTER) {
@@ -1085,6 +1117,14 @@ document.addEventListener('DOMContentLoaded', () => {
       if (index >= 0 && state.outputsByFile[index]?.length) downloadOutputs(index);
     }
   });
+  // Show capabilities as green by default for the first 3 seconds
+  window.__capGraceUntil = Date.now() + 3000;
+
+  // Initial optimistic render (badges appear green right away)
+  try { typeof ensureVendors === 'function' && ensureVendors(); } catch { }
+
+  // After grace window, re-run detection and render for real
+  setTimeout(() => { try { typeof ensureVendors === 'function' && ensureVendors(); } catch { } }, 3000);
 
   // ---- Non-blocking vendor warmups so badges flip to green on load ----
   const idle = window.requestIdleCallback || ((fn) => setTimeout(fn, 0));
