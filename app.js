@@ -1,4 +1,4 @@
-﻿// === DEBUG INSTRUMENTATION v3 ===
+// === DEBUG INSTRUMENTATION v3 ===
 window.DEBUG_CONVERTER = true;
 function DBG() { try { if (window.DEBUG_CONVERTER) console.log.apply(console, arguments); } catch (e) { } }
 function DBGW() { try { if (window.DEBUG_CONVERTER) console.warn.apply(console, arguments); } catch (e) { } }
@@ -2047,7 +2047,7 @@ convertBtn.addEventListener('click', async () => {
     if (!active && i >= state.files.length) {
       if (isStale(runId)) return; // old run finishing after a new run started
       downloads.hidden = state.outputs.length === 0;
-      showBanner(`Done. ${state.outputs.length} succeeded${failed ? `, ${failed} failed` : ''}.`, failed ? 'error' : 'ok');
+      showBanner(t('banner.doneSummary', { s: state.outputs.length, f: failed }), failed ? 'error' : 'ok');
     }
   };
 
