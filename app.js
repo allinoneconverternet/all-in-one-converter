@@ -488,62 +488,28 @@ const I18N = {
 
   // Intercept showBanner to translate common messages and fix "Done …"
   const _show = (typeof window.showBanner === 'function') ? window.showBanner : null;
+
   window.showBanner = function (msg, kind = 'info') {
     try {
       let m = String(msg);
+      // … your existing normalization/translation of m …
 
-      // Straight remaps of built-in English messages
-      if (m === 'Cleared.') m = t('banner.cleared');
-      else if (m === 'No outputs yet. Convert first.') m = t('banner.noOutputs');
-      else if (m === 'Add some files first.') m = t('banner.addFirst');
-
-      // Handle: "Done. X succeeded, Y failed." or ICU-leaky variants
-      const doneMatch = m.match(/\bDone\.\s+(\d+)\s+succeeded\b/i);
-      if (doneMatch) {
-        const s = parseInt(doneMatch[1], 10) || 0;
-        const failMatch = m.match(/,\s*(\d+)\s+failed/i);
-        const f = failMatch ? (parseInt(failMatch[1], 10) || 0) : 0;
-
-        const L = window.APP_LANG || 'en';
-        const filesS = window.wordFiles(s, L);
-        const filesF = window.wordFiles(f, L);
-
-        // Prefer localized keys if present; otherwise fallback to English sentence with localized noun
-        const hasI18n =
-          (typeof I18N !== 'undefined') &&
-          ((I18N[L] && (I18N[L]['banner.doneOk'] || I18N[L]['banner.doneMixed'] || I18N[L]['banner.doneFail'])) ||
-            (I18N.en && (I18N.en['banner.doneOk'] || I18N.en['banner.doneMixed'] || I18N.en['banner.doneFail'])));
-
-        if (hasI18n) {
-          if (f > 0 && s === 0) m = t('banner.doneFail', { f, files: filesF });
-          else if (f > 0) m = t('banner.doneMixed', { s, files: filesS, f });
-          else m = t('banner.doneOk', { s, files: filesS });
-        } else {
-          if (f > 0 && s === 0) m = `Failed ${f} ${filesF}.`;
-          else if (f > 0) m = `Done ${s} ${filesS}, ${f} failed.`;
-          else m = `Done ${s} ${filesS}!`;
-        }
-      }
-      else if (/^Too much data at once \((.+)\)\. Budget (.+)\.$/.test(m)) {
-        const mm = m.match(/^Too much data at once \((.+)\)\. Budget (.+)\.$/);
-        if (mm) m = t('banner.tooMuchData', { total: mm[1], budget: mm[2] });
-      } else if (/^Total selected (.+) exceeds budget (.+)\. Will process sequentially\.$/.test(m)) {
-        const mm = m.match(/^Total selected (.+) exceeds budget (.+)\. Will process sequentially\.$/);
-        if (mm) m = t('banner.exceedsBudget', { total: mm[1], budget: mm[2] });
-      } else if (m === 'Triggered downloads for each file.') m = t('banner.triggeredDownloads');
-      else if (m === 'Saved all files to your chosen folder.') m = t('banner.savedAll');
-      else if (m === 'Save cancelled.') m = t('banner.saveCancelled');
-      else if (m === 'Link copied to clipboard.') m = t('banner.linkCopied');
-      else if (/^Couldn’t open the folder\./.test(m)) m = t('banner.openFolderFail');
-
+      // ✅ prefer original banner renderer
       if (_show) return _show(m, kind);
-      console[kind === 'error' ? 'error' : 'log'](m);
+
+      // ✅ otherwise, write into #banner directly
+      const el = document.getElementById('banner');
+      if (el) {
+        el.textContent = m;
+        el.classList.toggle('error', kind === 'error');
+        el.classList.toggle('ok', kind === 'ok');
+      }
     } catch {
+      // Fallback if something goes wrong
       if (_show) return _show(msg, kind);
       console[kind === 'error' ? 'error' : 'log'](msg);
     }
   };
-
   // expose chosen language for other helpers
   window.APP_LANG = lang;
 })();
@@ -1377,7 +1343,9 @@ dropzone.addEventListener('dragenter', e => { e.preventDefault(); dropzone.class
 dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('drag'); });
 dropzone.addEventListener('dragleave', e => { e.preventDefault(); dropzone.classList.remove('drag'); });
 dropzone.addEventListener('drop', e => { e.preventDefault(); dropzone.classList.remove('drag'); addFiles([...e.dataTransfer.files]); });
-fileInput.addEventListener('change', () => addFiles([...fileInput.files]));
+fileInput.addEventListener('change', () => {
+  addFiles([...fileInput.files]);        // spread the FileList
+});
 $('#clear-btn').addEventListener('click', () => {
   state.files = []; state.outputs = [];
   renderFileList();
