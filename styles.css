@@ -1,4 +1,4 @@
-﻿/* styles.css */
+/* styles.css */
 :root {
     --bottom-safe: 0px;
     --rail-offset: 24px;
@@ -498,7 +498,7 @@ button:hover {
 .inline-ad {
     display: none;
     max-width: 1100px;
-    margin: 12px auto 120px;
+    margin: 12px auto 12px;
     padding: 16px;
     border: 1px dashed var(--border)
 }
