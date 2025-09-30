@@ -228,6 +228,7 @@ async function needJSZip() { if (window.JSZip) return; await loadScriptTry(CDN.j
 async function needJsPDF() { if (window.jspdf?.jsPDF) return; await loadScriptTry(CDN.jspdf[0], CDN.jspdf[1]); }
 async function needDocx() { if (window.docx) return; await loadScriptTry(CDN.docx[0], CDN.docx[1]); }
 // Global helper: returns the localized singular/plural for "file"
+// Global helper: localized singular/plural for "file"
 window.wordFiles = function wordFiles(n, lang) {
   const one = {
     "en": "file", "de": "Datei", "es": "archivo", "fr": "fichier", "it": "file",
@@ -244,9 +245,11 @@ window.wordFiles = function wordFiles(n, lang) {
   const Lraw = String(lang || (window.APP_LANG || "en")).toLowerCase();
   const L = one[Lraw] ? Lraw : (Lraw.split("-")[0] || "en");
   const s = Number(n) || 0;
-  return (s === 1 ? (one[L] || one.en) : (many[L] || many.en));
+  return s === 1 ? (one[L] || one.en) : (many[L] || many.en);
 };
+
 // Interceptor: translates banners + normalizes the "Done ..." message
+// Interceptor: translate + normalize the "Done ..." message
 // Interceptor: translate + normalize the "Done ..." message
 window.showBanner = function (msg, kind = 'info') {
   try {
@@ -445,8 +448,9 @@ const I18N = {
   const htmlLang = (document.documentElement.lang || 'en').trim();
   const norm = htmlLang.toLowerCase();
   const LANG_ALIAS = {
-    'pt-br': 'pt-BR', 'pt_pt': 'pt', 'zh': 'zh-CN', 'zh-hans': 'zh-CN', 'zh-cn': 'zh-CN',
-    'he': 'ar', // fallback RTL if needed
+    'pt-br': 'pt-BR', 'pt_pt': 'pt',
+    'zh': 'zh-CN', 'zh-hans': 'zh-CN', 'zh-cn': 'zh-CN',
+    'he': 'ar' // generic RTL fallback
   };
   const lang = (() => {
     if (I18N[htmlLang]) return htmlLang;
@@ -460,6 +464,7 @@ const I18N = {
     return String(s).replace(/\{(\w+)\}/g, (_, k) => (vars && k in vars) ? vars[k] : '{' + k + '}');
   }
 
+  // Translator
   window.t = function t(key, vars) {
     const pack = I18N[lang] || I18N.en;
     const s = (pack[key] ?? I18N.en[key] ?? key);
@@ -476,26 +481,73 @@ const I18N = {
       gif: 'opt.gif'
     };
     if (simple[val]) return t(simple[val]);
-    // audio/video family
     if (['mp3', 'wav', 'ogg', 'm4a'].includes(val)) return t('opt.audioGeneric', { fmt: val.toUpperCase(), ext: '.' + val });
     if (['mp4', 'webm'].includes(val)) return t('opt.videoGeneric', { fmt: val.toUpperCase(), ext: '.' + val });
     return val.toUpperCase() + ' (.' + val + ')';
   };
 
-  // Intercept showBanner to translate common messages without touching call sites
+  // Intercept showBanner to translate common messages and fix "Done …"
   const _show = (typeof window.showBanner === 'function') ? window.showBanner : null;
-  function wordFiles(n, lang) {
-    const L = String(lang || (window.APP_LANG || "en")).toLowerCase();
-    const s = Number(n) || 0;
-    const one = { en: "file", de: "Datei", es: "archivo", fr: "fichier" }[L] || "file";
-    const many = { en: "files", de: "Dateien", es: "archivos", fr: "fichiers" }[L] || "files";
-    return (s === 1) ? one : many;
-  }
+  window.showBanner = function (msg, kind = 'info') {
+    try {
+      let m = String(msg);
 
+      // Straight remaps of built-in English messages
+      if (m === 'Cleared.') m = t('banner.cleared');
+      else if (m === 'No outputs yet. Convert first.') m = t('banner.noOutputs');
+      else if (m === 'Add some files first.') m = t('banner.addFirst');
 
-  // expose lang for debugging
+      // Handle: "Done. X succeeded, Y failed." or ICU-leaky variants
+      const doneMatch = m.match(/\bDone\.\s+(\d+)\s+succeeded\b/i);
+      if (doneMatch) {
+        const s = parseInt(doneMatch[1], 10) || 0;
+        const failMatch = m.match(/,\s*(\d+)\s+failed/i);
+        const f = failMatch ? (parseInt(failMatch[1], 10) || 0) : 0;
+
+        const L = window.APP_LANG || 'en';
+        const filesS = window.wordFiles(s, L);
+        const filesF = window.wordFiles(f, L);
+
+        // Prefer localized keys if present; otherwise fallback to English sentence with localized noun
+        const hasI18n =
+          (typeof I18N !== 'undefined') &&
+          ((I18N[L] && (I18N[L]['banner.doneOk'] || I18N[L]['banner.doneMixed'] || I18N[L]['banner.doneFail'])) ||
+            (I18N.en && (I18N.en['banner.doneOk'] || I18N.en['banner.doneMixed'] || I18N.en['banner.doneFail'])));
+
+        if (hasI18n) {
+          if (f > 0 && s === 0) m = t('banner.doneFail', { f, files: filesF });
+          else if (f > 0) m = t('banner.doneMixed', { s, files: filesS, f });
+          else m = t('banner.doneOk', { s, files: filesS });
+        } else {
+          if (f > 0 && s === 0) m = `Failed ${f} ${filesF}.`;
+          else if (f > 0) m = `Done ${s} ${filesS}, ${f} failed.`;
+          else m = `Done ${s} ${filesS}!`;
+        }
+      }
+      else if (/^Too much data at once \((.+)\)\. Budget (.+)\.$/.test(m)) {
+        const mm = m.match(/^Too much data at once \((.+)\)\. Budget (.+)\.$/);
+        if (mm) m = t('banner.tooMuchData', { total: mm[1], budget: mm[2] });
+      } else if (/^Total selected (.+) exceeds budget (.+)\. Will process sequentially\.$/.test(m)) {
+        const mm = m.match(/^Total selected (.+) exceeds budget (.+)\. Will process sequentially\.$/);
+        if (mm) m = t('banner.exceedsBudget', { total: mm[1], budget: mm[2] });
+      } else if (m === 'Triggered downloads for each file.') m = t('banner.triggeredDownloads');
+      else if (m === 'Saved all files to your chosen folder.') m = t('banner.savedAll');
+      else if (m === 'Save cancelled.') m = t('banner.saveCancelled');
+      else if (m === 'Link copied to clipboard.') m = t('banner.linkCopied');
+      else if (/^Couldn’t open the folder\./.test(m)) m = t('banner.openFolderFail');
+
+      if (_show) return _show(m, kind);
+      console[kind === 'error' ? 'error' : 'log'](m);
+    } catch {
+      if (_show) return _show(msg, kind);
+      console[kind === 'error' ? 'error' : 'log'](msg);
+    }
+  };
+
+  // expose chosen language for other helpers
   window.APP_LANG = lang;
 })();
+
 
 // Translation packs (minimal keys used by runtime)
 
