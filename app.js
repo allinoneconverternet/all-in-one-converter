@@ -227,6 +227,81 @@ async function needXLSX() { if (window.XLSX) return; await loadScriptTry(CDN.xls
 async function needJSZip() { if (window.JSZip) return; await loadScriptTry(CDN.jszip[0], CDN.jszip[1]); }
 async function needJsPDF() { if (window.jspdf?.jsPDF) return; await loadScriptTry(CDN.jspdf[0], CDN.jspdf[1]); }
 async function needDocx() { if (window.docx) return; await loadScriptTry(CDN.docx[0], CDN.docx[1]); }
+// Global helper: returns the localized singular/plural for "file"
+window.wordFiles = function wordFiles(n, lang) {
+  const one = {
+    "en": "file", "de": "Datei", "es": "archivo", "fr": "fichier", "it": "file",
+    "pl": "plik", "pt": "ficheiro", "pt-br": "arquivo", "ja": "ファイル", "ru": "файл",
+    "zh-cn": "个文件", "ko": "파일", "hi": "फ़ाइल", "ar": "ملف", "uk": "файл",
+    "tr": "dosya", "nl": "bestand"
+  };
+  const many = {
+    "en": "files", "de": "Dateien", "es": "archivos", "fr": "fichiers", "it": "file",
+    "pl": "pliki", "pt": "ficheiros", "pt-br": "arquivos", "ja": "ファイル", "ru": "файлы",
+    "zh-cn": "个文件", "ko": "파일", "hi": "फ़ाइलें", "ar": "ملفات", "uk": "файли",
+    "tr": "dosya", "nl": "bestanden"
+  };
+  const Lraw = String(lang || (window.APP_LANG || "en")).toLowerCase();
+  const L = one[Lraw] ? Lraw : (Lraw.split("-")[0] || "en");
+  const s = Number(n) || 0;
+  return (s === 1 ? (one[L] || one.en) : (many[L] || many.en));
+};
+// Interceptor: translates banners + normalizes the "Done ..." message
+// Interceptor: translate + normalize the "Done ..." message
+window.showBanner = function (msg, kind = 'info') {
+  try {
+    let m = String(msg);
+
+    // Simple English -> i18n
+    if (m === 'Cleared.') m = t('banner.cleared');
+    else if (m === 'No outputs yet. Convert first.') m = t('banner.noOutputs');
+    else if (m === 'Add some files first.') m = t('banner.addFirst');
+
+    // Handle: "Done. X succeeded, Y failed." or ICU leak
+    const doneMatch = m.match(/\bDone\.\s+(\d+)\s+succeeded\b/i);
+    if (doneMatch) {
+      const s = parseInt(doneMatch[1], 10) || 0;
+      const failMatch = m.match(/,\s*(\d+)\s+failed/i);
+      const f = failMatch ? (parseInt(failMatch[1], 10) || 0) : 0;
+
+      const L = window.APP_LANG || 'en';
+      const filesS = window.wordFiles(s, L);
+      const filesF = window.wordFiles(f, L);
+
+      const hasI18n =
+        (typeof I18N !== 'undefined') &&
+        ((I18N[L] && (I18N[L]['banner.doneOk'] || I18N[L]['banner.doneMixed'] || I18N[L]['banner.doneFail'])) ||
+          (I18N.en && (I18N.en['banner.doneOk'] || I18N.en['banner.doneMixed'] || I18N.en['banner.doneFail'])));
+
+      if (hasI18n) {
+        if (f > 0 && s === 0) m = t('banner.doneFail', { f, files: filesF });
+        else if (f > 0) m = t('banner.doneMixed', { s, files: filesS, f });
+        else m = t('banner.doneOk', { s, files: filesS });
+      } else {
+        // Fallback English sentence, but with localized "file/files"
+        if (f > 0 && s === 0) m = `Failed ${f} ${filesF}.`;
+        else if (f > 0) m = `Done ${s} ${filesS}, ${f} failed.`;
+        else m = `Done ${s} ${filesS}!`;
+      }
+    }
+    else if (/^Too much data at once \((.+)\)\. Budget (.+)\.$/.test(m)) {
+      const mm = m.match(/^Too much data at once \((.+)\)\. Budget (.+)\.$/);
+      if (mm) m = t('banner.tooMuchData', { total: mm[1], budget: mm[2] });
+    } else if (/^Total selected (.+) exceeds budget (.+)\. Will process sequentially\.$/.test(m)) {
+      const mm = m.match(/^Total selected (.+) exceeds budget (.+)\. Will process sequentially\.$/);
+      if (mm) m = t('banner.exceedsBudget', { total: mm[1], budget: mm[2] });
+    } else if (m === 'Triggered downloads for each file.') m = t('banner.triggeredDownloads');
+    else if (m === 'Saved all files to your chosen folder.') m = t('banner.savedAll');
+    else if (m === 'Save cancelled.') m = t('banner.saveCancelled');
+    else if (m === 'Link copied to clipboard.') m = t('banner.linkCopied');
+    else if (/^Couldn’t open the folder\./.test(m)) m = t('banner.openFolderFail');
+
+    console[kind === 'error' ? 'error' : 'log'](m);
+  } catch {
+    console[kind === 'error' ? 'error' : 'log'](msg);
+  }
+};
+
 
 // Populate the dropdown from these (popular output types)
 const TARGET_GROUPS = {
@@ -409,33 +484,14 @@ const I18N = {
 
   // Intercept showBanner to translate common messages without touching call sites
   const _show = (typeof window.showBanner === 'function') ? window.showBanner : null;
-  window.showBanner = function (msg, kind = 'info') {
-    try {
-      let m = String(msg);
+  function wordFiles(n, lang) {
+    const L = String(lang || (window.APP_LANG || "en")).toLowerCase();
+    const s = Number(n) || 0;
+    const one = { en: "file", de: "Datei", es: "archivo", fr: "fichier" }[L] || "file";
+    const many = { en: "files", de: "Dateien", es: "archivos", fr: "fichiers" }[L] || "files";
+    return (s === 1) ? one : many;
+  }
 
-      if (m === 'Cleared.') m = t('banner.cleared');
-      else if (m === 'No outputs yet. Convert first.') m = t('banner.noOutputs');
-      else if (m === 'Add some files first.') m = t('banner.addFirst');
-      else if (/^Done\.\s+(\d+)\s+succeeded(?:,\s+(\d+)\s+failed)?\./.test(m)) {
-        const m2 = m.match(/^Done\.\s+(\d+)\s+succeeded(?:,\s+(\d+)\s+failed)?\./);
-        const s = m2[1] | 0; const f = (m2[2] | 0) || 0;
-        m = t('banner.doneSummary', { s: s, f: f });
-      } else if (/^Too much data at once \((.+)\)\. Budget (.+)\.\$/.test(m)) {
-        const mm = m.match(/^Too much data at once \((.+)\)\. Budget (.+)\./);
-        if (mm) m = t('banner.tooMuchData', { total: mm[1], budget: mm[2] });
-      } else if (/^Total selected (.+) exceeds budget (.+)\. Will process sequentially\.$/.test(m)) {
-        const mm = m.match(/^Total selected (.+) exceeds budget (.+)\. Will process sequentially\.$/);
-        if (mm) m = t('banner.exceedsBudget', { total: mm[1], budget: mm[2] });
-      } else if (m === 'Triggered downloads for each file.') m = t('banner.triggeredDownloads');
-      else if (m === 'Saved all files to your chosen folder.') m = t('banner.savedAll');
-      else if (m === 'Save cancelled.') m = t('banner.saveCancelled');
-      else if (m === 'Link copied to clipboard.') m = t('banner.linkCopied');
-      else if (/^Couldn’t open the folder\./.test(m)) m = t('banner.openFolderFail');
-
-      if (_show) return _show(m, kind);
-      console[kind === 'error' ? 'error' : 'log'](m);
-    } catch { if (_show) return _show(msg, kind); }
-  };
 
   // expose lang for debugging
   window.APP_LANG = lang;
@@ -2047,7 +2103,18 @@ convertBtn.addEventListener('click', async () => {
     if (!active && i >= state.files.length) {
       if (isStale(runId)) return; // old run finishing after a new run started
       downloads.hidden = state.outputs.length === 0;
-      showBanner(t('banner.doneSummary', { s: state.outputs.length, f: failed }), failed ? 'error' : 'ok');
+      {
+        const ok = state.outputs.length;
+        const __lang = window.APP_LANG || 'en';
+        const __files = wordFiles(ok, __lang);
+        const __filesF = wordFiles(failed, __lang);
+        const __msg = failed
+          ? (ok
+            ? t('banner.doneMixed', { s: ok, files: __files, f: failed })
+            : t('banner.doneFail', { f: failed, files: __filesF }))
+          : t('banner.doneOk', { s: ok, files: __files });
+        showBanner(__msg, failed ? 'error' : 'ok');
+      }
     }
   };
 
@@ -2495,6 +2562,7 @@ function presetTargetFromURL() {
     applyQualityVisibility();
   });
 })();
+
 
 
 
