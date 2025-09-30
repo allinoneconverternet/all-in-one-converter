@@ -222,6 +222,12 @@ async function needPdf() {
 }
 
 
+function show(msg, kind = 'info') {
+  if (typeof showBanner === 'function') return showBanner(msg, kind);
+  console[kind === 'error' ? 'error' : 'log'](msg);
+}
+
+
 
 async function needXLSX() { if (window.XLSX) return; await loadScriptTry(CDN.xlsx[0], CDN.xlsx[1]); }
 async function needJSZip() { if (window.JSZip) return; await loadScriptTry(CDN.jszip[0], CDN.jszip[1]); }
