@@ -1310,12 +1310,26 @@ function rebuildTargetDropdown(allowedSet) {
 }
 
 function refreshTargetDropdown() {
+  if (!targetFormat || !qualityWrap) return;
+
   const allowed = possibleTargetsForFiles(state.files);
-  rebuildTargetDropdown(allowed);
-  if (allowed.size === 0 && state.files.length) {
-    showBanner(t('banner.noCommonOutput'));
+
+  // Rebuild options but disable those not allowed for current selection
+  for (const o of targetFormat.querySelectorAll('option')) {
+    o.disabled = allowed.size > 0 && !allowed.has(o.value);
   }
+
+  // If nothing is allowed, tell the user (red, localized)
+  if (state.files.length > 0 && allowed.size === 0) {
+    const exts = state.files.map(f => '.' + (f.name.split('.').pop() || '?')).join(', ');
+    showBanner(t('banner.noCommonFor', { exts }), 'error');
+  }
+
+  // quality toggle
+  const v = targetFormat.value;
+  qualityWrap.style.display = (v === 'jpeg' || v === 'webp') ? '' : 'none';
 }
+
 
 // Remove one file by index
 function removeFileAt(index) {
@@ -1401,7 +1415,8 @@ $('#clear-btn').addEventListener('click', () => {
   renderFileList();
   if (typeof refreshTargetDropdown === 'function') refreshTargetDropdown();   // <-- add this
   downloadLinks.innerHTML = ''; downloads.hidden = true; fileInput.value = '';
-  showBanner('Cleared.');
+  showBanner(t('banner.cleared'), 'ok');
+
 });
 
 
@@ -1418,14 +1433,48 @@ $('#share-btn')?.addEventListener('click', async () => { try { if (navigator.sha
 
 function addFiles(files) {
   if (!files?.length) return;
+
   const totalAdded = files.reduce((s, f) => s + f.size, 0);
   const current = state.files.reduce((s, f) => s + f.size, 0);
-  if (current + totalAdded > state.budget) showBanner(`Too much data at once (${fmtBytes(current + totalAdded)}). Budget ${fmtBytes(state.budget)}.`, 'error');
+  if (current + totalAdded > state.budget) {
+    showBanner(t('banner.tooMuchData', { total: fmtBytes(current + totalAdded), budget: fmtBytes(state.budget) }), 'error');
+  }
+
   state.files.push(...files);
   renderFileList();
-  if (typeof refreshTargetDropdown === 'function') refreshTargetDropdown();   // <-- add this line
-  showBanner(`Added ${files.length} file(s). Total: ${state.files.length}.`);
+  if (typeof refreshTargetDropdown === 'function') refreshTargetDropdown();
+
+  // What got added?
+  const justExts = files.map(f => (f.name.match(/\.([^.]+)$/)?.[1] || '').toLowerCase());
+  const unsupported = files.filter(f => detectKind(f) === 'unknown');
+
+
+  const unsupportedNow = state.files.filter(f => detectKind(f) === 'unknown');
+  if (unsupportedNow.length) {
+    const ex = unsupportedNow.map(f => '.' + (f.name.split('.').pop() || '?')).join(', ');
+    showBanner(t('banner.unsupportedPresent', { exts: ex }), 'error');
+  }
+
+  // If unsupported were in the batch, warn (red)
+  if (unsupported.length) {
+    const exts = unsupported.map(f => '.' + (f.name.split('.').pop() || '?')).join(', ');
+    showBanner(t('banner.unsupportedAdded', { exts }), 'error');
+    return;
+  }
+
+  // If the whole selection has no common conversion, warn (red)
+  const allowed = possibleTargetsForFiles(state.files);
+  if (state.files.length > 0 && allowed.size === 0) {
+    const allExts = state.files.map(f => '.' + (f.name.split('.').pop() || '?')).join(', ');
+    showBanner(t('banner.noCommonFor', { exts: allExts }), 'error');
+    return;
+  }
+
+  // Otherwise: green “added”
+  const n = files.length;
+  showBanner(t('banner.added', { n, files: wordFiles(n, APP_LANG), total: state.files.length }), 'ok');
 }
+
 
 
 function detectKind(file) {
@@ -2146,7 +2195,8 @@ function htmlToMarkdown(html) {
 convertBtn.addEventListener('click', async () => {
   await vendorsReady;
 
-  if (!state.files.length) { showBanner('Add some files first.', 'error'); return; }
+  // Localized: "Add some files first."
+  if (!state.files.length) { showBanner(t('banner.addFirst'), 'error'); return; }
 
   // 🔁 CANCEL previous run + RESET counters/UI
   state.runId += 1;
@@ -2163,7 +2213,11 @@ convertBtn.addEventListener('click', async () => {
   // Setup this run
   const total = state.files.reduce((s, f) => s + f.size, 0);
   if (total > state.budget) {
-    showBanner(`Total selected ${fmtBytes(total)} exceeds budget ${fmtBytes(state.budget)}. Will process sequentially.`, 'error');
+    // Localized budget warning
+    showBanner(
+      t('banner.exceedsBudget', { total: fmtBytes(total), budget: fmtBytes(state.budget) }),
+      'error'
+    );
   }
   const concurrency = clamp(+($('#concurrency').value || 1), 1, 4);
   const target = targetFormat.value;
@@ -2184,25 +2238,30 @@ convertBtn.addEventListener('click', async () => {
 
     if (!active && i >= state.files.length) {
       if (isStale(runId)) return; // old run finishing after a new run started
-      downloads.hidden = state.outputs.length === 0;
-      {
-        const ok = state.outputs.length;
-        const __lang = window.APP_LANG || 'en';
-        const __files = wordFiles(ok, __lang);
-        const __filesF = wordFiles(failed, __lang);
-        const __msg = failed
-          ? (ok
-            ? `Done. ${ok} ${__files} converted, ${failed} failed.`
-            : `Failed ${failed} ${__filesF}.`)
-          : `Done. ${ok} ${__files} converted.`;
-        showBanner(__msg, failed ? 'error' : 'ok');
 
-      }
+      // show/hide downloads section
+      downloads.hidden = state.outputs.length === 0;
+
+      // ✅ Localized summary banner with proper tone (green if all ok, red if any failed)
+      const s = state.outputs.length;      // successes
+      const f = failed;                    // failures
+      const lang = window.APP_LANG || 'en';
+
+      const msg =
+        f > 0
+          ? (s > 0
+            ? t('banner.doneMixed', { s, files: wordFiles(s, lang), f })
+            : t('banner.doneFail', { f, files: wordFiles(f, lang) }))
+          : t('banner.doneOk', { s, files: wordFiles(s, lang) });
+
+      const tone = f > 0 ? 'error' : 'ok';
+      showBanner(msg, tone);
     }
   };
 
   next();
 });
+
 
 
 async function runJob(file, index, target, runId) {
@@ -2412,14 +2471,23 @@ showBanner(t('banner.readyHint'));
 // Ensure English pack has the new keys; other languages will fall back to these.
 try {
   Object.assign(I18N.en, {
-    preparing: 'Preparing…',
-    processing: 'Processing…',
-    encoding: 'Encoding…',
-    pdfjsHint: ' (Check that your PDF.js main library and worker are the same major version.)',
-    'banner.couldntConvert': 'Couldn’t convert: {msg}{hint}',
-    'banner.readyHint': 'Ready. Add files, pick output, and hit Convert.',
+    'banner.added': 'Added {n} {files}. Total: {total}.',
     'banner.removedX': 'Removed {name}.',
-    'banner.noCommonOutput': 'No common output for the selected files.'
+    'banner.cleared': 'Cleared.',
+    'banner.noOutputs': 'No outputs yet. Convert first.',
+    'banner.addFirst': 'Add some files first.',
+    'banner.tooMuchData': 'Too much data at once ({total}). Budget {budget}.',
+    'banner.exceedsBudget': 'Total selected {total} exceeds budget {budget}. Will process sequentially.',
+    'banner.triggeredDownloads': 'Triggered downloads for each file.',
+    'banner.savedAll': 'Saved all files to your chosen folder.',
+    'banner.saveCancelled': 'Save cancelled.',
+    'banner.doneOk': 'Done. {s} {files} converted.',
+    'banner.doneMixed': 'Done. {s} {files} converted, {f} failed.',
+    'banner.doneFail': 'Failed {f} {files}.',
+    // NEW
+    'banner.noCommonFor': 'No common conversion for: {exts}.',
+    'banner.unsupportedPresent': 'Unsupported file(s) present: {exts}.',
+    'banner.unsupportedAdded': 'Some files are unsupported and may fail: {exts}.'
   });
 } catch (e) { /* I18N.en not found? ignore */ }
 
