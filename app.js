@@ -1275,9 +1275,14 @@ function rebuildTargetDropdown(allowedSet) {
   for (const group of GROUPS_ORDER) {
     const items = (TARGET_GROUPS[group] || []).filter(([val]) => allowedSet.has(val));
     if (!items.length) continue;
-    const og = document.createElement('optgroup'); og.label = GROUP_LABELS[group];
-    for (const [val, label] of items) {
-      const o = document.createElement('option'); o.value = val; o.textContent = label;
+
+    const og = document.createElement('optgroup');
+    og.label = t('group_' + group);       // localized group label
+
+    for (const [val] of items) {
+      const o = document.createElement('option');
+      o.value = val;
+      o.textContent = optLabel(val);      // localized option label
       og.appendChild(o);
     }
     targetFormat.appendChild(og);
@@ -1346,15 +1351,20 @@ function buildTargets() {
   const v = targetFormat.value;
   qualityWrap.style.display = (v === 'jpeg' || v === 'webp') ? '' : 'none';
 }
-window.refreshTargetDropdown = buildTargets; // allow external refresh
+window.buildTargets = buildTargets;                // builds all groups/labels
+window.refreshTargetDropdown = refreshTargetDropdown; // filters to only valid targets
 
 
-// Call it once the DOM is ready (works with or without <script defer>)
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', buildTargets);
+  document.addEventListener('DOMContentLoaded', () => {
+    buildTargets();            // populate groups/labels
+    refreshTargetDropdown();   // then filter for current files
+  });
 } else {
   buildTargets();
+  refreshTargetDropdown();
 }
+
 
 
 refreshMemoryPill();
@@ -2431,7 +2441,9 @@ try {
     } catch (e) { console.warn('i18n buildTargets failed:', e); }
   }
   window.buildTargets = buildTargetsLocalized;
-  window.refreshTargetDropdown = buildTargetsLocalized;
+  window.buildTargets = buildTargets;                // builds all groups/labels
+  window.refreshTargetDropdown = refreshTargetDropdown; // filters to only valid targets
+
 })();
 
 /* I18N UI KEYS */
