@@ -502,7 +502,7 @@ const I18N = {
       // … your existing normalization/translation of m …
 
       // ✅ prefer original banner renderer
-      if (_show) return _show(m, kind);
+      if (_show) { try { _show(m, kind); } catch { } }  // call, but don't return
 
       // ✅ otherwise, write into #banner directly
       const el = document.getElementById('banner');
@@ -510,6 +510,7 @@ const I18N = {
         el.textContent = m;
         el.classList.toggle('error', kind === 'error');
         el.classList.toggle('ok', kind === 'ok');
+        el.hidden = false;                // make sure it's visible
       }
     } catch {
       // Fallback if something goes wrong
