@@ -283,8 +283,9 @@ window.showBanner = function (msg, kind = 'info') {
       } else {
         // Fallback English sentence, but with localized "file/files"
         if (f > 0 && s === 0) m = `Failed ${f} ${filesF}.`;
-        else if (f > 0) m = `Done ${s} ${filesS}, ${f} failed.`;
-        else m = `Done ${s} ${filesS}!`;
+        else if (f > 0) m = `Done. ${s} ${filesS} converted, ${f} failed.`;
+        else m = `Done. ${s} ${filesS} converted.`;
+
       }
     }
     else if (/^Too much data at once \((.+)\)\. Budget (.+)\.$/.test(m)) {
@@ -2144,10 +2145,11 @@ convertBtn.addEventListener('click', async () => {
         const __filesF = wordFiles(failed, __lang);
         const __msg = failed
           ? (ok
-            ? t('banner.doneMixed', { s: ok, files: __files, f: failed })
-            : t('banner.doneFail', { f: failed, files: __filesF }))
-          : t('banner.doneOk', { s: ok, files: __files });
-        showBanner(__msg, failed ? 'info' : 'ok');
+            ? `Done. ${ok} ${__files} converted, ${failed} failed.`
+            : `Failed ${failed} ${__filesF}.`)
+          : `Done. ${ok} ${__files} converted.`;
+        showBanner(__msg, failed ? 'error' : 'ok');
+
       }
     }
   };
