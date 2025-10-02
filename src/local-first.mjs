@@ -8,7 +8,7 @@ export async function loadJSZip() {
   try {
     const m = await import("/vendor/jszip/jszip.esm.js");
     return await m.default;
-  } catch (e) {
+  } catch (e1) {
     try {
       const m = await import("https://cdn.jsdelivr.net/npm/@progress/jszip-esm@1.0.4/dist/jszip.min.js");
       return m.default || m.JSZip || globalThis.JSZip;
@@ -19,20 +19,33 @@ export async function loadJSZip() {
   }
 }
 
-/* libarchive-wasm: ESM exports { ArchiveReader, libarchiveWasm } */
+/* libarchive.js (browser): ESM exports { Archive } */
 export async function loadLibarchive() {
+  // 1) local vendor
   try {
-    // Local ESM first
-    const m = await import("/vendor/libarchive-wasm/index.mjs");
-    const ArchiveReader = m.ArchiveReader || (m.default && m.default.ArchiveReader);
-    const libarchiveWasm = m.libarchiveWasm || (m.default && m.default.libarchiveWasm);
-    if (!ArchiveReader || !libarchiveWasm) throw new Error("Bad libarchive exports");
-    return { ArchiveReader, libarchiveWasm };
-  } catch (e) {
-    console.warn("[libarchive] local failed, using CDN", e);
-    // ESM CDN fallback
-    const m = await import("https://cdn.jsdelivr.net/npm/libarchive-wasm@1.2.0/+esm");
-    return { ArchiveReader: m.ArchiveReader, libarchiveWasm: m.libarchiveWasm };
+    const m = await import("/vendor/libarchivejs/main.js");
+    const Archive = m.Archive || (m.default && m.default.Archive);
+    if (!Archive) throw new Error("libarchive.js: Archive export not found");
+    Archive.init({ workerUrl: "/vendor/libarchivejs/dist/worker-bundle.js" });
+    return { Archive };
+  } catch (e1) {
+    console.warn("[libarchive] local failed, trying CDN (jsDelivr)", e1);
+    // 2) jsDelivr
+    try {
+      const m = await import("https://cdn.jsdelivr.net/npm/libarchive.js/main.js");
+      const Archive = m.Archive || (m.default && m.default.Archive);
+      if (!Archive) throw new Error("libarchive.js: Archive export not found (cdn)");
+      Archive.init({ workerUrl: "https://cdn.jsdelivr.net/npm/libarchive.js/dist/worker-bundle.js" });
+      return { Archive };
+    } catch (e2) {
+      console.warn("[libarchive] jsDelivr failed, trying unpkg", e2);
+      // 3) unpkg
+      const m = await import("https://unpkg.com/libarchive.js/main.js");
+      const Archive = m.Archive || (m.default && m.default.Archive);
+      if (!Archive) throw new Error("libarchive.js: Archive export not found (unpkg)");
+      Archive.init({ workerUrl: "https://unpkg.com/libarchive.js/dist/worker-bundle.js" });
+      return { Archive };
+    }
   }
 }
 
@@ -41,7 +54,7 @@ export async function load7z() {
   try {
     const Seven = (await import("/vendor/7zz/7zz.es6.js")).default;
     return await Seven();
-  } catch (e) {
+  } catch (e1) {
     try {
       const Seven = (await import("https://cdn.jsdelivr.net/npm/7z-wasm@1.0.0-beta.5/7zz.es6.js")).default;
       return await Seven();
