@@ -2890,8 +2890,7 @@ async function convertPdfFile(file, target) {
   return [{ blob: new Blob([all], { type: "text/plain" }), name: swapExt(file.name, "txt") }];
 }
 
-// One-time memoization so we never warm twice in a session
-let _warmFFmpegOnce = null;
+
 
 /**
  * Ensure FFmpeg wrapper is loaded and lightly warmed.
