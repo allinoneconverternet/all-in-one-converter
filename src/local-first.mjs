@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Local-first dynamic loaders with CDN fallback.
  * Usage:
  *   import { loadJSZip, loadLibarchive, load7z } from "/src/local-first.mjs";
