@@ -2892,12 +2892,7 @@ async function convertPdfFile(file, target) {
 
 
 
-/**
- * Ensure FFmpeg wrapper is loaded and lightly warmed.
- * - Idempotent (returns same promise after first call)
- * - Tries local vendors first (your loaders), then any fallbacks they manage
- * - Safe if some helpers (ensureVendors/adoptFFmpegGlobal) are absent
- */
+
 async function warmFFmpegWrapper(opts = {}) {
   if (_warmFFmpegOnce) return _warmFFmpegOnce;
 
