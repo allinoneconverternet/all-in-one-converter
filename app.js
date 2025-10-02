@@ -255,10 +255,7 @@ async function needPdf() {
 }
 
 
-function show(msg, kind = 'info') {
-  if (typeof showBanner === 'function') return showBanner(msg, kind);
-  console[kind === 'error' ? 'error' : 'log'](msg);
-}
+
 
 
 
@@ -3853,5 +3850,6 @@ function presetTargetFromURL() {
     applyQualityVisibility();
   });
 })();
+
 
 
