@@ -21,3 +21,6 @@ build/
 __archive_pairs/
 __archive_pairs_extra/
 archives/
+*.bak
+*.copy
+*.map

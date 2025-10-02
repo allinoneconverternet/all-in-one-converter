@@ -2270,6 +2270,10 @@ window.refreshTargetDropdown = refreshTargetDropdown; // filters to only valid t
 
 
 if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    buildTargets();            // populate groups/labels
+    refreshTargetDropdown();   // then filter for current files
+  });
 } else {
   buildTargets();
   refreshTargetDropdown();
@@ -2373,6 +2377,11 @@ function applyUrlTarget() {
 }
 
 if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    buildTargets();
+    refreshTargetDropdown();
+    applyUrlTarget();
+  });
 } else {
   buildTargets();
   refreshTargetDropdown();
@@ -2890,98 +2899,6 @@ async function convertPdfFile(file, target) {
   return [{ blob: new Blob([all], { type: "text/plain" }), name: swapExt(file.name, "txt") }];
 }
 
-// One-time memoization so we never warm twice in a session
-let _warmFFmpegOnce = null;
-
-/**
- * Ensure FFmpeg wrapper is loaded and lightly warmed.
- * - Idempotent (returns same promise after first call)
- * - Tries local vendors first (your loaders), then any fallbacks they manage
- * - Safe if some helpers (ensureVendors/adoptFFmpegGlobal) are absent
- */
-async function warmFFmpegWrapper(opts = {}) {
-  if (_warmFFmpegOnce) return _warmFFmpegOnce;
-
-  _warmFFmpegOnce = (async () => {
-    const t0 = (typeof performance !== 'undefined' ? performance.now() : Date.now());
-
-    // If you have a vendor preloader, prefer local assets
-    try {
-      if (typeof ensureVendors === 'function') {
-        await ensureVendors({ preferLocal: true, ...opts });
-      }
-    } catch (_) { /* non-fatal */ }
-
-    // Your app helper: should attach/normalize FFmpeg globals
-    // (safe if it's not present)
-    try {
-      if (typeof ensureFFmpegGlobal === 'function') {
-        await ensureFFmpegGlobal({ preferLocal: true, ...opts });
-      }
-      if (typeof adoptFFmpegGlobal === 'function') {
-        await adoptFFmpegGlobal(); // normalize different loader shapes
-      }
-    } catch (e) {
-      console.warn('[warmFFmpegWrapper] ensure/adopt failed (continuing):', e);
-    }
-
-    // Discover whichever API shape we ended up with
-    const api = (
-      // common globals your app may set
-      window.ffmpeg ||
-      window.FFmpeg ||
-      // sometimes ensureFFmpegGlobal returns an object
-      (typeof getFFmpeg === 'function' ? await getFFmpeg() : null) ||
-      null
-    );
-
-    // If nothing is available, just exit quietly—callers can still lazy-load later
-    if (!api) {
-      if (window.DEBUG) console.debug('[warmFFmpegWrapper] no FFmpeg API found yet; skipping warmup');
-      return;
-    }
-
-    // Already loaded?
-    try {
-      if (typeof api.isLoaded === 'function' && api.isLoaded()) return;
-      if (api.loaded || api._loaded) return;
-    } catch (_) { /* ignore */ }
-
-    // Try to load/init depending on the shape
-    try {
-      if (typeof api.load === 'function') {
-        await api.load();                    // ffmpeg.wasm-style instance
-      } else if (typeof api.ready === 'function') {
-        await api.ready();                   // some wrappers expose .ready()
-      } else if (typeof api.init === 'function') {
-        await api.init();                    // other wrappers expose .init()
-      }
-    } catch (e) {
-      console.warn('[warmFFmpegWrapper] load/init failed (continuing):', e);
-    }
-
-    // Micro-run to JIT the command path; cheap and safe to ignore if unsupported
-    try {
-      if (typeof api.exec === 'function') {
-        await api.exec(['-version']);
-      } else if (typeof api.run === 'function') {
-        await api.run(['-version']);
-      } else if (typeof api.callMain === 'function') {
-        api.callMain(['-version']);
-      }
-    } catch (e) {
-      // Some thin wrappers don't support -version; ignore quietly
-      if (window.DEBUG) console.debug('[warmFFmpegWrapper] micro-run skipped:', e);
-    }
-
-    if (window.DEBUG) {
-      const dt = (typeof performance !== 'undefined' ? performance.now() : Date.now()) - t0;
-      console.debug(`[warmFFmpegWrapper] ready in ${Math.round(dt)} ms`);
-    }
-  })();
-
-  return _warmFFmpegOnce;
-}
 
 /* ---- CSV/XLSX ⇄ ---- */
 async function convertSheetFile(file, target) {
@@ -3865,7 +3782,6 @@ function presetTargetFromURL() {
     applyQualityVisibility();
   });
 })();
-
 
 
 
