@@ -69,7 +69,7 @@ if (typeof libarchiveWasm === 'function') {
     mod = null;
   }
 }
-import { loadLibarchive, load7z } from '/src/local-first.mjs';
+
 
 async function needArchives() {
   try { await loadLibarchive(); features.archives = true; ensureVendors?.(); } catch { }
