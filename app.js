@@ -1,4 +1,4 @@
-﻿// === DEBUG INSTRUMENTATION v3 ===
+// === DEBUG INSTRUMENTATION v3 ===
 window.ENABLE_OUTPUTS = { text: true, documents: true, archives: true, spreadsheets: true, images: true, media: true };
 const groupsOrder = ['text', 'documents', 'archives', 'spreadsheets', 'images', 'media'];
 
@@ -60,7 +60,17 @@ const JSZip = await loadJSZip();
 
 // libarchive-wasm reader (RAR/7Z/TAR/ZIP inputs)
 const { ArchiveReader, libarchiveWasm } = await loadLibarchive();
-const mod = if (typeof libarchiveWasm === 'function') { try { await libarchiveWasm(); } catch(e){} }
+let mod = null;
+if (typeof libarchiveWasm === 'function') {
+  try {
+    mod = await libarchiveWasm();   // may return null in our shim
+  } catch (e) {
+    console.warn('[libarchiveWasm] init failed:', e);
+    mod = null;
+  }
+}
+
+
 // Example: const reader = new ArchiveReader(mod, new Int8Array(await file.arrayBuffer()));
 
 // 7z writer (for .7z or ZIP AES via 7z)
