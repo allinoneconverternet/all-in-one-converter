@@ -1,5 +1,9 @@
 ﻿// === DEBUG INSTRUMENTATION v3 ===
-window.DEBUG_CONVERTER = true;
+window.ENABLE_OUTPUTS = { text: true, documents: true, archives: true, spreadsheets: true, images: true, media: true };
+const groupsOrder = ['text', 'documents', 'archives', 'spreadsheets', 'images', 'media'];
+
+window.DEBUG_CONVERTER ??= false;  // set true only when you want verbose console diagnostics
+window.QUIET_TECH ??= true;
 function DBG() { try { if (window.DEBUG_CONVERTER) console.log.apply(console, arguments); } catch (e) { } }
 function DBGW() { try { if (window.DEBUG_CONVERTER) console.warn.apply(console, arguments); } catch (e) { } }
 function DBGE() { try { if (window.DEBUG_CONVERTER) console.error.apply(console, arguments); } catch (e) { } }
@@ -12,7 +16,24 @@ var FFMPEG_VER = window.FFMPEG_VER;  // <— was 'const', change to 'var'
 var _warmFFmpegOnce = window._warmFFmpegOnce || null;  // ⬅️ change this line
 if (window.__APP_ALREADY_LOADED__) throw new Error('app.js loaded twice');
 window.__APP_ALREADY_LOADED__ = true;
-
+const TB_TONE = {
+  'banner.doneOk': 'ok',
+  'banner.finishedMixed': 'error',
+  'banner.finishedFail': 'error',
+  'banner.noCommonFor': 'error',
+  'banner.unsupportedPresent': 'error',
+  'banner.unsupportedAdded': 'error',
+  'banner.added': 'ok',
+  'banner.removedX': 'ok',
+  'banner.cleared': 'ok',
+  'banner.addFirst': 'error',
+  'banner.noOutputs': 'error',
+  'banner.exceedsBudget': 'error'
+};
+window.tb = function tb(key, vars) {
+  const tone = TB_TONE[key] || 'error';           // default to red if unknown
+  return showBanner(t(key, vars), tone);
+};
 // adopt any known global shape
 function adoptFFmpegGlobal() {
   const cands = [
@@ -32,6 +53,18 @@ function adoptFFmpegGlobal() {
   }
   return false;
 }
+import { loadJSZip, loadLibarchive, load7z } from '/src/local-first.mjs';
+
+// ZIP writer
+const JSZip = await loadJSZip();
+
+// libarchive-wasm reader (RAR/7Z/TAR/ZIP inputs)
+const { ArchiveReader, libarchiveWasm } = await loadLibarchive();
+const mod = await libarchiveWasm();
+// Example: const reader = new ArchiveReader(mod, new Int8Array(await file.arrayBuffer()));
+
+// 7z writer (for .7z or ZIP AES via 7z)
+const seven = await load7z(); // seven.FS, seven.callMain([...])
 
 // Local-only: adopt/create a FFmpeg global from the local UMD wrapper.
 // No CDN, no ESM import — prevents cross-origin Worker.
@@ -222,11 +255,128 @@ async function needPdf() {
 }
 
 
+function show(msg, kind = 'info') {
+  if (typeof showBanner === 'function') return showBanner(msg, kind);
+  console[kind === 'error' ? 'error' : 'log'](msg);
+}
 
-async function needXLSX() { if (window.XLSX) return; await loadScriptTry(CDN.xlsx[0], CDN.xlsx[1]); }
-async function needJSZip() { if (window.JSZip) return; await loadScriptTry(CDN.jszip[0], CDN.jszip[1]); }
-async function needJsPDF() { if (window.jspdf?.jsPDF) return; await loadScriptTry(CDN.jspdf[0], CDN.jspdf[1]); }
-async function needDocx() { if (window.docx) return; await loadScriptTry(CDN.docx[0], CDN.docx[1]); }
+
+
+async function needXLSX() {
+  if (window.XLSX) { features.xlsx = true; ensureVendors?.(); return; }
+  await loadScriptTry(CDN.xlsx[0], CDN.xlsx[1]);
+  features.xlsx = !!window.XLSX;
+  ensureVendors?.();
+}
+
+async function needJSZip() {
+  if (window.JSZip) { features.pptx = true; ensureVendors?.(); return; }
+  await loadScriptTry(CDN.jszip[0], CDN.jszip[1]);
+  features.pptx = !!window.JSZip;
+  ensureVendors?.();
+}
+
+async function needJsPDF() {
+  if (window.jspdf?.jsPDF) { features.makePdf = true; ensureVendors?.(); return; }
+  await loadScriptTry(CDN.jspdf[0], CDN.jspdf[1]);
+  features.makePdf = !!(window.jspdf && window.jspdf.jsPDF);
+  ensureVendors?.();
+}
+
+async function needDocx() {
+  if (window.docx) { features.makeDocx = true; ensureVendors?.(); return; }
+  await loadScriptTry(CDN.docx[0], CDN.docx[1]);
+  features.makeDocx = !!window.docx;
+  ensureVendors?.();
+}
+
+// Global helper: returns the localized singular/plural for "file"
+// Global helper: localized singular/plural for "file"
+window.wordFiles = function wordFiles(n, lang) {
+  const one = {
+    "en": "file", "de": "Datei", "es": "archivo", "fr": "fichier", "it": "file",
+    "pl": "plik", "pt": "ficheiro", "pt-br": "arquivo", "ja": "ファイル", "ru": "файл",
+    "zh-cn": "个文件", "ko": "파일", "hi": "फ़ाइल", "ar": "ملف", "uk": "файл",
+    "tr": "dosya", "nl": "bestand"
+  };
+  const many = {
+    "en": "files", "de": "Dateien", "es": "archivos", "fr": "fichiers", "it": "file",
+    "pl": "pliki", "pt": "ficheiros", "pt-br": "arquivos", "ja": "ファイル", "ru": "файлы",
+    "zh-cn": "个文件", "ko": "파일", "hi": "फ़ाइलें", "ar": "ملفات", "uk": "файли",
+    "tr": "dosya", "nl": "bestanden"
+  };
+  const Lraw = String(lang || (window.APP_LANG || "en")).toLowerCase();
+  const L = one[Lraw] ? Lraw : (Lraw.split("-")[0] || "en");
+  const s = Number(n) || 0;
+  return s === 1 ? (one[L] || one.en) : (many[L] || many.en);
+};
+
+// Interceptor: translates banners + normalizes the "Done ..." message
+// Interceptor: translate + normalize the "Done ..." message
+// Interceptor: translate + normalize the "Done ..." message
+window.showBanner = function (msg, kind = 'info') {
+  try {
+    let m = String(msg);
+
+    // Simple English -> i18n
+    if (m === 'Cleared.') m = t('banner.cleared');
+    else if (m === 'No outputs yet. Convert first.') m = t('banner.noOutputs');
+    else if (m === 'Add some files first.') m = t('banner.addFirst');
+
+    // Handle: "Done. X succeeded, Y failed." or ICU leak
+    const doneMatch = m.match(/\bDone\.\s+(\d+)\s+succeeded\b/i);
+    if (doneMatch) {
+      const s = parseInt(doneMatch[1], 10) || 0;
+      const failMatch = m.match(/,\s*(\d+)\s+failed/i);
+      const f = failMatch ? (parseInt(failMatch[1], 10) || 0) : 0;
+
+      const L = window.APP_LANG || 'en';
+      if (f === 0) {
+        tb('banner.doneOk', { s, files: wordFiles(s, L) });       // ✅ green
+      } else if (s > 0) {
+        tb('banner.finishedMixed', { s, files: wordFiles(s, L), f });    // ❌ red
+      } else {
+        tb('banner.finishedFail', { f, files: wordFiles(f, L) });       // ❌ red
+      }
+
+      const filesS = window.wordFiles(s, L);
+      const filesF = window.wordFiles(f, L);
+
+      const hasI18n =
+        (typeof I18N !== 'undefined') &&
+        ((I18N[L] && (I18N[L]['banner.doneOk'] || I18N[L]['banner.doneMixed'] || I18N[L]['banner.doneFail'])) ||
+          (I18N.en && (I18N.en['banner.doneOk'] || I18N.en['banner.doneMixed'] || I18N.en['banner.doneFail'])));
+
+      if (hasI18n) {
+        if (f > 0 && s === 0) m = t('banner.doneFail', { f, files: filesF });
+        else if (f > 0) m = t('banner.doneMixed', { s, files: filesS, f });
+        else m = t('banner.doneOk', { s, files: filesS });
+      } else {
+        // Fallback English sentence, but with localized "file/files"
+        if (f > 0 && s === 0) m = `Failed ${f} ${filesF}.`;
+        else if (f > 0) m = `Done. ${s} ${filesS} converted, ${f} failed.`;
+        else m = `Done. ${s} ${filesS} converted.`;
+
+      }
+    }
+    else if (/^Too much data at once \((.+)\)\. Budget (.+)\.$/.test(m)) {
+      const mm = m.match(/^Too much data at once \((.+)\)\. Budget (.+)\.$/);
+      if (mm) m = t('banner.tooMuchData', { total: mm[1], budget: mm[2] });
+    } else if (/^Total selected (.+) exceeds budget (.+)\. Will process sequentially\.$/.test(m)) {
+      const mm = m.match(/^Total selected (.+) exceeds budget (.+)\. Will process sequentially\.$/);
+      if (mm) m = t('banner.exceedsBudget', { total: mm[1], budget: mm[2] });
+    } else if (m === 'Triggered downloads for each file.') m = t('banner.triggeredDownloads');
+    else if (m === 'Saved all files to your chosen folder.') m = t('banner.savedAll');
+    else if (m === 'Save cancelled.') m = t('banner.saveCancelled');
+    else if (m === 'Link copied to clipboard.') m = t('banner.linkCopied');
+    else if (/^Couldn’t open the folder\./.test(m)) m = t('banner.openFolderFail');
+
+    console[kind === 'error' ? 'error' : 'log'](m);
+  } catch {
+    console[kind === 'error' ? 'error' : 'log'](msg);
+  }
+};
+
 
 // Populate the dropdown from these (popular output types)
 const TARGET_GROUPS = {
@@ -242,6 +392,7 @@ const TARGET_GROUPS = {
   documents: [
     ['pdf', 'PDF (.pdf)'],
     ['docx', 'Word DOCX (.docx)']
+
   ],
   spreadsheets: [
     ['xlsx', 'Excel XLSX (.xlsx)']
@@ -259,7 +410,15 @@ const TARGET_GROUPS = {
     ['m4a', 'Audio M4A (.m4a)'],
     ['mp4', 'Video MP4 (.mp4)'],
     ['webm', 'Video WebM (.webm)'],
-    ['gif', 'GIF from video (.gif)']
+    ['gif', 'GIF from video (.gif)'],
+  ],
+  archives: [
+    ['zip', 'ZIP (.zip)'],
+    ['7z', '7Z (.7z)'],
+    ['tar', 'TAR (.tar)'],
+    ['tar.gz', 'TAR.GZ (.tar.gz)'],
+    ['tar.bz2', 'TAR.BZ2 (.tar.bz2)'],
+    ['tar.xz', 'TAR.XZ (.tar.xz)']
   ]
 };
 
@@ -291,7 +450,7 @@ const features = { pdf: false, docx: false, xlsx: false, pptx: false, ocr: false
 const I18N = {
   en: {
     // statuses / controls
-    queued: 'Queued',
+    queued: 'queued',
     preparing: 'Preparing…',
     converting: 'Converting…',
     convertingPct: 'Converting… {pct}%',
@@ -302,15 +461,29 @@ const I18N = {
     remove: 'Remove',
     unknown: 'unknown',
     downloadX: 'Download {name}',
-
+    group_archives: 'Archives',
     // groups
-    group_text: 'Text', group_documents: 'Documents', group_spreadsheets: 'Spreadsheets', group_images: 'Images', group_media: 'Media',
+    group_text: 'Text',
+    group_documents: 'Documents',
+    group_spreadsheets: 'Spreadsheets',
+    group_images: 'Images',
+    group_media: 'Media',
 
     // options (simple)
-    'opt.txt': 'Plain text (.txt)', 'opt.md': 'Markdown (.md)', 'opt.html': 'HTML (.html)',
-    'opt.csv': 'CSV (.csv)', 'opt.json': 'JSON (.json)', 'opt.jsonl': 'JSON Lines (.jsonl)', 'opt.rtf': 'Rich Text (.rtf)',
-    'opt.pdf': 'PDF (.pdf)', 'opt.docx': 'Word DOCX (.docx)', 'opt.xlsx': 'Excel XLSX (.xlsx)',
-    'opt.png': 'PNG (.png)', 'opt.jpeg': 'JPEG (.jpg)', 'opt.webp': 'WebP (.webp)', 'opt.svg': 'SVG (.svg)',
+    'opt.txt': 'Plain text (.txt)',
+    'opt.md': 'Markdown (.md)',
+    'opt.html': 'HTML (.html)',
+    'opt.csv': 'CSV (.csv)',
+    'opt.json': 'JSON (.json)',
+    'opt.jsonl': 'JSON Lines (.jsonl)',
+    'opt.rtf': 'Rich Text (.rtf)',
+    'opt.pdf': 'PDF (.pdf)',
+    'opt.docx': 'Word DOCX (.docx)',
+    'opt.xlsx': 'Excel XLSX (.xlsx)',
+    'opt.png': 'PNG (.png)',
+    'opt.jpeg': 'JPEG (.jpg)',
+    'opt.webp': 'WebP (.webp)',
+    'opt.svg': 'SVG (.svg)',
     'opt.gif': 'GIF from video (.gif)',
     'opt.audioGeneric': 'Audio {fmt} ({ext})',
     'opt.videoGeneric': 'Video {fmt} ({ext})',
@@ -319,7 +492,7 @@ const I18N = {
     'banner.cleared': 'Cleared.',
     'banner.noOutputs': 'No outputs yet. Convert first.',
     'banner.addFirst': 'Add some files first.',
-    'banner.doneSummary': 'Done. {s} succeeded{f, plural, =0{} other{, {f} failed}}.',
+    'banner.doneSummary': 'Done {s} {files}!',
     'banner.tooMuchData': 'Too much data at once ({total}). Budget {budget}.',
     'banner.exceedsBudget': 'Total selected {total} exceeds budget {budget}. Will process sequentially.',
     'banner.triggeredDownloads': 'Triggered downloads for each file.',
@@ -333,45 +506,800 @@ const I18N = {
     unknownError: 'Unknown error'
   },
 
-  // --- Add localized keys. (Only the different words; rest fall back to English) ---
-  de: { queued: 'Wartet', preparing: 'Wird vorbereitet…', converting: 'Wird konvertiert…', convertingPct: 'Wird konvertiert… {pct}%', finishing: 'Wird abgeschlossen…', ready: 'Fertig', readyN: 'Fertig ({n} Dateien)', failed: 'Fehlgeschlagen', remove: 'Entfernen', unknown: 'unbekannt', downloadX: '{name} herunterladen', group_text: 'Text', group_documents: 'Dokumente', group_spreadsheets: 'Tabellen', group_images: 'Bilder', group_media: 'Medien', 'opt.txt': 'Klartext (.txt)', 'opt.md': 'Markdown (.md)', 'opt.html': 'HTML (.html)', 'opt.csv': 'CSV (.csv)', 'opt.json': 'JSON (.json)', 'opt.jsonl': 'JSON Lines (.jsonl)', 'opt.rtf': 'Rich Text (.rtf)', 'opt.pdf': 'PDF (.pdf)', 'opt.docx': 'Word DOCX (.docx)', 'opt.xlsx': 'Excel XLSX (.xlsx)', 'opt.png': 'PNG (.png)', 'opt.jpeg': 'JPEG (.jpg)', 'opt.webp': 'WebP (.webp)', 'opt.svg': 'SVG (.svg)', 'opt.gif': 'GIF aus Video (.gif)', 'opt.audioGeneric': 'Audio {fmt} ({ext})', 'opt.videoGeneric': 'Video {fmt} ({ext})', 'banner.cleared': 'Gelöscht.', 'banner.noOutputs': 'Noch keine Ausgaben. Bitte zuerst konvertieren.', 'banner.addFirst': 'Fügen Sie zuerst Dateien hinzu.', 'banner.doneSummary': 'Fertig. {s} erfolgreich{f, plural, =0{} other{, {f} fehlgeschlagen}}.', 'banner.tooMuchData': 'Zu viele Daten auf einmal ({total}). Budget {budget}.', 'banner.exceedsBudget': 'Gesamt {total} überschreitet Budget {budget}. Verarbeitung nacheinander.', 'banner.triggeredDownloads': 'Downloads für jede Datei gestartet.', 'banner.savedAll': 'Alle Dateien in den gewählten Ordner gespeichert.', 'banner.saveCancelled': 'Speichern abgebrochen.', 'banner.linkCopied': 'Link in die Zwischenablage kopiert.', 'banner.openFolderFail': 'Ordner konnte nicht geöffnet werden. Versuchen Sie es erneut oder laden Sie einzeln herunter.', couldntConvert: 'Konnte nicht konvertieren: {msg}', unknownError: 'Unbekannter Fehler' },
+  // --- Localized keys ---
+  de: {
+    queued: 'In der Warteschlange',
+    preparing: 'Wird vorbereitet…',
+    converting: 'Wird konvertiert…',
+    convertingPct: 'Wird konvertiert… {pct}%',
+    finishing: 'Wird abgeschlossen…',
+    ready: 'Fertig',
+    readyN: 'Fertig ({n} Dateien)',
+    failed: 'Fehlgeschlagen',
+    remove: 'Entfernen',
+    unknown: 'unbekannt',
+    downloadX: '{name} herunterladen',
+    group_text: 'Text',
+    group_documents: 'Dokumente',
+    group_spreadsheets: 'Tabellen',
+    group_images: 'Bilder',
+    group_media: 'Medien',
+    'opt.txt': 'Einfacher Text (.txt)',
+    'opt.md': 'Markdown (.md)',
+    'opt.html': 'HTML (.html)',
+    'opt.csv': 'CSV (.csv)',
+    'opt.json': 'JSON (.json)',
+    'opt.jsonl': 'JSON Lines (.jsonl)',
+    'opt.rtf': 'Rich Text (.rtf)',
+    'opt.pdf': 'PDF (.pdf)',
+    'opt.docx': 'Word DOCX (.docx)',
+    'opt.xlsx': 'Excel XLSX (.xlsx)',
+    'opt.png': 'PNG (.png)',
+    'opt.jpeg': 'JPEG (.jpg)',
+    'opt.webp': 'WebP (.webp)',
+    'opt.svg': 'SVG (.svg)',
+    'opt.gif': 'GIF aus Video (.gif)',
+    'opt.audioGeneric': 'Audio {fmt} ({ext})',
+    'opt.videoGeneric': 'Video {fmt} ({ext})',
+    'banner.cleared': 'Geleert.',
+    'banner.noOutputs': 'Noch keine Ergebnisse. Bitte zuerst konvertieren.',
+    'banner.addFirst': 'Fügen Sie zuerst Dateien hinzu.',
+    'banner.doneSummary': 'Fertig: {s} {files}!',
+    'banner.tooMuchData': 'Zu viele Daten auf einmal ({total}). Budget {budget}.',
+    'banner.exceedsBudget': 'Gesamtauswahl {total} überschreitet das Budget {budget}. Verarbeitung nacheinander.',
+    'banner.triggeredDownloads': 'Downloads für jede Datei gestartet.',
+    'banner.savedAll': 'Alle Dateien in den gewählten Ordner gespeichert.',
+    'banner.saveCancelled': 'Speichern abgebrochen.',
+    'banner.linkCopied': 'Link in die Zwischenablage kopiert.',
+    'banner.openFolderFail': 'Ordner konnte nicht geöffnet werden. Versuchen Sie es erneut oder laden Sie einzeln herunter.',
+    couldntConvert: 'Konnte nicht konvertieren: {msg}',
+    unknownError: 'Unbekannter Fehler'
+  },
 
-  es: { queued: 'En cola', preparing: 'Preparando…', converting: 'Convirtiendo…', convertingPct: 'Convirtiendo… {pct}%', finishing: 'Finalizando…', ready: 'Listo', readyN: 'Listo ({n} archivos)', failed: 'Error', remove: 'Quitar', unknown: 'desconocido', downloadX: 'Descargar {name}', group_text: 'Texto', group_documents: 'Documentos', group_spreadsheets: 'Hojas de cálculo', group_images: 'Imágenes', group_media: 'Medios', 'opt.txt': 'Texto sin formato (.txt)', 'opt.md': 'Markdown (.md)', 'opt.html': 'HTML (.html)', 'opt.csv': 'CSV (.csv)', 'opt.json': 'JSON (.json)', 'opt.jsonl': 'JSON Lines (.jsonl)', 'opt.rtf': 'Rich Text (.rtf)', 'opt.pdf': 'PDF (.pdf)', 'opt.docx': 'Word DOCX (.docx)', 'opt.xlsx': 'Excel XLSX (.xlsx)', 'opt.png': 'PNG (.png)', 'opt.jpeg': 'JPEG (.jpg)', 'opt.webp': 'WebP (.webp)', 'opt.svg': 'SVG (.svg)', 'opt.gif': 'GIF desde video (.gif)', 'opt.audioGeneric': 'Audio {fmt} ({ext})', 'opt.videoGeneric': 'Vídeo {fmt} ({ext})', 'banner.cleared': 'Borrado.', 'banner.noOutputs': 'Aún no hay archivos de salida. Primero convierta.', 'banner.addFirst': 'Añade archivos primero.', 'banner.doneSummary': 'Listo. {s} correctos{f, plural, =0{} other{, {f} fallidos}}.', 'banner.tooMuchData': 'Demasiados datos a la vez ({total}). Límite {budget}.', 'banner.exceedsBudget': 'Total {total} supera el límite {budget}. Se procesará secuencialmente.', 'banner.triggeredDownloads': 'Descargas iniciadas para cada archivo.', 'banner.savedAll': 'Todos los archivos guardados en la carpeta elegida.', 'banner.saveCancelled': 'Guardado cancelado.', 'banner.linkCopied': 'Enlace copiado al portapapeles.', 'banner.openFolderFail': 'No se pudo abrir la carpeta. Inténtalo de nuevo o descarga individualmente.', couldntConvert: 'No se pudo convertir: {msg}', unknownError: 'Error desconocido' },
+  es: {
+    queued: 'En cola',
+    preparing: 'Preparando…',
+    converting: 'Convirtiendo…',
+    convertingPct: 'Convirtiendo… {pct}%',
+    finishing: 'Finalizando…',
+    ready: 'Listo',
+    readyN: 'Listo ({n} archivos)',
+    failed: 'Fallido',
+    remove: 'Quitar',
+    unknown: 'desconocido',
+    downloadX: 'Descargar {name}',
+    group_text: 'Texto',
+    group_documents: 'Documentos',
+    group_spreadsheets: 'Hojas de cálculo',
+    group_images: 'Imágenes',
+    group_media: 'Medios',
+    'opt.txt': 'Texto sin formato (.txt)',
+    'opt.md': 'Markdown (.md)',
+    'opt.html': 'HTML (.html)',
+    'opt.csv': 'CSV (.csv)',
+    'opt.json': 'JSON (.json)',
+    'opt.jsonl': 'JSON Lines (.jsonl)',
+    'opt.rtf': 'Rich Text (.rtf)',
+    'opt.pdf': 'PDF (.pdf)',
+    'opt.docx': 'Word DOCX (.docx)',
+    'opt.xlsx': 'Excel XLSX (.xlsx)',
+    'opt.png': 'PNG (.png)',
+    'opt.jpeg': 'JPEG (.jpg)',
+    'opt.webp': 'WebP (.webp)',
+    'opt.svg': 'SVG (.svg)',
+    'opt.gif': 'GIF desde un vídeo (.gif)',
+    'opt.audioGeneric': 'Audio {fmt} ({ext})',
+    'opt.videoGeneric': 'Vídeo {fmt} ({ext})',
+    'banner.cleared': 'Borrado.',
+    'banner.noOutputs': 'Aún no hay resultados. Convierta primero.',
+    'banner.addFirst': 'Añada archivos primero.',
+    'banner.doneSummary': 'Listo: {s} {files}!',
+    'banner.tooMuchData': 'Demasiados datos a la vez ({total}). Límite {budget}.',
+    'banner.exceedsBudget': 'El total seleccionado {total} supera el límite {budget}. Se procesará secuencialmente.',
+    'banner.triggeredDownloads': 'Descargas iniciadas para cada archivo.',
+    'banner.savedAll': 'Todos los archivos guardados en la carpeta elegida.',
+    'banner.saveCancelled': 'Guardado cancelado.',
+    'banner.linkCopied': 'Enlace copiado al portapapeles.',
+    'banner.openFolderFail': 'No se pudo abrir la carpeta. Inténtelo de nuevo o descargue individualmente.',
+    couldntConvert: 'No se pudo convertir: {msg}',
+    unknownError: 'Error desconocido'
+  },
 
-  fr: { queued: 'En file d’attente', preparing: 'Préparation…', converting: 'Conversion en cours…', convertingPct: 'Conversion… {pct} %', finishing: 'Finalisation…', ready: 'Prêt', readyN: 'Prêt ({n} fichiers)', failed: 'Échec', remove: 'Supprimer', unknown: 'inconnu', downloadX: 'Télécharger {name}', group_text: 'Texte', group_documents: 'Documents', group_spreadsheets: 'Feuilles de calcul', group_images: 'Images', group_media: 'Médias', 'opt.txt': 'Texte brut (.txt)', 'opt.md': 'Markdown (.md)', 'opt.html': 'HTML (.html)', 'opt.csv': 'CSV (.csv)', 'opt.json': 'JSON (.json)', 'opt.jsonl': 'JSON Lines (.jsonl)', 'opt.rtf': 'Texte enrichi (.rtf)', 'opt.pdf': 'PDF (.pdf)', 'opt.docx': 'Word DOCX (.docx)', 'opt.xlsx': 'Excel XLSX (.xlsx)', 'opt.png': 'PNG (.png)', 'opt.jpeg': 'JPEG (.jpg)', 'opt.webp': 'WebP (.webp)', 'opt.svg': 'SVG (.svg)', 'opt.gif': 'GIF depuis une vidéo (.gif)', 'opt.audioGeneric': 'Audio {fmt} ({ext})', 'opt.videoGeneric': 'Vidéo {fmt} ({ext})', 'banner.cleared': 'Effacé.', 'banner.noOutputs': 'Aucun résultat pour l’instant. Lancez une conversion.', 'banner.addFirst': 'Ajoutez des fichiers d’abord.', 'banner.doneSummary': 'Terminé. {s} réussis{f, plural, =0{} other{, {f} échecs}}.', 'banner.tooMuchData': 'Trop de données à la fois ({total}). Budget {budget}.', 'banner.exceedsBudget': 'Le total {total} dépasse le budget {budget}. Traitement séquentiel.', 'banner.triggeredDownloads': 'Téléchargements déclenchés pour chaque fichier.', 'banner.savedAll': 'Tous les fichiers enregistrés dans le dossier choisi.', 'banner.saveCancelled': 'Enregistrement annulé.', 'banner.linkCopied': 'Lien copié dans le presse-papiers.', 'banner.openFolderFail': 'Impossible d’ouvrir le dossier. Réessayez ou téléchargez individuellement.', couldntConvert: 'Conversion impossible : {msg}', unknownError: 'Erreur inconnue' },
+  fr: {
+    queued: 'En file d’attente',
+    preparing: 'Préparation…',
+    converting: 'Conversion en cours…',
+    convertingPct: 'Conversion… {pct} %',
+    finishing: 'Finalisation…',
+    ready: 'Prêt',
+    readyN: 'Prêt ({n} fichiers)',
+    failed: 'Échec',
+    remove: 'Supprimer',
+    unknown: 'inconnu',
+    downloadX: 'Télécharger {name}',
+    group_text: 'Texte',
+    group_documents: 'Documents',
+    group_spreadsheets: 'Feuilles de calcul',
+    group_images: 'Images',
+    group_media: 'Médias',
+    'opt.txt': 'Texte brut (.txt)',
+    'opt.md': 'Markdown (.md)',
+    'opt.html': 'HTML (.html)',
+    'opt.csv': 'CSV (.csv)',
+    'opt.json': 'JSON (.json)',
+    'opt.jsonl': 'JSON Lines (.jsonl)',
+    'opt.rtf': 'Texte enrichi (.rtf)',
+    'opt.pdf': 'PDF (.pdf)',
+    'opt.docx': 'Word DOCX (.docx)',
+    'opt.xlsx': 'Excel XLSX (.xlsx)',
+    'opt.png': 'PNG (.png)',
+    'opt.jpeg': 'JPEG (.jpg)',
+    'opt.webp': 'WebP (.webp)',
+    'opt.svg': 'SVG (.svg)',
+    'opt.gif': 'GIF depuis une vidéo (.gif)',
+    'opt.audioGeneric': 'Audio {fmt} ({ext})',
+    'opt.videoGeneric': 'Vidéo {fmt} ({ext})',
+    'banner.cleared': 'Réinitialisé.',
+    'banner.noOutputs': 'Aucun résultat pour l’instant. Lancez une conversion.',
+    'banner.addFirst': 'Ajoutez des fichiers d’abord.',
+    'banner.doneSummary': 'Terminé : {s} {files} !',
+    'banner.tooMuchData': 'Trop de données à la fois ({total}). Budget {budget}.',
+    'banner.exceedsBudget': 'Le total sélectionné {total} dépasse le budget {budget}. Traitement séquentiel.',
+    'banner.triggeredDownloads': 'Téléchargements lancés pour chaque fichier.',
+    'banner.savedAll': 'Tous les fichiers enregistrés dans le dossier choisi.',
+    'banner.saveCancelled': 'Enregistrement annulé.',
+    'banner.linkCopied': 'Lien copié dans le presse-papiers.',
+    'banner.openFolderFail': 'Impossible d’ouvrir le dossier. Réessayez ou téléchargez individuellement.',
+    couldntConvert: 'Conversion impossible : {msg}',
+    unknownError: 'Erreur inconnue'
+  },
 
-  it: { queued: 'In coda', preparing: 'Preparazione…', converting: 'Conversione in corso…', convertingPct: 'Conversione… {pct}%', finishing: 'Finalizzazione…', ready: 'Pronto', readyN: 'Pronto ({n} file)', failed: 'Non riuscito', remove: 'Rimuovi', unknown: 'sconosciuto', downloadX: 'Scarica {name}', group_text: 'Testo', group_documents: 'Documenti', group_spreadsheets: 'Fogli di calcolo', group_images: 'Immagini', group_media: 'Media' },
+  it: {
+    queued: 'In coda',
+    preparing: 'Preparazione…',
+    converting: 'Conversione in corso…',
+    convertingPct: 'Conversione in corso… {pct}%',
+    finishing: 'Finalizzazione…',
+    ready: 'Pronto',
+    readyN: 'Pronto ({n} file)',
+    failed: 'Non riuscito',
+    remove: 'Rimuovi',
+    unknown: 'sconosciuto',
+    downloadX: 'Scarica {name}',
+    group_text: 'Testo',
+    group_documents: 'Documenti',
+    group_spreadsheets: 'Fogli di calcolo',
+    group_images: 'Immagini',
+    group_media: 'Media',
+    'opt.txt': 'Testo semplice (.txt)',
+    'opt.md': 'Markdown (.md)',
+    'opt.html': 'HTML (.html)',
+    'opt.csv': 'CSV (.csv)',
+    'opt.json': 'JSON (.json)',
+    'opt.jsonl': 'Righe JSON (.jsonl)',
+    'opt.rtf': 'Testo RTF (.rtf)',
+    'opt.pdf': 'PDF (.pdf)',
+    'opt.docx': 'Word DOCX (.docx)',
+    'opt.xlsx': 'Excel XLSX (.xlsx)',
+    'opt.png': 'PNG (.png)',
+    'opt.jpeg': 'JPEG (.jpg)',
+    'opt.webp': 'WebP (.webp)',
+    'opt.svg': 'SVG (.svg)',
+    'opt.gif': 'GIF da video (.gif)',
+    'opt.audioGeneric': 'Audio {fmt} ({ext})',
+    'opt.videoGeneric': 'Video {fmt} ({ext})',
+    'banner.cleared': 'Svuotato.',
+    'banner.noOutputs': 'Nessun output al momento. Esegui prima la conversione.',
+    'banner.addFirst': 'Aggiungi prima alcuni file.',
+    'banner.doneSummary': 'Fatto: {s} {files}!',
+    'banner.tooMuchData': 'Troppi dati in una volta ({total}). Budget {budget}.',
+    'banner.exceedsBudget': 'Il totale selezionato {total} supera il budget {budget}. Verrà elaborato in modo sequenziale.',
+    'banner.triggeredDownloads': 'Avviati i download per ogni file.',
+    'banner.savedAll': 'Tutti i file salvati nella cartella scelta.',
+    'banner.saveCancelled': 'Salvataggio annullato.',
+    'banner.linkCopied': 'Link copiato negli appunti.',
+    'banner.openFolderFail': 'Impossibile aprire la cartella. Riprova o scarica i file singolarmente qui sotto.',
+    couldntConvert: 'Impossibile convertire: {msg}',
+    unknownError: 'Errore sconosciuto'
+  },
 
-  pl: { queued: 'W kolejce', preparing: 'Przygotowywanie…', converting: 'Konwertowanie…', convertingPct: 'Konwertowanie… {pct}%', finishing: 'Finalizowanie…', ready: 'Gotowe', readyN: 'Gotowe ({n} pliki/ów)', failed: 'Niepowodzenie', remove: 'Usuń', unknown: 'nieznany', downloadX: 'Pobierz {name}', group_text: 'Tekst', group_documents: 'Dokumenty', group_spreadsheets: 'Arkusze', group_images: 'Obrazy', group_media: 'Multimedia' },
+  pl: {
+    queued: 'W kolejce',
+    preparing: 'Przygotowywanie…',
+    converting: 'Konwertowanie…',
+    convertingPct: 'Konwertowanie… {pct}%',
+    finishing: 'Finalizowanie…',
+    ready: 'Gotowe',
+    readyN: 'Gotowe ({n} plików)',
+    failed: 'Niepowodzenie',
+    remove: 'Usuń',
+    unknown: 'nieznane',
+    downloadX: 'Pobierz {name}',
+    group_text: 'Tekst',
+    group_documents: 'Dokumenty',
+    group_spreadsheets: 'Arkusze kalkulacyjne',
+    group_images: 'Obrazy',
+    group_media: 'Multimedia',
+    'opt.txt': 'Zwykły tekst (.txt)',
+    'opt.md': 'Markdown (.md)',
+    'opt.html': 'HTML (.html)',
+    'opt.csv': 'CSV (.csv)',
+    'opt.json': 'JSON (.json)',
+    'opt.jsonl': 'Wiersze JSON (.jsonl)',
+    'opt.rtf': 'Tekst RTF (.rtf)',
+    'opt.pdf': 'PDF (.pdf)',
+    'opt.docx': 'Word DOCX (.docx)',
+    'opt.xlsx': 'Excel XLSX (.xlsx)',
+    'opt.png': 'PNG (.png)',
+    'opt.jpeg': 'JPEG (.jpg)',
+    'opt.webp': 'WebP (.webp)',
+    'opt.svg': 'SVG (.svg)',
+    'opt.gif': 'GIF z wideo (.gif)',
+    'opt.audioGeneric': 'Audio {fmt} ({ext})',
+    'opt.videoGeneric': 'Wideo {fmt} ({ext})',
+    'banner.cleared': 'Wyczyszczono.',
+    'banner.noOutputs': 'Brak wyników. Najpierw wykonaj konwersję.',
+    'banner.addFirst': 'Najpierw dodaj pliki.',
+    'banner.doneSummary': 'Ukończono: {s} {files}!',
+    'banner.tooMuchData': 'Zbyt dużo danych naraz ({total}). Budżet {budget}.',
+    'banner.exceedsBudget': 'Suma {total} przekracza budżet {budget}. Przetwarzanie sekwencyjne.',
+    'banner.triggeredDownloads': 'Uruchomiono pobieranie dla każdego pliku.',
+    'banner.savedAll': 'Zapisano wszystkie pliki do wybranego folderu.',
+    'banner.saveCancelled': 'Zapisywanie anulowano.',
+    'banner.linkCopied': 'Link skopiowano do schowka.',
+    'banner.openFolderFail': 'Nie można było otworzyć folderu. Spróbuj ponownie lub pobierz pojedynczo poniżej.',
+    couldntConvert: 'Nie można przekonwertować: {msg}',
+    unknownError: 'Nieznany błąd'
+  },
 
-  pt: { queued: 'Na fila', preparing: 'Preparando…', converting: 'Convertendo…', convertingPct: 'Convertendo… {pct}%', finishing: 'Finalizando…', ready: 'Pronto', readyN: 'Pronto ({n} ficheiros)', failed: 'Falhou', remove: 'Remover', unknown: 'desconhecido', downloadX: 'Transferir {name}', group_text: 'Texto', group_documents: 'Documentos', group_spreadsheets: 'Folhas de cálculo', group_images: 'Imagens', group_media: 'Multimédia' },
-  'pt-BR': { queued: 'Na fila', preparing: 'Preparando…', converting: 'Convertendo…', convertingPct: 'Convertendo… {pct}%', finishing: 'Finalizando…', ready: 'Pronto', readyN: 'Pronto ({n} arquivos)', failed: 'Falhou', remove: 'Remover', unknown: 'desconhecido', downloadX: 'Baixar {name}', group_text: 'Texto', group_documents: 'Documentos', group_spreadsheets: 'Planilhas', group_images: 'Imagens', group_media: 'Mídia' },
+  pt: {
+    queued: 'Na fila',
+    preparing: 'Preparando…',
+    converting: 'Convertendo…',
+    convertingPct: 'Convertendo… {pct}%',
+    finishing: 'Finalizando…',
+    ready: 'Pronto',
+    readyN: 'Pronto ({n} ficheiros)',
+    failed: 'Falha',
+    remove: 'Remover',
+    unknown: 'desconhecido',
+    downloadX: 'Transferir {name}',
+    group_text: 'Texto',
+    group_documents: 'Documentos',
+    group_spreadsheets: 'Folhas de cálculo',
+    group_images: 'Imagens',
+    group_media: 'Multimédia',
+    'opt.txt': 'Texto simples (.txt)',
+    'opt.md': 'Markdown (.md)',
+    'opt.html': 'HTML (.html)',
+    'opt.csv': 'CSV (.csv)',
+    'opt.json': 'JSON (.json)',
+    'opt.jsonl': 'Linhas JSON (.jsonl)',
+    'opt.rtf': 'Texto RTF (.rtf)',
+    'opt.pdf': 'PDF (.pdf)',
+    'opt.docx': 'Word DOCX (.docx)',
+    'opt.xlsx': 'Excel XLSX (.xlsx)',
+    'opt.png': 'PNG (.png)',
+    'opt.jpeg': 'JPEG (.jpg)',
+    'opt.webp': 'WebP (.webp)',
+    'opt.svg': 'SVG (.svg)',
+    'opt.gif': 'GIF de vídeo (.gif)',
+    'opt.audioGeneric': 'Áudio {fmt} ({ext})',
+    'opt.videoGeneric': 'Vídeo {fmt} ({ext})',
+    'banner.cleared': 'Limpo.',
+    'banner.noOutputs': 'Ainda não há resultados. Converta primeiro.',
+    'banner.addFirst': 'Adicione ficheiros primeiro.',
+    'banner.doneSummary': 'Concluído: {s} {files}!',
+    'banner.tooMuchData': 'Demasiados dados de uma vez ({total}). Orçamento {budget}.',
+    'banner.exceedsBudget': 'Total selecionado {total} excede o orçamento {budget}. Será processado sequencialmente.',
+    'banner.triggeredDownloads': 'Transferências iniciadas para cada ficheiro.',
+    'banner.savedAll': 'Todos os ficheiros guardados na pasta escolhida.',
+    'banner.saveCancelled': 'Guardar cancelado.',
+    'banner.linkCopied': 'Ligação copiada para a área de transferência.',
+    'banner.openFolderFail': 'Não foi possível abrir a pasta. Tente novamente ou transfira individualmente abaixo.',
+    couldntConvert: 'Não foi possível converter: {msg}',
+    unknownError: 'Erro desconhecido'
+  },
 
-  ja: { queued: 'キュー', preparing: '準備中…', converting: '変換中…', convertingPct: '変換中… {pct}%', finishing: '完了処理中…', ready: '完了', readyN: '完了（{n} ファイル）', failed: '失敗', remove: '削除', unknown: '不明', downloadX: '{name} をダウンロード', group_text: 'テキスト', group_documents: 'ドキュメント', group_spreadsheets: 'スプレッドシート', group_images: '画像', group_media: 'メディア' },
+  'pt-BR': {
+    queued: 'Na fila',
+    preparing: 'Preparando…',
+    converting: 'Convertendo…',
+    convertingPct: 'Convertendo… {pct}%',
+    finishing: 'Finalizando…',
+    ready: 'Pronto',
+    readyN: 'Pronto ({n} arquivos)',
+    failed: 'Falha',
+    remove: 'Remover',
+    unknown: 'desconhecido',
+    downloadX: 'Baixar {name}',
+    group_text: 'Texto',
+    group_documents: 'Documentos',
+    group_spreadsheets: 'Planilhas',
+    group_images: 'Imagens',
+    group_media: 'Mídia',
+    'opt.txt': 'Texto simples (.txt)',
+    'opt.md': 'Markdown (.md)',
+    'opt.html': 'HTML (.html)',
+    'opt.csv': 'CSV (.csv)',
+    'opt.json': 'JSON (.json)',
+    'opt.jsonl': 'Linhas JSON (.jsonl)',
+    'opt.rtf': 'Texto RTF (.rtf)',
+    'opt.pdf': 'PDF (.pdf)',
+    'opt.docx': 'Word DOCX (.docx)',
+    'opt.xlsx': 'Excel XLSX (.xlsx)',
+    'opt.png': 'PNG (.png)',
+    'opt.jpeg': 'JPEG (.jpg)',
+    'opt.webp': 'WebP (.webp)',
+    'opt.svg': 'SVG (.svg)',
+    'opt.gif': 'GIF de vídeo (.gif)',
+    'opt.audioGeneric': 'Áudio {fmt} ({ext})',
+    'opt.videoGeneric': 'Vídeo {fmt} ({ext})',
+    'banner.cleared': 'Limpo.',
+    'banner.noOutputs': 'Ainda não há resultados. Converta primeiro.',
+    'banner.addFirst': 'Adicione arquivos primeiro.',
+    'banner.doneSummary': 'Concluído: {s} {files}!',
+    'banner.tooMuchData': 'Dados demais de uma vez ({total}). Orçamento {budget}.',
+    'banner.exceedsBudget': 'Total selecionado {total} excede o orçamento {budget}. Será processado sequencialmente.',
+    'banner.triggeredDownloads': 'Downloads iniciados para cada arquivo.',
+    'banner.savedAll': 'Todos os arquivos salvos na pasta escolhida.',
+    'banner.saveCancelled': 'Salvamento cancelado.',
+    'banner.linkCopied': 'Link copiado para a área de transferência.',
+    'banner.openFolderFail': 'Não foi possível abrir a pasta. Tente novamente ou baixe os arquivos individualmente abaixo.',
+    couldntConvert: 'Não foi possível converter: {msg}',
+    unknownError: 'Erro desconhecido'
+  },
 
-  ru: { queued: 'В очереди', preparing: 'Подготовка…', converting: 'Преобразование…', convertingPct: 'Преобразование… {pct}%', finishing: 'Завершение…', ready: 'Готово', readyN: 'Готово ({n} файлов)', failed: 'Сбой', remove: 'Удалить', unknown: 'неизвестно', downloadX: 'Скачать {name}', group_text: 'Текст', group_documents: 'Документы', group_spreadsheets: 'Таблицы', group_images: 'Изображения', group_media: 'Медиа' },
+  ja: {
+    queued: '待機中',
+    preparing: '準備中…',
+    converting: '変換中…',
+    convertingPct: '変換中… {pct}%',
+    finishing: '完了処理中…',
+    ready: '完了',
+    readyN: '完了（{n} ファイル）',
+    failed: '失敗',
+    remove: '削除',
+    unknown: '不明',
+    downloadX: '{name} をダウンロード',
+    group_text: 'テキスト',
+    group_documents: 'ドキュメント',
+    group_spreadsheets: 'スプレッドシート',
+    group_images: '画像',
+    group_media: 'メディア',
+    'opt.txt': 'プレーンテキスト (.txt)',
+    'opt.md': 'Markdown (.md)',
+    'opt.html': 'HTML (.html)',
+    'opt.csv': 'CSV (.csv)',
+    'opt.json': 'JSON (.json)',
+    'opt.jsonl': 'JSON Lines (.jsonl)',
+    'opt.rtf': 'リッチテキスト (.rtf)',
+    'opt.pdf': 'PDF (.pdf)',
+    'opt.docx': 'Word DOCX (.docx)',
+    'opt.xlsx': 'Excel XLSX (.xlsx)',
+    'opt.png': 'PNG (.png)',
+    'opt.jpeg': 'JPEG (.jpg)',
+    'opt.webp': 'WebP (.webp)',
+    'opt.svg': 'SVG (.svg)',
+    'opt.gif': '動画からGIF (.gif)',
+    'opt.audioGeneric': '音声 {fmt} ({ext})',
+    'opt.videoGeneric': '動画 {fmt} ({ext})',
+    'banner.cleared': 'クリアしました。',
+    'banner.noOutputs': '出力はまだありません。まず変換してください。',
+    'banner.addFirst': '先にファイルを追加してください。',
+    'banner.doneSummary': '{s} {files} を完了しました！',
+    'banner.tooMuchData': '一度にデータが多すぎます（{total}）。上限 {budget}。',
+    'banner.exceedsBudget': '選択合計 {total} が上限 {budget} を超えています。順次処理します。',
+    'banner.triggeredDownloads': '各ファイルのダウンロードを開始しました。',
+    'banner.savedAll': 'すべてのファイルを選択したフォルダに保存しました。',
+    'banner.saveCancelled': '保存をキャンセルしました。',
+    'banner.linkCopied': 'リンクをクリップボードにコピーしました。',
+    'banner.openFolderFail': 'フォルダを開けませんでした。もう一度お試しになるか、下で個別にダウンロードしてください。',
+    couldntConvert: '変換できませんでした: {msg}',
+    unknownError: '不明なエラー'
+  },
 
-  'zh-CN': { queued: '排队中', preparing: '准备中…', converting: '正在转换…', convertingPct: '正在转换… {pct}%', finishing: '正在完成…', ready: '就绪', readyN: '就绪（{n} 个文件）', failed: '失败', remove: '移除', unknown: '未知', downloadX: '下载 {name}', group_text: '文本', group_documents: '文档', group_spreadsheets: '表格', group_images: '图片', group_media: '媒体' },
+  ru: {
+    queued: 'В очереди',
+    preparing: 'Подготовка…',
+    converting: 'Преобразование…',
+    convertingPct: 'Преобразование… {pct}%',
+    finishing: 'Завершение…',
+    ready: 'Готово',
+    readyN: 'Готово ({n} файлов)',
+    failed: 'Сбой',
+    remove: 'Удалить',
+    unknown: 'неизвестно',
+    downloadX: 'Скачать {name}',
+    group_text: 'Текст',
+    group_documents: 'Документы',
+    group_spreadsheets: 'Таблицы',
+    group_images: 'Изображения',
+    group_media: 'Медиа',
+    'opt.txt': 'Обычный текст (.txt)',
+    'opt.md': 'Markdown (.md)',
+    'opt.html': 'HTML (.html)',
+    'opt.csv': 'CSV (.csv)',
+    'opt.json': 'JSON (.json)',
+    'opt.jsonl': 'JSON Lines (.jsonl)',
+    'opt.rtf': 'Текст RTF (.rtf)',
+    'opt.pdf': 'PDF (.pdf)',
+    'opt.docx': 'Word DOCX (.docx)',
+    'opt.xlsx': 'Excel XLSX (.xlsx)',
+    'opt.png': 'PNG (.png)',
+    'opt.jpeg': 'JPEG (.jpg)',
+    'opt.webp': 'WebP (.webp)',
+    'opt.svg': 'SVG (.svg)',
+    'opt.gif': 'GIF из видео (.gif)',
+    'opt.audioGeneric': 'Аудио {fmt} ({ext})',
+    'opt.videoGeneric': 'Видео {fmt} ({ext})',
+    'banner.cleared': 'Очищено.',
+    'banner.noOutputs': 'Пока нет результатов. Сначала выполните преобразование.',
+    'banner.addFirst': 'Сначала добавьте файлы.',
+    'banner.doneSummary': 'Готово: {s} {files}!',
+    'banner.tooMuchData': 'Слишком много данных за раз ({total}). Бюджет {budget}.',
+    'banner.exceedsBudget': 'Общий выбранный объём {total} превышает бюджет {budget}. Обработка будет выполняться по очереди.',
+    'banner.triggeredDownloads': 'Запущены загрузки для каждого файла.',
+    'banner.savedAll': 'Все файлы сохранены в выбранную папку.',
+    'banner.saveCancelled': 'Сохранение отменено.',
+    'banner.linkCopied': 'Ссылка скопирована в буфер обмена.',
+    'banner.openFolderFail': 'Не удалось открыть папку. Повторите попытку или загрузите файлы по одному ниже.',
+    couldntConvert: 'Не удалось конвертировать: {msg}',
+    unknownError: 'Неизвестная ошибка'
+  },
 
-  ko: { queued: '대기 중', preparing: '준비 중…', converting: '변환 중…', convertingPct: '변환 중… {pct}%', finishing: '마무리 중…', ready: '완료', readyN: '완료 ({n}개 파일)', failed: '실패', remove: '제거', unknown: '알 수 없음', downloadX: '{name} 다운로드', group_text: '텍스트', group_documents: '문서', group_spreadsheets: '스프레드시트', group_images: '이미지', group_media: '미디어' },
+  'zh-CN': {
+    queued: '排队中',
+    preparing: '准备中…',
+    converting: '正在转换…',
+    convertingPct: '正在转换… {pct}%',
+    finishing: '正在完成…',
+    ready: '就绪',
+    readyN: '就绪（{n} 个文件）',
+    failed: '失败',
+    remove: '移除',
+    unknown: '未知',
+    downloadX: '下载 {name}',
+    group_text: '文本',
+    group_documents: '文档',
+    group_spreadsheets: '表格',
+    group_images: '图片',
+    group_media: '媒体',
+    'opt.txt': '纯文本 (.txt)',
+    'opt.md': 'Markdown (.md)',
+    'opt.html': 'HTML (.html)',
+    'opt.csv': 'CSV (.csv)',
+    'opt.json': 'JSON (.json)',
+    'opt.jsonl': 'JSON 行 (.jsonl)',
+    'opt.rtf': '富文本 (.rtf)',
+    'opt.pdf': 'PDF (.pdf)',
+    'opt.docx': 'Word DOCX (.docx)',
+    'opt.xlsx': 'Excel XLSX (.xlsx)',
+    'opt.png': 'PNG (.png)',
+    'opt.jpeg': 'JPEG (.jpg)',
+    'opt.webp': 'WebP (.webp)',
+    'opt.svg': 'SVG (.svg)',
+    'opt.gif': '从视频生成 GIF (.gif)',
+    'opt.audioGeneric': '音频 {fmt} ({ext})',
+    'opt.videoGeneric': '视频 {fmt} ({ext})',
+    'banner.cleared': '已清除。',
+    'banner.noOutputs': '尚无输出。请先转换。',
+    'banner.addFirst': '请先添加一些文件。',
+    'banner.doneSummary': '已完成：{s} {files}！',
+    'banner.tooMuchData': '一次性数据过多（{total}）。预算 {budget}。',
+    'banner.exceedsBudget': '选择总量 {total} 超出预算 {budget}。将按顺序处理。',
+    'banner.triggeredDownloads': '已开始下载每个文件。',
+    'banner.savedAll': '已将所有文件保存到你选择的文件夹。',
+    'banner.saveCancelled': '已取消保存。',
+    'banner.linkCopied': '链接已复制到剪贴板。',
+    'banner.openFolderFail': '无法打开该文件夹。请重试，或在下方逐个下载。',
+    couldntConvert: '无法转换：{msg}',
+    unknownError: '未知错误'
+  },
 
-  hi: { queued: 'प्रतीक्षा में', preparing: 'तैयारी…', converting: 'कनवर्ट हो रहा है…', convertingPct: 'कनवर्ट हो रहा है… {pct}%', finishing: 'समाप्ति…', ready: 'तैयार', readyN: 'तैयार ({n} फ़ाइलें)', failed: 'असफल', remove: 'हटाएँ', unknown: 'अज्ञात', downloadX: '{name} डाउनलोड करें', group_text: 'टेक्स्ट', group_documents: 'दस्तावेज़', group_spreadsheets: 'स्प्रेडशीट', group_images: 'छवियाँ', group_media: 'मीडिया' },
+  ko: {
+    queued: '대기 중',
+    preparing: '준비 중…',
+    converting: '변환 중…',
+    convertingPct: '변환 중… {pct}%',
+    finishing: '마무리 중…',
+    ready: '완료',
+    readyN: '완료 ({n}개 파일)',
+    failed: '실패',
+    remove: '제거',
+    unknown: '알 수 없음',
+    downloadX: '{name} 다운로드',
+    group_text: '텍스트',
+    group_documents: '문서',
+    group_spreadsheets: '스프레드시트',
+    group_images: '이미지',
+    group_media: '미디어',
+    'opt.txt': '일반 텍스트 (.txt)',
+    'opt.md': 'Markdown (.md)',
+    'opt.html': 'HTML (.html)',
+    'opt.csv': 'CSV (.csv)',
+    'opt.json': 'JSON (.json)',
+    'opt.jsonl': 'JSON Lines (.jsonl)',
+    'opt.rtf': '리치 텍스트 (.rtf)',
+    'opt.pdf': 'PDF (.pdf)',
+    'opt.docx': 'Word DOCX (.docx)',
+    'opt.xlsx': 'Excel XLSX (.xlsx)',
+    'opt.png': 'PNG (.png)',
+    'opt.jpeg': 'JPEG (.jpg)',
+    'opt.webp': 'WebP (.webp)',
+    'opt.svg': 'SVG (.svg)',
+    'opt.gif': '동영상에서 GIF (.gif)',
+    'opt.audioGeneric': '오디오 {fmt} ({ext})',
+    'opt.videoGeneric': '비디오 {fmt} ({ext})',
+    'banner.cleared': '초기화했습니다.',
+    'banner.noOutputs': '아직 출력이 없습니다. 먼저 변환하세요.',
+    'banner.addFirst': '먼저 파일을 추가하세요.',
+    'banner.doneSummary': '완료: {s} {files}!',
+    'banner.tooMuchData': '한 번에 데이터가 너무 많습니다({total}). 한도 {budget}.',
+    'banner.exceedsBudget': '선택한 항목의 총합 {total}이 한도 {budget}을 초과합니다. 순차적으로 처리합니다.',
+    'banner.triggeredDownloads': '각 파일의 다운로드를 시작했습니다.',
+    'banner.savedAll': '모든 파일을 선택한 폴더에 저장했습니다.',
+    'banner.saveCancelled': '저장을 취소했습니다.',
+    'banner.linkCopied': '링크가 클립보드에 복사되었습니다.',
+    'banner.openFolderFail': '폴더를 열 수 없습니다. 다시 시도하거나 아래에서 개별적으로 다운로드하세요.',
+    couldntConvert: '변환할 수 없습니다: {msg}',
+    unknownError: '알 수 없는 오류'
+  },
 
-  ar: { queued: 'في قائمة الانتظار', preparing: 'جارٍ التحضير…', converting: 'جارٍ التحويل…', convertingPct: 'جارٍ التحويل… {pct}%', finishing: 'جارٍ الإنهاء…', ready: 'جاهز', readyN: 'جاهز ({n} ملفات)', failed: 'فشل', remove: 'إزالة', unknown: 'غير معروف', downloadX: 'تنزيل {name}', group_text: 'نص', group_documents: 'مستندات', group_spreadsheets: 'جداول بيانات', group_images: 'صور', group_media: 'وسائط' },
+  hi: {
+    queued: 'कतार में',
+    preparing: 'तैयारी हो रही है…',
+    converting: 'रूपांतरण हो रहा है…',
+    convertingPct: 'रूपांतरण हो रहा है… {pct}%',
+    finishing: 'समाप्ति हो रही है…',
+    ready: 'तैयार',
+    readyN: 'तैयार ({n} फ़ाइलें)',
+    failed: 'असफल',
+    remove: 'हटाएँ',
+    unknown: 'अज्ञात',
+    downloadX: '{name} डाउनलोड करें',
+    group_text: 'टेक्स्ट',
+    group_documents: 'दस्तावेज़',
+    group_spreadsheets: 'स्प्रेडशीट',
+    group_images: 'छवियाँ',
+    group_media: 'मीडिया',
+    'opt.txt': 'सादा पाठ (.txt)',
+    'opt.md': 'Markdown (.md)',
+    'opt.html': 'HTML (.html)',
+    'opt.csv': 'CSV (.csv)',
+    'opt.json': 'JSON (.json)',
+    'opt.jsonl': 'JSON लाइन्स (.jsonl)',
+    'opt.rtf': 'रिच टेक्स्ट (.rtf)',
+    'opt.pdf': 'PDF (.pdf)',
+    'opt.docx': 'Word DOCX (.docx)',
+    'opt.xlsx': 'Excel XLSX (.xlsx)',
+    'opt.png': 'PNG (.png)',
+    'opt.jpeg': 'JPEG (.jpg)',
+    'opt.webp': 'WebP (.webp)',
+    'opt.svg': 'SVG (.svg)',
+    'opt.gif': 'वीडियो से GIF (.gif)',
+    'opt.audioGeneric': 'ऑडियो {fmt} ({ext})',
+    'opt.videoGeneric': 'वीडियो {fmt} ({ext})',
+    'banner.cleared': 'साफ़ किया गया।',
+    'banner.noOutputs': 'अभी तक कोई परिणाम नहीं। पहले रूपांतरण करें।',
+    'banner.addFirst': 'पहले कुछ फ़ाइलें जोड़ें।',
+    'banner.doneSummary': 'हो गया: {s} {files}!',
+    'banner.tooMuchData': 'एक साथ बहुत अधिक डेटा ({total})। बजट {budget}।',
+    'banner.exceedsBudget': 'चयनित कुल {total} बजट {budget} से अधिक है। क्रमिक रूप से प्रोसेस किया जाएगा।',
+    'banner.triggeredDownloads': 'प्रत्येक फ़ाइल के लिए डाउनलोड शुरू किए गए।',
+    'banner.savedAll': 'सभी फ़ाइलें आपके चुने हुए फ़ोल्डर में सहेजी गईं।',
+    'banner.saveCancelled': 'सेव रद्द किया गया।',
+    'banner.linkCopied': 'लिंक क्लिपबोर्ड पर कॉपी किया गया।',
+    'banner.openFolderFail': 'फ़ोल्डर नहीं खोला जा सका। फिर से प्रयास करें या नीचे अलग-अलग डाउनलोड करें।',
+    couldntConvert: 'रूपांतरित नहीं कर सका: {msg}',
+    unknownError: 'अज्ञात त्रुटि'
+  },
 
-  uk: { queued: 'У черзі', preparing: 'Підготовка…', converting: 'Перетворення…', convertingPct: 'Перетворення… {pct}%', finishing: 'Завершення…', ready: 'Готово', readyN: 'Готово ({n} файлів)', failed: 'Помилка', remove: 'Вилучити', unknown: 'невідомо', downloadX: 'Завантажити {name}', group_text: 'Текст', group_documents: 'Документи', group_spreadsheets: 'Таблиці', group_images: 'Зображення', group_media: 'Медіа' },
+  ar: {
+    queued: 'في قائمة الانتظار',
+    preparing: 'جارٍ التحضير…',
+    converting: 'جارٍ التحويل…',
+    convertingPct: 'جارٍ التحويل… {pct}%',
+    finishing: 'جارٍ الإنهاء…',
+    ready: 'جاهز',
+    readyN: 'جاهز ({n} ملفًا)',
+    failed: 'فشل',
+    remove: 'إزالة',
+    unknown: 'غير معروف',
+    downloadX: 'تنزيل {name}',
+    group_text: 'نص',
+    group_documents: 'مستندات',
+    group_spreadsheets: 'جداول بيانات',
+    group_images: 'صور',
+    group_media: 'وسائط',
+    'opt.txt': 'نص عادي (.txt)',
+    'opt.md': 'Markdown (.md)',
+    'opt.html': 'HTML (.html)',
+    'opt.csv': 'CSV (.csv)',
+    'opt.json': 'JSON (.json)',
+    'opt.jsonl': 'أسطر JSON (.jsonl)',
+    'opt.rtf': 'نص منسّق (.rtf)',
+    'opt.pdf': 'PDF (.pdf)',
+    'opt.docx': 'Word DOCX (.docx)',
+    'opt.xlsx': 'Excel XLSX (.xlsx)',
+    'opt.png': 'PNG (.png)',
+    'opt.jpeg': 'JPEG (.jpg)',
+    'opt.webp': 'WebP (.webp)',
+    'opt.svg': 'SVG (.svg)',
+    'opt.gif': 'صورة GIF من فيديو (.gif)',
+    'opt.audioGeneric': 'صوت {fmt} ({ext})',
+    'opt.videoGeneric': 'فيديو {fmt} ({ext})',
+    'banner.cleared': 'تم التنظيف.',
+    'banner.noOutputs': 'لا توجد مخرجات بعد. حوِّل أولاً.',
+    'banner.addFirst': 'أضِف بعض الملفات أولاً.',
+    'banner.doneSummary': 'تم: {s} {files}!',
+    'banner.tooMuchData': 'بيانات كثيرة دفعة واحدة ({total}). الحد {budget}.',
+    'banner.exceedsBudget': 'الإجمالي المحدد {total} يتجاوز الحد {budget}. ستتم المعالجة بالتتابع.',
+    'banner.triggeredDownloads': 'تم بدء التنزيلات لكل ملف.',
+    'banner.savedAll': 'تم حفظ كل الملفات في المجلد الذي اخترته.',
+    'banner.saveCancelled': 'تم إلغاء الحفظ.',
+    'banner.linkCopied': 'تم نسخ الرابط إلى الحافظة.',
+    'banner.openFolderFail': 'تعذّر فتح المجلد. حاول مجددًا أو نزّل الملفات بشكل فردي أدناه.',
+    couldntConvert: 'تعذّر التحويل: {msg}',
+    unknownError: 'خطأ غير معروف'
+  },
 
-  tr: { queued: 'Kuyrukta', preparing: 'Hazırlanıyor…', converting: 'Dönüştürülüyor…', convertingPct: 'Dönüştürülüyor… {pct}%', finishing: 'Tamamlanıyor…', ready: 'Hazır', readyN: 'Hazır ({n} dosya)', failed: 'Başarısız', remove: 'Kaldır', unknown: 'bilinmiyor', downloadX: '{name} indir', group_text: 'Metin', group_documents: 'Belgeler', group_spreadsheets: 'Hesap tabloları', group_images: 'Görseller', group_media: 'Medya' },
+  uk: {
+    queued: 'У черзі',
+    preparing: 'Підготовка…',
+    converting: 'Перетворення…',
+    convertingPct: 'Перетворення… {pct}%',
+    finishing: 'Завершення…',
+    ready: 'Готово',
+    readyN: 'Готово ({n} файлів)',
+    failed: 'Помилка',
+    remove: 'Вилучити',
+    unknown: 'невідомо',
+    downloadX: 'Завантажити {name}',
+    group_text: 'Текст',
+    group_documents: 'Документи',
+    group_spreadsheets: 'Таблиці',
+    group_images: 'Зображення',
+    group_media: 'Медіа',
+    'opt.txt': 'Звичайний текст (.txt)',
+    'opt.md': 'Markdown (.md)',
+    'opt.html': 'HTML (.html)',
+    'opt.csv': 'CSV (.csv)',
+    'opt.json': 'JSON (.json)',
+    'opt.jsonl': 'Рядки JSON (.jsonl)',
+    'opt.rtf': 'Текст RTF (.rtf)',
+    'opt.pdf': 'PDF (.pdf)',
+    'opt.docx': 'Word DOCX (.docx)',
+    'opt.xlsx': 'Excel XLSX (.xlsx)',
+    'opt.png': 'PNG (.png)',
+    'opt.jpeg': 'JPEG (.jpg)',
+    'opt.webp': 'WebP (.webp)',
+    'opt.svg': 'SVG (.svg)',
+    'opt.gif': 'GIF з відео (.gif)',
+    'opt.audioGeneric': 'Аудіо {fmt} ({ext})',
+    'opt.videoGeneric': 'Відео {fmt} ({ext})',
+    'banner.cleared': 'Очищено.',
+    'banner.noOutputs': 'Ще немає результатів. Спочатку виконайте конвертацію.',
+    'banner.addFirst': 'Спочатку додайте файли.',
+    'banner.doneSummary': 'Готово: {s} {files}!',
+    'banner.tooMuchData': 'Забагато даних одночасно ({total}). Бюджет {budget}.',
+    'banner.exceedsBudget': 'Загальний вибраний обсяг {total} перевищує бюджет {budget}. Обробка відбуватиметься послідовно.',
+    'banner.triggeredDownloads': 'Запущено завантаження для кожного файлу.',
+    'banner.savedAll': 'Усі файли збережено у вибрану теку.',
+    'banner.saveCancelled': 'Збереження скасовано.',
+    'banner.linkCopied': 'Посилання скопійовано до буфера обміну.',
+    'banner.openFolderFail': 'Не вдалося відкрити теку. Спробуйте ще раз або завантажуйте окремо нижче.',
+    couldntConvert: 'Не вдалося конвертувати: {msg}',
+    unknownError: 'Невідома помилка'
+  },
 
-  nl: { queued: 'In de wachtrij', preparing: 'Voorbereiden…', converting: 'Bezig met converteren…', convertingPct: 'Converteren… {pct}%', finishing: 'Bezig met afronden…', ready: 'Klaar', readyN: 'Klaar ({n} bestanden)', failed: 'Mislukt', remove: 'Verwijderen', unknown: 'onbekend', downloadX: '{name} downloaden', group_text: 'Tekst', group_documents: 'Documenten', group_spreadsheets: 'Spreadsheets', group_images: 'Afbeeldingen', group_media: 'Media' },
+  tr: {
+    queued: 'Kuyrukta',
+    preparing: 'Hazırlanıyor…',
+    converting: 'Dönüştürülüyor…',
+    convertingPct: 'Dönüştürülüyor… {pct}%',
+    finishing: 'Tamamlanıyor…',
+    ready: 'Hazır',
+    readyN: 'Hazır ({n} dosya)',
+    failed: 'Başarısız',
+    remove: 'Kaldır',
+    unknown: 'bilinmiyor',
+    downloadX: '{name} dosyasını indir',
+    group_text: 'Metin',
+    group_documents: 'Belgeler',
+    group_spreadsheets: 'Elektronik tablolar',
+    group_images: 'Görseller',
+    group_media: 'Medya',
+    'opt.txt': 'Düz metin (.txt)',
+    'opt.md': 'Markdown (.md)',
+    'opt.html': 'HTML (.html)',
+    'opt.csv': 'CSV (.csv)',
+    'opt.json': 'JSON (.json)',
+    'opt.jsonl': 'JSON Satırları (.jsonl)',
+    'opt.rtf': 'Zengin Metin (.rtf)',
+    'opt.pdf': 'PDF (.pdf)',
+    'opt.docx': 'Word DOCX (.docx)',
+    'opt.xlsx': 'Excel XLSX (.xlsx)',
+    'opt.png': 'PNG (.png)',
+    'opt.jpeg': 'JPEG (.jpg)',
+    'opt.webp': 'WebP (.webp)',
+    'opt.svg': 'SVG (.svg)',
+    'opt.gif': 'Videodan GIF (.gif)',
+    'opt.audioGeneric': 'Ses {fmt} ({ext})',
+    'opt.videoGeneric': 'Video {fmt} ({ext})',
+    'banner.cleared': 'Temizlendi.',
+    'banner.noOutputs': 'Henüz çıktı yok. Önce dönüştürün.',
+    'banner.addFirst': 'Önce birkaç dosya ekleyin.',
+    'banner.doneSummary': 'Bitti: {s} {files}!',
+    'banner.tooMuchData': 'Aynı anda çok fazla veri ({total}). Bütçe {budget}.',
+    'banner.exceedsBudget': 'Seçili toplam {total}, {budget} bütçesini aşıyor. Sırayla işlenecek.',
+    'banner.triggeredDownloads': 'Her dosya için indirmeler başlatıldı.',
+    'banner.savedAll': 'Tüm dosyalar seçtiğiniz klasöre kaydedildi.',
+    'banner.saveCancelled': 'Kaydetme iptal edildi.',
+    'banner.linkCopied': 'Bağlantı panoya kopyalandı.',
+    'banner.openFolderFail': 'Klasör açılamadı. Yeniden deneyin veya aşağıdan tek tek indirin.',
+    couldntConvert: 'Dönüştürülemedi: {msg}',
+    unknownError: 'Bilinmeyen hata'
+  },
+
+  nl: {
+    queued: 'In de wachtrij',
+    preparing: 'Voorbereiden…',
+    converting: 'Bezig met converteren…',
+    convertingPct: 'Converteren… {pct}%',
+    finishing: 'Bezig met afronden…',
+    ready: 'Klaar',
+    readyN: 'Klaar ({n} bestanden)',
+    failed: 'Mislukt',
+    remove: 'Verwijderen',
+    unknown: 'onbekend',
+    downloadX: '{name} downloaden',
+    group_text: 'Tekst',
+    group_documents: 'Documenten',
+    group_spreadsheets: 'Spreadsheets',
+    group_images: 'Afbeeldingen',
+    group_media: 'Media',
+    'opt.txt': 'Platte tekst (.txt)',
+    'opt.md': 'Markdown (.md)',
+    'opt.html': 'HTML (.html)',
+    'opt.csv': 'CSV (.csv)',
+    'opt.json': 'JSON (.json)',
+    'opt.jsonl': 'JSON-regels (.jsonl)',
+    'opt.rtf': 'RTF-tekst (.rtf)',
+    'opt.pdf': 'PDF (.pdf)',
+    'opt.docx': 'Word DOCX (.docx)',
+    'opt.xlsx': 'Excel XLSX (.xlsx)',
+    'opt.png': 'PNG (.png)',
+    'opt.jpeg': 'JPEG (.jpg)',
+    'opt.webp': 'WebP (.webp)',
+    'opt.svg': 'SVG (.svg)',
+    'opt.gif': 'GIF uit video (.gif)',
+    'opt.audioGeneric': 'Audio {fmt} ({ext})',
+    'opt.videoGeneric': 'Video {fmt} ({ext})',
+    'banner.cleared': 'Leeggemaakt.',
+    'banner.noOutputs': 'Nog geen uitvoer. Converteer eerst.',
+    'banner.addFirst': 'Voeg eerst wat bestanden toe.',
+    'banner.doneSummary': 'Klaar: {s} {files}!',
+    'banner.tooMuchData': 'Te veel data in één keer ({total}). Budget {budget}.',
+    'banner.exceedsBudget': 'Totaal geselecteerd {total} overschrijdt budget {budget}. Wordt sequentieel verwerkt.',
+    'banner.triggeredDownloads': 'Downloads gestart voor elk bestand.',
+    'banner.savedAll': 'Alle bestanden opgeslagen in de gekozen map.',
+    'banner.saveCancelled': 'Opslaan geannuleerd.',
+    'banner.linkCopied': 'Link naar klembord gekopieerd.',
+    'banner.openFolderFail': 'Map kon niet worden geopend. Probeer opnieuw of download afzonderlijk hieronder.',
+    couldntConvert: 'Kon niet converteren: {msg}',
+    unknownError: 'Onbekende fout'
+  }
 };
+
 
 (function initI18N() {
   const htmlLang = (document.documentElement.lang || 'en').trim();
   const norm = htmlLang.toLowerCase();
   const LANG_ALIAS = {
-    'pt-br': 'pt-BR', 'pt_pt': 'pt', 'zh': 'zh-CN', 'zh-hans': 'zh-CN', 'zh-cn': 'zh-CN',
-    'he': 'ar', // fallback RTL if needed
+    'pt-br': 'pt-BR', 'pt_pt': 'pt',
+    'zh': 'zh-CN', 'zh-hans': 'zh-CN', 'zh-cn': 'zh-CN',
+    'he': 'ar' // generic RTL fallback
   };
   const lang = (() => {
     if (I18N[htmlLang]) return htmlLang;
@@ -380,11 +1308,12 @@ const I18N = {
     const base = norm.split('-')[0];
     return I18N[base] ? base : 'en';
   })();
-
+  window.APP_LANG = lang;
   function fmt(s, vars) {
     return String(s).replace(/\{(\w+)\}/g, (_, k) => (vars && k in vars) ? vars[k] : '{' + k + '}');
   }
 
+  // Translator
   window.t = function t(key, vars) {
     const pack = I18N[lang] || I18N.en;
     const s = (pack[key] ?? I18N.en[key] ?? key);
@@ -401,47 +1330,78 @@ const I18N = {
       gif: 'opt.gif'
     };
     if (simple[val]) return t(simple[val]);
-    // audio/video family
     if (['mp3', 'wav', 'ogg', 'm4a'].includes(val)) return t('opt.audioGeneric', { fmt: val.toUpperCase(), ext: '.' + val });
     if (['mp4', 'webm'].includes(val)) return t('opt.videoGeneric', { fmt: val.toUpperCase(), ext: '.' + val });
     return val.toUpperCase() + ' (.' + val + ')';
   };
 
-  // Intercept showBanner to translate common messages without touching call sites
+  // Intercept showBanner to translate & render; hide technical noise
   const _show = (typeof window.showBanner === 'function') ? window.showBanner : null;
+
+  function isTechnicalMessage(m) {
+    const s = String(m || '');
+    return (
+      /^\[(diag|tech)\]/i.test(s) ||
+      /\bffmpeg\b/i.test(s) ||
+      /\bwasm\b/i.test(s) ||
+      /\bcontent[- ]type\b/i.test(s) ||
+      /\bcrossOriginIsolated\b/i.test(s) ||
+      /\bCSP\b/i.test(s)
+    );
+  }
+
   window.showBanner = function (msg, kind = 'info') {
     try {
       let m = String(msg);
 
+      // Map a few English fallbacks to i18n keys
       if (m === 'Cleared.') m = t('banner.cleared');
       else if (m === 'No outputs yet. Convert first.') m = t('banner.noOutputs');
       else if (m === 'Add some files first.') m = t('banner.addFirst');
-      else if (/^Done\.\s+(\d+)\s+succeeded(?:,\s+(\d+)\s+failed)?\./.test(m)) {
-        const m2 = m.match(/^Done\.\s+(\d+)\s+succeeded(?:,\s+(\d+)\s+failed)?\./);
-        const s = m2[1] | 0; const f = (m2[2] | 0) || 0;
-        m = t('banner.doneSummary', { s: s, f: f });
-      } else if (/^Too much data at once \((.+)\)\. Budget (.+)\.\$/.test(m)) {
-        const mm = m.match(/^Too much data at once \((.+)\)\. Budget (.+)\./);
-        if (mm) m = t('banner.tooMuchData', { total: mm[1], budget: mm[2] });
-      } else if (/^Total selected (.+) exceeds budget (.+)\. Will process sequentially\.$/.test(m)) {
-        const mm = m.match(/^Total selected (.+) exceeds budget (.+)\. Will process sequentially\.$/);
-        if (mm) m = t('banner.exceedsBudget', { total: mm[1], budget: mm[2] });
-      } else if (m === 'Triggered downloads for each file.') m = t('banner.triggeredDownloads');
-      else if (m === 'Saved all files to your chosen folder.') m = t('banner.savedAll');
-      else if (m === 'Save cancelled.') m = t('banner.saveCancelled');
-      else if (m === 'Link copied to clipboard.') m = t('banner.linkCopied');
-      else if (/^Couldn’t open the folder\./.test(m)) m = t('banner.openFolderFail');
 
-      if (_show) return _show(m, kind);
-      console[kind === 'error' ? 'error' : 'log'](m);
-    } catch { if (_show) return _show(msg, kind); }
+      // Normalize "Done ..." English into i18n
+      const done = m.match(/\bDone\.\s+(\d+)\s+succeeded\b/i);
+      if (done) {
+        const s = parseInt(done[1], 10) || 0;
+        const f = (m.match(/,\s*(\d+)\s+failed/i) ? parseInt(RegExp.$1, 10) : 0) || 0;
+        const L = window.APP_LANG || 'en';
+        if (f === 0) {
+          tb('banner.doneOk', { s, files: wordFiles(s, L) });       // ✅ green
+        } else if (s > 0) {
+          tb('banner.finishedMixed', { s, files: wordFiles(s, L), f });    // ❌ red
+        } else {
+          tb('banner.finishedFail', { f, files: wordFiles(f, L) });       // ❌ red
+        }
+
+        const filesS = wordFiles(s, L), filesF = wordFiles(f, L);
+        if (f > 0 && s === 0) m = t('banner.doneFail', { f, files: filesF });
+        else if (f > 0) m = t('banner.doneMixed', { s, files: filesS, f });
+        else m = t('banner.doneOk', { s, files: filesS });
+      }
+
+      // Quiet technical noise
+      if (window.QUIET_TECH && isTechnicalMessage(m)) {
+        if (window.DEBUG_CONVERTER) console[kind === 'error' ? 'error' : 'log']('[tech]', m);
+        return;
+      }
+
+      // Call prior impl for compatibility, but DO NOT return early
+      if (_show) { try { _show(m, kind); } catch { } }
+
+      // Write into the small banner line
+      const el = document.getElementById('banner');
+      if (el) {
+        el.textContent = m;
+        el.classList.toggle('error', kind === 'error');
+        el.classList.toggle('ok', kind === 'ok');
+        el.hidden = false;
+      }
+    } catch (e) {
+      if (_show) return _show(msg, kind);
+      console[kind === 'error' ? 'error' : 'log'](msg);
+    }
   };
-
-  // expose lang for debugging
-  window.APP_LANG = lang;
-})();
-
-// Translation packs (minimal keys used by runtime)
+})(); // ← close block and invoke it
 
 
 function loadScript(url) {
@@ -624,11 +1584,16 @@ async function ensureVendors() {
   features.makeDocx = !!window.docx;
   features.ffmpeg = !!(window.FFmpeg && (window.FFmpeg.createFFmpeg || window.FFmpeg.FFmpeg));
 
-  // --- tiny banner helper (falls back to console if your app doesn't have showBanner) ---
+  // tiny banner helper — respect QUIET_TECH
   const show = (msg, kind = 'info') => {
+    if (window.QUIET_TECH && !window.DEBUG_CONVERTER) {
+      // In quiet mode, keep diagnostics out of the UI
+      return console[kind === 'error' ? 'error' : 'log']('[diag]', msg);
+    }
     if (typeof showBanner === 'function') return showBanner(msg, kind);
     console[kind === 'error' ? 'error' : 'log'](msg);
   };
+
 
   // --- on-demand FFmpeg diagnostics (scoped to this function) ---
   async function diagnoseFFmpeg() {
@@ -702,9 +1667,14 @@ async function ensureVendors() {
   }
 
   // --- render capability list (simple labels, no library names) ---
+  // --- render capability list (simple labels, no library names) ---
   const caps = document.querySelector('#caps');
   if (caps) {
     caps.innerHTML = '';
+
+    // During the grace window, treat all as green unless truly detected red later
+    const inGrace = Date.now() < (window.__capGraceUntil || 0);
+
     const CAP_LIST = [
       ['Images', true],                     // built-in client rendering
       ['PDF', features.pdf],
@@ -719,18 +1689,20 @@ async function ensureVendors() {
 
     CAP_LIST.forEach(([label, ok]) => {
       const row = document.createElement('div');
-      row.className = 'cap ' + (ok ? 'ok' : 'miss');
-      row.textContent = (ok ? '✓ ' : '⨯ ') + label;
 
-      // For "Media" only: let advanced users click to diagnose, but don't show banners automatically.
-      if (label === 'Media' && !ok) {
+      // optimistic green while in grace window
+      const green = ok || inGrace;
+
+      row.className = 'cap ' + (green ? 'ok' : 'miss');
+      row.textContent = (green ? '✓ ' : '⨯ ') + label;
+
+      // Only after grace window, let users click "Media" to diagnose when actually red
+      if (!inGrace && label === 'Media' && !ok) {
         row.title = 'Click to run a quick check (console only)';
         row.style.cursor = 'pointer';
         row.addEventListener('click', () => {
-          // keep diagnostics in console unless DEBUG_CONVERTER is true
           const oldShow = window.showBanner;
           if (!window.DEBUG_CONVERTER) {
-            // temporarily silence banners during diagnostics
             window.showBanner = (m, t) => console[(t === 'error') ? 'error' : 'log']('[diag]', m);
           }
           diagnoseFFmpeg().finally(() => { window.showBanner = oldShow; });
@@ -741,14 +1713,15 @@ async function ensureVendors() {
     });
   }
 
+
   // --- do NOT auto-run FFmpeg diagnostics or auto-show errors in quiet mode ---
+  // do NOT auto-run FFmpeg diagnostics or auto-show errors in quiet mode
   if (!features.ffmpeg && !window.DEBUG_CONVERTER) {
-    // no banner here; just keep it quiet.
-    // (Advanced users can click "Media" to run diagnoseFFmpeg() manually.)
+    // keep it quiet
   } else if (!features.ffmpeg && window.DEBUG_CONVERTER) {
-    // in debug mode, still run it so you see console details
     setTimeout(() => diagnoseFFmpeg().catch(() => { }), 0);
   }
+
 
   // Optional: expose for DevTools
   window.diagnoseFFmpeg = diagnoseFFmpeg;
@@ -1003,6 +1976,14 @@ document.addEventListener('DOMContentLoaded', () => {
       if (index >= 0 && state.outputsByFile[index]?.length) downloadOutputs(index);
     }
   });
+  // Show capabilities as green by default for the first 3 seconds
+  window.__capGraceUntil = Date.now() + 3000;
+
+  // Initial optimistic render (badges appear green right away)
+  try { typeof ensureVendors === 'function' && ensureVendors(); } catch { }
+
+  // After grace window, re-run detection and render for real
+  setTimeout(() => { try { typeof ensureVendors === 'function' && ensureVendors(); } catch { } }, 3000);
 
   // ---- Non-blocking vendor warmups so badges flip to green on load ----
   const idle = window.requestIdleCallback || ((fn) => setTimeout(fn, 0));
@@ -1070,7 +2051,7 @@ function refreshMemoryPill() {
 
 // --- Quiet UI config ---
 window.DEBUG_CONVERTER = window.DEBUG_CONVERTER ?? false;  // keep console debug off in prod
-const QUIET_UI = true;       // suppress scary banners for end users
+const QUIET_UI = false;       // suppress scary banners for end users
 const SHOW_ERRORS_AS_TOAST = false; // set true if you want a subtle visible error line instead of full suppression
 
 function showBanner(msg, tone = 'info') {
@@ -1095,7 +2076,7 @@ function showBanner(msg, tone = 'info') {
 // === Dynamic targets (build from actual capabilities) ===
 
 // order + labels reused to build <optgroup>s
-const GROUPS_ORDER = ['text', 'documents', 'spreadsheets', 'images', 'media'];
+const GROUPS_ORDER = ['text', 'documents', 'archives', 'spreadsheets', 'images', 'media'];
 const GROUP_LABELS = { text: 'Text', documents: 'Documents', spreadsheets: 'Spreadsheets', images: 'Images', media: 'Media' };
 
 /** Map input kind -> allowed output set, based on your converters and loaded vendors */
@@ -1140,8 +2121,39 @@ function targetsForKind(kind) {
   else if (kind === 'video') {
     if (features.ffmpeg && ENABLE_OUTPUTS.media) ['mp4', 'webm', 'gif', 'mp3', 'wav', 'ogg', 'm4a'].forEach(x => out.add(x)); // video + extract audio :contentReference[oaicite:18]{index=18}
   }
+  else if (kind === 'archive') {
+    ['zip', '7z', 'tar', 'tar.gz', 'tar.bz2', 'tar.xz'].forEach(x => out.add(x));
+  }
+
   return out;
 }
+// ---- ARCHIVE → ZIP (client-only) ----
+async function convertArchiveFile(file, target) {
+  const m = await import('./archive-client.js');
+
+  // choose writer based on target
+  let outBlob;
+  switch (target) {
+    case 'zip': outBlob = await m.convertArchiveToZip(file); break;
+    case 'tar': outBlob = await m.convertArchiveToTar(file); break;
+    case 'tar.gz': outBlob = await m.convertArchiveToTarGz(file); break;
+    case 'tar.bz2': outBlob = await m.convertArchiveToTarBz2(file); break;
+    case 'tar.xz': outBlob = await m.convertArchiveToTarXz(file); break;
+    case '7z': outBlob = await m.convertArchiveTo7z(file); break;
+    default:
+      throw new Error(`Unsupported archive target: ${target}`);
+  }
+
+  // derive a sensible filename
+  const strip = n => (n || 'archive').replace(
+    /\.(zip|rar|7z|tar|tgz|tbz2|txz|tar\.gz|tar\.bz2|tar\.xz)$/i, ''
+  );
+  const ext = target; // target already matches the desired extension strings
+  const name = `${strip(file?.name)}.${ext}`;
+
+  return [{ blob: outBlob, name }];
+}
+
 
 /** Intersection across all selected files */
 function possibleTargetsForFiles(files) {
@@ -1167,9 +2179,14 @@ function rebuildTargetDropdown(allowedSet) {
   for (const group of GROUPS_ORDER) {
     const items = (TARGET_GROUPS[group] || []).filter(([val]) => allowedSet.has(val));
     if (!items.length) continue;
-    const og = document.createElement('optgroup'); og.label = GROUP_LABELS[group];
-    for (const [val, label] of items) {
-      const o = document.createElement('option'); o.value = val; o.textContent = label;
+
+    const og = document.createElement('optgroup');
+    og.label = t('group_' + group);       // localized group label
+
+    for (const [val] of items) {
+      const o = document.createElement('option');
+      o.value = val;
+      o.textContent = optLabel(val);      // localized option label
       og.appendChild(o);
     }
     targetFormat.appendChild(og);
@@ -1183,12 +2200,26 @@ function rebuildTargetDropdown(allowedSet) {
 }
 
 function refreshTargetDropdown() {
+  if (!targetFormat || !qualityWrap) return;
+
   const allowed = possibleTargetsForFiles(state.files);
-  rebuildTargetDropdown(allowed);
-  if (allowed.size === 0 && state.files.length) {
-    showBanner(t('banner.noCommonOutput'));
+
+  // Rebuild options but disable those not allowed for current selection
+  for (const o of targetFormat.querySelectorAll('option')) {
+    o.disabled = allowed.size > 0 && !allowed.has(o.value);
   }
+
+  // If nothing is allowed, tell the user (red, localized)
+  if (state.files.length > 0 && allowed.size === 0) {
+    const exts = state.files.map(f => '.' + (f.name.split('.').pop() || '?')).join(', ');
+    showBanner(t('banner.noCommonFor', { exts }), 'error');
+  }
+
+  // quality toggle
+  const v = targetFormat.value;
+  qualityWrap.style.display = (v === 'jpeg' || v === 'webp') ? '' : 'none';
 }
+
 
 // Remove one file by index
 function removeFileAt(index) {
@@ -1204,7 +2235,9 @@ function removeFileAt(index) {
   if (state.files.length === 0) {
     try { downloads.hidden = true; downloadLinks.innerHTML = ''; } catch { }
   }
+  if (fileInput) fileInput.value = ''; // ← add this line
 }
+
 // Find the list container (adjust selector if yours differs)
 function getFileListEl() {
   return document.querySelector('#file-list, #files, [data-role="file-list"]');
@@ -1238,15 +2271,20 @@ function buildTargets() {
   const v = targetFormat.value;
   qualityWrap.style.display = (v === 'jpeg' || v === 'webp') ? '' : 'none';
 }
-window.refreshTargetDropdown = buildTargets; // allow external refresh
+window.buildTargets = buildTargets;                // builds all groups/labels
+window.refreshTargetDropdown = refreshTargetDropdown; // filters to only valid targets
 
 
-// Call it once the DOM is ready (works with or without <script defer>)
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', buildTargets);
+  document.addEventListener('DOMContentLoaded', () => {
+    buildTargets();            // populate groups/labels
+    refreshTargetDropdown();   // then filter for current files
+  });
 } else {
   buildTargets();
+  refreshTargetDropdown();
 }
+
 
 
 refreshMemoryPill();
@@ -1259,13 +2297,16 @@ dropzone.addEventListener('dragenter', e => { e.preventDefault(); dropzone.class
 dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('drag'); });
 dropzone.addEventListener('dragleave', e => { e.preventDefault(); dropzone.classList.remove('drag'); });
 dropzone.addEventListener('drop', e => { e.preventDefault(); dropzone.classList.remove('drag'); addFiles([...e.dataTransfer.files]); });
-fileInput.addEventListener('change', () => addFiles([...fileInput.files]));
+fileInput.addEventListener('change', () => {
+  addFiles([...fileInput.files]);        // spread the FileList
+});
 $('#clear-btn').addEventListener('click', () => {
   state.files = []; state.outputs = [];
   renderFileList();
   if (typeof refreshTargetDropdown === 'function') refreshTargetDropdown();   // <-- add this
   downloadLinks.innerHTML = ''; downloads.hidden = true; fileInput.value = '';
-  showBanner('Cleared.');
+  showBanner(t('banner.cleared'), 'ok');
+
 });
 
 
@@ -1282,13 +2323,75 @@ $('#share-btn')?.addEventListener('click', async () => { try { if (navigator.sha
 
 function addFiles(files) {
   if (!files?.length) return;
+
   const totalAdded = files.reduce((s, f) => s + f.size, 0);
   const current = state.files.reduce((s, f) => s + f.size, 0);
-  if (current + totalAdded > state.budget) showBanner(`Too much data at once (${fmtBytes(current + totalAdded)}). Budget ${fmtBytes(state.budget)}.`, 'error');
+  if (current + totalAdded > state.budget) {
+    showBanner(t('banner.tooMuchData', { total: fmtBytes(current + totalAdded), budget: fmtBytes(state.budget) }), 'error');
+  }
+
   state.files.push(...files);
   renderFileList();
-  if (typeof refreshTargetDropdown === 'function') refreshTargetDropdown();   // <-- add this line
-  showBanner(`Added ${files.length} file(s). Total: ${state.files.length}.`);
+  if (typeof refreshTargetDropdown === 'function') refreshTargetDropdown();
+
+  // What got added?
+  const justExts = files.map(f => (f.name.match(/\.([^.]+)$/)?.[1] || '').toLowerCase());
+  const unsupported = files.filter(f => detectKind(f) === 'unknown');
+
+
+  const unsupportedNow = state.files.filter(f => detectKind(f) === 'unknown');
+  if (unsupportedNow.length) {
+    const ex = unsupportedNow.map(f => '.' + (f.name.split('.').pop() || '?')).join(', ');
+    showBanner(t('banner.unsupportedPresent', { exts: ex }), 'error');
+  }
+
+  // If unsupported were in the batch, warn (red)
+  if (unsupported.length) {
+    const exts = unsupported.map(f => '.' + (f.name.split('.').pop() || '?')).join(', ');
+    showBanner(t('banner.unsupportedAdded', { exts }), 'error');
+    return;
+  }
+
+  // If the whole selection has no common conversion, warn (red)
+  const allowed = possibleTargetsForFiles(state.files);
+  if (state.files.length > 0 && allowed.size === 0) {
+    const allExts = state.files.map(f => '.' + (f.name.split('.').pop() || '?')).join(', ');
+    showBanner(t('banner.noCommonFor', { exts: allExts }), 'error');
+    return;
+  }
+
+  // Otherwise: green “added”
+  const n = files.length;
+  showBanner(t('banner.added', { n, files: wordFiles(n, APP_LANG), total: state.files.length }), 'ok');
+}
+
+function applyUrlTarget() {
+  try {
+    const to = new URLSearchParams(location.search).get('to');
+    if (!to || typeof targetFormat === 'undefined' || !targetFormat) return;
+
+    const ok = [...targetFormat.options].some(o => o.value === to);
+    if (ok) {
+      targetFormat.value = to;
+
+      // Toggle quality UI for formats that support it
+      if (typeof qualityWrap !== 'undefined' && qualityWrap) {
+        qualityWrap.style.display = (to === 'jpeg' || to === 'webp') ? '' : 'none';
+      }
+    }
+  } catch { }
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    buildTargets();
+    refreshTargetDropdown();
+    applyUrlTarget();
+  });
+} else {
+  buildTargets();
+  refreshTargetDropdown();
+  applyUrlTarget();
 }
 
 
@@ -1303,6 +2406,7 @@ function detectKind(file) {
   if (/\.xlsx$/.test(n) || t === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') return 'xlsx';
   if (/\.csv$/.test(n) || t === 'text/csv') return 'csv';
   if (t.startsWith('text/') || ['application/json', 'text/html', 'text/markdown'].includes(t) || /\.(txt|md|json|html)$/.test(n)) return 'text';
+  if (/\.(zip|rar|r\d{2}|rev|7z|tar|tgz|tar\.gz|tbz|tar\.bz2|txz|tar\.xz)$/.test(n)) return 'archive';
 
   // NEW: audio & video
   if (t.startsWith('audio/') || /\.(mp3|wav|ogg|m4a|aac|flac)$/.test(n)) return 'audio';
@@ -1314,20 +2418,29 @@ function detectKind(file) {
 function renderFileList() {
   fileList.innerHTML = '';
   if (!state.files.length) {
-    fileList.innerHTML = '<div class="hint" style="padding:12px 0">No files yet.</div>';
+    fileList.innerHTML = `<div class="hint" style="padding:12px 0">${t('noFilesYet') || 'No files yet.'}</div>`;
     return;
   }
 
   state.files.forEach((f, i) => {
     const card = el('div', 'filecard');
 
-    // Left: filename + meta
+    // Left: filename + meta (NO innerHTML — prevent XSS)
     const meta = el('div', 'file-meta');
-    meta.innerHTML =
-      `<div class="f-name" title="${f.name}" aria-disabled="true"><strong>${f.name}</strong></div>
-       <div class="sub">${fmtBytes(f.size)} • ${f.type || t('unknown')}</div>`;
 
-    // Right controls (grouped): badge + progress + status
+    const nameWrap = el('div', 'f-name');
+    nameWrap.setAttribute('aria-disabled', 'true');
+    nameWrap.title = f.name;
+
+    const strong = document.createElement('strong');
+    strong.textContent = f.name; // safe
+    nameWrap.append(strong);
+
+    const sub = el('div', 'sub');
+    sub.textContent = `${fmtBytes(f.size)} • ${f.type || t('unknown')}`;
+    meta.append(nameWrap, sub);
+
+    // Right controls
     const ctrls = el('div', 'file-controls');
 
     const badge = el('div', 'badge');
@@ -1337,26 +2450,31 @@ function renderFileList() {
     prog.max = 100;
     prog.value = 0;
     prog.id = 'prog-' + i;
+    // optional: ARIA for better a11y
+    prog.setAttribute('aria-label', t('converting') || 'Converting…');
 
     const status = el('div', 'status');
     status.id = 'status-' + i;
-    status.textContent = 'Queued';
+    status.textContent = t(t('queued')); // localized
+    status.setAttribute('aria-live', 'polite'); // announce changes
 
-    // NEW: remove button INSIDE .file-controls
     const rm = document.createElement('button');
     rm.type = 'button';
     rm.className = 'file-remove';
     rm.dataset.index = i;
-    rm.setAttribute('aria-label', `Remove ${f.name}`);
-    rm.title = 'Remove';
+    rm.setAttribute('aria-label', `${t('remove') || 'Remove'} ${f.name}`);
+    rm.title = t('remove') || 'Remove';
     rm.textContent = '×';
 
     ctrls.append(badge, prog, status, rm);
-
-    // keep your original structure
     card.append(meta, ctrls);
     fileList.append(card);
   });
+}
+
+function setStatus(iOrUid, key, vars) {
+  const s = document.getElementById('status-' + iOrUid);
+  if (s) s.textContent = t(key, vars);
 }
 
 // one-time: event delegation for the ✕ button
@@ -1366,6 +2484,8 @@ document.addEventListener('click', (e) => {
   const idx = Number(btn.dataset.index);
   removeFileAt(idx);
 });
+
+
 
 
 
@@ -1379,6 +2499,7 @@ async function convertFile(file, target, index) {
   if (kind === 'xlsx' || kind === 'csv') return convertSheetFile(file, target);
   if (kind === 'text') return convertTextFile(file, target);
   if (kind === 'audio' || kind === 'video') return convertMediaFile(file, target, kind, index);
+  if (kind === 'archive') return convertArchiveFile(file, target);
   throw new Error('Unsupported file type');
 }
 
@@ -2008,7 +3129,8 @@ function htmlToMarkdown(html) {
 convertBtn.addEventListener('click', async () => {
   await vendorsReady;
 
-  if (!state.files.length) { showBanner('Add some files first.', 'error'); return; }
+  // Localized: "Add some files first."
+  if (!state.files.length) { showBanner(t('banner.addFirst'), 'error'); return; }
 
   // 🔁 CANCEL previous run + RESET counters/UI
   state.runId += 1;
@@ -2019,13 +3141,17 @@ convertBtn.addEventListener('click', async () => {
   downloadLinks.innerHTML = '';
   downloads.hidden = true;
 
-  // Reset each row to "Queued" with 0% and non-clickable name
+  // Reset each row to t('queued') with 0% and non-clickable name
   renderFileList();
 
   // Setup this run
   const total = state.files.reduce((s, f) => s + f.size, 0);
   if (total > state.budget) {
-    showBanner(`Total selected ${fmtBytes(total)} exceeds budget ${fmtBytes(state.budget)}. Will process sequentially.`, 'error');
+    // Localized budget warning
+    showBanner(
+      t('banner.exceedsBudget', { total: fmtBytes(total), budget: fmtBytes(state.budget) }),
+      'error'
+    );
   }
   const concurrency = clamp(+($('#concurrency').value || 1), 1, 4);
   const target = targetFormat.value;
@@ -2046,13 +3172,45 @@ convertBtn.addEventListener('click', async () => {
 
     if (!active && i >= state.files.length) {
       if (isStale(runId)) return; // old run finishing after a new run started
+
+      // show/hide downloads section
       downloads.hidden = state.outputs.length === 0;
-      showBanner(`Done. ${state.outputs.length} succeeded${failed ? `, ${failed} failed` : ''}.`, failed ? 'error' : 'ok');
+      // show/hide downloads section is already above
+
+      // Count successes by file (robust even if a file emits multiple outputs)
+      const total = state.files.length;
+      const s = Object.values(state.outputsByFile).reduce((n, arr) => n + ((arr && arr.length) ? 1 : 0), 0);
+      const f = failed; // your counter from run loop
+
+      const L = window.APP_LANG || 'en';
+      if (f === 0) {
+        tb('banner.doneOk', { s, files: wordFiles(s, L) });       // ✅ green
+      } else if (s > 0) {
+        tb('banner.finishedMixed', { s, files: wordFiles(s, L), f });    // ❌ red
+      } else {
+        tb('banner.finishedFail', { f, files: wordFiles(f, L) });       // ❌ red
+      }
+
+      let msg, tone;
+      if (f === 0) {
+        // ✅ Only here we say "Done"
+        msg = t('banner.doneOk', { s, files: wordFiles(s, L) });
+        tone = 'ok';
+      } else if (s > 0) {
+        msg = t('banner.finishedMixed', { s, files: wordFiles(s, L), f });
+        tone = 'error';
+      } else {
+        msg = t('banner.finishedFail', { f, files: wordFiles(f, L) });
+        tone = 'error';
+      }
+      showBanner(msg, tone);
+
     }
   };
 
   next();
 });
+
 
 
 async function runJob(file, index, target, runId) {
@@ -2261,16 +3419,211 @@ showBanner(t('banner.readyHint'));
 /* I18N AUTO PATCH */
 // Ensure English pack has the new keys; other languages will fall back to these.
 try {
+  // === Banner i18n (adds only the keys we need) ===
   Object.assign(I18N.en, {
-    preparing: 'Preparing…',
-    processing: 'Processing…',
-    encoding: 'Encoding…',
-    pdfjsHint: ' (Check that your PDF.js main library and worker are the same major version.)',
-    'banner.couldntConvert': 'Couldn’t convert: {msg}{hint}',
-    'banner.readyHint': 'Ready. Add files, pick output, and hit Convert.',
+    'banner.added': 'Added {n} {files}.',
+    'banner.doneOk': 'Done. {s} {files} converted.',
+    'banner.finishedFail': 'Failed {f} {files}.',
+    'banner.finishedMixed': 'Completed with errors: {s} {files} converted, {f} failed.',
+    'banner.noCommonFor': 'No common conversion for: {exts}.',
     'banner.removedX': 'Removed {name}.',
-    'banner.noCommonOutput': 'No common output for the selected files.'
+    'banner.unsupportedAdded': 'Ignored unsupported files: {names}.',
+    'banner.unsupportedPresent': 'Unsupported file types present: {exts}.'
   });
+
+  // Arabic
+  I18N.ar && Object.assign(I18N.ar, {
+    'banner.added': 'تمت إضافة {n} {files}.',
+    'banner.doneOk': 'تمّ. تمّ تحويل {s} {files}.',
+    'banner.finishedFail': 'فشل {f} {files}.',
+    'banner.finishedMixed': 'اكتمل مع أخطاء: تمّ تحويل {s} {files}، فشل {f}.',
+    'banner.noCommonFor': 'لا يوجد تحويل مشترك لهذه الامتدادات: {exts}.',
+    'banner.removedX': 'تمت إزالة {name}.',
+    'banner.unsupportedAdded': 'تم تجاهل الملفات غير المدعومة: {names}.',
+    'banner.unsupportedPresent': 'أنواع ملفات غير مدعومة موجودة: {exts}.'
+  });
+
+  // German
+  I18N.de && Object.assign(I18N.de, {
+    'banner.added': 'Hinzugefügt {n} {files}.',
+    'banner.doneOk': 'Fertig. {s} {files} konvertiert.',
+    'banner.finishedFail': '{f} {files} fehlgeschlagen.',
+    'banner.finishedMixed': 'Abgeschlossen mit Fehlern: {s} {files} konvertiert, {f} fehlgeschlagen.',
+    'banner.noCommonFor': 'Keine gemeinsame Konvertierung für: {exts}.',
+    'banner.removedX': '{name} entfernt.',
+    'banner.unsupportedAdded': 'Nicht unterstützte Dateien ignoriert: {names}.',
+    'banner.unsupportedPresent': 'Nicht unterstützte Dateitypen vorhanden: {exts}.'
+  });
+
+  // Spanish
+  I18N.es && Object.assign(I18N.es, {
+    'banner.added': 'Añadidos {n} {files}.',
+    'banner.doneOk': 'Listo. {s} {files} convertidos.',
+    'banner.finishedFail': 'Fallaron {f} {files}.',
+    'banner.finishedMixed': 'Completado con errores: {s} {files} convertidos, {f} fallaron.',
+    'banner.noCommonFor': 'Sin conversión común para: {exts}.',
+    'banner.removedX': 'Se eliminó {name}.',
+    'banner.unsupportedAdded': 'Se ignoraron archivos no compatibles: {names}.',
+    'banner.unsupportedPresent': 'Hay tipos de archivo no compatibles: {exts}.'
+  });
+
+  // French
+  I18N.fr && Object.assign(I18N.fr, {
+    'banner.added': 'Ajout de {n} {files}.',
+    'banner.doneOk': 'Terminé. {s} {files} convertis.',
+    'banner.finishedFail': 'Échec pour {f} {files}.',
+    'banner.finishedMixed': 'Terminé avec des erreurs : {s} {files} convertis, {f} échecs.',
+    'banner.noCommonFor': 'Aucune conversion commune pour : {exts}.',
+    'banner.removedX': '{name} supprimé.',
+    'banner.unsupportedAdded': 'Fichiers non pris en charge ignorés : {names}.',
+    'banner.unsupportedPresent': 'Types de fichiers non pris en charge présents : {exts}.'
+  });
+
+  // Hindi
+  I18N.hi && Object.assign(I18N.hi, {
+    'banner.added': '{n} {files} जोड़े गए।',
+    'banner.doneOk': 'सम्पन्न। {s} {files} परिवर्तित।',
+    'banner.finishedFail': '{f} {files} विफल।',
+    'banner.finishedMixed': 'त्रुटियों के साथ पूरा: {s} {files} परिवर्तित, {f} विफल।',
+    'banner.noCommonFor': 'इन फ़ाइलों के लिए कोई सामान्य रूपांतरण संभव नहीं: {exts}।',
+    'banner.removedX': '{name} हटाया गया।',
+    'banner.unsupportedAdded': 'असमर्थित फ़ाइलें अनदेखी: {names}।',
+    'banner.unsupportedPresent': 'असमर्थित फ़ाइल प्रकार मौजूद: {exts}।'
+  });
+
+  // Italian
+  I18N.it && Object.assign(I18N.it, {
+    'banner.added': 'Aggiunti {n} {files}.',
+    'banner.doneOk': 'Fatto. {s} {files} convertiti.',
+    'banner.finishedFail': 'Non riusciti {f} {files}.',
+    'banner.finishedMixed': 'Completato con errori: {s} {files} convertiti, {f} non riusciti.',
+    'banner.noCommonFor': 'Nessuna conversione comune per: {exts}.',
+    'banner.removedX': '{name} rimosso.',
+    'banner.unsupportedAdded': 'File non supportati ignorati: {names}.',
+    'banner.unsupportedPresent': 'Sono presenti tipi di file non supportati: {exts}.'
+  });
+
+  // Japanese
+  I18N.ja && Object.assign(I18N.ja, {
+    'banner.added': '{n} {files}を追加しました。',
+    'banner.doneOk': '完了。{s} {files}を変換しました。',
+    'banner.finishedFail': '{f} {files}の変換に失敗しました。',
+    'banner.finishedMixed': 'エラーありで完了：{s} {files}を変換、{f} 件失敗。',
+    'banner.noCommonFor': '共通の変換先がありません: {exts}。',
+    'banner.removedX': '{name} を削除しました。',
+    'banner.unsupportedAdded': '未対応のファイルを無視しました: {names}。',
+    'banner.unsupportedPresent': '未対応のファイル形式が含まれています: {exts}。'
+  });
+
+  // Korean
+  I18N.ko && Object.assign(I18N.ko, {
+    'banner.added': '{n} {files} 추가됨.',
+    'banner.doneOk': '완료. {s} {files} 변환됨.',
+    'banner.finishedFail': '{f} {files} 실패.',
+    'banner.finishedMixed': '오류와 함께 완료: {s} {files} 변환, {f} 실패.',
+    'banner.noCommonFor': '공통 변환 대상이 없습니다: {exts}.',
+    'banner.removedX': '{name} 제거됨.',
+    'banner.unsupportedAdded': '지원되지 않는 파일을 무시했습니다: {names}.',
+    'banner.unsupportedPresent': '지원되지 않는 파일 형식이 포함되어 있습니다: {exts}.'
+  });
+
+  // Dutch
+  I18N.nl && Object.assign(I18N.nl, {
+    'banner.added': '{n} {files} toegevoegd.',
+    'banner.doneOk': 'Klaar. {s} {files} geconverteerd.',
+    'banner.finishedFail': '{f} {files} mislukt.',
+    'banner.finishedMixed': 'Voltooid met fouten: {s} {files} geconverteerd, {f} mislukt.',
+    'banner.noCommonFor': 'Geen gemeenschappelijke conversie mogelijk voor: {exts}.',
+    'banner.removedX': '{name} verwijderd.',
+    'banner.unsupportedAdded': 'Niet-ondersteunde bestanden genegeerd: {names}.',
+    'banner.unsupportedPresent': 'Niet-ondersteunde bestandstypen aanwezig: {exts}.'
+  });
+
+  // Polish
+  I18N.pl && Object.assign(I18N.pl, {
+    'banner.added': 'Dodano {n} {files}.',
+    'banner.doneOk': 'Gotowe. {s} {files} skonwertowane.',
+    'banner.finishedFail': 'Niepowiodło się {f} {files}.',
+    'banner.finishedMixed': 'Zakończono z błędami: skonwertowano {s} {files}, {f} niepowiodło się.',
+    'banner.noCommonFor': 'Brak wspólnej konwersji dla: {exts}.',
+    'banner.removedX': 'Usunięto {name}.',
+    'banner.unsupportedAdded': 'Pominięto nieobsługiwane pliki: {names}.',
+    'banner.unsupportedPresent': 'Występują nieobsługiwane typy plików: {exts}.'
+  });
+
+  // Portuguese (Portugal)
+  I18N.pt && Object.assign(I18N.pt, {
+    'banner.added': 'Adicionados {n} {files}.',
+    'banner.doneOk': 'Concluído. {s} {files} convertidos.',
+    'banner.finishedFail': 'Falharam {f} {files}.',
+    'banner.finishedMixed': 'Concluído com erros: {s} {files} convertidos, {f} falharam.',
+    'banner.noCommonFor': 'Sem conversão comum para: {exts}.',
+    'banner.removedX': '{name} removido.',
+    'banner.unsupportedAdded': 'Ficheiros não suportados ignorados: {names}.',
+    'banner.unsupportedPresent': 'Existem tipos de ficheiro não suportados: {exts}.'
+  });
+
+  // Portuguese (Brazil)
+  I18N['pt-BR'] && Object.assign(I18N['pt-BR'], {
+    'banner.added': 'Adicionados {n} {files}.',
+    'banner.doneOk': 'Concluído. {s} {files} convertidos.',
+    'banner.finishedFail': 'Falharam {f} {files}.',
+    'banner.finishedMixed': 'Concluído com erros: {s} {files} convertidos, {f} falharam.',
+    'banner.noCommonFor': 'Sem conversão comum para: {exts}.',
+    'banner.removedX': '{name} removido.',
+    'banner.unsupportedAdded': 'Arquivos não compatíveis ignorados: {names}.',
+    'banner.unsupportedPresent': 'Tipos de arquivo não compatíveis presentes: {exts}.'
+  });
+
+  // Russian
+  I18N.ru && Object.assign(I18N.ru, {
+    'banner.added': 'Добавлено {n} {files}.',
+    'banner.doneOk': 'Готово. Конвертировано {s} {files}.',
+    'banner.finishedFail': 'Не удалось {f} {files}.',
+    'banner.finishedMixed': 'Завершено с ошибками: конвертировано {s} {files}, {f} сбоев.',
+    'banner.noCommonFor': 'Нет общего формата конвертации для: {exts}.',
+    'banner.removedX': 'Удалено: {name}.',
+    'banner.unsupportedAdded': 'Неподдерживаемые файлы пропущены: {names}.',
+    'banner.unsupportedPresent': 'Есть неподдерживаемые типы файлов: {exts}.'
+  });
+
+  // Turkish
+  I18N.tr && Object.assign(I18N.tr, {
+    'banner.added': '{n} {files} eklendi.',
+    'banner.doneOk': 'Tamam. {s} {files} dönüştürüldü.',
+    'banner.finishedFail': '{f} {files} başarısız oldu.',
+    'banner.finishedMixed': 'Hatalarla tamamlandı: {s} {files} dönüştürüldü, {f} başarısız.',
+    'banner.noCommonFor': 'Bu dosyalar için ortak bir dönüştürme yok: {exts}.',
+    'banner.removedX': '{name} kaldırıldı.',
+    'banner.unsupportedAdded': 'Desteklenmeyen dosyalar yok sayıldı: {names}.',
+    'banner.unsupportedPresent': 'Desteklenmeyen dosya türleri mevcut: {exts}.'
+  });
+
+  // Ukrainian
+  I18N.uk && Object.assign(I18N.uk, {
+    'banner.added': 'Додано {n} {files}.',
+    'banner.doneOk': 'Готово. Перетворено {s} {files}.',
+    'banner.finishedFail': 'Не вдалося {f} {files}.',
+    'banner.finishedMixed': 'Завершено з помилками: перетворено {s} {files}, збоїв {f}.',
+    'banner.noCommonFor': 'Немає спільного формату перетворення для: {exts}.',
+    'banner.removedX': 'Вилучено {name}.',
+    'banner.unsupportedAdded': 'Непідтримувані файли пропущено: {names}.',
+    'banner.unsupportedPresent': 'Є непідтримувані типи файлів: {exts}.'
+  });
+
+  // Chinese (Simplified)
+  I18N['zh-CN'] && Object.assign(I18N['zh-CN'], {
+    'banner.added': '已添加 {n} {files}。',
+    'banner.doneOk': '完成。已转换 {s} {files}。',
+    'banner.finishedFail': '{f} {files} 失败。',
+    'banner.finishedMixed': '已完成但有错误：已转换 {s} {files}，{f} 个失败。',
+    'banner.noCommonFor': '这些文件没有共同的可转换格式：{exts}。',
+    'banner.removedX': '已移除 {name}。',
+    'banner.unsupportedAdded': '已忽略不受支持的文件：{names}。',
+    'banner.unsupportedPresent': '存在不受支持的文件类型：{exts}。'
+  });
+
+
 } catch (e) { /* I18N.en not found? ignore */ }
 
 // Localized target dropdown override (groups + options)
@@ -2312,7 +3665,9 @@ try {
     } catch (e) { console.warn('i18n buildTargets failed:', e); }
   }
   window.buildTargets = buildTargetsLocalized;
-  window.refreshTargetDropdown = buildTargetsLocalized;
+  window.buildTargets = buildTargets;                // builds all groups/labels
+  window.refreshTargetDropdown = refreshTargetDropdown; // filters to only valid targets
+
 })();
 
 /* I18N UI KEYS */
@@ -2472,12 +3827,14 @@ function presetTargetFromURL() {
 
 (function () {
   function $(s) { return document.querySelector(s); }
+
   function applyQualityVisibility() {
     var t = $("#target-format, #targetFormat, select[name=target], select#target");
     var w = $("#quality-wrap, #qualityWrap, .quality-wrap, [data-role='quality']");
     if (!t || !w) return;
     w.style.display = (t.value === "jpeg" || t.value === "webp") ? "" : "none";
   }
+
   document.addEventListener("change", function (ev) {
     var el = ev.target;
     if (!el || el.tagName !== "SELECT") return;
@@ -2490,6 +3847,7 @@ function presetTargetFromURL() {
       applyQualityVisibility();
     }
   });
+
   document.addEventListener("DOMContentLoaded", function () {
     try { presetTargetFromURL(); } catch (e) { }
     applyQualityVisibility();
