@@ -2733,6 +2733,10 @@ async function warmFFmpegWrapper() {
 
 
 
+// Kick it off right away so the badge goes green soon after load
+warmFFmpegWrapper().catch(() => { });
+
+
 
 
 
