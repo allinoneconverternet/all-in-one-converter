@@ -53,43 +53,16 @@ function adoptFFmpegGlobal() {
   }
   return false;
 }
-import { loadJSZip, loadLibarchive, load7z } from '/src/local-first.mjs';
 
-// ZIP writer
-const JSZip = await loadJSZip();
+
 
 // libarchive-wasm reader (RAR/7Z/TAR/ZIP inputs)
-const { ArchiveReader, libarchiveWasm } = await loadLibarchive();
+
 let mod = null;
-if (typeof libarchiveWasm === 'function') {
-  try {
-    mod = await libarchiveWasm();   // may return null in our shim
-  } catch (e) {
-    console.warn('[libarchiveWasm] init failed:', e);
-    mod = null;
-  }
-}
 
 
-async function needArchives() {
-  // Try 7z-wasm first (reads RAR, 7Z, ZIP, TAR; writes ZIP/7Z/TAR)
-  try {
-    const seven = await import('https://cdn.jsdelivr.net/npm/7z-wasm@1.3.0/dist/7z.esm.mjs');
-    window.SevenZip = seven;
-    ensureCapsUpdate(true, 'archives');
-    return;
-  } catch (e) {
-    console.warn('[archives] 7z-wasm failed, falling back to libarchive', e);
-  }
 
-  // Fallback: libarchive.js (CDN)
-  try {
-    await import('https://cdn.jsdelivr.net/npm/libarchive.js@2.0.4/dist/main.js');
-    ensureCapsUpdate(!!window.LibArchive, 'archives');
-  } catch (e) {
-    console.warn('[archives] libarchive also failed', e);
-  }
-}
+
 
 window.loadScript ??= function loadScript(src) {
   return new Promise((res, rej) => {
@@ -119,13 +92,8 @@ function ensureCapsUpdate(ok, key) {
 }
 
 
-// Example: const reader = new ArchiveReader(mod, new Int8Array(await file.arrayBuffer()));
 
-// 7z writer (for .7z or ZIP AES via 7z)
-const seven = await load7z(); // seven.FS, seven.callMain([...])
 
-// Local-only: adopt/create a FFmpeg global from the local UMD wrapper.
-// No CDN, no ESM import — prevents cross-origin Worker.
 async function ensureFFmpegGlobal() {
   // already present?
   if (window.FFmpeg?.createFFmpeg) return true;
@@ -1915,7 +1883,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Warm critical vendors
     tryWarm(typeof needPdf === 'function' ? () => needPdf() : null);
-    tryWarm(typeof warmFFmpegWrapper === 'function' ? () => warmFFmpegWrapper() : null);
+    tryWarm(typeof needFFmpeg === 'function' ? () => needFFmpeg() : null);
     tryWarm(typeof needArchives === 'function' ? () => needArchives() : null); // ← add this
 
     // Optional warms
@@ -2815,91 +2783,29 @@ async function convertPdfFile(file, target) {
 }
 
 
+async function needArchives() {
+  // Try 7z-wasm first (reads RAR/7Z/ZIP/TAR; writes ZIP/7Z/TAR)
+  try {
 
-
-async function warmFFmpegWrapper(opts = {}) {
-  if (_warmFFmpegOnce) return _warmFFmpegOnce;
-
-  _warmFFmpegOnce = (async () => {
-    const t0 = (typeof performance !== 'undefined' ? performance.now() : Date.now());
-
-    // If you have a vendor preloader, prefer local assets
-    try {
-      if (typeof ensureVendors === 'function') {
-        await ensureVendors({ preferLocal: true, ...opts });
-      }
-    } catch (_) { /* non-fatal */ }
-
-    // Your app helper: should attach/normalize FFmpeg globals
-    // (safe if it's not present)
-    try {
-      if (typeof ensureFFmpegGlobal === 'function') {
-        await ensureFFmpegGlobal({ preferLocal: true, ...opts });
-      }
-      if (typeof adoptFFmpegGlobal === 'function') {
-        await adoptFFmpegGlobal(); // normalize different loader shapes
-      }
-    } catch (e) {
-      console.warn('[warmFFmpegWrapper] ensure/adopt failed (continuing):', e);
-    }
-
-    // Discover whichever API shape we ended up with
-    const api = (
-      // common globals your app may set
-      window.ffmpeg ||
-      window.FFmpeg ||
-      // sometimes ensureFFmpegGlobal returns an object
-      (typeof getFFmpeg === 'function' ? await getFFmpeg() : null) ||
-      null
-    );
-
-    // If nothing is available, just exit quietly—callers can still lazy-load later
-    if (!api) {
-      if (window.DEBUG) console.debug('[warmFFmpegWrapper] no FFmpeg API found yet; skipping warmup');
-      return;
-    }
-
-    // Already loaded?
-    try {
-      if (typeof api.isLoaded === 'function' && api.isLoaded()) return;
-      if (api.loaded || api._loaded) return;
-    } catch (_) { /* ignore */ }
-
-    // Try to load/init depending on the shape
-    try {
-      if (typeof api.load === 'function') {
-        await api.load();                    // ffmpeg.wasm-style instance
-      } else if (typeof api.ready === 'function') {
-        await api.ready();                   // some wrappers expose .ready()
-      } else if (typeof api.init === 'function') {
-        await api.init();                    // other wrappers expose .init()
-      }
-    } catch (e) {
-      console.warn('[warmFFmpegWrapper] load/init failed (continuing):', e);
-    }
-
-    // Micro-run to JIT the command path; cheap and safe to ignore if unsupported
-    try {
-      if (typeof api.exec === 'function') {
-        await api.exec(['-version']);
-      } else if (typeof api.run === 'function') {
-        await api.run(['-version']);
-      } else if (typeof api.callMain === 'function') {
-        api.callMain(['-version']);
-      }
-    } catch (e) {
-      // Some thin wrappers don't support -version; ignore quietly
-      if (window.DEBUG) console.debug('[warmFFmpegWrapper] micro-run skipped:', e);
-    }
-
-    if (window.DEBUG) {
-      const dt = (typeof performance !== 'undefined' ? performance.now() : Date.now()) - t0;
-      console.debug(`[warmFFmpegWrapper] ready in ${Math.round(dt)} ms`);
-    }
-  })();
-
-  return _warmFFmpegOnce;
+    window.SevenZip = seven;
+    features.archives = true;
+    try { ensureVendors?.(); } catch { }
+    return;
+  } catch (e) {
+    console.warn('[archives] 7z-wasm failed, falling back to libarchive', e);
+  }
+  // Fallback: libarchive.js
+  try {
+    await import('https://cdn.jsdelivr.net/npm/libarchive.js@2.0.4/dist/main.js');
+    features.archives = !!window.LibArchive;
+    try { ensureVendors?.(); } catch { }
+  } catch (e) {
+    console.warn('[archives] libarchive also failed', e);
+  }
 }
+
+
+
 
 /* ---- CSV/XLSX ⇄ ---- */
 async function convertSheetFile(file, target) {
