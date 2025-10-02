@@ -91,6 +91,16 @@ async function needArchives() {
   }
 }
 
+window.loadScript ??= function loadScript(src) {
+  return new Promise((res, rej) => {
+    const s = document.createElement('script');
+    s.src = src; s.async = true;
+    s.onload = () => res();
+    s.onerror = (e) => rej(e);
+    document.head.appendChild(s);
+  });
+};
+const loadScript = window.loadScript;
 
 
 // Resolve assets relative to where app.js is served (works on sub-paths, localhost, etc.)
@@ -102,16 +112,7 @@ function urlFromApp(relativePath) {
   return new URL(relativePath.replace(/^\//, ''), new URL('.', me)).toString();
 }
 
-function loadScript(src) {
-  return new Promise((res, rej) => {
-    const s = document.createElement('script');
-    s.src = src;
-    s.async = true;
-    s.onload = () => res();
-    s.onerror = (e) => rej(e);
-    document.head.appendChild(s);
-  });
-}
+
 
 function ensureCapsUpdate(ok, key) {
   if (ok) { features[key] = true; try { ensureVendors?.(); } catch { } }
@@ -1418,13 +1419,6 @@ const I18N = {
 })(); // ← close block and invoke it
 
 
-function loadScript(url) {
-  return new Promise((res, rej) => {
-    const s = document.createElement('script');
-    s.src = url; s.onload = () => res(); s.onerror = () => rej(new Error('load ' + url));
-    document.head.appendChild(s);
-  });
-}
 const CDN = {
 
   pdf: ['/vendor/pdf.min.js', 'https://unpkg.com/pdfjs-dist@4/legacy/build/pdf.min.js'],
@@ -1439,10 +1433,7 @@ const CDN = {
   ffmpeg: ['/vendor/ffmpeg/ffmpeg.min.js', 'https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js'],
   ffmpegCore: ['/vendor/ffmpeg/ffmpeg-core.js', 'https://unpkg.com/@ffmpeg/core@0.12.10/dist/umd/ffmpeg-core.js'],
 };
-async function loadScriptTry(localUrl, cdnUrl) {
-  try { await loadScript(localUrl); }
-  catch { console.warn('Local missing, using CDN:', cdnUrl); await loadScript(cdnUrl); }
-}
+
 // spread the NodeList correctly
 function loadedSrcContains(substr) {
   const s = [...document.querySelectorAll('script[src]')].map(n => n.src);
