@@ -69,6 +69,14 @@ if (typeof libarchiveWasm === 'function') {
     mod = null;
   }
 }
+import { loadLibarchive, load7z } from '/src/local-first.mjs';
+
+async function needArchives() {
+  try { await loadLibarchive(); features.archives = true; ensureVendors?.(); } catch { }
+  try { await load7z(); features.archives = true; ensureVendors?.(); } catch { }
+}
+
+
 
 
 // Example: const reader = new ArchiveReader(mod, new Int8Array(await file.arrayBuffer()));
@@ -448,7 +456,13 @@ function estimateSafeBudgetBytes() {
 }
 
 /* ========= 3) Vendor loader with local+CDN fallback ========= */
-const features = { pdf: false, docx: false, xlsx: false, pptx: false, ocr: false, makePdf: false, makeDocx: false, ffmpeg: false };
+// add to your features object
+const features = {
+  pdf: false, docx: false, xlsx: false, pptx: false, ocr: false,
+  makePdf: false, makeDocx: false, ffmpeg: false,
+  archives: false   // <— NEW
+};
+
 
 /* ========= i18n: light-weight runtime translations ========= */
 const I18N = {
@@ -1680,15 +1694,16 @@ async function ensureVendors() {
     const inGrace = Date.now() < (window.__capGraceUntil || 0);
 
     const CAP_LIST = [
-      ['Images', true],                     // built-in client rendering
+      ['Images', true],
       ['PDF', features.pdf],
       ['Word (DOCX)', features.docx],
       ['Excel (XLSX)', features.xlsx],
-      ['ZIP', features.pptx],
+      ['ZIP', features.pptx],                // JSZip (writer)
+      ['Archives (RAR/7Z/TAR)', features.archives],  // <— NEW
       ['OCR', features.ocr],
       ['Make PDF', features.makePdf],
       ['Make DOCX', features.makeDocx],
-      ['Media', features.ffmpeg],           // FFmpeg.wasm
+      ['Media', features.ffmpeg],
     ];
 
     CAP_LIST.forEach(([label, ok]) => {
@@ -2001,11 +2016,12 @@ document.addEventListener('DOMContentLoaded', () => {
       } catch { /* ignore */ }
     };
 
-    // Only call if these helpers exist in your app:
+    // Warm critical vendors
     tryWarm(typeof needPdf === 'function' ? () => needPdf() : null);
     tryWarm(typeof warmFFmpegWrapper === 'function' ? () => warmFFmpegWrapper() : null);
+    tryWarm(typeof needArchives === 'function' ? () => needArchives() : null); // ← add this
 
-    // (Optional) warm others too:
+    // Optional warms
     // tryWarm(typeof needXLSX === 'function' ? () => needXLSX() : null);
     // tryWarm(typeof needJSZip === 'function' ? () => needJSZip() : null);
     // tryWarm(typeof needJsPDF === 'function' ? () => needJsPDF() : null);
@@ -2015,6 +2031,7 @@ document.addEventListener('DOMContentLoaded', () => {
       try { typeof ensureVendors === 'function' && ensureVendors(); } catch { }
     });
   });
+
 });
 
 
