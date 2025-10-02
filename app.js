@@ -2540,9 +2540,6 @@ async function warmFFmpegWrapper() {
 }
 
 
-// Kick off warm-up once
-warmFFmpegWrapper();
-
 // Exec shim: accepts (...args) or an array; uses exec() if present, else run()
 async function ffExec(ff, ...args) {
   // allow ffExec(ff, ['-i','in','out']) and ffExec(ff, '-i','in','out')
@@ -3850,6 +3847,7 @@ function presetTargetFromURL() {
     applyQualityVisibility();
   });
 })();
+
 
 
 
