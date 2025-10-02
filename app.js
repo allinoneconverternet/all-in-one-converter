@@ -72,11 +72,50 @@ if (typeof libarchiveWasm === 'function') {
 
 
 async function needArchives() {
-  try { await loadLibarchive(); features.archives = true; ensureVendors?.(); } catch { }
-  try { await load7z(); features.archives = true; ensureVendors?.(); } catch { }
+  // Try 7z-wasm first (reads RAR, 7Z, ZIP, TAR; writes ZIP/7Z/TAR)
+  try {
+    const seven = await import('https://cdn.jsdelivr.net/npm/7z-wasm@1.3.0/dist/7z.esm.mjs');
+    window.SevenZip = seven;
+    ensureCapsUpdate(true, 'archives');
+    return;
+  } catch (e) {
+    console.warn('[archives] 7z-wasm failed, falling back to libarchive', e);
+  }
+
+  // Fallback: libarchive.js (CDN)
+  try {
+    await import('https://cdn.jsdelivr.net/npm/libarchive.js@2.0.4/dist/main.js');
+    ensureCapsUpdate(!!window.LibArchive, 'archives');
+  } catch (e) {
+    console.warn('[archives] libarchive also failed', e);
+  }
 }
 
 
+
+// Resolve assets relative to where app.js is served (works on sub-paths, localhost, etc.)
+function urlFromApp(relativePath) {
+  const me = document.currentScript?.src ||
+    [...document.getElementsByTagName('script')]
+      .map(s => s.src).find(s => s.includes('app.js')) ||
+    document.baseURI;
+  return new URL(relativePath.replace(/^\//, ''), new URL('.', me)).toString();
+}
+
+function loadScript(src) {
+  return new Promise((res, rej) => {
+    const s = document.createElement('script');
+    s.src = src;
+    s.async = true;
+    s.onload = () => res();
+    s.onerror = (e) => rej(e);
+    document.head.appendChild(s);
+  });
+}
+
+function ensureCapsUpdate(ok, key) {
+  if (ok) { features[key] = true; try { ensureVendors?.(); } catch { } }
+}
 
 
 // Example: const reader = new ArchiveReader(mod, new Int8Array(await file.arrayBuffer()));
@@ -205,69 +244,26 @@ async function needMammoth() {
 // Robust PDF.js loader: UMD or ESM, local first then CDN. No script tag for the worker.
 // Robust PDF.js loader that keeps the main lib and the worker on the *same major version*.
 async function needPdf() {
-  // Already loaded?
-  if (window.pdfjsLib?.getDocument) { features.pdf = true; ensureVendors?.(); return; }
+  if (window.pdfjsLib?.GlobalWorkerOptions) { ensureCapsUpdate(true, 'pdf'); return; }
 
-  // Small helper
-  const loadScript = (src) => new Promise((res, rej) => {
-    const s = document.createElement('script');
-    s.src = src; s.async = true;
-    s.onload = res; s.onerror = () => rej(new Error('Failed to load ' + src));
-    document.head.appendChild(s);
-  });
-
-  // Try to load the *main* library (UMD first; if you only ship ESM, swap order)
-  const mainCandidates = [
-    // local UMD → CDN UMD → local ESM → CDN ESM
-    () => loadScript('/vendor/pdf.min.js'),
-    () => loadScript('https://unpkg.com/pdfjs-dist@4/legacy/build/pdf.min.js'),
-    async () => { window.pdfjsLib = await import('/vendor/pdf.min.mjs'); },
-    async () => { window.pdfjsLib = await import('https://unpkg.com/pdfjs-dist@4/build/pdf.mjs'); },
-  ];
-
-  let mainLoaded = false, lastErr = null;
-  for (const attempt of mainCandidates) {
-    try { await attempt(); mainLoaded = true; break; }
-    catch (e) { lastErr = e; }
-  }
-  if (!mainLoaded || !window.pdfjsLib?.getDocument) {
-    throw lastErr || new Error('Unable to load pdfjs main library');
+  // Try local pdf.js; fall back to CDN
+  let pdf;
+  try {
+    await loadScript(urlFromApp('vendor/pdf.min.js'));
+    pdf = window.pdfjsLib;
+    if (!pdf) throw new Error('local pdf.js missing');
+    pdf.GlobalWorkerOptions.workerSrc = urlFromApp('vendor/pdf.worker.min.js');
+  } catch {
+    // CDN (v4, legacy build works broadly)
+    const mod = await import('https://unpkg.com/pdfjs-dist@4/legacy/build/pdf.min.mjs');
+    window.pdfjsLib = mod;
+    mod.GlobalWorkerOptions.workerSrc =
+      'https://unpkg.com/pdfjs-dist@4/legacy/build/pdf.worker.min.js';
   }
 
-  // Decide worker version based on the *main library* we just loaded.
-  const version = String(window.pdfjsLib?.version || '');
-  const isV4 = version.startsWith('4.');
-  const workerCandidates = isV4
-    ? [
-      // Prefer your local v4 worker if you ship it; otherwise the CDN v4 worker
-      '/vendor/pdf.worker.min.js', // make sure this is v4 if present
-      'https://unpkg.com/pdfjs-dist@4/legacy/build/pdf.worker.min.js',
-      'https://unpkg.com/pdfjs-dist@4/build/pdf.worker.min.mjs',
-    ]
-    : [
-      // v3 track (use if you intentionally pin to 3.x)
-      '/vendor/pdf.worker.min.js',
-      'https://unpkg.com/pdfjs-dist@3/legacy/build/pdf.worker.min.js',
-      'https://unpkg.com/pdfjs-dist@3/build/pdf.worker.min.mjs',
-    ];
-
-  // Pick the first reachable worker (HEAD request when possible; file:// may throw)
-  let workerSrc = workerCandidates[0];
-  for (const url of workerCandidates) {
-    try {
-      const ok = await fetch(url, { method: 'HEAD', cache: 'no-store' }).then(r => r.ok);
-      if (ok) { workerSrc = url; break; }
-    } catch { /* offline or file:// → keep default */ }
-  }
-
-  // Bind worker to the main lib (only if that API exists on this build)
-  if (window.pdfjsLib?.GlobalWorkerOptions) {
-    window.pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc;
-  }
-
-  features.pdf = true;
-  ensureVendors?.();   // (optional) refresh any UI badges you show
+  ensureCapsUpdate(!!window.pdfjsLib?.GlobalWorkerOptions, 'pdf');
 }
+
 
 
 
@@ -1460,120 +1456,30 @@ let ffmpegInstance = null;
 // Robust FFmpeg loader: CDN wrapper, normalize globals, MT when isolated, ST fallback
 // Robust FFmpeg loader: LOCAL wrapper -> CDN fallback, MT when isolated, ST fallback
 async function needFFmpeg() {
-  if (window.__ffmpeg?.loaded || window.__ffmpeg?.isLoaded?.()) return window.__ffmpeg;
+  if (window.FFmpeg?.createFFmpeg) { ensureCapsUpdate(true, 'ffmpeg'); return; }
 
-  const VER = '0.12.10';
-
-  // 1) Wrapper candidates (LOCAL first to avoid cross-origin Worker error)
-  const WRAPPERS = [
-    '/vendor/ffmpeg/ffmpeg.min.js',                                                  // ← local official UMD (0.12.10)
-    `https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@${VER}/dist/umd/ffmpeg.js`,
-    `https://unpkg.com/@ffmpeg/ffmpeg@${VER}/dist/umd/ffmpeg.js`
-  ];
-
-  // 2) Cores (UMD). Use MT only when SharedArrayBuffer is allowed
-  const CORE_ST = `https://unpkg.com/@ffmpeg/core@${VER}/dist/umd/ffmpeg-core.js`;
-  const CORE_MT = `https://unpkg.com/@ffmpeg/core-mt@${VER}/dist/umd/ffmpeg-core.js`;
-  const useMT = !!window.crossOriginIsolated;
-  const coreURL = useMT ? CORE_MT : CORE_ST;
-  const wasmURL = coreURL.replace(/\.js$/, '.wasm');
-  const workerURL = coreURL.replace(/\.js$/, '.worker.js');
-
-  const loadScript = (src) => new Promise((resolve, reject) => {
-    const s = document.createElement('script');
-    s.src = src; s.async = true; s.crossOrigin = 'anonymous';
-    s.onload = () => queueMicrotask(resolve);
-    s.onerror = () => reject(new Error('Failed to load ' + src));
-    document.head.appendChild(s);
-  });
-
-  const pickApi = () => {
-    if (window.FFmpeg?.FFmpeg || window.FFmpeg?.createFFmpeg) {
-      return { ns: window.FFmpeg, hasClass: !!window.FFmpeg.FFmpeg, hasFactory: !!window.FFmpeg.createFFmpeg };
-    }
-    if (window.FFmpegWASM?.FFmpeg || window.FFmpegWASM?.createFFmpeg) {
-      window.FFmpeg = window.FFmpegWASM; // normalize
-      return { ns: window.FFmpegWASM, hasClass: !!window.FFmpegWASM.FFmpeg, hasFactory: !!window.FFmpegWASM.createFFmpeg };
-    }
-    return null;
-  };
-
-  let api = pickApi();
-  for (const url of (!api ? WRAPPERS : [])) {
-    try {
-      console.log('[FFmpeg wrapper] loading', url);
-      await loadScript(url);
-      api = pickApi();
-      if (api) break;
-    } catch (e) {
-      console.warn('[FFmpeg wrapper] failed', url, e);
-    }
-  }
-  if (!api) {
-    console.error('[FFmpeg] diagnostics: crossOriginIsolated=', window.crossOriginIsolated);
-    throw new Error('FFmpeg UMD wrapper failed to load');
+  // Try local wrapper first, then CDN
+  try {
+    await loadScript(urlFromApp('vendor/ffmpeg/ffmpeg.min.js'));
+  } catch {
+    await loadScript('https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/ffmpeg.min.js');
   }
 
-  let ff;
-  if (api.hasClass) ff = new api.ns.FFmpeg();              // 0.12 class
-  else if (api.hasFactory) ff = api.ns.createFFmpeg();     // legacy factory
-  else throw new Error('FFmpeg wrapper exposes neither class nor factory');
-
-  // ---- replace your onProgress handler with this ----
-  const onProgress = (payload = {}) => {
-    // 0.12 sends {progress: 0..1, time, fps, ...}; older sends {ratio: 0..1}
-    let val = Number.isFinite(payload.progress) ? payload.progress
-      : Number.isFinite(payload.ratio) ? payload.ratio
-        : 0;
-
-    // clamp and sanitize
-    if (!Number.isFinite(val)) val = 0;
-    if (val < 0) val = 0;
-    if (val > 1) val = 1;
-
-    const pct = Math.round(val * 100);
-    console.log('[ffmpeg] progress', pct + '%');
-
-    const g = document.getElementById('global-ffmpeg-progress');
-    if (g && 'value' in g) g.value = pct;
-  };
-  // wire it (keep both models)
-  if (typeof ff.on === 'function') {
-    ff.on('progress', onProgress);
-    ff.on('log', ({ type, message }) => {
-      if (type === 'info' || type === 'fferr' || type === 'ffout') console.log('[ffmpeg]', type, message);
-    });
-  } else if (typeof ff.setProgress === 'function') {
-    ff.setProgress(onProgress);
-  }
-
-  if (typeof ff.on === 'function') {
-    ff.on('log', ({ type, message }) => {
-      if (type === 'info' || type === 'fferr' || type === 'ffout') console.log('[ffmpeg]', type, message);
-    });
-    ff.on('progress', onProgress);
-  } else if (typeof ff.setProgress === 'function') {
-    ff.setProgress(onProgress);
-  }
-
-  if (typeof ff.load === 'function') {
-    await ff.load({
-      log: true,
-      coreURL: coreURL,
-      wasmURL: wasmURL,
-      workerURL: workerURL
-    });
-  } else {
-    // ancient factory fallback
-    ff = api.ns.createFFmpeg({ log: true, corePath: coreURL });
-    await ff.load();
-  }
-
-  if (!window.fetchFile && api.ns?.fetchFile) window.fetchFile = api.ns.fetchFile;
-
-  window.__ffmpeg = ff;
-  return ff;
+  const ok = !!window.FFmpeg?.createFFmpeg;
+  ensureCapsUpdate(ok, 'ffmpeg');
 }
+
+// Use these explicit paths when you actually instantiate ffmpeg:
+function createFfmpeg() {
+  const base = urlFromApp('vendor/ffmpeg/');
+  return window.FFmpeg.createFFmpeg({
+    corePath: base + 'ffmpeg-core.js',
+    wasmPath: base + 'ffmpeg-core.wasm',
+    workerPath: base + 'worker.js',
+    // log: true,  // uncomment to see progress
+  });
+}
+
 
 
 
@@ -3886,4 +3792,12 @@ function presetTargetFromURL() {
     applyQualityVisibility();
   });
 })();
+
+
+
+
+
+
+
+
 
