@@ -60,7 +60,7 @@ const JSZip = await loadJSZip();
 
 // libarchive-wasm reader (RAR/7Z/TAR/ZIP inputs)
 const { ArchiveReader, libarchiveWasm } = await loadLibarchive();
-const mod = await libarchiveWasm();
+const mod = if (typeof libarchiveWasm === 'function') { try { await libarchiveWasm(); } catch(e){} }
 // Example: const reader = new ArchiveReader(mod, new Int8Array(await file.arrayBuffer()));
 
 // 7z writer (for .7z or ZIP AES via 7z)
@@ -3859,6 +3859,7 @@ function presetTargetFromURL() {
     applyQualityVisibility();
   });
 })();
+
 
 
 
