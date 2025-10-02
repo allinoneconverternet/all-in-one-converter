@@ -20,34 +20,39 @@ export async function loadJSZip() {
 }
 
 /* libarchive.js (browser): ESM exports { Archive } */
+/* libarchive.js (browser): ESM exports { Archive } */
 export async function loadLibarchive() {
-  // 1) local vendor
+  // Try local vendor only if it actually exists (preflight avoids red 404s)
   try {
-    const m = await import("/vendor/libarchivejs/main.js");
-    const Archive = m.Archive || (m.default && m.default.Archive);
-    if (!Archive) throw new Error("libarchive.js: Archive export not found");
-    Archive.init({ workerUrl: "/vendor/libarchivejs/dist/worker-bundle.js" });
-    return { Archive };
+    const probe = await fetch("/vendor/libarchivejs/main.js", { method: "HEAD" });
+    if (probe.ok) {
+      const m = await import("/vendor/libarchivejs/main.js");
+      const Archive = m.Archive || (m.default && m.default.Archive);
+      if (!Archive) throw new Error("libarchive.js: Archive export not found (local)");
+      Archive.init({ workerUrl: "/vendor/libarchivejs/dist/worker-bundle.js" });
+      // shim libarchiveWasm() for backward-compat with old app.js
+      return { Archive, libarchiveWasm: async () => null };
+    }
+    throw new Error("local vendor missing");
   } catch (e1) {
-    console.warn("[libarchive] local failed, trying CDN (jsDelivr)", e1);
-    // 2) jsDelivr
+    console.warn("[libarchive] local missing/failed, trying CDN (jsDelivr)", e1);
     try {
       const m = await import("https://cdn.jsdelivr.net/npm/libarchive.js/main.js");
       const Archive = m.Archive || (m.default && m.default.Archive);
-      if (!Archive) throw new Error("libarchive.js: Archive export not found (cdn)");
+      if (!Archive) throw new Error("libarchive.js: Archive export not found (jsDelivr)");
       Archive.init({ workerUrl: "https://cdn.jsdelivr.net/npm/libarchive.js/dist/worker-bundle.js" });
-      return { Archive };
+      return { Archive, libarchiveWasm: async () => null };
     } catch (e2) {
       console.warn("[libarchive] jsDelivr failed, trying unpkg", e2);
-      // 3) unpkg
       const m = await import("https://unpkg.com/libarchive.js/main.js");
       const Archive = m.Archive || (m.default && m.default.Archive);
       if (!Archive) throw new Error("libarchive.js: Archive export not found (unpkg)");
       Archive.init({ workerUrl: "https://unpkg.com/libarchive.js/dist/worker-bundle.js" });
-      return { Archive };
+      return { Archive, libarchiveWasm: async () => null };
     }
   }
 }
+
 
 /* 7z-wasm: returns initialized module with FS + callMain */
 export async function load7z() {
