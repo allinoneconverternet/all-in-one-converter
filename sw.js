@@ -3,6 +3,13 @@ const PRECACHE = `precache-${CACHE_VERSION}`;
 const RUNTIME = `runtime-${CACHE_VERSION}`;
 
 const PRECACHE_URLS = [
+  '/vendor/jszip/jszip.min.js',
+  '/vendor/jszip/jszip.esm.js',
+  '/vendor/libarchive-wasm/dist/index.js',
+  '/vendor/libarchive-wasm/dist/libarchive.js',
+  '/vendor/libarchive-wasm/dist/libarchive.wasm',
+  '/vendor/7zz/7zz.es6.js',
+  '/vendor/7zz/7zz.wasm',
   "/",
   "/index.html",
   "/styles.css",
@@ -99,4 +106,5 @@ async function staleWhileRevalidate(request) {
     .catch(() => undefined);
   return cached || fetchPromise || fetch(request).catch(() => cached);
 }
+
 
