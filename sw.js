@@ -1,4 +1,4 @@
-﻿const CACHE_VERSION = "v1-2025-09-26";
+﻿const CACHE_VERSION = "20251002114715";
 const PRECACHE = `precache-${CACHE_VERSION}`;
 const RUNTIME = `runtime-${CACHE_VERSION}`;
 
@@ -106,5 +106,7 @@ async function staleWhileRevalidate(request) {
     .catch(() => undefined);
   return cached || fetchPromise || fetch(request).catch(() => cached);
 }
+
+
 
 

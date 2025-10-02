@@ -98,10 +98,7 @@ async function ensureFFmpegGlobal() {
 }
 
 
-function show(msg, kind = 'info') {
-  if (typeof showBanner === 'function') return showBanner(msg, kind);
-  console[kind === 'error' ? 'error' : 'log'](msg);
-}
+
 
 async function headOrGet(url) {
   try {
@@ -2529,16 +2526,6 @@ async function ensureFFmpegWrapperLocal() {
   return !!(window.FFmpeg && window.FFmpeg.createFFmpeg);
 }
 
-// Warm only the wrapper (no WASM yet), locally
-// Warm only the local wrapper (no WASM yet), *local only*
-async function warmFFmpegWrapper() {
-  console.log('warmFFmpegWrapper: start');
-  try {
-    const ok = await ensureFFmpegGlobal();
-    if (ok) { features.ffmpeg = true; typeof ensureVendors === 'function' && ensureVendors(); }
-  } catch { }
-}
-
 
 // Exec shim: accepts (...args) or an array; uses exec() if present, else run()
 async function ffExec(ff, ...args) {
@@ -2675,58 +2662,7 @@ async function convertMediaFile(file, target, kind, index) {
 // Load only the FFmpeg UMD wrapper so the badge can turn green early.
 // Load only the wrapper so the badge flips green early (no WASM yet)
 // Loads just the wrapper so the badge can turn green early (no WASM yet)
-async function warmFFmpegWrapper() {
-  if (_warmFFmpegOnce) return _warmFFmpegOnce;
-  _warmFFmpegOnce = (async () => {
-    console.log('warmFFmpegWrapper: start');
 
-    // Already there?
-    if (await ensureFFmpegGlobal()) { features.ffmpeg = true; ensureVendors?.(); return; }
-
-    // Try local UMDs we see in your tree
-    const localWrappers = [
-      '/vendor/ffmpeg/ffmpeg.min.js',
-      '/vendor/ffmpeg/ffmpeg.min.js'
-    ];
-
-    for (const src of localWrappers) {
-      const h = await headOrGet(src);
-      if (!h.ok) continue;                            // not present
-      if (!/javascript|ecmascript/i.test(h.ct)) {     // SPA fallback
-        await diagnoseWrapper(src, 'Wrapper URL returns non-JS.');
-        continue;
-      }
-      try {
-        await loadClassicScript(src);
-        if (await ensureFFmpegGlobal()) {
-          features.ffmpeg = true; ensureVendors?.();
-          return;
-        }
-        await diagnoseWrapper(src, 'ffmpeg.js loaded but window/global FFmpeg did not appear (not a UMD build?).');
-      } catch (e) {
-        show('Failed to execute local ffmpeg.js', 'error');
-      }
-    }
-
-    // CDN UMD fallback
-    const cdn = `https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@${FFMPEG_VER}/dist/umd/ffmpeg.js`;
-    try {
-      await loadClassicScript(cdn);
-      if (await ensureFFmpegGlobal()) {
-        features.ffmpeg = true; ensureVendors?.();
-        return;
-      }
-      await diagnoseWrapper(cdn, 'CDN ffmpeg.js loaded but did not expose createFFmpeg (CSP/isolated environment?).');
-    } catch {
-      show('Could not load FFmpeg wrapper from CDN.', 'error');
-    }
-
-    // final attempt via ESM was already tried in ensureFFmpegGlobal()
-    features.ffmpeg = !!adoptFFmpegGlobal();
-    ensureVendors?.();
-  })();
-  return _warmFFmpegOnce;
-}
 
 
 
@@ -2734,7 +2670,6 @@ async function warmFFmpegWrapper() {
 
 
 // Kick it off right away so the badge goes green soon after load
-warmFFmpegWrapper().catch(() => { });
 
 
 
@@ -3847,6 +3782,9 @@ function presetTargetFromURL() {
     applyQualityVisibility();
   });
 })();
+
+
+
 
 
 
