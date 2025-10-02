@@ -21,9 +21,19 @@ export async function loadJSZip() {
 
 /* libarchive-wasm: ESM exports { ArchiveReader, libarchiveWasm } */
 export async function loadLibarchive() {
+  // Try vendored ESM first
   try {
-    return await import("/vendor/libarchive-wasm/dist/index.js");
-  } catch {
+    const m = await import('/vendor/libarchive-wasm/index.mjs');
+    const ArchiveReader  = m.ArchiveReader  || (m.default && m.default.ArchiveReader);
+    const libarchiveWasm = m.libarchiveWasm || (m.default && m.default.libarchiveWasm);
+    if (!ArchiveReader || !libarchiveWasm) throw new Error('Bad libarchive exports');
+    return { ArchiveReader, libarchiveWasm };
+  } catch (e) {
+    console.warn('[libarchive] local failed, using CDN', e);
+    const m = await import('https://cdn.jsdelivr.net/npm/libarchive-wasm@1.2.0/+esm');
+    return { ArchiveReader: m.ArchiveReader, libarchiveWasm: m.libarchiveWasm };
+  }
+}catch {
     try {
       return await import("https://cdn.jsdelivr.net/npm/libarchive-wasm@1.2.0/dist/index.js");
     } catch {
@@ -47,3 +57,4 @@ export async function load7z() {
     }
   }
 }
+

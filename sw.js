@@ -3,6 +3,8 @@ const PRECACHE = `precache-${CACHE_VERSION}`;
 const RUNTIME = `runtime-${CACHE_VERSION}`;
 
 const PRECACHE_URLS = [
+  '/vendor/libarchive-wasm/index.mjs',
+  '/vendor/libarchive-wasm/libarchive.wasm',
   '/vendor/jszip/jszip.min.js',
   '/vendor/jszip/jszip.esm.js',
   '/vendor/libarchive-wasm/dist/index.js',
@@ -110,3 +112,5 @@ async function staleWhileRevalidate(request) {
 
 
 
+
+// bump 20251002122718
