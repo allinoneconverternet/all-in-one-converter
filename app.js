@@ -12,6 +12,29 @@ function DBGE() { try { if (window.DEBUG_CONVERTER) console.error.apply(console,
 // Guard against double-injection during dev
 window.FFMPEG_VER = window.FFMPEG_VER || '0.12.10';
 var FFMPEG_VER = window.FFMPEG_VER;  // <— was 'const', change to 'var'
+// Visually dim disabled options / optgroups
+(function ensureGreyOutStyles() {
+  try {
+    let st = document.getElementById('tf-disabled-style');
+    if (!st) {
+      st = document.createElement('style');
+      st.id = 'tf-disabled-style';
+      (document.head || document.documentElement).appendChild(st);
+    }
+    st.textContent = [
+      /* options */
+      '#target-format option:disabled,',
+      '#targetFormat option:disabled,',
+      'select[name=target] option:disabled,',
+      'select#target option:disabled{opacity:.55;color:var(--muted,#6b7280)}',
+      /* optgroups */
+      '#target-format optgroup.dim,',
+      '#targetFormat optgroup.dim,',
+      'select[name=target] optgroup.dim,',
+      'select#target optgroup.dim{opacity:.5}'
+    ].join('');
+  } catch { }
+})();
 
 var _warmFFmpegOnce = window._warmFFmpegOnce || null;  // ⬅️ change this line
 if (window.__APP_ALREADY_LOADED__) throw new Error('app.js loaded twice');
@@ -2041,17 +2064,18 @@ async function convertArchiveFile(file, target) {
 }
 
 
-/** Intersection across all selected files */
+// Intersection across all selected files → set of allowed targets
 function possibleTargetsForFiles(files) {
-  if (!files.length) return new Set();
+  if (!files || !files.length) return new Set();
   let acc = null;
   for (const f of files) {
-    const kind = detectKind(f); // your existing detector :contentReference[oaicite:19]{index=19}
-    const set = targetsForKind(kind);
+    const k = detectKind(f);          // your existing kind detector
+    const set = targetsForKind(k);    // your existing mapping of kind → outputs
     acc = acc ? new Set([...acc].filter(x => set.has(x))) : set;
   }
   return acc || new Set();
 }
+
 
 function rebuildTargetDropdown(allowedSet) {
   targetFormat.innerHTML = '';
