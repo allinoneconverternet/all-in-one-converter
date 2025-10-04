@@ -1,4 +1,4 @@
-/* styles.css */
+﻿/* styles.css */
 :root {
     --bottom-safe: 0px;
     --rail-offset: 24px;
@@ -560,6 +560,10 @@ button:hover {
 
 #download-links .dl-chip:hover {
     background: rgba(255, 255, 255, 0.16);
+}
+
+#target-format optgroup.dim {
+    opacity: .55;
 }
 
 body::after {

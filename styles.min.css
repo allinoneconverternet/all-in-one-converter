@@ -1906,3 +1906,7 @@ body::after {
         width: 100%;
     }
 }
+
+#target-format optgroup.dim {
+    opacity: .55;
+}
