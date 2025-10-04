@@ -1,4 +1,4 @@
-﻿// ffmpeg-audio-args.js
+// ffmpeg-audio-args.js
 export function buildAudioArgs({
     inName,           // e.g. 'in.wav'
     outName,          // e.g. 'out.mp3'
@@ -45,5 +45,3 @@ export function buildAudioArgs({
     args.push(outName);
     return args;
 }
-
-

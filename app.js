@@ -1,6 +1,7 @@
 ﻿// === DEBUG INSTRUMENTATION v3 ===
 window.ENABLE_OUTPUTS = { text: true, documents: true, archives: true, spreadsheets: true, images: true, media: true };
 const groupsOrder = ['text', 'documents', 'archives', 'spreadsheets', 'images', 'media'];
+// make sure these exist once
 
 window.DEBUG_CONVERTER ??= false;  // set true only when you want verbose console diagnostics
 window.QUIET_TECH ??= true;
@@ -28,21 +29,127 @@ const TB_TONE = {
   'banner.cleared': 'ok',
   'banner.addFirst': 'error',
   'banner.noOutputs': 'error',
+  'banner.exceedsBudget': 'error',
+  'banner.noOutputs': 'info',
+  'banner.addFirst': 'info',
+  'banner.saveCancelled': 'info',
+  'banner.triggeredDownloads': 'ok',
+  'banner.savedAll': 'ok',
+  'banner.linkCopied': 'ok',
+  'banner.openFolderFail': 'error',
+  'banner.tooMuchData': 'error',
+  'banner.readyHint': 'info',
   'banner.exceedsBudget': 'error'
 };
 window.tb = function tb(key, vars) {
   const tone = TB_TONE[key] || 'error';           // default to red if unknown
   return showBanner(t(key, vars), tone);
 };
+// ---- Supported input kinds → extensions (exts drive the <input accept> && drop filter)
+const INPUT_EXTS_BY_KIND = {
+  image: ['png', 'jpg', 'jpeg', 'webp', 'svg', 'bmp', 'tiff', 'gif'],
+  audio: ['mp3', 'wav', 'ogg', 'm4a', 'flac', 'opus', 'aiff', 'aac'],
+  video: ['mp4', 'webm', 'mkv', 'mov', 'm4v', 'gif'],
+  pdf: ['pdf'],
+  docx: ['docx'],
+  pptx: ['pptx'],
+  xlsx: ['xlsx'],
+  csv: ['csv', 'tsv'],
+  text: ['txt', 'md', 'json', 'jsonl', 'html'],
+  archive: ['zip', '7z', 'tar', 'tgz', 'tbz2', 'txz', 'tar.gz', 'tar.bz2', 'tar.xz'] // ← new
+};
+
+// Optional but recommended: help browsers filter better
+const EXT_TO_MIME = {
+  // images
+  png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', webp: 'image/webp',
+  svg: 'image/svg+xml', bmp: 'image/bmp', tiff: 'image/tiff', gif: 'image/gif',
+  // audio
+  mp3: 'audio/mpeg', wav: 'audio/wav', ogg: 'audio/ogg', m4a: 'audio/mp4',
+  flac: 'audio/flac', opus: 'audio/opus', aiff: 'audio/aiff', aac: 'audio/aac',
+  // video
+  mp4: 'video/mp4', webm: 'video/webm', mkv: 'video/x-matroska',
+  mov: 'video/quicktime', m4v: 'video/x-m4v',
+  // docs/text
+  pdf: 'application/pdf',
+  docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  pptx: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+  xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  csv: 'text/csv', tsv: 'text/tab-separated-values',
+  txt: 'text/plain', md: 'text/markdown', json: 'application/json',
+  jsonl: 'application/x-ndjson', html: 'text/html',
+  // archives
+  zip: 'application/zip', '7z': 'application/x-7z-compressed', tar: 'application/x-tar',
+  'tar.gz': 'application/gzip', tgz: 'application/gzip',
+  'tar.bz2': 'application/x-bzip2', tbz2: 'application/x-bzip2',
+  'tar.xz': 'application/x-xz', txz: 'application/x-xz'
+};
+
+
+// Decide which *input kinds* are usable right now by asking your own targetsForKind(kind).
+// If a kind has no outputs (given current features), we don't allow it in.
+function computeAllowedInputExts() {
+  const kinds = ['image', 'audio', 'video', 'pdf', 'docx', 'pptx', 'xlsx', 'csv', 'text', 'archive']; // ← added 'archive'
+  const out = new Set();
+  for (const k of kinds) {
+    let can;
+    try { const t = targetsForKind(k); can = t && t.size > 0; } catch { can = false; }
+    if (!can) continue;
+    (INPUT_EXTS_BY_KIND[k] || []).forEach(e => out.add(e));
+  }
+  return out;
+}
+
+
+
+// Update the file chooser's accept list dynamically
+function updateFileInputAccept() {
+  const exts = computeAllowedInputExts();
+  const tokens = [];
+  for (const e of exts) {
+    tokens.push('.' + e);
+    if (EXT_TO_MIME[e]) tokens.push(EXT_TO_MIME[e]);
+  }
+  const accept = tokens.join(',');
+  const input = document.querySelector('input[type="file"], input#file, input[name="file"]');
+  if (input && accept) input.setAttribute('accept', accept);
+  window.__allowedInputExts = exts; // keep your drop filter in sync
+}
+// Utility: get lowercase extension (no dot)
+function extOf(name) {
+  const m = (name || '').toLowerCase().match(/\.([a-z0-9]+)$/i);
+  return m ? m[1] : '';
+}
+
+// Validate a File by extension against the dynamic allow-set
+function isSupportedFile(file) {
+  const set = window.__allowedInputExts || computeAllowedInputExts();
+  const ext = extOf(file && file.name);
+  return set.has(ext);
+}
+
+// Show a localized unsupported message (falls back to English if t() not present)
+function notifyUnsupported(file) {
+  const ext = extOf(file && file.name);
+  const msg = (typeof t === 'function')
+    ? t('error.unsupportedFile', { name: file?.name || 'file', ext: ext ? ('.' + ext) : '' })
+    : `Unsupported file type: ${file?.name || 'file'}`;
+  // Use your existing toast/snackbar if you have one; else alert:
+  if (window.showToast) { try { showToast(msg, { type: 'error' }); } catch { alert(msg); } }
+  else { alert(msg); }
+}
+
 // adopt any known global shape
+// Normalize any wrapper namespace to window.FFmpeg
+// Normalize any wrapper namespace to window.FFmpeg
+// Normalize any wrapper namespace to window.FFmpeg
 function adoptFFmpegGlobal() {
   const cands = [
     () => globalThis.FFmpeg,
     () => window.FFmpeg,
     () => window.FFmpegWASM?.FFmpeg,
-    () => window.FFmpegWASM,
-    () => window.FFmpegWasm,
-    () => window.ffmpeg, // some forks
+    () => window.FFmpegWasm?.FFmpeg,
+    () => window.ffmpeg && window.ffmpeg.FFmpeg ? window.ffmpeg : null
   ];
   for (const get of cands) {
     const g = get();
@@ -50,91 +157,231 @@ function adoptFFmpegGlobal() {
       window.FFmpeg = g;
       return true;
     }
+    if (g && g.FFmpeg && typeof g.FFmpeg === 'function') {
+      const C = g.FFmpeg, fetchFile = g.fetchFile || window.fetchFile;
+      window.FFmpeg = { createFFmpeg: (opts = {}) => new C(opts), fetchFile };
+      return true;
+    }
   }
   return false;
 }
-import { loadJSZip, loadLibarchive, load7z } from '/src/local-first.mjs';
 
-// ZIP writer
-const JSZip = await loadJSZip();
+// Load the UMD wrapper (local → CDN) && adopt the global
+window.needFFmpeg ??= async function needFFmpeg() {
+  function load(src) {
+    return new Promise((res, rej) => {
+      const s = document.createElement('script');
+      s.src = src; s.async = true;
+      s.onload = () => res();
+      s.onerror = () => rej(new Error('Failed to load ' + src));
+      document.head.appendChild(s);
+    });
+  }
+
+  const urls = [
+    '/vendor/ffmpeg/ffmpeg.min.js',
+    'https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.min.js',
+    'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.min.js',
+    'https://unpkg.com/@ffmpeg/ffmpeg@0.12.6/dist/umd/ffmpeg.min.js',
+    'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.6/dist/umd/ffmpeg.min.js'
+  ];
+
+  let loaded = false;
+  for (const u of urls) {
+    try { await load(u); loaded = true; if (adoptFFmpegGlobal()) break; } catch { }
+  }
+  if (!loaded || !adoptFFmpegGlobal() || !window.FFmpeg?.createFFmpeg) {
+    throw new Error('FFmpeg UMD wrapper missing (loaded, but no window.FFmpeg)');
+  }
+}
+
+// === FFmpeg instance pool (new) ===
+window._ffPool = window._ffPool || { size: 0, list: [] };
+
+/** Create && load a brand-new FFmpeg instance (wrapper must already be loaded). */
+async function createLoadedFFmpegInstance() {
+  if (!window.FFmpeg || !window.FFmpeg.createFFmpeg) throw new Error('FFmpeg wrapper not loaded');
+  const { createFFmpeg } = window.FFmpeg;
+
+  // Try the same sort of options our singleton uses; fall back to defaults.
+  const attemptOpts = [
+    { corePath: '/vendor/ffmpeg/ffmpeg-core.js', wasmPath: '/vendor/ffmpeg/ffmpeg-core.wasm', workerPath: '/vendor/ffmpeg/ffmpeg-core.worker.js', log: false },
+    { corePath: '/vendor/ffmpeg/ffmpeg-core.js', wasmPath: '/vendor/ffmpeg/ffmpeg-core.wasm', workerPath: '/vendor/ffmpeg/worker.js', log: false },
+    { corePath: '/vendor/ffmpeg/ffmpeg-core.js', wasmPath: '/vendor/ffmpeg/ffmpeg-core.wasm', log: false },
+    { corePath: 'https://unpkg.com/@ffmpeg/core@0.12.10/dist/umd/ffmpeg-core.js', log: false },
+    { log: false }
+  ];
+
+  let lastErr;
+  for (const opt of attemptOpts) {
+    try {
+      const ff = createFFmpeg(opt);
+      await ff.load();
+      return ff;
+    } catch (e) { lastErr = e; }
+  }
+  throw lastErr || new Error('FFmpeg core failed to load for pool instance');
+}
+
+/** Ensure we have N ready FFmpeg instances for concurrent media jobs. */
+async function ensureFFmpegPool(n) {
+  n = Math.max(1, Math.min(4, n | 0)); // cap to 4
+  await needFFmpeg(); // make sure wrapper is loaded
+  const pool = window._ffPool;
+
+  if (pool.size === n && pool.list.length === n) return;
+  // If shrinking, drop extras
+  if (pool.list.length > n) {
+    pool.list = pool.list.slice(0, n);
+  }
+  // If growing, create && load more instances
+  while (pool.list.length < n) {
+    const ff = await createLoadedFFmpegInstance();
+    pool.list.push(ff);
+  }
+  pool.size = n;
+}
+
+/** Pick an FFmpeg instance for a given job index. */
+function ffFromPool(index) {
+  const pool = window._ffPool;
+  if (!pool || !pool.list || pool.list.length === 0) return null;
+  return pool.list[index % pool.list.length];
+}
+
+;
+
+// Return a singleton; try local worker first, then CDN
+window.getFFmpeg ??= async function getFFmpeg() {
+  await needFFmpeg();
+  if (!adoptFFmpegGlobal() || !window.FFmpeg?.createFFmpeg) {
+    throw new Error('FFmpeg wrapper loaded, but no usable window.FFmpeg');
+  }
+
+  if (!window._ffmpeg) {
+    const { createFFmpeg } = window.FFmpeg;
+    const attempts = [
+      {
+        corePath: '/vendor/ffmpeg/ffmpeg-core.js',
+        wasmPath: '/vendor/ffmpeg/ffmpeg-core.wasm',
+        workerPath: '/vendor/ffmpeg/ffmpeg-core.worker.js', log: false
+      },
+      {
+        corePath: '/vendor/ffmpeg/ffmpeg-core.js',
+        wasmPath: '/vendor/ffmpeg/ffmpeg-core.wasm',
+        workerPath: '/vendor/ffmpeg/worker.js', log: false
+      },
+      {
+        corePath: '/vendor/ffmpeg/ffmpeg-core.js',
+        wasmPath: '/vendor/ffmpeg/ffmpeg-core.wasm',
+        workerPath: 'https://unpkg.com/@ffmpeg/core@0.12.10/dist/umd/ffmpeg-core.worker.js', log: false
+      },
+      { corePath: 'https://unpkg.com/@ffmpeg/core@0.12.10/dist/umd/ffmpeg-core.js', log: false },
+      { corePath: 'https://unpkg.com/@ffmpeg/core@0.12.10/dist/ffmpeg-core.js', log: false }
+    ];
+
+    let lastErr;
+    for (const opt of attempts) {
+      try {
+        const ff = createFFmpeg(opt);
+        await ff.load();
+        window._ffmpeg = ff;
+        break;
+      } catch (e) { lastErr = e; }
+    }
+    if (!window._ffmpeg) throw lastErr || new Error('FFmpeg core failed to load');
+  }
+  return window._ffmpeg;
+};
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  // resolve controls (you already have this)
+  resolveTargetControls?.();
+
+  // Safety: prevent landing on a disabled option
+  if (window.targetFormat && !targetFormat.__guarded) {
+    targetFormat.addEventListener('change', () => {
+      const opt = targetFormat.options[targetFormat.selectedIndex];
+      if (!opt || opt.disabled || !opt.value) {
+        const firstOK = Array.from(targetFormat.options).find(o => !o.disabled && !!o.value);
+        if (firstOK) targetFormat.value = firstOK.value;
+      }
+    });
+    targetFormat.__guarded = true;
+  }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  const run = async () => {
+    try {
+      const ff = await getFFmpeg();           // will load or use the cached instance
+      window.features = window.features || {};
+      if (!window.features.ffmpeg) window.features.ffmpeg = true;
+
+      // refresh UI groups & accept filter
+      if (typeof setGroupEnabled === 'function') setGroupEnabled('media', true);
+      if (typeof refreshTargetDropdown === 'function') refreshTargetDropdown();
+      if (typeof updateFileInputAccept === 'function') updateFileInputAccept();
+
+      // ensure the chip flips visually even if your helper isn’t present
+      const chip = document.querySelector('[data-feature="ffmpeg"],[data-group="media"] .chip,[data-chip="media"]');
+      chip?.classList?.remove('off', 'red');
+      chip?.classList?.add('on', 'green');
+    } catch (e) {
+      console.warn('FFmpeg still not ready:', e);
+    }
+  };
+  (window.requestIdleCallback ? requestIdleCallback(run) : setTimeout(run, 0));
+});
 
 // libarchive-wasm reader (RAR/7Z/TAR/ZIP inputs)
-const { ArchiveReader, libarchiveWasm } = await loadLibarchive();
-const mod = if (typeof libarchiveWasm === 'function') { try { await libarchiveWasm(); } catch(e){} }
-// Example: const reader = new ArchiveReader(mod, new Int8Array(await file.arrayBuffer()));
 
-// 7z writer (for .7z or ZIP AES via 7z)
-const seven = await load7z(); // seven.FS, seven.callMain([...])
+let mod = null;
 
-// Local-only: adopt/create a FFmpeg global from the local UMD wrapper.
-// No CDN, no ESM import — prevents cross-origin Worker.
-async function ensureFFmpegGlobal() {
-  // already present?
-  if (window.FFmpeg?.createFFmpeg) return true;
-
-  // load the local classic UMD wrapper
-  try {
-    await (function loadClassicScript(src) {
-      return new Promise((res, rej) => {
-        const s = document.createElement('script');
-        s.src = src; s.async = true;
-        s.onload = res; s.onerror = () => rej(new Error('Failed to load ' + src));
-        document.head.appendChild(s);
-      });
-    })('/vendor/ffmpeg/ffmpeg.min.js');
-  } catch (e) {
-    console.error('Local ffmpeg.js failed to load:', e);
-    return false;
-  }
-
-  // normalize alt namespace (some builds export as FFmpegWASM)
-  if (!window.FFmpeg?.createFFmpeg && window.FFmpegWASM?.FFmpeg) {
-    const FFmpegClass = window.FFmpegWASM.FFmpeg;
-    const fetchFile = window.FFmpegWASM.fetchFile;
-    window.FFmpeg = { createFFmpeg: (opts = {}) => new FFmpegClass(opts), fetchFile };
-  }
-
-  return !!(window.FFmpeg && window.FFmpeg.createFFmpeg);
-}
-
-
-
-
-async function headOrGet(url) {
-  try {
-    let r = await fetch(url, { method: 'HEAD', cache: 'no-store' });
-    if (!r.ok && r.status === 405) r = await fetch(url, { method: 'GET', cache: 'no-store' });
-    return { url, ok: r.ok, status: r.status, ct: r.headers.get('content-type') || '' };
-  } catch (e) {
-    return { url, ok: false, status: 0, error: String(e?.message || e) };
-  }
-}
-
-function loadClassicScript(src) {
+window.loadScript ??= function loadScript(src) {
   return new Promise((res, rej) => {
     const s = document.createElement('script');
-    s.src = src;
-    s.async = true;            // classic script (NOT type="module")
-    s.onload = res;
-    s.onerror = rej;
+    s.src = src; s.async = true;
+    s.onload = () => res();
+    s.onerror = (e) => rej(e);
     document.head.appendChild(s);
   });
+};
+const loadScript = window.loadScript;
+
+// Resolve assets relative to where app.js is served (works on sub-paths, localhost, etc.)
+function urlFromApp(relativePath) {
+  const me = document.currentScript?.src ||
+    [...document.getElementsByTagName('script')]
+      .map(s => s.src).find(s => s.includes('app.js')) ||
+    document.baseURI;
+  return new URL(relativePath.replace(/^\//, ''), new URL('.', me)).toString();
 }
 
-async function diagnoseWrapper(src, reason) {
-  const h = await headOrGet(src);
-  console.log('[FFmpeg wrapper check]', h);
-  if (!h.ok) {
-    show(`FFmpeg wrapper not reachable at ${src}`, 'error');
-  } else if (!/javascript|ecmascript/i.test(h.ct)) {
-    show(`FFmpeg wrapper served as ${h.ct} (likely an HTML fallback).`, 'error');
-  } else {
-    show(reason || 'ffmpeg.js loaded but did not expose createFFmpeg (wrong build/namespace).', 'error');
-  }
+function ensureCapsUpdate(ok, key) {
+  if (ok) { features[key] = true; try { ensureVendors?.(); } catch { } }
 }
+
+async function warmFFmpegWrapper() {
+  try { await needFFmpeg(); features.ffmpeg = true; ensureVendors?.(); } catch { }
+}
+
+// Local-only: ensure the UMD wrapper is present (no CDN)
+
+/* removed legacy function */
+
+/* removed legacy function */
+
+/* removed legacy function */
+
+/* removed legacy function */
+
+/* removed legacy function */
+
 // === END DEBUG INSTRUMENTATION v3 ===
-// Show an actionable error in the banner and clean up the row UI.
-function friendlyCatch(err, { status, card, runId }) {
+// Show an actionable error in the banner && clean up the row UI.
+function friendlyCatch(err, { status, card, runId, fileName }) {
   try {
     if (typeof isStale === 'function' && isStale(runId)) return; // a newer run started
 
@@ -152,11 +399,11 @@ function friendlyCatch(err, { status, card, runId }) {
 
     // If it smells like a PDF.js version mismatch, add a hint
     const hint = /version|Worker|API/i.test(msg)
-      ? ' (Check that your PDF.js main library and worker are the same major version.)'
+      ? ' (Check that your PDF.js main library && worker are the same major version.)'
       : '';
 
     if (typeof showBanner === 'function') {
-      showBanner(`Couldn’t convert: ${msg}${hint}`, 'error');
+      showBanner(fileName ? `${fileName} — couldn’t convert: ${msg}${hint}` : `Couldn’t convert: ${msg}${hint}`, 'error');
     } else {
       console.error('[ui suppressed]', `Couldn’t convert: ${msg}${hint}`);
     }
@@ -185,76 +432,51 @@ async function needMammoth() {
 }
 
 // Robust PDF.js loader: UMD or ESM, local first then CDN. No script tag for the worker.
-// Robust PDF.js loader that keeps the main lib and the worker on the *same major version*.
+// Robust PDF.js loader that keeps the main lib && the worker on the *same major version*.
 async function needPdf() {
-  // Already loaded?
-  if (window.pdfjsLib?.getDocument) { features.pdf = true; ensureVendors?.(); return; }
+  if (window.pdfjsLib) return window.pdfjsLib;
 
-  // Small helper
-  const loadScript = (src) => new Promise((res, rej) => {
-    const s = document.createElement('script');
-    s.src = src; s.async = true;
-    s.onload = res; s.onerror = () => rej(new Error('Failed to load ' + src));
-    document.head.appendChild(s);
-  });
+  // simple loader with error bubbling
+  function loadScript(src, attrs = {}) {
+    return new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = src;
+      if (attrs.type) s.type = attrs.type;
+      if (attrs.defer) s.defer = true;
+      s.onload = () => resolve();
+      s.onerror = (e) => reject(new Error('Failed to load ' + src));
+      document.head.appendChild(s);
+    });
+  }
 
-  // Try to load the *main* library (UMD first; if you only ship ESM, swap order)
-  const mainCandidates = [
-    // local UMD → CDN UMD → local ESM → CDN ESM
-    () => loadScript('/vendor/pdf.min.js'),
-    () => loadScript('https://unpkg.com/pdfjs-dist@4/legacy/build/pdf.min.js'),
-    async () => { window.pdfjsLib = await import('/vendor/pdf.min.mjs'); },
-    async () => { window.pdfjsLib = await import('https://unpkg.com/pdfjs-dist@4/build/pdf.mjs'); },
+  const CDN = 'https://unpkg.com/pdfjs-dist@3.11.174/build';
+  const candidates = [
+    { src: '/vendor/pdf.min.js', type: 'text/javascript' },
+    { src: `${CDN}/pdf.min.js`, type: 'text/javascript' }
   ];
 
-  let mainLoaded = false, lastErr = null;
-  for (const attempt of mainCandidates) {
-    try { await attempt(); mainLoaded = true; break; }
-    catch (e) { lastErr = e; }
-  }
-  if (!mainLoaded || !window.pdfjsLib?.getDocument) {
-    throw lastErr || new Error('Unable to load pdfjs main library');
-  }
-
-  // Decide worker version based on the *main library* we just loaded.
-  const version = String(window.pdfjsLib?.version || '');
-  const isV4 = version.startsWith('4.');
-  const workerCandidates = isV4
-    ? [
-      // Prefer your local v4 worker if you ship it; otherwise the CDN v4 worker
-      '/vendor/pdf.worker.min.js', // make sure this is v4 if present
-      'https://unpkg.com/pdfjs-dist@4/legacy/build/pdf.worker.min.js',
-      'https://unpkg.com/pdfjs-dist@4/build/pdf.worker.min.mjs',
-    ]
-    : [
-      // v3 track (use if you intentionally pin to 3.x)
-      '/vendor/pdf.worker.min.js',
-      'https://unpkg.com/pdfjs-dist@3/legacy/build/pdf.worker.min.js',
-      'https://unpkg.com/pdfjs-dist@3/build/pdf.worker.min.mjs',
-    ];
-
-  // Pick the first reachable worker (HEAD request when possible; file:// may throw)
-  let workerSrc = workerCandidates[0];
-  for (const url of workerCandidates) {
+  let lastErr;
+  for (const c of candidates) {
     try {
-      const ok = await fetch(url, { method: 'HEAD', cache: 'no-store' }).then(r => r.ok);
-      if (ok) { workerSrc = url; break; }
-    } catch { /* offline or file:// → keep default */ }
+      await loadScript(c.src, { type: c.type });
+      if (window.pdfjsLib) break;
+    } catch (e) { lastErr = e; }
   }
 
-  // Bind worker to the main lib (only if that API exists on this build)
-  if (window.pdfjsLib?.GlobalWorkerOptions) {
-    window.pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc;
-  }
+  if (!window.pdfjsLib) throw lastErr || new Error('PDF.js not available');
 
-  features.pdf = true;
-  ensureVendors?.();   // (optional) refresh any UI badges you show
+  try {
+    if (!pdfjsLib.GlobalWorkerOptions.workerSrc) {
+      // prefer local worker, then CDN
+      const worker = (await fetch('/vendor/pdf.worker.min.js', { method: 'HEAD' }).then(r => r.ok).catch(() => false))
+        ? '/vendor/pdf.worker.min.js'
+        : `${CDN}/pdf.worker.min.js`;
+      pdfjsLib.GlobalWorkerOptions.workerSrc = worker;
+    }
+  } catch { }
+
+  return window.pdfjsLib;
 }
-
-
-
-
-
 
 async function needXLSX() {
   if (window.XLSX) { features.xlsx = true; ensureVendors?.(); return; }
@@ -326,11 +548,11 @@ window.showBanner = function (msg, kind = 'info') {
 
       const L = window.APP_LANG || 'en';
       if (f === 0) {
-        tb('banner.doneOk', { s, files: wordFiles(s, L) });       // ✅ green
+        tb('banner.doneOk', { s, files: wordFiles(s, L) }); // green
       } else if (s > 0) {
-        tb('banner.finishedMixed', { s, files: wordFiles(s, L), f });    // ❌ red
+        tb('banner.finishedMixed', { s, files: wordFiles(s, L), f }); // red
       } else {
-        tb('banner.finishedFail', { f, files: wordFiles(f, L) });       // ❌ red
+        tb('banner.finishedFail', { f, files: wordFiles(f, L) }); // red
       }
 
       const filesS = window.wordFiles(s, L);
@@ -346,11 +568,9 @@ window.showBanner = function (msg, kind = 'info') {
         else if (f > 0) m = t('banner.doneMixed', { s, files: filesS, f });
         else m = t('banner.doneOk', { s, files: filesS });
       } else {
-        // Fallback English sentence, but with localized "file/files"
         if (f > 0 && s === 0) m = `Failed ${f} ${filesF}.`;
         else if (f > 0) m = `Done. ${s} ${filesS} converted, ${f} failed.`;
         else m = `Done. ${s} ${filesS} converted.`;
-
       }
     }
     else if (/^Too much data at once \((.+)\)\. Budget (.+)\.$/.test(m)) {
@@ -365,56 +585,66 @@ window.showBanner = function (msg, kind = 'info') {
     else if (m === 'Link copied to clipboard.') m = t('banner.linkCopied');
     else if (/^Couldn’t open the folder\./.test(m)) m = t('banner.openFolderFail');
 
-    console[kind === 'error' ? 'error' : 'log'](m);
+    const el = document.getElementById('banner');
+    if (el) {
+      el.hidden = false;
+      el.textContent = m;
+      el.classList.remove('is-ok', 'is-info', 'is-error');
+      el.removeAttribute('style');
+
+      let color;
+      if (kind === 'ok') { el.classList.add('is-ok'); color = 'var(--ok, #16a34a)'; }
+      else if (kind === 'error') { el.classList.add('is-error'); color = 'var(--danger, #dc2626)'; }
+      else { el.classList.add('is-info'); color = 'var(--muted, #6b7280)'; }
+      el.style.color = color;
+      el.setAttribute('role', kind === 'error' ? 'alert' : 'status');
+    } else {
+      console[kind === 'error' ? 'error' : 'log'](m);
+    }
+    return m;
   } catch {
     console[kind === 'error' ? 'error' : 'log'](msg);
+    return msg;
   }
 };
 
-
 // Populate the dropdown from these (popular output types)
-const TARGET_GROUPS = {
-  text: [
-    ['txt', 'Plain text (.txt)'],
-    ['md', 'Markdown (.md)'],
-    ['html', 'HTML (.html)'],
-    ['csv', 'CSV (.csv)'],
-    ['json', 'JSON (.json)'],
-    ['jsonl', 'JSON Lines (.jsonl)'],
-    ['rtf', 'Rich Text (.rtf)']
-  ],
-  documents: [
-    ['pdf', 'PDF (.pdf)'],
-    ['docx', 'Word DOCX (.docx)']
+// Which groups to show && in what order
+const GROUPS_ORDER = ['text', 'documents', 'archives', 'spreadsheets', 'images', 'media'];
 
-  ],
-  spreadsheets: [
-    ['xlsx', 'Excel XLSX (.xlsx)']
-  ],
-  images: [
-    ['png', 'PNG (.png)'],
-    ['jpeg', 'JPEG (.jpg)'],
-    ['webp', 'WebP (.webp)'],
-    ['svg', 'SVG (.svg)']
-  ],
+// Value/label pairs per group (labels are resolved by optLabel())
+const TARGET_GROUPS = {
+  text: [['txt'], ['md'], ['html']],
+  documents: [['pdf'], ['docx']],
+  archives: [['zip'], ['tar.gz'], ['tar.bz2'], ['tar.xz'], ['7z'], ['rar']],
+  spreadsheets: [['xlsx'], ['csv'], ['tsv']],
+  images: [['png'], ['jpeg'], ['webp'], ['svg'], ['bmp'], ['tiff'], ['gif']],
   media: [
-    ['mp3', 'Audio MP3 (.mp3)'],
-    ['wav', 'Audio WAV (.wav)'],
-    ['ogg', 'Audio OGG (.ogg)'],
-    ['m4a', 'Audio M4A (.m4a)'],
-    ['mp4', 'Video MP4 (.mp4)'],
-    ['webm', 'Video WebM (.webm)'],
-    ['gif', 'GIF from video (.gif)'],
-  ],
-  archives: [
-    ['zip', 'ZIP (.zip)'],
-    ['7z', '7Z (.7z)'],
-    ['tar', 'TAR (.tar)'],
-    ['tar.gz', 'TAR.GZ (.tar.gz)'],
-    ['tar.bz2', 'TAR.BZ2 (.tar.bz2)'],
-    ['tar.xz', 'TAR.XZ (.tar.xz)']
+    ['mp3'], ['wav'], ['ogg'], ['m4a'], ['flac'], ['opus'], ['aiff'], ['aac'],
+    ['mp4'], ['webm'], ['gif'], ['mkv'], ['mov'], ['m4v']
   ]
 };
+
+try {
+  if (typeof TARGET_GROUPS === 'object') {
+    function __ensurePair(arr, key, label) {
+      if (!Array.isArray(arr)) return;
+      if (!arr.some(function (x) { return x && x[0] === key; })) { arr.push([key, label]); }
+    }
+    if (TARGET_GROUPS.media) {
+      __ensurePair(TARGET_GROUPS.media, 'flac', 'Audio FLAC (.flac)');
+      __ensurePair(TARGET_GROUPS.media, 'opus', 'Audio Opus (.opus)');
+    }
+    if (TARGET_GROUPS.images) {
+      __ensurePair(TARGET_GROUPS.images, 'bmp', 'BMP (.bmp)');
+      __ensurePair(TARGET_GROUPS.images, 'tiff', 'TIFF (.tiff)');
+    }
+    if (TARGET_GROUPS.spreadsheets) {
+      __ensurePair(TARGET_GROUPS.spreadsheets, 'tsv', 'TSV (.tsv)');
+    }
+  }
+} catch (e) { }
+;
 
 // Optional: show the demo ad panels
 const SHOW_ADS = true;
@@ -438,11 +668,18 @@ function estimateSafeBudgetBytes() {
 }
 
 /* ========= 3) Vendor loader with local+CDN fallback ========= */
-const features = { pdf: false, docx: false, xlsx: false, pptx: false, ocr: false, makePdf: false, makeDocx: false, ffmpeg: false };
+// add to your features object
+const features = {
+  pdf: false, docx: false, xlsx: false, pptx: false, ocr: false,
+  makePdf: false, makeDocx: false, ffmpeg: false,
+  archives: false   // <— NEW
+};
 
 /* ========= i18n: light-weight runtime translations ========= */
 const I18N = {
   en: {
+
+
     // statuses / controls
     queued: 'queued',
     preparing: 'Preparing…',
@@ -494,7 +731,8 @@ const I18N = {
     'banner.saveCancelled': 'Save cancelled.',
     'banner.linkCopied': 'Link copied to clipboard.',
     'banner.openFolderFail': 'Couldn’t open the folder. Try again or download individually below.',
-
+    'banner.noFilesYet': 'No files yet. Add some files to start.',
+    'banner.readyHint': 'Ready. Add files to begin, then pick a target format.',
     // errors
     couldntConvert: 'Couldn’t convert: {msg}',
     unknownError: 'Unknown error'
@@ -546,6 +784,7 @@ const I18N = {
     'banner.saveCancelled': 'Speichern abgebrochen.',
     'banner.linkCopied': 'Link in die Zwischenablage kopiert.',
     'banner.openFolderFail': 'Ordner konnte nicht geöffnet werden. Versuchen Sie es erneut oder laden Sie einzeln herunter.',
+    'banner.readyHint': 'Bereit. Füge Dateien hinzu und wähle dann ein Zielformat.',
     couldntConvert: 'Konnte nicht konvertieren: {msg}',
     unknownError: 'Unbekannter Fehler'
   },
@@ -594,6 +833,7 @@ const I18N = {
     'banner.savedAll': 'Todos los archivos guardados en la carpeta elegida.',
     'banner.saveCancelled': 'Guardado cancelado.',
     'banner.linkCopied': 'Enlace copiado al portapapeles.',
+    'banner.readyHint': 'Listo. Añade archivos para empezar y luego elige un formato de destino.',
     'banner.openFolderFail': 'No se pudo abrir la carpeta. Inténtelo de nuevo o descargue individualmente.',
     couldntConvert: 'No se pudo convertir: {msg}',
     unknownError: 'Error desconocido'
@@ -642,6 +882,7 @@ const I18N = {
     'banner.triggeredDownloads': 'Téléchargements lancés pour chaque fichier.',
     'banner.savedAll': 'Tous les fichiers enregistrés dans le dossier choisi.',
     'banner.saveCancelled': 'Enregistrement annulé.',
+    'banner.readyHint': 'Prêt. Ajoutez des fichiers pour commencer, puis choisissez un format de sortie.',
     'banner.linkCopied': 'Lien copié dans le presse-papiers.',
     'banner.openFolderFail': 'Impossible d’ouvrir le dossier. Réessayez ou téléchargez individuellement.',
     couldntConvert: 'Conversion impossible : {msg}',
@@ -691,6 +932,7 @@ const I18N = {
     'banner.triggeredDownloads': 'Avviati i download per ogni file.',
     'banner.savedAll': 'Tutti i file salvati nella cartella scelta.',
     'banner.saveCancelled': 'Salvataggio annullato.',
+    'banner.readyHint': 'Pronto. Aggiungi file per iniziare, poi scegli un formato di destinazione.',
     'banner.linkCopied': 'Link copiato negli appunti.',
     'banner.openFolderFail': 'Impossibile aprire la cartella. Riprova o scarica i file singolarmente qui sotto.',
     couldntConvert: 'Impossibile convertire: {msg}',
@@ -740,6 +982,7 @@ const I18N = {
     'banner.triggeredDownloads': 'Uruchomiono pobieranie dla każdego pliku.',
     'banner.savedAll': 'Zapisano wszystkie pliki do wybranego folderu.',
     'banner.saveCancelled': 'Zapisywanie anulowano.',
+    'banner.readyHint': 'Gotowe. Dodaj pliki, a następnie wybierz format docelowy.',
     'banner.linkCopied': 'Link skopiowano do schowka.',
     'banner.openFolderFail': 'Nie można było otworzyć folderu. Spróbuj ponownie lub pobierz pojedynczo poniżej.',
     couldntConvert: 'Nie można przekonwertować: {msg}',
@@ -783,6 +1026,7 @@ const I18N = {
     'banner.cleared': 'Limpo.',
     'banner.noOutputs': 'Ainda não há resultados. Converta primeiro.',
     'banner.addFirst': 'Adicione ficheiros primeiro.',
+    'banner.readyHint': 'Pronto. Adicione ficheiros para começar e depois escolha um formato de destino.',
     'banner.doneSummary': 'Concluído: {s} {files}!',
     'banner.tooMuchData': 'Demasiados dados de uma vez ({total}). Orçamento {budget}.',
     'banner.exceedsBudget': 'Total selecionado {total} excede o orçamento {budget}. Será processado sequencialmente.',
@@ -833,6 +1077,7 @@ const I18N = {
     'banner.noOutputs': 'Ainda não há resultados. Converta primeiro.',
     'banner.addFirst': 'Adicione arquivos primeiro.',
     'banner.doneSummary': 'Concluído: {s} {files}!',
+    'banner.readyHint': 'Pronto. Adicione arquivos para começar e depois escolha um formato de destino.',
     'banner.tooMuchData': 'Dados demais de uma vez ({total}). Orçamento {budget}.',
     'banner.exceedsBudget': 'Total selecionado {total} excede o orçamento {budget}. Será processado sequencialmente.',
     'banner.triggeredDownloads': 'Downloads iniciados para cada arquivo.',
@@ -887,6 +1132,7 @@ const I18N = {
     'banner.triggeredDownloads': '各ファイルのダウンロードを開始しました。',
     'banner.savedAll': 'すべてのファイルを選択したフォルダに保存しました。',
     'banner.saveCancelled': '保存をキャンセルしました。',
+    'banner.readyHint': '準備完了。まずファイルを追加し、次に出力形式を選択してください。',
     'banner.linkCopied': 'リンクをクリップボードにコピーしました。',
     'banner.openFolderFail': 'フォルダを開けませんでした。もう一度お試しになるか、下で個別にダウンロードしてください。',
     couldntConvert: '変換できませんでした: {msg}',
@@ -937,6 +1183,7 @@ const I18N = {
     'banner.savedAll': 'Все файлы сохранены в выбранную папку.',
     'banner.saveCancelled': 'Сохранение отменено.',
     'banner.linkCopied': 'Ссылка скопирована в буфер обмена.',
+    'banner.readyHint': 'Готово. Добавьте файлы, затем выберите целевой формат.',
     'banner.openFolderFail': 'Не удалось открыть папку. Повторите попытку или загрузите файлы по одному ниже.',
     couldntConvert: 'Не удалось конвертировать: {msg}',
     unknownError: 'Неизвестная ошибка'
@@ -986,6 +1233,7 @@ const I18N = {
     'banner.savedAll': '已将所有文件保存到你选择的文件夹。',
     'banner.saveCancelled': '已取消保存。',
     'banner.linkCopied': '链接已复制到剪贴板。',
+    'banner.readyHint': '就绪。先添加文件，然后选择目标格式。',
     'banner.openFolderFail': '无法打开该文件夹。请重试，或在下方逐个下载。',
     couldntConvert: '无法转换：{msg}',
     unknownError: '未知错误'
@@ -1034,6 +1282,7 @@ const I18N = {
     'banner.triggeredDownloads': '각 파일의 다운로드를 시작했습니다.',
     'banner.savedAll': '모든 파일을 선택한 폴더에 저장했습니다.',
     'banner.saveCancelled': '저장을 취소했습니다.',
+    'banner.readyHint': '준비되었습니다. 먼저 파일을 추가한 뒤 대상 형식을 선택하세요.',
     'banner.linkCopied': '링크가 클립보드에 복사되었습니다.',
     'banner.openFolderFail': '폴더를 열 수 없습니다. 다시 시도하거나 아래에서 개별적으로 다운로드하세요.',
     couldntConvert: '변환할 수 없습니다: {msg}',
@@ -1083,6 +1332,7 @@ const I18N = {
     'banner.triggeredDownloads': 'प्रत्येक फ़ाइल के लिए डाउनलोड शुरू किए गए।',
     'banner.savedAll': 'सभी फ़ाइलें आपके चुने हुए फ़ोल्डर में सहेजी गईं।',
     'banner.saveCancelled': 'सेव रद्द किया गया।',
+    'banner.readyHint': 'तैयार। शुरू करने के लिए फ़ाइलें जोड़ें, फिर लक्ष्य फ़ॉर्मेट चुनें।',
     'banner.linkCopied': 'लिंक क्लिपबोर्ड पर कॉपी किया गया।',
     'banner.openFolderFail': 'फ़ोल्डर नहीं खोला जा सका। फिर से प्रयास करें या नीचे अलग-अलग डाउनलोड करें।',
     couldntConvert: 'रूपांतरित नहीं कर सका: {msg}',
@@ -1132,6 +1382,7 @@ const I18N = {
     'banner.triggeredDownloads': 'تم بدء التنزيلات لكل ملف.',
     'banner.savedAll': 'تم حفظ كل الملفات في المجلد الذي اخترته.',
     'banner.saveCancelled': 'تم إلغاء الحفظ.',
+    'banner.readyHint': 'جاهز. أضف ملفات للبدء ثم اختر صيغة الإخراج.',
     'banner.linkCopied': 'تم نسخ الرابط إلى الحافظة.',
     'banner.openFolderFail': 'تعذّر فتح المجلد. حاول مجددًا أو نزّل الملفات بشكل فردي أدناه.',
     couldntConvert: 'تعذّر التحويل: {msg}',
@@ -1181,6 +1432,7 @@ const I18N = {
     'banner.triggeredDownloads': 'Запущено завантаження для кожного файлу.',
     'banner.savedAll': 'Усі файли збережено у вибрану теку.',
     'banner.saveCancelled': 'Збереження скасовано.',
+    'banner.readyHint': 'Готово. Додайте файли, а потім виберіть цільовий формат.',
     'banner.linkCopied': 'Посилання скопійовано до буфера обміну.',
     'banner.openFolderFail': 'Не вдалося відкрити теку. Спробуйте ще раз або завантажуйте окремо нижче.',
     couldntConvert: 'Не вдалося конвертувати: {msg}',
@@ -1230,7 +1482,9 @@ const I18N = {
     'banner.triggeredDownloads': 'Her dosya için indirmeler başlatıldı.',
     'banner.savedAll': 'Tüm dosyalar seçtiğiniz klasöre kaydedildi.',
     'banner.saveCancelled': 'Kaydetme iptal edildi.',
+    'banner.readyHint': 'Hazır. Başlamak için dosyalar ekleyin, ardından bir hedef biçim seçin.',
     'banner.linkCopied': 'Bağlantı panoya kopyalandı.',
+    'banner.readyHint': 'Klaar. Voeg bestanden toe om te beginnen en kies vervolgens een doelformaat.',
     'banner.openFolderFail': 'Klasör açılamadı. Yeniden deneyin veya aşağıdan tek tek indirin.',
     couldntConvert: 'Dönüştürülemedi: {msg}',
     unknownError: 'Bilinmeyen hata'
@@ -1286,10 +1540,14 @@ const I18N = {
   }
 };
 
-
 (function initI18N() {
-  const htmlLang = (document.documentElement.lang || 'en').trim();
+  const navLangs = (navigator.languages && navigator.languages.length)
+    ? navigator.languages
+    : [navigator.language || navigator.userLanguage || 'en'];
+
+  const htmlLang = (document.documentElement.lang || navLangs[0] || 'en').trim();
   const norm = htmlLang.toLowerCase();
+
   const LANG_ALIAS = {
     'pt-br': 'pt-BR', 'pt_pt': 'pt',
     'zh': 'zh-CN', 'zh-hans': 'zh-CN', 'zh-cn': 'zh-CN',
@@ -1302,6 +1560,9 @@ const I18N = {
     const base = norm.split('-')[0];
     return I18N[base] ? base : 'en';
   })();
+
+  /* === Inject banner base styles (JS-only, no <head> edits required) === */
+  (function ensureBannerStyles() { try { if (!document.getElementById('banner-style')) { const st = document.createElement('style'); st.id = 'banner-style'; st.textContent = '#banner{transition:color .2s ease}'; (document.head || document.documentElement).appendChild(st); } } catch { } })();
   window.APP_LANG = lang;
   function fmt(s, vars) {
     return String(s).replace(/\{(\w+)\}/g, (_, k) => (vars && k in vars) ? vars[k] : '{' + k + '}');
@@ -1344,67 +1605,11 @@ const I18N = {
     );
   }
 
-  window.showBanner = function (msg, kind = 'info') {
-    try {
-      let m = String(msg);
 
-      // Map a few English fallbacks to i18n keys
-      if (m === 'Cleared.') m = t('banner.cleared');
-      else if (m === 'No outputs yet. Convert first.') m = t('banner.noOutputs');
-      else if (m === 'Add some files first.') m = t('banner.addFirst');
+  /* duplicate showBanner removed */
+  ;
+})(); // ← close block && invoke it
 
-      // Normalize "Done ..." English into i18n
-      const done = m.match(/\bDone\.\s+(\d+)\s+succeeded\b/i);
-      if (done) {
-        const s = parseInt(done[1], 10) || 0;
-        const f = (m.match(/,\s*(\d+)\s+failed/i) ? parseInt(RegExp.$1, 10) : 0) || 0;
-        const L = window.APP_LANG || 'en';
-        if (f === 0) {
-          tb('banner.doneOk', { s, files: wordFiles(s, L) });       // ✅ green
-        } else if (s > 0) {
-          tb('banner.finishedMixed', { s, files: wordFiles(s, L), f });    // ❌ red
-        } else {
-          tb('banner.finishedFail', { f, files: wordFiles(f, L) });       // ❌ red
-        }
-
-        const filesS = wordFiles(s, L), filesF = wordFiles(f, L);
-        if (f > 0 && s === 0) m = t('banner.doneFail', { f, files: filesF });
-        else if (f > 0) m = t('banner.doneMixed', { s, files: filesS, f });
-        else m = t('banner.doneOk', { s, files: filesS });
-      }
-
-      // Quiet technical noise
-      if (window.QUIET_TECH && isTechnicalMessage(m)) {
-        if (window.DEBUG_CONVERTER) console[kind === 'error' ? 'error' : 'log']('[tech]', m);
-        return;
-      }
-
-      // Call prior impl for compatibility, but DO NOT return early
-      if (_show) { try { _show(m, kind); } catch { } }
-
-      // Write into the small banner line
-      const el = document.getElementById('banner');
-      if (el) {
-        el.textContent = m;
-        el.classList.toggle('error', kind === 'error');
-        el.classList.toggle('ok', kind === 'ok');
-        el.hidden = false;
-      }
-    } catch (e) {
-      if (_show) return _show(msg, kind);
-      console[kind === 'error' ? 'error' : 'log'](msg);
-    }
-  };
-})(); // ← close block and invoke it
-
-
-function loadScript(url) {
-  return new Promise((res, rej) => {
-    const s = document.createElement('script');
-    s.src = url; s.onload = () => res(); s.onerror = () => rej(new Error('load ' + url));
-    document.head.appendChild(s);
-  });
-}
 const CDN = {
 
   pdf: ['/vendor/pdf.min.js', 'https://unpkg.com/pdfjs-dist@4/legacy/build/pdf.min.js'],
@@ -1419,10 +1624,7 @@ const CDN = {
   ffmpeg: ['/vendor/ffmpeg/ffmpeg.min.js', 'https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js'],
   ffmpegCore: ['/vendor/ffmpeg/ffmpeg-core.js', 'https://unpkg.com/@ffmpeg/core@0.12.10/dist/umd/ffmpeg-core.js'],
 };
-async function loadScriptTry(localUrl, cdnUrl) {
-  try { await loadScript(localUrl); }
-  catch { console.warn('Local missing, using CDN:', cdnUrl); await loadScript(cdnUrl); }
-}
+
 // spread the NodeList correctly
 function loadedSrcContains(substr) {
   const s = [...document.querySelectorAll('script[src]')].map(n => n.src);
@@ -1431,139 +1633,26 @@ function loadedSrcContains(substr) {
 
 let ffmpegInstance = null;
 
-
-// needFFmpeg(): cross-browser loader with MT (if isolated) and ST fallback
+// needFFmpeg(): cross-browser loader with MT (if isolated) && ST fallback
 // Robust FFmpeg loader: CDN wrapper, normalize globals, MT when isolated, ST fallback
 // Robust FFmpeg loader: LOCAL wrapper -> CDN fallback, MT when isolated, ST fallback
-async function needFFmpeg() {
-  if (window.__ffmpeg?.loaded || window.__ffmpeg?.isLoaded?.()) return window.__ffmpeg;
 
-  const VER = '0.12.10';
-
-  // 1) Wrapper candidates (LOCAL first to avoid cross-origin Worker error)
-  const WRAPPERS = [
-    '/vendor/ffmpeg/ffmpeg.min.js',                                                  // ← local official UMD (0.12.10)
-    `https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@${VER}/dist/umd/ffmpeg.js`,
-    `https://unpkg.com/@ffmpeg/ffmpeg@${VER}/dist/umd/ffmpeg.js`
-  ];
-
-  // 2) Cores (UMD). Use MT only when SharedArrayBuffer is allowed
-  const CORE_ST = `https://unpkg.com/@ffmpeg/core@${VER}/dist/umd/ffmpeg-core.js`;
-  const CORE_MT = `https://unpkg.com/@ffmpeg/core-mt@${VER}/dist/umd/ffmpeg-core.js`;
-  const useMT = !!window.crossOriginIsolated;
-  const coreURL = useMT ? CORE_MT : CORE_ST;
-  const wasmURL = coreURL.replace(/\.js$/, '.wasm');
-  const workerURL = coreURL.replace(/\.js$/, '.worker.js');
-
-  const loadScript = (src) => new Promise((resolve, reject) => {
-    const s = document.createElement('script');
-    s.src = src; s.async = true; s.crossOrigin = 'anonymous';
-    s.onload = () => queueMicrotask(resolve);
-    s.onerror = () => reject(new Error('Failed to load ' + src));
-    document.head.appendChild(s);
+// Use these explicit paths when you actually instantiate ffmpeg:
+function createFfmpeg() {
+  const base = urlFromApp('vendor/ffmpeg/');
+  return window.FFmpeg.createFFmpeg({
+    corePath: base + 'ffmpeg-core.js',
+    wasmPath: base + 'ffmpeg-core.wasm',
+    workerPath: base + 'worker.js',
+    // log: true,  // uncomment to see progress
   });
-
-  const pickApi = () => {
-    if (window.FFmpeg?.FFmpeg || window.FFmpeg?.createFFmpeg) {
-      return { ns: window.FFmpeg, hasClass: !!window.FFmpeg.FFmpeg, hasFactory: !!window.FFmpeg.createFFmpeg };
-    }
-    if (window.FFmpegWASM?.FFmpeg || window.FFmpegWASM?.createFFmpeg) {
-      window.FFmpeg = window.FFmpegWASM; // normalize
-      return { ns: window.FFmpegWASM, hasClass: !!window.FFmpegWASM.FFmpeg, hasFactory: !!window.FFmpegWASM.createFFmpeg };
-    }
-    return null;
-  };
-
-  let api = pickApi();
-  for (const url of (!api ? WRAPPERS : [])) {
-    try {
-      console.log('[FFmpeg wrapper] loading', url);
-      await loadScript(url);
-      api = pickApi();
-      if (api) break;
-    } catch (e) {
-      console.warn('[FFmpeg wrapper] failed', url, e);
-    }
-  }
-  if (!api) {
-    console.error('[FFmpeg] diagnostics: crossOriginIsolated=', window.crossOriginIsolated);
-    throw new Error('FFmpeg UMD wrapper failed to load');
-  }
-
-  let ff;
-  if (api.hasClass) ff = new api.ns.FFmpeg();              // 0.12 class
-  else if (api.hasFactory) ff = api.ns.createFFmpeg();     // legacy factory
-  else throw new Error('FFmpeg wrapper exposes neither class nor factory');
-
-  // ---- replace your onProgress handler with this ----
-  const onProgress = (payload = {}) => {
-    // 0.12 sends {progress: 0..1, time, fps, ...}; older sends {ratio: 0..1}
-    let val = Number.isFinite(payload.progress) ? payload.progress
-      : Number.isFinite(payload.ratio) ? payload.ratio
-        : 0;
-
-    // clamp and sanitize
-    if (!Number.isFinite(val)) val = 0;
-    if (val < 0) val = 0;
-    if (val > 1) val = 1;
-
-    const pct = Math.round(val * 100);
-    console.log('[ffmpeg] progress', pct + '%');
-
-    const g = document.getElementById('global-ffmpeg-progress');
-    if (g && 'value' in g) g.value = pct;
-  };
-  // wire it (keep both models)
-  if (typeof ff.on === 'function') {
-    ff.on('progress', onProgress);
-    ff.on('log', ({ type, message }) => {
-      if (type === 'info' || type === 'fferr' || type === 'ffout') console.log('[ffmpeg]', type, message);
-    });
-  } else if (typeof ff.setProgress === 'function') {
-    ff.setProgress(onProgress);
-  }
-
-  if (typeof ff.on === 'function') {
-    ff.on('log', ({ type, message }) => {
-      if (type === 'info' || type === 'fferr' || type === 'ffout') console.log('[ffmpeg]', type, message);
-    });
-    ff.on('progress', onProgress);
-  } else if (typeof ff.setProgress === 'function') {
-    ff.setProgress(onProgress);
-  }
-
-  if (typeof ff.load === 'function') {
-    await ff.load({
-      log: true,
-      coreURL: coreURL,
-      wasmURL: wasmURL,
-      workerURL: workerURL
-    });
-  } else {
-    // ancient factory fallback
-    ff = api.ns.createFFmpeg({ log: true, corePath: coreURL });
-    await ff.load();
-  }
-
-  if (!window.fetchFile && api.ns?.fetchFile) window.fetchFile = api.ns.fetchFile;
-
-  window.__ffmpeg = ff;
-  return ff;
 }
-
-
-
-
 
 (function prewarmFFmpeg() {
   const kick = () => { try { needFFmpeg(); } catch { } window.removeEventListener('pointerdown', kick); };
   if ('requestIdleCallback' in window) requestIdleCallback(() => { try { needFFmpeg(); } catch { } });
   window.addEventListener('pointerdown', kick, { once: true });
 })();
-
-
-
-
 
 // app.js — detect-only vendor check
 // Copy–paste this whole function
@@ -1587,7 +1676,6 @@ async function ensureVendors() {
     if (typeof showBanner === 'function') return showBanner(msg, kind);
     console[kind === 'error' ? 'error' : 'log'](msg);
   };
-
 
   // --- on-demand FFmpeg diagnostics (scoped to this function) ---
   async function diagnoseFFmpeg() {
@@ -1631,7 +1719,7 @@ async function ensureVendors() {
       if (res.ok) { core = res; break; }
     }
     if (!core) {
-      issues.push('ffmpeg-core.js not reachable (local missing and CDNs blocked?).');
+      issues.push('ffmpeg-core.js not reachable (local missing && CDNs blocked?).');
     }
 
     // Probe WASM next to the chosen core (or the local path if none worked)
@@ -1654,7 +1742,7 @@ async function ensureVendors() {
 
     const msg = issues.length
       ? 'FFmpeg not ready: ' + issues[0]
-      : 'FFmpeg wrapper present and core/WASM look reachable.';
+      : 'FFmpeg wrapper present && core/WASM look reachable.';
     show(msg, issues.length ? 'error' : 'ok');
 
     return { issues, checks };
@@ -1670,15 +1758,16 @@ async function ensureVendors() {
     const inGrace = Date.now() < (window.__capGraceUntil || 0);
 
     const CAP_LIST = [
-      ['Images', true],                     // built-in client rendering
+      ['Images', true],
       ['PDF', features.pdf],
       ['Word (DOCX)', features.docx],
       ['Excel (XLSX)', features.xlsx],
-      ['ZIP', features.pptx],
+      ['ZIP', features.pptx],                // JSZip (writer)
+      ['Archives (RAR/7Z/TAR)', features.archives],  // <— NEW
       ['OCR', features.ocr],
       ['Make PDF', features.makePdf],
       ['Make DOCX', features.makeDocx],
-      ['Media', features.ffmpeg],           // FFmpeg.wasm
+      ['Media', features.ffmpeg],
     ];
 
     CAP_LIST.forEach(([label, ok]) => {
@@ -1707,7 +1796,6 @@ async function ensureVendors() {
     });
   }
 
-
   // --- do NOT auto-run FFmpeg diagnostics or auto-show errors in quiet mode ---
   // do NOT auto-run FFmpeg diagnostics or auto-show errors in quiet mode
   if (!features.ffmpeg && !window.DEBUG_CONVERTER) {
@@ -1715,7 +1803,6 @@ async function ensureVendors() {
   } else if (!features.ffmpeg && window.DEBUG_CONVERTER) {
     setTimeout(() => diagnoseFFmpeg().catch(() => { }), 0);
   }
-
 
   // Optional: expose for DevTools
   window.diagnoseFFmpeg = diagnoseFFmpeg;
@@ -1746,7 +1833,8 @@ function setRowProgress(index, frac = 0) {
 
   // class drives the CSS base width used while converting
   if (card) {
-    if (pct >= 100) card.classList.remove('is-converting');
+    if (pct >= 100) try { if (window.__rowAnim) window.__rowAnim.stop(index); } catch { }
+    if (card) card.classList.remove('is-converting');
     else card.classList.add('is-converting');
   }
 
@@ -1758,7 +1846,6 @@ function setRowProgress(index, frac = 0) {
 
   if (window.sizeProgress && card) window.sizeProgress(card);
 }
-
 
 /** Convenience: show some coarse steps for libraries that don't expose granular progress. */
 function stepper(index, steps = [
@@ -1777,6 +1864,7 @@ function stepper(index, steps = [
     done() {
       setRowProgress(index, 1, t('finishing'));
       const card = document.getElementById('file-list')?.children[index];
+      if (card) try { if (window.__rowAnim) window.__rowAnim.stop(index); } catch { }
       if (card) card.classList.remove('is-converting');
     }
   };
@@ -1828,7 +1916,7 @@ async function diagnoseFFmpeg() {
     const res = await headOrGet(url); checks.push(res);
     if (res.ok) { core = res; break; }
   }
-  if (!core) issues.push('ffmpeg-core.js not reachable (local missing and CDNs blocked?).');
+  if (!core) issues.push('ffmpeg-core.js not reachable (local missing && CDNs blocked?).');
 
   const wasmUrl = (core ? core.url : coreCandidates[0]).replace(/\.js(\?.*)?$/, '.wasm');
   const wasm = await headOrGet(wasmUrl); checks.push(wasm);
@@ -1845,7 +1933,7 @@ async function diagnoseFFmpeg() {
   checks.forEach(c => console.log(c));
   console.groupEnd();
 
-  const msg = issues.length ? 'FFmpeg not ready: ' + issues[0] : 'FFmpeg wrapper present and core/WASM look reachable.';
+  const msg = issues.length ? 'FFmpeg not ready: ' + issues[0] : 'FFmpeg wrapper present && core/WASM look reachable.';
   show(msg, issues.length ? 'error' : 'ok');
   return { issues, checks };
 }
@@ -1884,7 +1972,8 @@ function registerOutputs(index, outs, runId, target) {
     if (status) status.textContent = outs.length > 1 ? t('readyN', { n: outs.length }) : t('ready');
     if (pr) pr.value = 100;
 
-    card.classList.remove('is-converting');
+    try { if (window.__rowAnim) window.__rowAnim.stop(index); } catch { }
+    if (card) card.classList.remove('is-converting');
 
     // 🔧 ensure the row still fits on one line after text changes
     if (window.sizeProgress) window.sizeProgress(card);
@@ -1892,10 +1981,9 @@ function registerOutputs(index, outs, runId, target) {
   }
 }
 
-
 function createFileCard(index, file, badgeText = '', statusText = t('queued')) {
   const card = document.createElement('div');
-  card.className = 'filecard is-converting';
+  card.className = 'filecard';
 
   const typeLabel = file.type || t('unknown');
   card.innerHTML = `
@@ -1976,7 +2064,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initial optimistic render (badges appear green right away)
   try { typeof ensureVendors === 'function' && ensureVendors(); } catch { }
 
-  // After grace window, re-run detection and render for real
+  // After grace window, re-run detection && render for real
   setTimeout(() => { try { typeof ensureVendors === 'function' && ensureVendors(); } catch { } }, 3000);
 
   // ---- Non-blocking vendor warmups so badges flip to green on load ----
@@ -1991,11 +2079,12 @@ document.addEventListener('DOMContentLoaded', () => {
       } catch { /* ignore */ }
     };
 
-    // Only call if these helpers exist in your app:
+    // Warm critical vendors
     tryWarm(typeof needPdf === 'function' ? () => needPdf() : null);
-    tryWarm(typeof warmFFmpegWrapper === 'function' ? () => warmFFmpegWrapper() : null);
+    tryWarm(typeof needFFmpeg === 'function' ? () => needFFmpeg() : null);
+    tryWarm(typeof needArchives === 'function' ? () => needArchives() : null); // ← add this
 
-    // (Optional) warm others too:
+    // Optional warms
     // tryWarm(typeof needXLSX === 'function' ? () => needXLSX() : null);
     // tryWarm(typeof needJSZip === 'function' ? () => needJSZip() : null);
     // tryWarm(typeof needJsPDF === 'function' ? () => needJsPDF() : null);
@@ -2005,8 +2094,8 @@ document.addEventListener('DOMContentLoaded', () => {
       try { typeof ensureVendors === 'function' && ensureVendors(); } catch { }
     });
   });
+  updateFileInputAccept();
 });
-
 
 function downloadOutputs(index) {
   const outs = state.outputsByFile[index] || [];
@@ -2030,7 +2119,6 @@ const state = { files: [], outputs: [], outputsByFile: {}, budget: estimateSafeB
 
 const isStale = (rid) => rid !== state.runId;
 
-
 const memoryPill = $('#memory-pill'); const limitMode = $('#limit-mode'); const manualLimit = $('#manual-limit');
 const targetFormat = $('#target-format'); const qualityWrap = $('#quality-wrap'); const quality = $('#quality');
 const fileInput = $('#file-input'); const dropzone = $('#dropzone'); const fileList = $('#file-list'); const banner = $('#banner');
@@ -2044,109 +2132,72 @@ function refreshMemoryPill() {
 }
 
 // --- Quiet UI config ---
-window.DEBUG_CONVERTER = window.DEBUG_CONVERTER ?? false;  // keep console debug off in prod
-const QUIET_UI = false;       // suppress scary banners for end users
-const SHOW_ERRORS_AS_TOAST = false; // set true if you want a subtle visible error line instead of full suppression
+// --- Quiet UI config ---
+window.DEBUG_CONVERTER = window.DEBUG_CONVERTER ?? false;
+const QUIET_UI = false;
+const SHOW_ERRORS_AS_TOAST = false;
 
-function showBanner(msg, tone = 'info') {
-  // In quiet mode, don't show error banners to end users.
-  if (QUIET_UI && tone === 'error') {
-    if (SHOW_ERRORS_AS_TOAST) {
-      // minimal, neutral line (optional)
-      const b = document.getElementById('banner');
-      if (b) b.innerHTML = `<span style="color:var(--muted)">${msg}</span>`;
-    } else {
-      // log to console only
-      console.warn('[ui suppressed]', msg);
-    }
-    return;
-  }
-  const b = document.getElementById('banner');
-  if (!b) { console[tone === 'error' ? 'error' : 'log'](msg); return; }
-  const color = tone === 'error' ? 'var(--danger)' : (tone === 'ok' ? 'var(--ok)' : 'var(--muted)');
-  b.innerHTML = `<span style="color:${color}">${msg}</span>`;
-}
+/* duplicate showBanner removed */
 
 // === Dynamic targets (build from actual capabilities) ===
 
 // order + labels reused to build <optgroup>s
-const GROUPS_ORDER = ['text', 'documents', 'archives', 'spreadsheets', 'images', 'media'];
+
 const GROUP_LABELS = { text: 'Text', documents: 'Documents', spreadsheets: 'Spreadsheets', images: 'Images', media: 'Media' };
 
-/** Map input kind -> allowed output set, based on your converters and loaded vendors */
+/** Map input kind -> allowed output set, based on your converters && loaded vendors */
+/** Map input kind -> allowed output set, based on your converters && loaded vendors */
 function targetsForKind(kind) {
   const out = new Set();
 
   if (kind === 'image') {
-    if (ENABLE_OUTPUTS.images) ['png', 'jpeg', 'webp', 'svg'].forEach(x => out.add(x));
-    if (ENABLE_OUTPUTS.documents && features.makePdf) out.add('pdf'); // needs jsPDF :contentReference[oaicite:0]{index=0}
-  }
-  else if (kind === 'pdf') {
-    if (ENABLE_OUTPUTS.images) ['png', 'jpeg', 'webp', 'svg'].forEach(x => out.add(x));                     // images from PDF :contentReference[oaicite:1]{index=1}
-    ['txt', 'md', 'html', 'json', 'csv', 'jsonl', 'rtf'].forEach(x => out.add(x));                              // text-ish from PDF :contentReference[oaicite:2]{index=2}
-    if (ENABLE_OUTPUTS.documents && features.makeDocx) out.add('docx');                                 // PDF → DOCX when docx lib present :contentReference[oaicite:3]{index=3}
-  }
-  else if (kind === 'docx') {
-    if (ENABLE_OUTPUTS.images) ['png', 'jpeg', 'webp', 'svg'].forEach(x => out.add(x));                      // DOCX → images :contentReference[oaicite:4]{index=4}
-    ['txt', 'md', 'html', 'json'].forEach(x => out.add(x));                                                  // DOCX → text-ish :contentReference[oaicite:5]{index=5}
-    if (ENABLE_OUTPUTS.documents && features.makePdf) out.add('pdf');                                   // DOCX → PDF needs jsPDF :contentReference[oaicite:6]{index=6}
-  }
-  else if (kind === 'pptx') {
-    if (ENABLE_OUTPUTS.images) ['png', 'jpeg', 'webp', 'svg'].forEach(x => out.add(x));                      // PPTX → per-slide images :contentReference[oaicite:7]{index=7}
-    ['txt', 'md', 'html', 'json'].forEach(x => out.add(x));                                                  // PPTX → text-ish :contentReference[oaicite:8]{index=8}
-    if (ENABLE_OUTPUTS.documents && features.makePdf) out.add('pdf');                                   // PPTX → PDF needs jsPDF :contentReference[oaicite:9]{index=9}
-    if (ENABLE_OUTPUTS.documents && features.makeDocx) out.add('docx');                                 // PPTX → DOCX needs docx lib :contentReference[oaicite:10]{index=10}
-  }
-  else if (kind === 'xlsx') {
-    ['csv', 'json', 'html', 'xlsx'].forEach(x => out.add(x));                                                // XLSX outputs :contentReference[oaicite:11]{index=11}
-  }
-  else if (kind === 'csv') {
-    ['xlsx', 'json', 'html', 'txt', 'md', 'csv'].forEach(x => out.add(x));                                     // CSV outputs :contentReference[oaicite:12]{index=12}
-  }
-  else if (kind === 'text') {
-    ['txt', 'md', 'html', 'csv', 'json', 'jsonl', 'rtf'].forEach(x => out.add(x));                              // text-ish set (see PDF/DOCX branches) :contentReference[oaicite:13]{index=13}
-    if (ENABLE_OUTPUTS.images) ['png', 'jpeg', 'webp', 'svg'].forEach(x => out.add(x));                      // uses textToImageBlobs :contentReference[oaicite:14]{index=14}
-    if (ENABLE_OUTPUTS.documents && features.makePdf) out.add('pdf');                                   // via textishToPdf :contentReference[oaicite:15]{index=15}
-    if (ENABLE_OUTPUTS.documents && features.makeDocx) out.add('docx');                                 // via textishToDocx :contentReference[oaicite:16]{index=16}
-  }
-  else if (kind === 'audio') {
-    if (features.ffmpeg && ENABLE_OUTPUTS.media) ['mp3', 'wav', 'ogg', 'm4a', 'mp4', 'webm'].forEach(x => out.add(x)); // media targets (audio set + webm) :contentReference[oaicite:17]{index=17}
-  }
-  else if (kind === 'video') {
-    if (features.ffmpeg && ENABLE_OUTPUTS.media) ['mp4', 'webm', 'gif', 'mp3', 'wav', 'ogg', 'm4a'].forEach(x => out.add(x)); // video + extract audio :contentReference[oaicite:18]{index=18}
-  }
-  else if (kind === 'archive') {
+    if (ENABLE_OUTPUTS.images) ['png', 'jpeg', 'webp', 'svg', 'bmp', 'tiff', 'gif'].forEach(x => out.add(x));
+    if (ENABLE_OUTPUTS.documents && features.makePdf) out.add('pdf');
+  } else if (kind === 'pdf') {
+    if (ENABLE_OUTPUTS.images) ['png', 'jpeg', 'webp', 'svg', 'bmp', 'tiff'].forEach(x => out.add(x));
+    ['txt', 'md', 'html', 'json', 'csv', 'jsonl', 'rtf'].forEach(x => out.add(x));
+    if (ENABLE_OUTPUTS.documents && features.makeDocx) out.add('docx');
+  } else if (kind === 'docx') {
+    if (ENABLE_OUTPUTS.images) ['png', 'jpeg', 'webp', 'svg', 'bmp', 'tiff'].forEach(x => out.add(x));
+    ['txt', 'md', 'html', 'json'].forEach(x => out.add(x));
+    if (ENABLE_OUTPUTS.documents && features.makePdf) out.add('pdf');
+  } else if (kind === 'pptx') {
+    if (ENABLE_OUTPUTS.images) ['png', 'jpeg', 'webp', 'svg', 'bmp', 'tiff'].forEach(x => out.add(x));
+    ['txt', 'md', 'html', 'json'].forEach(x => out.add(x));
+    if (ENABLE_OUTPUTS.documents && features.makePdf) out.add('pdf');
+    if (ENABLE_OUTPUTS.documents && features.makeDocx) out.add('docx');
+  } else if (kind === 'xlsx') {
+    ['csv', 'json', 'html', 'xlsx', 'tsv'].forEach(x => out.add(x));
+  } else if (kind === 'csv') {
+    ['xlsx', 'json', 'html', 'txt', 'md', 'csv', 'tsv'].forEach(x => out.add(x));
+  } else if (kind === 'text') {
+    ['txt', 'md', 'html', 'csv', 'json', 'jsonl', 'rtf'].forEach(x => out.add(x));
+    if (ENABLE_OUTPUTS.images) ['png', 'jpeg', 'webp', 'svg', 'bmp', 'tiff'].forEach(x => out.add(x));
+    if (ENABLE_OUTPUTS.documents && features.makePdf) out.add('pdf');
+    if (ENABLE_OUTPUTS.documents && features.makeDocx) out.add('docx');
+  } else if (kind === 'audio') {
+    if (features.ffmpeg && ENABLE_OUTPUTS.media) ['mp3', 'wav', 'ogg', 'm4a', 'flac', 'opus', 'aiff', 'aac', 'mp4', 'webm'].forEach(x => out.add(x));
+  } else if (kind === 'video') {
+    if (features.ffmpeg && ENABLE_OUTPUTS.media) ['mp4', 'webm', 'gif', 'mkv', 'mov', 'm4v', 'mp3', 'wav', 'ogg', 'm4a', 'flac', 'opus'].forEach(x => out.add(x));
+  } else if (kind === 'archive') {
     ['zip', '7z', 'tar', 'tar.gz', 'tar.bz2', 'tar.xz'].forEach(x => out.add(x));
+    return out;
   }
-
-  return out;
 }
 // ---- ARCHIVE → ZIP (client-only) ----
+// ---- ARCHIVE → ZIP/TAR/TGZ/TBZ2/TXZ/7Z (client-only) ----
+// ---- ARCHIVE → ZIP/TAR/TGZ/TBZ2/TXZ/7Z ----
+// app.js — archive wrapper used by the convert pipeline
 async function convertArchiveFile(file, target) {
   const m = await import('./archive-client.js');
+  const { blob, suggestedName } = await m.convertArchiveFile(file, target);
 
-  // choose writer based on target
-  let outBlob;
-  switch (target) {
-    case 'zip': outBlob = await m.convertArchiveToZip(file); break;
-    case 'tar': outBlob = await m.convertArchiveToTar(file); break;
-    case 'tar.gz': outBlob = await m.convertArchiveToTarGz(file); break;
-    case 'tar.bz2': outBlob = await m.convertArchiveToTarBz2(file); break;
-    case 'tar.xz': outBlob = await m.convertArchiveToTarXz(file); break;
-    case '7z': outBlob = await m.convertArchiveTo7z(file); break;
-    default:
-      throw new Error(`Unsupported archive target: ${target}`);
-  }
+  const strip = n => (n || 'archive').replace(/\.(zip|rar|7z|tar|tgz|tbz2|txz|tar\.gz|tar\.bz2|tar\.xz)$/i, '');
+  const name = suggestedName || `${strip(file?.name)}.${target}`;
 
-  // derive a sensible filename
-  const strip = n => (n || 'archive').replace(
-    /\.(zip|rar|7z|tar|tgz|tbz2|txz|tar\.gz|tar\.bz2|tar\.xz)$/i, ''
-  );
-  const ext = target; // target already matches the desired extension strings
-  const name = `${strip(file?.name)}.${ext}`;
-
-  return [{ blob: outBlob, name }];
+  return [{ blob, name }];
 }
+
 
 
 /** Intersection across all selected files */
@@ -2161,58 +2212,199 @@ function possibleTargetsForFiles(files) {
   return acc || new Set();
 }
 
+// Rebuilds the dropdown; doesn't force selection here.
+// Selection logic is handled in refreshTargetDropdown().
 function rebuildTargetDropdown(allowedSet) {
+  if (!targetFormat) return;
+
+  const GROUPS_ORDER = ['text', 'documents', 'archives', 'spreadsheets', 'images', 'media'];
+  const TARGET_GROUPS = {
+    text: [['txt'], ['md'], ['html'], ['csv'], ['json'], ['jsonl'], ['rtf']],
+    documents: [['pdf'], ['docx']],
+    archives: [['zip'], ['tar.gz'], ['tar.bz2'], ['tar.xz'], ['7z'], ['rar']],
+    spreadsheets: [['xlsx'], ['csv'], ['tsv']],
+    images: [['png'], ['jpeg'], ['webp'], ['svg'], ['bmp'], ['tiff'], ['gif']],
+    media: [['mp3'], ['wav'], ['ogg'], ['m4a'], ['flac'], ['opus'], ['aiff'], ['aac'], ['mp4'], ['webm'], ['gif'], ['mkv'], ['mov'], ['m4v']]
+  };
+
+  const prev = targetFormat.value;
   targetFormat.innerHTML = '';
-  if (!allowedSet || allowedSet.size === 0) {
-    targetFormat.disabled = true;
-    qualityWrap.style.display = 'none';
-    return;
-  }
-  targetFormat.disabled = false;
 
   for (const group of GROUPS_ORDER) {
-    const items = (TARGET_GROUPS[group] || []).filter(([val]) => allowedSet.has(val));
+    const items = (TARGET_GROUPS[group] || []).filter(([val]) => {
+      return allowedSet && allowedSet.size ? allowedSet.has(val) : true;
+    });
     if (!items.length) continue;
 
     const og = document.createElement('optgroup');
-    og.label = t('group_' + group);       // localized group label
+    og.label = typeof t === 'function' ? t('group_' + group) : group.toUpperCase();
 
     for (const [val] of items) {
       const o = document.createElement('option');
       o.value = val;
-      o.textContent = optLabel(val);      // localized option label
+      o.textContent = (typeof optLabel === 'function') ? optLabel(val) : val.toUpperCase();
+      o.disabled = !!(allowedSet && allowedSet.size && !allowedSet.has(val));
       og.appendChild(o);
     }
     targetFormat.appendChild(og);
   }
 
-  // keep previous selection if still valid, else pick the first
-  const keep = allowedSet.has(targetFormat.value) ? targetFormat.value : (targetFormat.querySelector('option')?.value || '');
-  if (keep) targetFormat.value = keep;
+  // Keep previous value for now; refreshTargetDropdown will correct it if invalid.
+  targetFormat.value = prev;
 
-  qualityWrap.style.display = (targetFormat.value === 'jpeg' || targetFormat.value === 'webp') ? '' : 'none';
+  if (qualityWrap) {
+    const v = targetFormat.value;
+    qualityWrap.style.display = (v === 'jpeg' || v === 'webp') ? '' : 'none';
+  }
 }
+
+// === Robustly resolve controls (works with #target-format, #targetFormat, name="target", etc.)
+function resolveTargetControls() {
+  const tf = document.querySelector('#target-format, #targetFormat, select[name=target], select#target');
+  const qw = document.querySelector('#quality-wrap, #qualityWrap, .quality-wrap, [data-role="quality"]');
+  if (tf) window.targetFormat = tf;       // overwrite if needed
+  if (qw) window.qualityWrap = qw;
+}
+document.addEventListener('DOMContentLoaded', resolveTargetControls, { once: true });
+
+
+// Build the full target dropdown (unfiltered), grouped; used on initial load.
+function buildTargets() {
+  if (!targetFormat || !qualityWrap) return;
+  const GROUPS_ORDER = ['text', 'documents', 'archives', 'spreadsheets', 'images', 'media'];
+  const TARGET_GROUPS = {
+    text: [['txt'], ['md'], ['html'], ['csv'], ['json'], ['jsonl'], ['rtf']],
+    documents: [['pdf'], ['docx']],
+    archives: [['zip'], ['tar.gz'], ['tar.bz2'], ['tar.xz'], ['7z'], ['rar']],
+    spreadsheets: [['xlsx'], ['csv'], ['tsv']],
+    images: [['png'], ['jpeg'], ['webp'], ['svg'], ['bmp'], ['tiff'], ['gif']],
+    media: [['mp3'], ['wav'], ['ogg'], ['m4a'], ['flac'], ['opus'], ['aiff'], ['aac'], ['mp4'], ['webm'], ['gif'], ['mkv'], ['mov'], ['m4v']]
+  };
+  targetFormat.innerHTML = '';
+  for (const group of GROUPS_ORDER) {
+    if (window.ENABLE_OUTPUTS && window.ENABLE_OUTPUTS[group] === false) continue;
+    const items = (TARGET_GROUPS[group] || []);
+    if (!items.length) continue;
+    const og = document.createElement('optgroup');
+    og.label = t('group_' + group);
+    for (const [val] of items) {
+      const o = document.createElement('option');
+      o.value = val;
+      o.textContent = optLabel(val);
+      og.appendChild(o);
+    }
+    targetFormat.appendChild(og);
+  }
+  // Default selection preference
+  const preferred = ['jpeg', 'webp', 'png', 'pdf', 'mp3', 'mp4'];
+  for (const p of preferred) {
+    if (targetFormat.querySelector('option[value="' + p + '"]')) { targetFormat.value = p; break; }
+  }
+  if (qualityWrap) {
+    const v = targetFormat.value;
+    qualityWrap.style.display = (v === 'jpeg' || v === 'webp') ? '' : 'none';
+  }
+}
+
+
+
+// Auto-selects the first valid option (top-to-bottom) when current selection is invalid.
+// If no common output exists, clears selection, disables Convert, && shows an error banner.
 
 function refreshTargetDropdown() {
-  if (!targetFormat || !qualityWrap) return;
+  if (!targetFormat) return;
 
-  const allowed = possibleTargetsForFiles(state.files);
+  const files = (window.state && Array.isArray(state.files)) ? state.files : [];
+  const allowed = possibleTargetsForFiles(files);
 
-  // Rebuild options but disable those not allowed for current selection
-  for (const o of targetFormat.querySelectorAll('option')) {
-    o.disabled = allowed.size > 0 && !allowed.has(o.value);
+  // Dim/disable invalid options (keep the full menu visible)
+  const opts = Array.from(targetFormat.querySelectorAll('option'));
+  for (const o of opts) {
+    if (!o.value) continue;
+    const dis = (files.length > 0) && !allowed.has(o.value);
+    o.disabled = dis;
+    o.classList.toggle('dim', dis);
   }
 
-  // If nothing is allowed, tell the user (red, localized)
-  if (state.files.length > 0 && allowed.size === 0) {
-    const exts = state.files.map(f => '.' + (f.name.split('.').pop() || '?')).join(', ');
-    showBanner(t('banner.noCommonFor', { exts }), 'error');
+  // Disable optgroups without any enabled options
+  const groups = Array.from(targetFormat.querySelectorAll('optgroup'));
+  for (const g of groups) {
+    const anyEnabled = Array.from(g.querySelectorAll('option')).some(o => !o.disabled && !!o.value);
+    g.disabled = !anyEnabled;
+    g.classList.toggle('dim', !anyEnabled);
   }
 
-  // quality toggle
-  const v = targetFormat.value;
-  qualityWrap.style.display = (v === 'jpeg' || v === 'webp') ? '' : 'none';
+  // If nothing allowed, disable the select + banner
+  targetFormat.disabled = (files.length > 0 && allowed.size === 0);
+  if (files.length > 0 && allowed.size === 0) {
+    try {
+      const exts = files.map(f => '.' + (f.name.split('.').pop() || '?')).join(', ');
+      showBanner(t('banner.noCommonFor', { exts }), 'error');
+    } catch { }
+  }
+
+  // Ensure a valid selection (keep current if still valid)
+  const sel = targetFormat.options[targetFormat.selectedIndex];
+  if (!sel || sel.disabled || !sel.value) {
+    const firstOK = opts.find(o => !o.disabled && !!o.value);
+    if (firstOK) targetFormat.value = firstOK.value;
+  }
+
+  // Convert button state
+  const convertBtn = document.getElementById('convert-btn');
+  if (convertBtn) {
+    const s = targetFormat.options[targetFormat.selectedIndex];
+    convertBtn.disabled = !s || s.disabled || !s.value;
+  }
+
+  // Quality toggle
+  if (typeof qualityWrap !== 'undefined' && qualityWrap) {
+    const v = targetFormat.value;
+    qualityWrap.style.display = (v === 'jpeg' || v === 'webp') ? '' : 'none';
+  }
 }
+
+// Prevent selecting disabled options (extra safety)
+if (targetFormat && !targetFormat.__guarded) {
+  targetFormat.addEventListener('change', () => {
+    const opt = targetFormat.options[targetFormat.selectedIndex];
+    if (opt && (opt.disabled || !opt.value)) {
+      const firstOK = Array.from(targetFormat.options).find(o => !o.disabled && !!o.value);
+      if (firstOK) targetFormat.value = firstOK.value;
+    }
+    // Sync quality + Convert button
+    if (typeof qualityWrap !== 'undefined' && qualityWrap) {
+      const v = targetFormat.value;
+      qualityWrap.style.display = (v === 'jpeg' || v === 'webp') ? '' : 'none';
+    }
+    const convertBtn = document.getElementById('convert-btn');
+    if (convertBtn) {
+      const s = targetFormat.options[targetFormat.selectedIndex];
+      convertBtn.disabled = !s || s.disabled || !s.value;
+    }
+  });
+  targetFormat.__guarded = true;
+}
+
+
+
+// -- ZIP helper (browser-friendly) --------------------------------------------
+async function ensureZipLib() {
+  if (window.JSZip) return window.JSZip;
+  await new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = 'https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js';
+    s.onload = resolve;
+    s.onerror = () => reject(new Error('Failed to load JSZip'));
+    document.head.appendChild(s);
+  });
+  if (!window.JSZip) throw new Error('JSZip not available after loading');
+  return window.JSZip;
+}
+
+
+
+/* duplicate refreshTargetDropdown removed */
 
 
 // Remove one file by index
@@ -2220,6 +2412,7 @@ function removeFileAt(index) {
   if (!Array.isArray(state.files)) return;
   if (index < 0 || index >= state.files.length) return;
   const f = state.files.splice(index, 1)[0];
+  try { if (f && state._fileKeys) state._fileKeys.delete([f?.name || '', f?.size || 0, f?.lastModified || 0].join('|')); } catch { }
   renderFileList();
   if (typeof refreshTargetDropdown === 'function') refreshTargetDropdown();
   if (typeof showBanner === 'function') {
@@ -2238,67 +2431,95 @@ function getFileListEl() {
 }
 /* ========= 5) Build target dropdown ========= */
 /* ========= 5) Build target dropdown ========= */
-function buildTargets() {
-  if (!targetFormat || !qualityWrap) return;
 
-  const groupsOrder = ['text', 'documents', 'spreadsheets', 'images', 'media'];
-  const groupLabelKey = { text: 'group_text', documents: 'group_documents', spreadsheets: 'group_spreadsheets', images: 'group_images', media: 'group_media' };
-
-  targetFormat.innerHTML = '';
-  for (const key of groupsOrder) {
-    if (!ENABLE_OUTPUTS[key]) continue;
-    const items = TARGET_GROUPS[key]; if (!items) continue;
-
-    const og = document.createElement('optgroup');
-    og.label = t(groupLabelKey[key]);
-    items.forEach(([val/*, labelIgnored*/]) => {
-      const o = document.createElement('option');
-      o.value = val;
-      o.textContent = optLabel(val);            // ← localized label
-      og.appendChild(o);
-    });
-    targetFormat.appendChild(og);
-  }
-  if (ENABLE_OUTPUTS.images && [...targetFormat.querySelectorAll('option')].some(o => o.value === 'jpeg')) {
-    targetFormat.value = 'jpeg';
-  }
-  const v = targetFormat.value;
-  qualityWrap.style.display = (v === 'jpeg' || v === 'webp') ? '' : 'none';
-}
 window.buildTargets = buildTargets;                // builds all groups/labels
 window.refreshTargetDropdown = refreshTargetDropdown; // filters to only valid targets
 
-
 if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    try { buildTargets(); refreshTargetDropdown(); } catch (e) { console.warn(e); }
+  }, { once: true });
 } else {
-  buildTargets();
-  refreshTargetDropdown();
+  try { buildTargets(); refreshTargetDropdown(); } catch (e) { console.warn(e); }
 }
-
-
 
 refreshMemoryPill();
 
-/* Create a single promise and await it before converting */
+/* Create a single promise && await it before converting */
 const vendorsReady = ensureVendors();
 
 /* ========= 6) File I/O & UI events ========= */
+// Drag UI chrome
 dropzone.addEventListener('dragenter', e => { e.preventDefault(); dropzone.classList.add('drag'); });
 dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('drag'); });
 dropzone.addEventListener('dragleave', e => { e.preventDefault(); dropzone.classList.remove('drag'); });
-dropzone.addEventListener('drop', e => { e.preventDefault(); dropzone.classList.remove('drag'); addFiles([...e.dataTransfer.files]); });
-fileInput.addEventListener('change', () => {
-  addFiles([...fileInput.files]);        // spread the FileList
-});
+
+// Filtered drop
+
+// Wire filtered file input + dropzone.
+// Pass CSS selectors or actual elements.
+function wireFileInputs(fileInput, dropzone) {
+  const input = typeof fileInput === 'string' ? document.querySelector(fileInput) : fileInput;
+  const zone = typeof dropzone === 'string' ? document.querySelector(dropzone) : dropzone;
+  if (!input || !zone) return;
+
+  // Optional: set <input accept="..."> based on your capabilities
+  if (typeof updateFileInputAccept === 'function') updateFileInputAccept();
+
+  // Notify helpers (keeps your i18n keys)
+  function notifyMany(n) {
+    const msg = (typeof t === 'function')
+      ? t('error.unsupportedMany', { count: n })
+      : `${n} unsupported files were ignored`;
+    if (window.showToast) { try { showToast(msg, { type: 'error' }); } catch { alert(msg); } }
+    else { alert(msg); }
+  }
+  if (typeof window.notifyUnsupported !== 'function') {
+    window.notifyUnsupported = function (file) {
+      const ext = (file?.name?.split('.').pop() || '?').toLowerCase();
+      const msg = (typeof t === 'function')
+        ? t('error.unsupportedOne', { ext: '.' + ext })
+        : `Unsupported file type: .${ext}`;
+      if (window.showToast) { try { showToast(msg, { type: 'error' }); } catch { alert(msg); } }
+      else { alert(msg); }
+    };
+  }
+
+  // Picker
+  input.addEventListener('change', (e) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length) addFiles(files);
+    e.target.value = '';
+  });
+
+  // Drag UI chrome
+  ['dragenter', 'dragover'].forEach(evt => zone.addEventListener(evt, (e) => {
+    e.preventDefault(); zone.classList.add('drag');
+  }));
+  ['dragleave', 'dragend', 'drop'].forEach(evt => zone.addEventListener(evt, () => {
+    zone.classList.remove('drag');
+  }));
+
+  // Drop
+  zone.addEventListener('drop', (e) => {
+    e.preventDefault(); zone.classList.remove('drag');
+    const files = Array.from(e.dataTransfer?.files || []);
+    if (files.length) addFiles(files);
+  });
+}
+
+// Example init (do this once, after the DOM is ready):
+// wireFileInputs('#file-input', '#dropzone');
+
 $('#clear-btn').addEventListener('click', () => {
   state.files = []; state.outputs = [];
+  try { if (state._fileKeys) state._fileKeys.clear(); } catch { }
   renderFileList();
   if (typeof refreshTargetDropdown === 'function') refreshTargetDropdown();   // <-- add this
   downloadLinks.innerHTML = ''; downloads.hidden = true; fileInput.value = '';
   showBanner(t('banner.cleared'), 'ok');
 
 });
-
 
 limitMode.addEventListener('change', () => { const isManual = limitMode.value === 'manual'; state.useAuto = !isManual; manualLimit.disabled = !isManual; state.budget = isManual ? Math.max(10, +manualLimit.value) * 1048576 : estimateSafeBudgetBytes(); refreshMemoryPill(); });
 manualLimit.addEventListener('input', () => { state.budget = Math.max(10, +manualLimit.value) * 1048576; refreshMemoryPill(); });
@@ -2312,37 +2533,52 @@ $('#theme-btn')?.addEventListener('click', () => { const r = document.documentEl
 $('#share-btn')?.addEventListener('click', async () => { try { if (navigator.share) { await navigator.share({ title: document.title, url: location.href }); } else { await navigator.clipboard.writeText(location.href); showBanner('Link copied to clipboard.', 'ok'); } } catch { } });
 
 function addFiles(files) {
-  if (!files?.length) return;
+  const list = Array.from(files || []);
+  if (!list.length) return;
 
-  const totalAdded = files.reduce((s, f) => s + f.size, 0);
-  const current = state.files.reduce((s, f) => s + f.size, 0);
+  // Optional de-dup (keeps your toggle)
+  let incoming = list;
+  try {
+    if (state.blockDupes) {
+      const key = f => [f?.name || '', f?.size || 0, f?.lastModified || 0].join('|');
+      state._fileKeys = state._fileKeys || new Set();
+      const before = incoming.length;
+      incoming = incoming.filter(f => !state._fileKeys.has(key(f)));
+      for (const f of incoming) state._fileKeys.add(key(f));
+      const skipped = before - incoming.length;
+      if (skipped > 0) showBanner(`Skipped ${skipped} duplicate ${skipped === 1 ? 'file' : 'files'}.`, 'ok');
+    }
+  } catch { }
+
+  if (!incoming.length) return;
+
+  // Budget warning (non-blocking)
+  const totalAdded = incoming.reduce((s, f) => s + (f.size || 0), 0);
+  const current = state.files.reduce((s, f) => s + (f.size || 0), 0);
   if (current + totalAdded > state.budget) {
     showBanner(t('banner.tooMuchData', { total: fmtBytes(current + totalAdded), budget: fmtBytes(state.budget) }), 'error');
   }
 
-  state.files.push(...files);
+  // Push + render
+  state.files.push(...incoming);
   renderFileList();
   if (typeof refreshTargetDropdown === 'function') refreshTargetDropdown();
 
-  // What got added?
-  const justExts = files.map(f => (f.name.match(/\.([^.]+)$/)?.[1] || '').toLowerCase());
-  const unsupported = files.filter(f => detectKind(f) === 'unknown');
-
-
+  // Old-style banner logic:
+  const unsupportedBatch = incoming.filter(f => detectKind(f) === 'unknown');
   const unsupportedNow = state.files.filter(f => detectKind(f) === 'unknown');
+
   if (unsupportedNow.length) {
     const ex = unsupportedNow.map(f => '.' + (f.name.split('.').pop() || '?')).join(', ');
     showBanner(t('banner.unsupportedPresent', { exts: ex }), 'error');
   }
-
-  // If unsupported were in the batch, warn (red)
-  if (unsupported.length) {
-    const exts = unsupported.map(f => '.' + (f.name.split('.').pop() || '?')).join(', ');
+  if (unsupportedBatch.length) {
+    const exts = unsupportedBatch.map(f => '.' + (f.name.split('.').pop() || '?')).join(', ');
     showBanner(t('banner.unsupportedAdded', { exts }), 'error');
     return;
   }
 
-  // If the whole selection has no common conversion, warn (red)
+  // No common target across current selection?
   const allowed = possibleTargetsForFiles(state.files);
   if (state.files.length > 0 && allowed.size === 0) {
     const allExts = state.files.map(f => '.' + (f.name.split('.').pop() || '?')).join(', ');
@@ -2351,8 +2587,10 @@ function addFiles(files) {
   }
 
   // Otherwise: green “added”
-  const n = files.length;
+  const n = incoming.length;
   showBanner(t('banner.added', { n, files: wordFiles(n, APP_LANG), total: state.files.length }), 'ok');
+
+
 }
 
 function applyUrlTarget() {
@@ -2373,12 +2611,12 @@ function applyUrlTarget() {
 }
 
 if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    try { buildTargets(); refreshTargetDropdown(); applyUrlTarget?.(); } catch (e) { console.warn(e); }
+  }, { once: true });
 } else {
-  buildTargets();
-  refreshTargetDropdown();
-  applyUrlTarget();
+  try { buildTargets(); refreshTargetDropdown(); applyUrlTarget?.(); } catch (e) { console.warn(e); }
 }
-
 
 function detectKind(file) {
   const n = file.name.toLowerCase();
@@ -2400,17 +2638,27 @@ function detectKind(file) {
   return 'unknown';
 }
 
+
 function renderFileList() {
+  const fileList = getFileListEl();
+  if (!fileList) return;
+  try { if (window.__rowAnim) window.__rowAnim.sync(); } catch { }
   fileList.innerHTML = '';
   if (!state.files.length) {
     fileList.innerHTML = `<div class="hint" style="padding:12px 0">${t('noFilesYet') || 'No files yet.'}</div>`;
-    return;
-  }
 
+    if (!state._emptyBannerShown) {
+      tb('banner.readyHint');           // neutral gray banner
+      state._emptyBannerShown = true;   // don’t show it again until files appear
+    }
+    return;
+  } else {
+    state._emptyBannerShown = false;     // reset once files exist
+  }
   state.files.forEach((f, i) => {
     const card = el('div', 'filecard');
 
-    // Left: filename + meta (NO innerHTML — prevent XSS)
+    // Left: filename + meta
     const meta = el('div', 'file-meta');
 
     const nameWrap = el('div', 'f-name');
@@ -2418,7 +2666,7 @@ function renderFileList() {
     nameWrap.title = f.name;
 
     const strong = document.createElement('strong');
-    strong.textContent = f.name; // safe
+    strong.textContent = f.name;
     nameWrap.append(strong);
 
     const sub = el('div', 'sub');
@@ -2432,16 +2680,13 @@ function renderFileList() {
     badge.textContent = detectKind(f);
 
     const prog = document.createElement('progress');
-    prog.max = 100;
-    prog.value = 0;
-    prog.id = 'prog-' + i;
-    // optional: ARIA for better a11y
+    prog.max = 100; prog.value = 0; prog.id = 'prog-' + i;
     prog.setAttribute('aria-label', t('converting') || 'Converting…');
 
     const status = el('div', 'status');
     status.id = 'status-' + i;
-    status.textContent = t(t('queued')); // localized
-    status.setAttribute('aria-live', 'polite'); // announce changes
+    status.textContent = t('queued');   // ← keep it simple
+    status.setAttribute('aria-live', 'polite');
 
     const rm = document.createElement('button');
     rm.type = 'button';
@@ -2455,7 +2700,9 @@ function renderFileList() {
     card.append(meta, ctrls);
     fileList.append(card);
   });
+
 }
+
 
 function setStatus(iOrUid, key, vars) {
   const s = document.getElementById('status-' + iOrUid);
@@ -2469,10 +2716,6 @@ document.addEventListener('click', (e) => {
   const idx = Number(btn.dataset.index);
   removeFileAt(idx);
 });
-
-
-
-
 
 /* ========= 7) Conversion dispatcher (mixed batch supported) ========= */
 async function convertFile(file, target, index) {
@@ -2500,37 +2743,21 @@ function wireFFmpegProgress(ff, index) {
   else if (typeof ff.on === 'function') { try { ff.off?.('progress', ff._progressHandler); } catch { } ff._progressHandler = handler; ff.on('progress', handler); }
 }
 
-
-
-// Local-only: ensure the UMD wrapper is present (no CDN)
-async function ensureFFmpegWrapperLocal() {
-  if (window.FFmpeg?.createFFmpeg) return true;
-  const BASE = '/vendor/ffmpeg/';
-  await new Promise((resolve, reject) => {
-    const s = document.createElement('script');
-    s.src = BASE + 'ffmpeg.js';
-    s.async = true;
-    s.onload = resolve;
-    s.onerror = () => reject(new Error('Failed to load local ' + s.src));
-    document.head.appendChild(s);
-  });
-  return !!(window.FFmpeg && window.FFmpeg.createFFmpeg);
-}
-
-
 // Exec shim: accepts (...args) or an array; uses exec() if present, else run()
 async function ffExec(ff, ...args) {
-  // allow ffExec(ff, ['-i','in','out']) and ffExec(ff, '-i','in','out')
   const argv = (args.length === 1 && Array.isArray(args[0])) ? args[0] : args;
-  if (typeof ff.exec === 'function') return ff.exec(argv);
+  if (typeof window !== 'undefined' && typeof window.ffExec === 'function' && window.ffExec !== ffExec) {
+    return await window.ffExec(ff, argv);
+  }
+  if (ff && typeof ff.exec === 'function') return ff.exec(argv);
   return ff.run(...argv);
 }
-
 /* ---- Text → many ---- */
 // Media (audio/video) → audio/video/gif — MT when possible, ST otherwise
 
-// Drop-in: replaces your entire convertMediaFile(...)
 async function convertMediaFile(file, target, kind, index) {
+  const uid = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
+
   // Status: Preparing…
   try {
     const s = document.getElementById('status-' + index);
@@ -2539,13 +2766,11 @@ async function convertMediaFile(file, target, kind, index) {
     if (p && typeof p.value === 'number') p.value = 0;
   } catch { }
 
-  const ff = await needFFmpeg();
+  const ff = ffFromPool(index) || await needFFmpeg();
 
-  // Per-row progress (clamped & robust for both 0.12 'progress' and legacy 'ratio')
+  // Per-row progress (clamped & robust for both 0.12 'progress' && legacy 'ratio')
   const update = ({ ratio, progress } = {}) => {
-    let val = Number.isFinite(progress) ? progress
-      : Number.isFinite(ratio) ? ratio
-        : 0;
+    let val = Number.isFinite(progress) ? progress : Number.isFinite(ratio) ? ratio : 0;
     if (!Number.isFinite(val)) val = 0;
     if (val < 0) val = 0;
     if (val > 1) val = 1;
@@ -2573,38 +2798,22 @@ async function convertMediaFile(file, target, kind, index) {
   if (isVideoIn && !(videoTargets.has(target) || audioTargets.has(target))) throw new Error('Video → ' + target.toUpperCase() + ' not supported');
   if (target === 'gif' && !isVideoIn) throw new Error('GIF is only from video input');
 
-  // --- IO helpers (fixed) ---
-  // pick a safe fetchFile that returns ArrayBuffer/Uint8Array; DO NOT call it yet
-  const fetchFileFn =
-    window.FFmpeg?.fetchFile ||
-    window.fetchFile ||
-    ((blob) => blob.arrayBuffer());
-
-  if (!file || typeof file.arrayBuffer !== 'function') {
-    throw new Error('Input file is missing or not a Blob/File.');
-  }
-
+  // IO
+  const fetchFileFn = window.FFmpeg?.fetchFile || window.fetchFile || ((blob) => blob.arrayBuffer());
   const inExt = (file.name?.match(/\.([^.]+)$/)?.[1] || (isAudioIn ? 'audio' : 'video')).toLowerCase();
-  const inName = `in.${inExt}`;
-  const outName = `out.${target}`;
-
-  // Write input (prefer new API; fallback to FS)
-  const data = await fetchFileFn(file);            // ArrayBuffer or Uint8Array
+  const inName = `in_${uid}.${inExt}`;
+  const outName = `out_${uid}.${target}`;
+  const data = await fetchFileFn(file);
   const inputU8 = data instanceof Uint8Array ? data : new Uint8Array(data);
-  if (typeof ff.writeFile === 'function') {
-    await ff.writeFile(inName, inputU8);
-  } else {
-    ff.FS('writeFile', inName, inputU8);
-  }
+  if (typeof ff.writeFile === 'function') await ff.writeFile(inName, inputU8); else ff.FS('writeFile', inName, inputU8);
 
-  // Build args
+  // Args
   let args = ['-i', inName];
-  if (audioTargets.has(target)) {
-    args.push('-vn');
+  if (isAudioIn) {
     if (target === 'mp3') args.push('-c:a', 'libmp3lame', '-b:a', '192k');
-    if (target === 'wav') args.push('-c:a', 'pcm_s16le', '-ar', '44100');
-    if (target === 'ogg') args.push('-c:a', 'libvorbis', '-q:a', '5');
-    if (target === 'm4a') args.push('-c:a', 'aac', '-b:a', '192k');
+    if (target === 'wav') args.push('-c:a', 'pcm_s16le');
+    if (target === 'ogg') args.push('-c:a', 'libvorbis', '-q:a', '4');
+    if (target === 'm4a') args.push('-c:a', 'aac', '-b:a', '160k');
     args.push(outName);
   } else {
     if (target === 'webm') {
@@ -2619,14 +2828,9 @@ async function convertMediaFile(file, target, kind, index) {
     args.push(outName);
   }
 
-  // Run (uses exec() on 0.12+, run() on older via your shim)
   await ffExec(ff, args);
 
-  // Read output (prefer new API; fallback to FS)
-  const outBytes = (typeof ff.readFile === 'function')
-    ? await ff.readFile(outName)
-    : ff.FS('readFile', outName);
-
+  const outBytes = (typeof ff.readFile === 'function') ? await ff.readFile(outName) : ff.FS('readFile', outName);
   const mime =
     target === 'mp3' ? 'audio/mpeg' :
       target === 'wav' ? 'audio/wav' :
@@ -2636,36 +2840,22 @@ async function convertMediaFile(file, target, kind, index) {
               target === 'mp4' ? 'video/mp4' :
                 target === 'gif' ? 'image/gif' : 'application/octet-stream';
 
-  // Cleanup (best effort)
   try { typeof ff.unlink === 'function' ? await ff.unlink(inName) : ff.FS('unlink', inName); } catch { }
   try { typeof ff.unlink === 'function' ? await ff.unlink(outName) : ff.FS('unlink', outName); } catch { }
 
   const blob = new Blob([outBytes], { type: mime });
+  try {
+    if (typeof ff.setProgress === 'function') ff.setProgress(() => { });
+    else if (typeof ff.off === 'function' && ff._rowHandlers && ff._rowHandlers[index]) ff.off('progress', ff._rowHandlers[index]);
+  } catch { }
   return [{ blob, name: (file.name.replace(/\.[^.]+$/, '') || 'output') + '.' + target }];
 }
-
-
-
-
-
-
 
 // Load only the FFmpeg UMD wrapper so the badge can turn green early.
 // Load only the wrapper so the badge flips green early (no WASM yet)
 // Loads just the wrapper so the badge can turn green early (no WASM yet)
 
-
-
-
-
-
-
 // Kick it off right away so the badge goes green soon after load
-
-
-
-
-
 
 /* ---- PPTX → textish / images-per-slide ---- */
 async function convertPptxFile(file, target) {
@@ -2767,8 +2957,6 @@ async function convertPdfFile(file, target) {
     if (typeof features === "object") features.pdf = !!window.pdfjsLib;
     try { typeof ensureVendors === "function" && ensureVendors(); } catch { }
   }
-
-
 
   await ensurePdf();
   if (!window.pdfjsLib?.getDocument) throw new Error("PDF support needs PDF.js");
@@ -2890,95 +3078,51 @@ async function convertPdfFile(file, target) {
   return [{ blob: new Blob([all], { type: "text/plain" }), name: swapExt(file.name, "txt") }];
 }
 
+async function needArchives() {
+  // Try 7z-wasm first (reads RAR/7Z/ZIP/TAR; writes ZIP/7Z/TAR)
+  try {
 
-
-
-async function warmFFmpegWrapper(opts = {}) {
-  if (_warmFFmpegOnce) return _warmFFmpegOnce;
-
-  _warmFFmpegOnce = (async () => {
-    const t0 = (typeof performance !== 'undefined' ? performance.now() : Date.now());
-
-    // If you have a vendor preloader, prefer local assets
-    try {
-      if (typeof ensureVendors === 'function') {
-        await ensureVendors({ preferLocal: true, ...opts });
-      }
-    } catch (_) { /* non-fatal */ }
-
-    // Your app helper: should attach/normalize FFmpeg globals
-    // (safe if it's not present)
-    try {
-      if (typeof ensureFFmpegGlobal === 'function') {
-        await ensureFFmpegGlobal({ preferLocal: true, ...opts });
-      }
-      if (typeof adoptFFmpegGlobal === 'function') {
-        await adoptFFmpegGlobal(); // normalize different loader shapes
-      }
-    } catch (e) {
-      console.warn('[warmFFmpegWrapper] ensure/adopt failed (continuing):', e);
-    }
-
-    // Discover whichever API shape we ended up with
-    const api = (
-      // common globals your app may set
-      window.ffmpeg ||
-      window.FFmpeg ||
-      // sometimes ensureFFmpegGlobal returns an object
-      (typeof getFFmpeg === 'function' ? await getFFmpeg() : null) ||
-      null
-    );
-
-    // If nothing is available, just exit quietly—callers can still lazy-load later
-    if (!api) {
-      if (window.DEBUG) console.debug('[warmFFmpegWrapper] no FFmpeg API found yet; skipping warmup');
-      return;
-    }
-
-    // Already loaded?
-    try {
-      if (typeof api.isLoaded === 'function' && api.isLoaded()) return;
-      if (api.loaded || api._loaded) return;
-    } catch (_) { /* ignore */ }
-
-    // Try to load/init depending on the shape
-    try {
-      if (typeof api.load === 'function') {
-        await api.load();                    // ffmpeg.wasm-style instance
-      } else if (typeof api.ready === 'function') {
-        await api.ready();                   // some wrappers expose .ready()
-      } else if (typeof api.init === 'function') {
-        await api.init();                    // other wrappers expose .init()
-      }
-    } catch (e) {
-      console.warn('[warmFFmpegWrapper] load/init failed (continuing):', e);
-    }
-
-    // Micro-run to JIT the command path; cheap and safe to ignore if unsupported
-    try {
-      if (typeof api.exec === 'function') {
-        await api.exec(['-version']);
-      } else if (typeof api.run === 'function') {
-        await api.run(['-version']);
-      } else if (typeof api.callMain === 'function') {
-        api.callMain(['-version']);
-      }
-    } catch (e) {
-      // Some thin wrappers don't support -version; ignore quietly
-      if (window.DEBUG) console.debug('[warmFFmpegWrapper] micro-run skipped:', e);
-    }
-
-    if (window.DEBUG) {
-      const dt = (typeof performance !== 'undefined' ? performance.now() : Date.now()) - t0;
-      console.debug(`[warmFFmpegWrapper] ready in ${Math.round(dt)} ms`);
-    }
-  })();
-
-  return _warmFFmpegOnce;
+    if (typeof seven !== "undefined") if (typeof seven !== "undefined") if (typeof seven !== "undefined") window.SevenZip = seven;
+    features.archives = true;
+    try { ensureVendors?.(); } catch { }
+    return;
+  } catch (e) {
+    console.warn('[archives] 7z-wasm failed, falling back to libarchive', e);
+  }
+  // Fallback: libarchive.js
+  try {
+    await import('vendor/libarchive-wasm/dist/index.js');
+    features.archives = !!window.LibArchive;
+    try { ensureVendors?.(); } catch { }
+  } catch (e) {
+    console.warn('[archives] libarchive also failed', e);
+  }
 }
 
 /* ---- CSV/XLSX ⇄ ---- */
 async function convertSheetFile(file, target) {
+  /* injected: TSV via SheetJS */
+  if (target === 'tsv') {
+    try {
+      if (typeof XLSX !== 'undefined') {
+        let wb;
+        if (file && file.name && /\.xlsx$/i.test(file.name)) {
+          const buf = new Uint8Array(await file.arrayBuffer());
+          wb = XLSX.read(buf, { type: 'array' });
+        } else {
+          const txt = (typeof text === 'string') ? text : await file.text();
+          wb = XLSX.read(txt, { type: 'string' });
+        }
+        const ws = wb.Sheets[wb.SheetNames[0]];
+        const tsv = XLSX.utils.sheet_to_csv(ws, { FS: '\t' });
+        return [{
+          blob: new Blob([tsv], { type: 'text/tab-separated-values' }),
+          name: (typeof swapExt === 'function' ? swapExt(file.name, 'tsv') : (file.name.replace(/\.[^.]+$/, '') + '.tsv'))
+        }];
+      }
+    } catch (e) { }
+  }
+
   const isCSV = file.name.toLowerCase().endsWith('.csv');
   if (isCSV) {
     const text = await file.text();
@@ -3000,6 +3144,50 @@ async function convertSheetFile(file, target) {
 
 /* ---- Images ⇄ Images / SVG / PDF ---- */
 async function convertImageFile(file, target) {
+  /* injected: BMP/TIFF via FFmpeg */
+  // image → GIF (via FFmpeg palette)
+  if (target === 'gif') {
+    const bmp = await createImageBitmap(file);
+    const c = document.createElement('canvas');
+    c.width = bmp.width; c.height = bmp.height;
+    c.getContext('2d').drawImage(bmp, 0, 0);
+
+    const pngBlob = await new Promise(res => c.toBlob(res, 'image/png'));
+    const u8 = new Uint8Array(await pngBlob.arrayBuffer());
+
+    const ff = await (typeof needFFmpeg !== 'undefined' ? needFFmpeg() : (typeof ffmpeg !== 'undefined' ? ffmpeg : null));
+    if (!ff) throw new Error('FFmpeg not available for GIF');
+
+    const inName = 'in.png', pal = 'pal.png', outName = 'out.gif';
+    if (ff.writeFile) { await ff.writeFile(inName, u8); } else { ff.FS('writeFile', inName, u8); }
+
+    // palettegen + paletteuse for decent quality/size
+    await ffExec(ff, ['-i', inName, '-vf', 'fps=12,scale=480:-1:flags=lanczos,palettegen', pal]);
+    await ffExec(ff, ['-i', inName, '-i', pal, '-lavfi', 'fps=12,scale=480:-1:flags=lanczos [x]; [x][1:v] paletteuse', outName]);
+
+    const out = (ff.readFile ? await ff.readFile(outName) : ff.FS('readFile', outName));
+    return [{ blob: new Blob([out], { type: 'image/gif' }), name: swapExt(file.name, 'gif') }];
+  }
+
+  if (target === 'bmp' || target === 'tiff') {
+    const bitmap = await createImageBitmap(file);
+    const c = document.createElement('canvas');
+    c.width = bitmap.width; c.height = bitmap.height;
+    c.getContext('2d').drawImage(bitmap, 0, 0);
+    const pngBlob = await new Promise(function (res) { c.toBlob(res, 'image/png'); });
+    const u8 = new Uint8Array(await pngBlob.arrayBuffer());
+    const ff = await (typeof needFFmpeg !== 'undefined' ? needFFmpeg() : (typeof ffmpeg !== 'undefined' ? ffmpeg : null));
+    if (!ff) throw new Error('FFmpeg not available for BMP/TIFF');
+    const inName = 'in.png', outName = (target === 'tiff' ? 'out.tiff' : 'out.bmp');
+    if (ff.writeFile) { await ff.writeFile(inName, u8); } else { ff.FS('writeFile', inName, u8); }
+    if (ff.exec) { await ff.exec(['-i', inName, outName]); } else { await ff.run('-i', inName, outName); }
+    const out = (ff.readFile ? await ff.readFile(outName) : ff.FS('readFile', outName));
+    return [{
+      blob: new Blob([out], { type: (target === 'tiff' ? 'image/tiff' : 'image/bmp') }),
+      name: (typeof swapExt === 'function' ? swapExt(file.name, target) : (file.name.replace(/\.[^.]+$/, '') + '.' + target))
+    }];
+  }
+
   if (!['png', 'jpeg', 'webp', 'svg', 'pdf'].includes(target)) {
     throw new Error('Image → ' + target.toUpperCase() + ' supports PNG/JPEG/WebP/SVG/PDF');
   }
@@ -3132,100 +3320,140 @@ function htmlToMarkdown(html) {
 }
 
 /* ========= 8) Orchestration ========= */
-convertBtn.addEventListener('click', async () => {
-  await vendorsReady;
 
-  // Localized: "Add some files first."
-  if (!state.files.length) { showBanner(t('banner.addFirst'), 'error'); return; }
+// === Single, guarded Convert wiring (deduped) ===
+(function attachConvertOnce() {
+  const btn = document.querySelector('#convert-btn');
+  if (!btn) return;
+  if (btn.dataset && btn.dataset.wired === '1') return;
+  if (btn.dataset) btn.dataset.wired = '1';
+  if (typeof window !== 'undefined') window.__convert_lock__ = window.__convert_lock__ ?? false;
 
-  // 🔁 CANCEL previous run + RESET counters/UI
-  state.runId += 1;
-  const runId = state.runId;
+  const isStale = (id) => id !== state.runId;
 
-  state.outputs = [];
-  state.outputsByFile = {};
-  downloadLinks.innerHTML = '';
-  downloads.hidden = true;
-
-  // Reset each row to t('queued') with 0% and non-clickable name
-  renderFileList();
-
-  // Setup this run
-  const total = state.files.reduce((s, f) => s + f.size, 0);
-  if (total > state.budget) {
-    // Localized budget warning
-    showBanner(
-      t('banner.exceedsBudget', { total: fmtBytes(total), budget: fmtBytes(state.budget) }),
-      'error'
-    );
-  }
-  const concurrency = clamp(+($('#concurrency').value || 1), 1, 4);
-  const target = targetFormat.value;
-
-  let i = 0, active = 0, failed = 0;
-
-  const next = () => {
-    if (isStale(runId)) return; // stop scheduling if a new run started
-
-    while (active < concurrency && i < state.files.length) {
-      const jobIndex = i++;
-      const f = state.files[jobIndex];
-      active++;
-      runJob(f, jobIndex, target, runId)
-        .then(() => { if (isStale(runId)) return; active--; next(); })
-        .catch(() => { if (isStale(runId)) return; active--; failed++; next(); });
+  btn.addEventListener('click', async (event) => {
+    // Global cross-file lock: prevents duplicate runs if the script is included twice
+    if (typeof window !== 'undefined' && window.__convert_lock__) {
+      try { showBanner((typeof t === 'function' && t('banner.busy')) || 'Conversion already running', 'error'); } catch { }
+      return;
     }
+    if (typeof window !== 'undefined') window.__convert_lock__ = true;
 
-    if (!active && i >= state.files.length) {
-      if (isStale(runId)) return; // old run finishing after a new run started
+    // prevent parallel runs
+    if (state.converting) {
+      try { showBanner((typeof t === 'function' && t('banner.busy')) || 'Conversion already running', 'error'); } catch { }
+      if (typeof window !== 'undefined') window.__convert_lock__ = false;
+      return;
+    }
+    state.converting = true;
 
-      // show/hide downloads section
-      downloads.hidden = state.outputs.length === 0;
-      // show/hide downloads section is already above
+    try {
+      await vendorsReady;
 
-      // Count successes by file (robust even if a file emits multiple outputs)
-      const total = state.files.length;
-      const s = Object.values(state.outputsByFile).reduce((n, arr) => n + ((arr && arr.length) ? 1 : 0), 0);
-      const f = failed; // your counter from run loop
+      // Add some files first
+      if (!state.files.length) { showBanner(t('banner.addFirst'), 'error'); state.converting = false; if (typeof window !== 'undefined') window.__convert_lock__ = false; return; }
 
-      const L = window.APP_LANG || 'en';
-      if (f === 0) {
-        tb('banner.doneOk', { s, files: wordFiles(s, L) });       // ✅ green
-      } else if (s > 0) {
-        tb('banner.finishedMixed', { s, files: wordFiles(s, L), f });    // ❌ red
-      } else {
-        tb('banner.finishedFail', { f, files: wordFiles(f, L) });       // ❌ red
+      // CANCEL previous run + RESET counters/UI
+      state.runId += 1;
+      const runId = state.runId;
+
+      state.outputs = [];
+      state.outputsByFile = {};
+      downloadLinks.innerHTML = '';
+      downloads.hidden = true;
+
+      renderFileList();
+      // User-chosen parallelism (fallback to 2 if no control present)
+      const concurrency = clamp(+(document.querySelector('#concurrency')?.value || 2), 1, 4);
+
+      // Selected target from the dropdown (fallback to current value or a sensible default)
+      const target = (typeof targetFormat !== 'undefined' && targetFormat && targetFormat.value)
+        ? targetFormat.value
+        : (document.querySelector('#target-format')?.value || 'pdf');
+
+      // Setup this run
+      const total = state.files.reduce((s, f) => s + f.size, 0);
+      if (total > state.budget) {
+        showBanner(
+          t('banner.exceedsBudget', { total: fmtBytes(total), budget: fmtBytes(state.budget) }),
+          'error'
+        );
       }
 
-      let msg, tone;
-      if (f === 0) {
-        // ✅ Only here we say "Done"
-        msg = t('banner.doneOk', { s, files: wordFiles(s, L) });
-        tone = 'ok';
-      } else if (s > 0) {
-        msg = t('banner.finishedMixed', { s, files: wordFiles(s, L), f });
-        tone = 'error';
-      } else {
-        msg = t('banner.finishedFail', { f, files: wordFiles(f, L) });
-        tone = 'error';
-      }
-      showBanner(msg, tone);
 
+      try {
+        const hasMedia = (state.files || []).some(f => { try { const k = detectKind(f); return k === 'audio' || k === 'video'; } catch { return false; } });
+        if (hasMedia) { await ensureFFmpegPool(concurrency); }
+      } catch { /* non-fatal: we'll fall back to the singleton */ }
+      let i = 0, active = 0, failed = 0;
+
+      const finish = () => {
+        downloads.hidden = state.outputs.length === 0;
+
+        const succeeded = Object.values(state.outputsByFile)
+          .reduce((n, arr) => n + ((arr && arr.length) ? 1 : 0), 0);
+        const L = window.APP_LANG || 'en';
+        let msg, tone;
+        if (failed === 0) { msg = t('banner.doneOk', { s: succeeded, files: wordFiles(succeeded, L) }); tone = 'ok'; }
+        else if (succeeded > 0) { msg = t('banner.finishedMixed', { s: succeeded, files: wordFiles(succeeded, L), f: failed }); tone = 'error'; }
+        else { msg = t('banner.finishedFail', { f: failed, files: wordFiles(failed, L) }); tone = 'error'; }
+        showBanner(msg, tone);
+
+        // Unlock only when the whole batch is done
+        state.converting = false;
+        if (typeof window !== 'undefined') window.__convert_lock__ = false;
+      };
+
+      const next = () => {
+        if (isStale(runId)) return;
+
+        while (active < concurrency && i < state.files.length) {
+          const jobIndex = i++;
+          const f = state.files[jobIndex];
+          active++;
+          runJob(f, jobIndex, target, runId)
+            .then(() => {
+              if (isStale(runId)) return;
+              active--;
+              next();
+            })
+            .catch(() => {
+              if (isStale(runId)) return;
+              active--;
+              failed++;
+              next();
+            });
+        }
+
+        if (!active && i >= state.files.length) {
+          if (isStale(runId)) return;
+          finish();
+        }
+      };
+
+      next();
+    } catch (err) {
+      // Fatal error path: make sure we unlock so the user can retry
+      state.converting = false;
+      if (typeof window !== 'undefined') window.__convert_lock__ = false;
+      throw err;
     }
-  };
-
-  next();
-});
+  });
+})();
 
 
 
+/* Single-file job runner (moved from top-level) */
 async function runJob(file, index, target, runId) {
-  const card = document.getElementById('file-list')?.children[index];
-  const status = $('#status-' + index);
-  const prog = $('#prog-' + index);
+  const list = document.getElementById('file-list');
+  const card = list ? list.children[index] : null;
+  const status = document.getElementById('status-' + index);
+  const prog = document.getElementById('prog-' + index);
+
+  try { if (window.__rowAnim) window.__rowAnim.start(index); } catch { }
 
   // Start: shrink bar + prevent download
-  if (card) card.classList.add('is-converting');
+  if (card && !card.classList.contains('is-converting')) card.classList.add('is-converting');
   const nameEl = card?.querySelector('.f-name');
   if (nameEl) {
     nameEl.classList.remove('clickable');
@@ -3248,7 +3476,6 @@ async function runJob(file, index, target, runId) {
     // store per-file outputs & make filename clickable (for this run)
     registerOutputs(index, outs, runId, target);
 
-
     // add to global downloads list (only if still current)
     outs.forEach(({ blob, name }) => {
       if (isStale(runId)) return;
@@ -3259,52 +3486,46 @@ async function runJob(file, index, target, runId) {
       state.outputs.push({ name, blob, url });
     });
 
-  }
-  catch (err) {
-    friendlyCatch(err, { status, card, runId });
+  } catch (err) {
+    friendlyCatch(err, { status, card, runId, fileName: (file && file.name) });
+    throw err;
   }
 }
 
-
+// Save All → bundle everything into a single Converted Files.zip
 saveAllBtn.addEventListener('click', async () => {
   if (!state.outputs.length) {
     showBanner('No outputs yet. Convert first.', 'error');
     return;
   }
 
-  // If the File System Access API exists, try it first.
-  if ('showDirectoryPicker' in window) {
-    try {
-      const dir = await window.showDirectoryPicker({ mode: 'readwrite' });
-      for (const out of state.outputs) {
-        const fh = await dir.getFileHandle(out.name, { create: true });
-        const ws = await fh.createWritable();
-        await ws.write(out.blob);
-        await ws.close();
-      }
-      showBanner('Saved all files to your chosen folder.', 'ok');
-      return;
-    } catch (e) {
-      // User cancellation should NOT trigger any downloads.
-      const name = e?.name || '';
-      if (name === 'AbortError' || name === 'NotAllowedError') {
-        // Cancel / permission denied by user → do nothing.
-        showBanner('Save cancelled.', 'info');
-        return;
-      }
-      // Other errors: surface and stop (don’t auto-download).
-      console.warn('Save-all failed', e);
-      showBanner('Couldn’t open the folder. Try again or download individually below.', 'error');
-      return;
-    }
-  }
+  try {
+    await ensureZipLib();
+    const zip = new JSZip();
 
-  // Fallback only if the picker is not supported at all:
-  for (const a of [...downloadLinks.querySelectorAll('a')]) {
+    // Add every produced output as-is (keeps original names && extensions)
+    state.outputs.forEach(({ name, blob }) => {
+      // JSZip accepts Blob/File/Uint8Array
+      zip.file(name, blob);
+    });
+
+    // Build the archive (Blob) && trigger a single download
+    const zipBlob = await zip.generateAsync({ type: 'blob' });
+    const url = URL.createObjectURL(zipBlob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'Converted Files.zip';
+    document.body.appendChild(a);
     a.click();
-    await new Promise(r => setTimeout(r, 150));
+    a.remove();
+
+    // Clean up the object URL after a moment
+    setTimeout(() => URL.revokeObjectURL(url), 40000);
+    showBanner('Created archive “Converted Files.zip”.', 'ok');
+  } catch (e) {
+    console.error('[save-all → zip] failed:', e);
+    showBanner('Could not create ZIP archive. Please try again.', 'error');
   }
-  showBanner('Triggered downloads for each file.', 'ok');
 });
 
 
@@ -3434,7 +3655,9 @@ try {
     'banner.noCommonFor': 'No common conversion for: {exts}.',
     'banner.removedX': 'Removed {name}.',
     'banner.unsupportedAdded': 'Ignored unsupported files: {names}.',
-    'banner.unsupportedPresent': 'Unsupported file types present: {exts}.'
+    'banner.unsupportedPresent': 'Unsupported file types present: {exts}.',
+    'error.unsupportedFile': '“{name}” isn’t a supported file type.',
+    'error.unsupportedMany': '{n} files were skipped because they’re not supported.',
   });
 
   // Arabic
@@ -3446,7 +3669,9 @@ try {
     'banner.noCommonFor': 'لا يوجد تحويل مشترك لهذه الامتدادات: {exts}.',
     'banner.removedX': 'تمت إزالة {name}.',
     'banner.unsupportedAdded': 'تم تجاهل الملفات غير المدعومة: {names}.',
-    'banner.unsupportedPresent': 'أنواع ملفات غير مدعومة موجودة: {exts}.'
+    'banner.unsupportedPresent': 'أنواع ملفات غير مدعومة موجودة: {exts}.',
+    'error.unsupportedFile': '“{name}” ليس نوع ملف مدعوماً.',
+    'error.unsupportedMany': 'تم تخطي {n} ملفاً لأنها غير مدعومة.'
   });
 
   // German
@@ -3458,7 +3683,9 @@ try {
     'banner.noCommonFor': 'Keine gemeinsame Konvertierung für: {exts}.',
     'banner.removedX': '{name} entfernt.',
     'banner.unsupportedAdded': 'Nicht unterstützte Dateien ignoriert: {names}.',
-    'banner.unsupportedPresent': 'Nicht unterstützte Dateitypen vorhanden: {exts}.'
+    'banner.unsupportedPresent': 'Nicht unterstützte Dateitypen vorhanden: {exts}.',
+    'error.unsupportedFile': '„{name}“ ist kein unterstützter Dateityp.',
+    'error.unsupportedMany': '{n} Dateien wurden übersprungen, da sie nicht unterstützt werden.'
   });
 
   // Spanish
@@ -3470,7 +3697,9 @@ try {
     'banner.noCommonFor': 'Sin conversión común para: {exts}.',
     'banner.removedX': 'Se eliminó {name}.',
     'banner.unsupportedAdded': 'Se ignoraron archivos no compatibles: {names}.',
-    'banner.unsupportedPresent': 'Hay tipos de archivo no compatibles: {exts}.'
+    'banner.unsupportedPresent': 'Hay tipos de archivo no compatibles: {exts}.',
+    'error.unsupportedFile': '“{name}” no es un tipo de archivo compatible.',
+    'error.unsupportedMany': 'Se omitieron {n} archivos porque no son compatibles.'
   });
 
   // French
@@ -3482,7 +3711,9 @@ try {
     'banner.noCommonFor': 'Aucune conversion commune pour : {exts}.',
     'banner.removedX': '{name} supprimé.',
     'banner.unsupportedAdded': 'Fichiers non pris en charge ignorés : {names}.',
-    'banner.unsupportedPresent': 'Types de fichiers non pris en charge présents : {exts}.'
+    'banner.unsupportedPresent': 'Types de fichiers non pris en charge présents : {exts}.',
+    'error.unsupportedFile': '« {name} » n’est pas un type de fichier pris en charge.',
+    'error.unsupportedMany': '{n} fichiers ont été ignorés car ils ne sont pas pris en charge.'
   });
 
   // Hindi
@@ -3494,7 +3725,9 @@ try {
     'banner.noCommonFor': 'इन फ़ाइलों के लिए कोई सामान्य रूपांतरण संभव नहीं: {exts}।',
     'banner.removedX': '{name} हटाया गया।',
     'banner.unsupportedAdded': 'असमर्थित फ़ाइलें अनदेखी: {names}।',
-    'banner.unsupportedPresent': 'असमर्थित फ़ाइल प्रकार मौजूद: {exts}।'
+    'banner.unsupportedPresent': 'असमर्थित फ़ाइल प्रकार मौजूद: {exts}।',
+    'error.unsupportedFile': '“{name}” समर्थित फ़ाइल प्रकार नहीं है।',
+    'error.unsupportedMany': '{n} फ़ाइलों को इसलिए छोड़ दिया गया क्योंकि वे समर्थित नहीं हैं।'
   });
 
   // Italian
@@ -3506,7 +3739,9 @@ try {
     'banner.noCommonFor': 'Nessuna conversione comune per: {exts}.',
     'banner.removedX': '{name} rimosso.',
     'banner.unsupportedAdded': 'File non supportati ignorati: {names}.',
-    'banner.unsupportedPresent': 'Sono presenti tipi di file non supportati: {exts}.'
+    'banner.unsupportedPresent': 'Sono presenti tipi di file non supportati: {exts}.',
+    'error.unsupportedFile': '“{name}” non è un tipo di file supportato.',
+    'error.unsupportedMany': '{n} file sono stati ignorati perché non supportati.'
   });
 
   // Japanese
@@ -3518,7 +3753,9 @@ try {
     'banner.noCommonFor': '共通の変換先がありません: {exts}。',
     'banner.removedX': '{name} を削除しました。',
     'banner.unsupportedAdded': '未対応のファイルを無視しました: {names}。',
-    'banner.unsupportedPresent': '未対応のファイル形式が含まれています: {exts}。'
+    'banner.unsupportedPresent': '未対応のファイル形式が含まれています: {exts}。',
+    'error.unsupportedFile': '“{name}” はサポートされていないファイル形式です。',
+    'error.unsupportedMany': 'サポート対象外のため、{n} 件のファイルをスキップしました。'
   });
 
   // Korean
@@ -3530,7 +3767,9 @@ try {
     'banner.noCommonFor': '공통 변환 대상이 없습니다: {exts}.',
     'banner.removedX': '{name} 제거됨.',
     'banner.unsupportedAdded': '지원되지 않는 파일을 무시했습니다: {names}.',
-    'banner.unsupportedPresent': '지원되지 않는 파일 형식이 포함되어 있습니다: {exts}.'
+    'banner.unsupportedPresent': '지원되지 않는 파일 형식이 포함되어 있습니다: {exts}.',
+    'error.unsupportedFile': '“{name}”은(는) 지원되지 않는 파일 형식입니다.',
+    'error.unsupportedMany': '지원되지 않아 {n}개의 파일을 건너뛰었습니다.'
   });
 
   // Dutch
@@ -3542,7 +3781,9 @@ try {
     'banner.noCommonFor': 'Geen gemeenschappelijke conversie mogelijk voor: {exts}.',
     'banner.removedX': '{name} verwijderd.',
     'banner.unsupportedAdded': 'Niet-ondersteunde bestanden genegeerd: {names}.',
-    'banner.unsupportedPresent': 'Niet-ondersteunde bestandstypen aanwezig: {exts}.'
+    'banner.unsupportedPresent': 'Niet-ondersteunde bestandstypen aanwezig: {exts}.',
+    'error.unsupportedFile': '“{name}” is geen ondersteund bestandstype.',
+    'error.unsupportedMany': '{n} bestanden zijn overgeslagen omdat ze niet worden ondersteund.'
   });
 
   // Polish
@@ -3554,7 +3795,9 @@ try {
     'banner.noCommonFor': 'Brak wspólnej konwersji dla: {exts}.',
     'banner.removedX': 'Usunięto {name}.',
     'banner.unsupportedAdded': 'Pominięto nieobsługiwane pliki: {names}.',
-    'banner.unsupportedPresent': 'Występują nieobsługiwane typy plików: {exts}.'
+    'banner.unsupportedPresent': 'Występują nieobsługiwane typy plików: {exts}.',
+    'error.unsupportedFile': '„{name}” nie jest obsługiwanym typem pliku.',
+    'error.unsupportedMany': 'Pominięto {n} plików, ponieważ nie są obsługiwane.'
   });
 
   // Portuguese (Portugal)
@@ -3566,7 +3809,9 @@ try {
     'banner.noCommonFor': 'Sem conversão comum para: {exts}.',
     'banner.removedX': '{name} removido.',
     'banner.unsupportedAdded': 'Ficheiros não suportados ignorados: {names}.',
-    'banner.unsupportedPresent': 'Existem tipos de ficheiro não suportados: {exts}.'
+    'banner.unsupportedPresent': 'Existem tipos de ficheiro não suportados: {exts}.',
+    'error.unsupportedFile': '“{name}” não é um tipo de ficheiro suportado.',
+    'error.unsupportedMany': 'Foram ignorados {n} ficheiros por não serem suportados.'
   });
 
   // Portuguese (Brazil)
@@ -3578,7 +3823,9 @@ try {
     'banner.noCommonFor': 'Sem conversão comum para: {exts}.',
     'banner.removedX': '{name} removido.',
     'banner.unsupportedAdded': 'Arquivos não compatíveis ignorados: {names}.',
-    'banner.unsupportedPresent': 'Tipos de arquivo não compatíveis presentes: {exts}.'
+    'banner.unsupportedPresent': 'Tipos de arquivo não compatíveis presentes: {exts}.',
+    'error.unsupportedFile': '“{name}” não é um tipo de arquivo compatível.',
+    'error.unsupportedMany': '{n} arquivos foram ignorados por não serem compatíveis.'
   });
 
   // Russian
@@ -3590,7 +3837,9 @@ try {
     'banner.noCommonFor': 'Нет общего формата конвертации для: {exts}.',
     'banner.removedX': 'Удалено: {name}.',
     'banner.unsupportedAdded': 'Неподдерживаемые файлы пропущены: {names}.',
-    'banner.unsupportedPresent': 'Есть неподдерживаемые типы файлов: {exts}.'
+    'banner.unsupportedPresent': 'Есть неподдерживаемые типы файлов: {exts}.',
+    'error.unsupportedFile': '«{name}» — неподдерживаемый тип файла.',
+    'error.unsupportedMany': '{n} файлов пропущено, так как они не поддерживаются.'
   });
 
   // Turkish
@@ -3602,7 +3851,9 @@ try {
     'banner.noCommonFor': 'Bu dosyalar için ortak bir dönüştürme yok: {exts}.',
     'banner.removedX': '{name} kaldırıldı.',
     'banner.unsupportedAdded': 'Desteklenmeyen dosyalar yok sayıldı: {names}.',
-    'banner.unsupportedPresent': 'Desteklenmeyen dosya türleri mevcut: {exts}.'
+    'banner.unsupportedPresent': 'Desteklenmeyen dosya türleri mevcut: {exts}.',
+    'error.unsupportedFile': '“{name}” desteklenen bir dosya türü değil.',
+    'error.unsupportedMany': 'Desteklenmediği için {n} dosya atlandı.'
   });
 
   // Ukrainian
@@ -3614,7 +3865,9 @@ try {
     'banner.noCommonFor': 'Немає спільного формату перетворення для: {exts}.',
     'banner.removedX': 'Вилучено {name}.',
     'banner.unsupportedAdded': 'Непідтримувані файли пропущено: {names}.',
-    'banner.unsupportedPresent': 'Є непідтримувані типи файлів: {exts}.'
+    'banner.unsupportedPresent': 'Є непідтримувані типи файлів: {exts}.',
+    'error.unsupportedFile': '«{name}» — непідтримуваний тип файлу.',
+    'error.unsupportedMany': '{n} файлів пропущено, оскільки вони не підтримуються.'
   });
 
   // Chinese (Simplified)
@@ -3626,9 +3879,10 @@ try {
     'banner.noCommonFor': '这些文件没有共同的可转换格式：{exts}。',
     'banner.removedX': '已移除 {name}。',
     'banner.unsupportedAdded': '已忽略不受支持的文件：{names}。',
-    'banner.unsupportedPresent': '存在不受支持的文件类型：{exts}。'
+    'banner.unsupportedPresent': '存在不受支持的文件类型：{exts}。',
+    'error.unsupportedFile': '“{name}” 不是受支持的文件类型。',
+    'error.unsupportedMany': '由于不受支持，已跳过 {n} 个文件。'
   });
-
 
 } catch (e) { /* I18N.en not found? ignore */ }
 
@@ -3801,34 +4055,40 @@ try {
   } catch (e) { console.warn('i18n ui keys patch failed', e); }
 })();
 
-
-
-
 // === URL <-> target dropdown sync + quality toggle ===
 function presetTargetFromURL() {
   try {
-    var target = document.querySelector("#target-format, #targetFormat, select[name=target], select#target");
-    var wrap = document.querySelector("#quality-wrap, #qualityWrap, .quality-wrap, [data-role='quality']");
+    const target = document.querySelector('#target-format, #targetFormat, select[name=target], select#target');
+    const wrap = document.querySelector('#quality-wrap, #qualityWrap, .quality-wrap, [data-role="quality"]');
     if (!target) return;
 
-    var params = new URLSearchParams(location.search);
-    var q = (params.get("to") || params.get("target") || "").toLowerCase();
-    var alias = { jpg: "jpeg" };
-    var wanted = alias[q] || q;
+    const params = new URLSearchParams(location.search);
+    const q = (params.get('to') || params.get('target') || '').toLowerCase();
 
+    const alias = {
+      jpg: 'jpeg',
+      tif: 'tiff',
+      tbz: 'tar.bz2',
+      tgz: 'tar.gz',
+      txz: 'tar.xz'
+    };
+
+    let wanted = alias[q] || q;
+
+    // if no ?to=, try last path segment (…/formats/png/)
     if (!wanted) {
-      var path = location.pathname.replace(/\/index\.html$/i, "");
-      var seg = (path.split("/").filter(Boolean).pop() || "").toLowerCase();
-      var m = seg.match(/([a-z0-9.]+)$/i);
-      var cand = (m ? m[1] : "").replace(/\.$/, "");
+      const path = location.pathname.replace(/\/index\.html$/i, '');
+      const seg = (path.split('/').filter(Boolean).pop() || '').toLowerCase();
+      const m = seg.match(/([a-z0-9.]+)$/i);
+      const cand = (m ? m[1] : '').replace(/\.$/, '');
       wanted = alias[cand] || cand;
     }
 
     if (wanted && target.querySelector('option[value="' + wanted + '"]')) {
       target.value = wanted;
     }
-    if (wrap) wrap.style.display = (target.value === "jpeg" || target.value === "webp") ? "" : "none";
-  } catch (e) { }
+    if (wrap) wrap.style.display = (target.value === 'jpeg' || target.value === 'webp') ? '' : 'none';
+  } catch (_) { }
 }
 
 (function () {
@@ -3860,11 +4120,417 @@ function presetTargetFromURL() {
   });
 })();
 
+/* ===== Injected by fix script: global vendor loaders ===== */
+(function () {
+  /* ...same body as in section A (omitted here for brevity)... */
+})();
+
+/* === Hotfix: prefer LOCAL vendors for Archives & PDF === */
+(function () {
+  const bump = (k) => { try { if (typeof features === 'object') features[k] = true; if (typeof ensureVendors === 'function') ensureVendors(); } catch { } };
+  const urlFromApp = (p) => { try { const me = document.baseURI; return new URL(p.replace(/^\//, ''), new URL('.', me)).toString(); } catch { return p } };
+
+  // Fix Archives: 7z-wasm (local) -> libarchive-wasm (local) -> CDN fallbacks
+  window.needArchives = async function needArchives() {
+    try {
+      const seven = await import(urlFromApp('vendor/7z-wasm/7zz.es6.js')); // correct module name
+      if (typeof seven !== "undefined") if (typeof seven !== "undefined") if (typeof seven !== "undefined") window.SevenZip = seven; bump('archives'); return;
+    } catch (e) {
+      console.warn('[archives] local 7z-wasm failed, trying local libarchive-wasm', e);
+    }
+    try {
+      const la = await import(urlFromApp('vendor/libarchive-wasm/dist/index.js'));
+      // expose a couple symbols for your code if you use them directly
+      window.ArchiveReader = la.ArchiveReader; window.libarchiveWasm = la.libarchiveWasm;
+      bump('archives'); return;
+    } catch (e) {
+      console.warn('[archives] local libarchive-wasm failed, trying CDN fallback', e);
+    }
+    try {
+      const sevenCDN = await import('https://cdn.jsdelivr.net/npm/7z-wasm@1.2.0/7zz.es6.js');
+      if (typeof seven !== "undefined") if (typeof seven !== "undefined") if (typeof seven !== "undefined") window.SevenZip = sevenCDN; bump('archives'); return;
+    } catch (e) {
+      try {
+        await import('https://cdn.jsdelivr.net/npm/libarchive-wasm@1.2.0/dist/index.js');
+        bump('archives'); return;
+      } catch (e2) {
+        console.warn('[archives] all loaders failed', e2);
+      }
+    }
+  };
+
+  // Ensure PDF prefers local files (worker too)
+  window.needPdf = async function needPdf() {
+    try {
+      await new Promise((res, rej) => { const s = document.createElement('script'); s.src = urlFromApp('vendor/pdf.min.js'); s.onload = res; s.onerror = rej; document.head.appendChild(s); });
+      if (window.pdfjsLib?.GlobalWorkerOptions) {
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc = urlFromApp('vendor/pdf.worker.min.js');
+        bump('pdf'); return;
+      }
+    } catch { }
+    try {
+      // UMD fallback
+      await new Promise((res, rej) => { const s = document.createElement('script'); s.src = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/legacy/build/pdf.min.js'; s.onload = res; s.onerror = rej; document.head.appendChild(s); });
+      if (window.pdfjsLib?.GlobalWorkerOptions) {
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/legacy/build/pdf.worker.min.js';
+        bump('pdf'); return;
+      }
+    } catch (e) { console.warn('[pdf] failed to load pdf.js', e); }
+  };
+})();
+
+/* === Local-first vendor loaders (PDF/Archives) === */
+(function () {
+  const bump = (k) => { try { if (typeof features === 'object') features[k] = true; if (typeof ensureVendors === 'function') ensureVendors(); } catch { } };
+  /**
+   * Make a URL relative to the app's base (the current document's directory).
+   * Strips a single leading "/" so it won't jump to the origin root.
+   */
+  const urlFromApp = (p) => {
+    try {
+      const base = new URL('.', document.baseURI);
+      const rel = String(p || '').replace(/^\//, '');
+      return new URL(rel, base).toString();
+    } catch (e) {
+      return String(p || '');
+    }
+  };
+
+  // Prefer LOCAL pdf.js (worker too), then UMD on unpkg (same version for worker)
+  window.needPdf = async function needPdf() {
+    try {
+      await new Promise((res, rej) => { const s = document.createElement('script'); s.src = urlFromApp('vendor/pdf.min.js'); s.onload = res; s.onerror = rej; document.head.appendChild(s); });
+      if (window.pdfjsLib?.GlobalWorkerOptions) {
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc = urlFromApp('vendor/pdf.worker.min.js');
+        bump('pdf'); return;
+      }
+    } catch { }
+    try {
+      await new Promise((res, rej) => { const s = document.createElement('script'); s.src = 'https://unpkg.com/pdfjs-dist@4.10.38/legacy/build/pdf.min.js'; s.onload = res; s.onerror = rej; document.head.appendChild(s); });
+      if (window.pdfjsLib?.GlobalWorkerOptions) {
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://unpkg.com/pdfjs-dist@4.10.38/legacy/build/pdf.worker.min.js';
+        bump('pdf'); return;
+      }
+    } catch (e) { console.warn('[pdf] fallback failed', e); }
+  };
+
+  // Archives: LOCAL 7z-wasm -> LOCAL libarchive-wasm -> CDN fallbacks
+  window.needArchives = async function needArchives() {
+    try {
+      const seven = await import(urlFromApp('vendor/7z-wasm/7zz.es6.js'));
+      if (typeof seven !== "undefined") if (typeof seven !== "undefined") window.SevenZip = seven; bump('archives'); return;
+    } catch (e) {
+      console.warn('[archives] local 7z-wasm failed, trying local libarchive-wasm', e);
+    }
+    try {
+      const la = await import(urlFromApp('vendor/libarchive-wasm/dist/index.js'));
+      window.ArchiveReader = la.ArchiveReader; window.libarchiveWasm = la.libarchiveWasm;
+      bump('archives'); return;
+    } catch (e) {
+      console.warn('[archives] local libarchive-wasm failed, trying CDN fallbacks', e);
+    }
+    try {
+      const sevenCDN = await import('https://unpkg.com/7z-wasm@1.2.0/7zz.es6.js');
+      if (typeof seven !== "undefined") if (typeof seven !== "undefined") window.SevenZip = sevenCDN; bump('archives'); return;
+    } catch (e) {
+      try {
+        await import('https://unpkg.com/libarchive-wasm@1.2.0/dist/index.js');
+        bump('archives'); return;
+      } catch (e2) {
+        console.warn('[archives] all loaders failed', e2);
+      }
+    }
+  };
+
+  // FFmpeg note: when you create the instance, point to LOCAL core files
+  // const ffmpeg = window.FFmpeg.createFFmpeg({
+  //   corePath:  '/vendor/ffmpeg/ffmpeg-core.js',
+  //   wasmPath:  '/vendor/ffmpeg/ffmpeg-core.wasm',
+  //   workerPath:'/vendor/ffmpeg/ffmpeg-core.worker.js',
+  // });
+
+  try { Object.assign(window, { needPdf, needArchives }); } catch (_) { }
+})();
+
+/* === Override: load local ESM pdf.js + worker === */
+(function () {
+  const bump = (k) => { try { if (typeof features === 'object') features[k] = true; if (typeof ensureVendors === 'function') ensureVendors(); } catch { } };
+  const local = (p) => new URL(p, document.baseURI).toString();
+
+  window.needPdf = async function needPdf() {
+    // 1) LOCAL ESM first
+    try {
+      const mod = await import(local('vendor/pdf/pdf.min.mjs'));
+      window.pdfjsLib = mod;
+      mod.GlobalWorkerOptions.workerSrc = local('vendor/pdf/pdf.worker.min.mjs');
+      bump('pdf'); return;
+    } catch (e) { console.warn('[pdf] local ESM failed, trying CDN ESM', e); }
+    // 2) CDN ESM fallback (same version family)
+    try {
+      const mod = await import('https://unpkg.com/pdfjs-dist@5/build/pdf.min.mjs');
+      window.pdfjsLib = mod;
+      mod.GlobalWorkerOptions.workerSrc = 'https://unpkg.com/pdfjs-dist@5/build/pdf.worker.min.mjs';
+      bump('pdf'); return;
+    } catch (e) { console.warn('[pdf] CDN ESM failed', e); }
+  };
+})();
+
+/* === Local-first vendors (pdf/archives) === */
+(function () {
+  const bump = (k) => { try { if (typeof features === 'object') features[k] = true; if (typeof ensureVendors === 'function') ensureVendors(); } catch { } };
+  const local = (p) => new URL(p, document.baseURI).toString();
+
+  // PDF: load LOCAL ESM (no CORS), then CDN ESM fallback
+  window.needPdf = async function needPdf() {
+    try {
+      const mod = await import(local('vendor/pdf/pdf.min.mjs'));
+      window.pdfjsLib = mod;
+      mod.GlobalWorkerOptions.workerSrc = local('vendor/pdf/pdf.worker.min.mjs');
+      bump('pdf'); return;
+    } catch (e) { console.warn('[pdf] local ESM failed, trying CDN ESM', e); }
+    try {
+      const mod = await import('https://unpkg.com/pdfjs-dist@5/build/pdf.min.mjs');
+      window.pdfjsLib = mod;
+      mod.GlobalWorkerOptions.workerSrc = 'https://unpkg.com/pdfjs-dist@5/build/pdf.worker.min.mjs';
+      bump('pdf'); return;
+    } catch (e) { console.warn('[pdf] CDN ESM failed', e); }
+  };
+
+  // Archives: LOCAL 7z-wasm -> LOCAL libarchive-wasm -> CDN fallbacks
+  window.needArchives = async function needArchives() {
+    try {
+      const seven = await import(local('vendor/7z-wasm/7zz.es6.js'));
+      if (typeof seven !== "undefined") window.SevenZip = seven; bump('archives'); return;
+    } catch (e) { console.warn('[archives] local 7z-wasm failed, trying local libarchive-wasm', e); }
+    try {
+      const la = await import(local('vendor/libarchive-wasm/dist/index.js'));
+      window.ArchiveReader = la.ArchiveReader; window.libarchiveWasm = la.libarchiveWasm;
+      bump('archives'); return;
+    } catch (e) { console.warn('[archives] local libarchive-wasm failed, trying CDN fallbacks', e); }
+    try {
+      const sevenCDN = await import('https://unpkg.com/7z-wasm@1.2.0/7zz.es6.js');
+      if (typeof seven !== "undefined") window.SevenZip = sevenCDN; bump('archives'); return;
+    } catch (e) {
+      try {
+        await import('https://unpkg.com/libarchive-wasm@1.2.0/dist/index.js');
+        bump('archives'); return;
+      } catch (e2) { console.warn('[archives] all loaders failed', e2); }
+    }
+  };
+
+  // FFmpeg reminder: when creating the instance, use LOCAL core paths:
+  // const ffmpeg = window.FFmpeg.createFFmpeg({
+  //   corePath:  '/vendor/ffmpeg/ffmpeg-core.js',
+  //   wasmPath:  '/vendor/ffmpeg/ffmpeg-core.wasm',
+  //   workerPath:'/vendor/ffmpeg/ffmpeg-core.worker.js',
+  // });
+})();
+
+/* === Local-first vendors (pdf/archives) v2 === */
+(function () {
+  const bump = (k) => { try { if (typeof features === 'object') features[k] = true; if (typeof ensureVendors === 'function') ensureVendors(); } catch { } };
+  const local = (p) => new URL(p, document.baseURI).toString();
+
+  // PDF: load LOCAL ESM (no CORS), then CDN ESM fallback
+  window.needPdf = async function needPdf() {
+    try {
+      const mod = await import(local('vendor/pdf/pdf.min.mjs'));
+      window.pdfjsLib = mod;
+      mod.GlobalWorkerOptions.workerSrc = local('vendor/pdf/pdf.worker.min.mjs');
+      bump('pdf'); return;
+    } catch (e) { console.warn('[pdf] local ESM failed, trying CDN ESM', e); }
+    try {
+      const mod = await import('https://unpkg.com/pdfjs-dist@5/build/pdf.min.mjs');
+      window.pdfjsLib = mod;
+      mod.GlobalWorkerOptions.workerSrc = 'https://unpkg.com/pdfjs-dist@5/build/pdf.worker.min.mjs';
+      bump('pdf'); return;
+    } catch (e) { console.warn('[pdf] CDN ESM failed', e); }
+  };
+
+  // Archives: LOCAL 7z-wasm -> LOCAL libarchive-wasm -> CDN fallbacks
+  window.needArchives = async function needArchives() {
+    try {
+      const seven = await import(local('vendor/7z-wasm/7zz.es6.js'));
+      window.SevenZip = seven; bump('archives'); return;
+    } catch (e) { console.warn('[archives] local 7z-wasm failed, trying local libarchive-wasm', e); }
+    try {
+      const la = await import(local('vendor/libarchive-wasm/dist/index.js'));
+      window.ArchiveReader = la.ArchiveReader; window.libarchiveWasm = la.libarchiveWasm;
+      bump('archives'); return;
+    } catch (e) { console.warn('[archives] local libarchive-wasm failed, trying CDN fallbacks', e); }
+    try {
+      const sevenCDN = await import('https://unpkg.com/7z-wasm@1.2.0/7zz.es6.js');
+      window.SevenZip = sevenCDN; bump('archives'); return;
+    } catch (e) {
+      try {
+        await import('https://unpkg.com/libarchive-wasm@1.2.0/dist/index.js');
+        bump('archives'); return;
+      } catch (e2) { console.warn('[archives] all loaders failed', e2); }
+    }
+  };
+
+  // FFmpeg reminder: when creating the instance, use LOCAL core paths:
+  // const ffmpeg = window.FFmpeg.createFFmpeg({
+  //   corePath:  '/vendor/ffmpeg/ffmpeg-core.js',
+  //   wasmPath:  '/vendor/ffmpeg/ffmpeg-core.wasm',
+  //   workerPath:'/vendor/ffmpeg/ffmpeg-core.worker.js',
+  // });
+})();
 
 
 
 
+// === ONE-TIME FILE I/O INITIALIZER (injected) ===
+(function initFileIOOnce() {
+  if (window.__file_io_wired__) return;
+  const ready = () => {
+    try {
+      // prefer explicit ids; fallback to first matching controls
+      const input = document.querySelector('#file-input, input[type="file"], input[name="file"], input#file');
+      const zone = document.querySelector('#dropzone, [data-dropzone], .dropzone');
+
+      // If a helper exists, use it; else attach minimal listeners
+      if (typeof window.wireFileInputs === 'function' && input && zone) {
+        try { window.wireFileInputs(input, zone); } catch (e) { console.warn('wireFileInputs failed, falling back', e); attachFallback(input, zone); }
+      } else {
+        attachFallback(input, zone);
+      }
+
+      // Ensure accept attr reflects current capabilities
+      if (typeof updateFileInputAccept === 'function') try { updateFileInputAccept(); } catch { }
+      window.__file_io_wired__ = true;
+    } catch (e) { console.warn('initFileIOOnce failed', e); }
+  };
+
+  function attachFallback(input, zone) {
+    if (input) {
+      input.addEventListener('change', (e) => {
+        const files = Array.from(e.target.files || []);
+        if (files.length) addFiles(files);
+        e.target.value = '';
+      }, { once: false });
+    }
+    if (zone) {
+      ['dragenter', 'dragover'].forEach(evt => zone.addEventListener(evt, (e) => { e.preventDefault(); zone.classList.add('drag'); }));
+      ['dragleave', 'dragend', 'drop'].forEach(evt => zone.addEventListener(evt, () => zone.classList.remove('drag')));
+      zone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        const files = Array.from(e.dataTransfer?.files || []);
+        if (files.length) addFiles(files);
+      });
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', ready, { once: true });
+  } else {
+    ready();
+  }
+})();
+// === END ONE-TIME FILE I/O INITIALIZER ===
+/* Helper: find the Convert button in a robust way */
+function getConvertButton() {
+  return (
+    document.getElementById('convertBtn') ||
+    document.getElementById('convert') ||
+    document.querySelector('[data-action="convert"]') ||
+    document.querySelector('button.convert') ||
+    null
+  );
+}
+
+/* === Duplicate toggle UI + disabled option styling === */
+document.addEventListener('DOMContentLoaded', () => {
+  try {
+    state._fileKeys = state._fileKeys || new Set();
+    if (typeof state.blockDupes === 'undefined') state.blockDupes = true;
+
+    // Inject a checkbox row after the "Add files" row
+    const controls = document.querySelector('section.controls');
+    const fileRow = controls ? controls.querySelector('.row') : null;
+    if (controls && fileRow && !document.getElementById('block-dupes')) {
+      const row = document.createElement('div');
+      row.className = 'row';
+      const label = document.createElement('label');
+      label.className = 'hint';
+      label.style.display = 'flex';
+      label.style.alignItems = 'center';
+      label.style.gap = '.5rem';
+      const input = document.createElement('input');
+
+
+      input.checked = !!state.blockDupes;
+      const span = document.createElement('span');
+
+
+      label.appendChild(span);
+      row.appendChild(label);
+      fileRow.insertAdjacentElement('afterend', row);
+      input.addEventListener('change', e => { state.blockDupes = !!e.target.checked; });
+    }
+
+    // Dim disabled options in the format dropdown
+    if (!document.getElementById('disabled-option-style')) {
+      const st = document.createElement('style');
+      st.id = 'disabled-option-style';
+      st.textContent = '#target-format option:disabled{opacity:.55;color:var(--muted,#6b7280)}';
+      document.head.appendChild(st);
+    }
+  } catch { }
+});
+
+try { if (!document.getElementById('tf-disabled-style')) { const st = document.createElement('style'); st.id = 'tf-disabled-style'; st.textContent = 'select#target-format option:disabled{opacity:.55;color:var(--muted,#888)}'; document.head.appendChild(st); } } catch { }
+document.addEventListener('DOMContentLoaded', () => { try { getFFmpeg?.().then(ff => ff && ff.setLogger && ff.setLogger(() => { })); } catch { } });
+
+
+// (removed safety patch: using an FFmpeg pool for real concurrency)
+
+
+// Centralized row animation manager
+window.__rowAnim = window.__rowAnim || {
+  active: new Set(),
+  start(index) {
+    try { this.active.add(index); } catch { }
+    const list = document.getElementById('file-list');
+    const el = list && list.children && list.children[index];
+    if (el && !el.classList.contains('is-converting')) el.classList.add('is-converting');
+  },
+  stop(index) {
+    try { this.active.delete(index); } catch { }
+    const list = document.getElementById('file-list');
+    const el = list && list.children && list.children[index];
+    if (el) el.classList.remove('is-converting');
+  },
+  sync() {
+    const list = document.getElementById('file-list');
+    if (!list || !list.children) return;
+    for (let i = 0; i < list.children.length; i++) {
+      const el = list.children[i];
+      if (this.active.has(i)) el.classList.add('is-converting');
+      else el.classList.remove('is-converting');
+    }
+  }
+};
 
 
 
-
+(function ensureGreyOutStyles() {
+  try {
+    let st = document.getElementById('tf-disabled-style');
+    if (!st) {
+      st = document.createElement('style');
+      st.id = 'tf-disabled-style';
+      (document.head || document.documentElement).appendChild(st);
+    }
+    st.textContent = [
+      '#target-format option:disabled,',
+      '#targetFormat option:disabled,',
+      'select[name=target] option:disabled,',
+      'select#target option:disabled{opacity:.55;color:var(--muted,#6b7280)}',
+      '#target-format optgroup.dim,',
+      '#targetFormat optgroup.dim,',
+      'select[name=target] optgroup.dim,',
+      'select#target optgroup.dim{opacity:.5}'
+    ].join('');
+  } catch (e) { /* no-op */ }
+})();

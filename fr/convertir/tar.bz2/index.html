@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="fr">
 
 <head>
@@ -116,7 +116,7 @@
 
 
   <!-- good -->
-  <script src="../../ffmpeg-esm-shim.js"></script>
+  <script defer src="/ffmpeg-esm-shim.js"></script>
 
 
 
@@ -654,7 +654,8 @@
       </div>
     </div>
   </div>
-  <script type="module" src="/app.js"></script>
+  <script defer src="/vendor/ffmpeg/app.ffmpeg-loader.js"></script>
+<script type="module" defer src="/app.js"></script>
 </body>
 
 </html>
