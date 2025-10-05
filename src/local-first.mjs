@@ -1,23 +1,34 @@
-﻿const rel = (p) => new URL(p, document.baseURI).toString();
+﻿const baseForUrls = (() => {
+  try { if (typeof import !== "undefined" && typeof import.meta !== "undefined" && import.meta.url) return import.meta.url; } catch {}
+  try { if (typeof self !== "undefined" && self.location && self.location.href) return self.location.href; } catch {}
+  return "/";
+})();
+const rel = (p) => new URL(p, baseForUrls).toString();
 
 let _libarchivePromise = null;
 export async function loadLibarchive() {
   if (_libarchivePromise) return _libarchivePromise;
   _libarchivePromise = (async () => {
+    // CDN FIRST (your host 404s vendor/libarchivejs/dist/*)
     try {
-      const base = rel("vendor/libarchivejs/dist/");
-      const m = await import(base + "main.js");
-      const Archive = m?.Archive ?? m?.default?.Archive;
-      if (!Archive) throw new Error("No Archive export");
-      Archive.init({ workerUrl: base + "worker-bundle.js" });
+      const esm    = "https://cdn.jsdelivr.net/npm/libarchive.js@2.0.2/+esm";
+      const worker = "https://cdn.jsdelivr.net/npm/libarchive.js@2.0.2/dist/worker-bundle.js";
+      const mod = await import(esm);
+      const Archive = mod?.Archive ?? mod?.default?.Archive;
+      if (!Archive) throw new Error("libarchive.js: Archive export not found");
+      Archive.init({ workerUrl: worker });
       return { Archive };
-    } catch {}
-    const esm = "https://cdn.jsdelivr.net/npm/libarchive.js@2.0.2/+esm";
-    const worker = "https://cdn.jsdelivr.net/npm/libarchive.js@2.0.2/dist/worker-bundle.js";
-    const mod = await import(esm);
-    const Archive = mod.Archive ?? mod?.default?.Archive;
-    if (!Archive) throw new Error("libarchive.js: Archive export not found");
-    Archive.init({ workerUrl: worker });
+    } catch (e) {
+      console.warn("[libarchive] CDN failed, trying local vendor", e);
+    }
+
+    // Local fallback (only works if you upload vendor/libarchivejs/dist/*)
+    const base = rel("vendor/libarchivejs/dist/");
+    const m = await import(base + "main.js");
+    const Archive = m?.Archive ?? m?.default?.Archive;
+    if (!Archive) throw new Error("No Archive export in local main.js");
+    try { Archive.init({ workerUrl: base + "worker-bundle.js" }); }
+    catch { Archive.init({ workerUrl: "https://cdn.jsdelivr.net/npm/libarchive.js@2.0.2/dist/worker-bundle.js" }); }
     return { Archive };
   })();
   return _libarchivePromise;
@@ -31,23 +42,17 @@ export async function load7z() {
     const mod = await import(jsUrl);
     const factory = mod?.default ?? mod;
     if (typeof factory !== "function") throw new Error("[7z-wasm] factory missing");
-    const inst = await factory({
-      locateFile: (p) => (p.endsWith(".wasm") ? wasmUrl : p),
-    });
-    return inst;
+    return factory({ locateFile: (p) => (p.endsWith(".wasm") ? wasmUrl : p) });
   }
 
   const localJS   = rel("vendor/7z-wasm/7zz.es6.js");
   const localWasm = rel("vendor/7z-wasm/7zz.wasm");
-  const cdnJS1    = "https://cdn.jsdelivr.net/npm/7z-wasm@1.0.0-beta.5/7zz.es6.js";
-  const cdnWasm1  = "https://cdn.jsdelivr.net/npm/7z-wasm@1.0.0-beta.5/7zz.wasm";
-  const cdnJS2    = "https://unpkg.com/7z-wasm@1.0.0-beta.5/7zz.es6.js";
-  const cdnWasm2  = "https://unpkg.com/7z-wasm@1.0.0-beta.5/7zz.wasm";
+  const cdnJS     = "https://cdn.jsdelivr.net/npm/7z-wasm@1.0.0-beta.5/7zz.es6.js";
+  const cdnWasm   = "https://cdn.jsdelivr.net/npm/7z-wasm@1.0.0-beta.5/7zz.wasm";
 
   _sevenPromise = (async () => {
     try { return await initFrom(localJS, localWasm); }
-    catch { try { return await initFrom(cdnJS1, cdnWasm1); }
-           catch { return await initFrom(cdnJS2, cdnWasm2); } }
+    catch { return await initFrom(cdnJS, cdnWasm); }
   })();
 
   return _sevenPromise;
