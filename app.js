@@ -1,4 +1,4 @@
-﻿// === DEBUG INSTRUMENTATION v3 ===
+// === DEBUG INSTRUMENTATION v3 ===
 window.ENABLE_OUTPUTS = { text: true, documents: true, archives: true, spreadsheets: true, images: true, media: true };
 const groupsOrder = ['text', 'documents', 'archives', 'spreadsheets', 'images', 'media'];
 // make sure these exist once
@@ -54,8 +54,7 @@ const INPUT_EXTS_BY_KIND = {
   pptx: ['pptx'],
   xlsx: ['xlsx'],
   csv: ['csv', 'tsv'],
-  text: ['txt', 'md', 'json', 'jsonl', 'html'],
-  archives: ['zip', 'rar', '7z', 'tar', 'gz', 'bz2', 'xz', 'tgz', 'tbz2', 'txz'],
+  text: ['txt', 'md', 'json', 'jsonl', 'html']
 };
 
 // Decide which *input kinds* are usable right now by asking your own targetsForKind(kind).
@@ -2135,8 +2134,28 @@ function targetsForKind(kind) {
 // ---- ARCHIVE → ZIP (client-only) ----
 async function convertArchiveFile(file, target) {
   const m = await import('./archive-client.js');
-  const { blob, suggestedName } = await m.convertArchiveFile(file, target);
-  return [{ blob, name: suggestedName }];
+
+  // choose writer based on target
+  let outBlob;
+  switch (target) {
+    case 'zip': outBlob = await m.convertArchiveToZip(file); break;
+    case 'tar': outBlob = await m.convertArchiveToTar(file); break;
+    case 'tar.gz': outBlob = await m.convertArchiveToTarGz(file); break;
+    case 'tar.bz2': outBlob = await m.convertArchiveToTarBz2(file); break;
+    case 'tar.xz': outBlob = await m.convertArchiveToTarXz(file); break;
+    case '7z': outBlob = await m.convertArchiveTo7z(file); break;
+    default:
+      throw new Error(`Unsupported archive target: ${target}`);
+  }
+
+  // derive a sensible filename
+  const strip = n => (n || 'archive').replace(
+    /\.(zip|rar|7z|tar|tgz|tbz2|txz|tar\.gz|tar\.bz2|tar\.xz)$/i, ''
+  );
+  const ext = target; // target already matches the desired extension strings
+  const name = `${strip(file?.name)}.${ext}`;
+
+  return [{ blob: outBlob, name }];
 }
 
 /** Intersection across all selected files */
@@ -5055,4 +5074,45 @@ window.__applyGreyNow && window.__applyGreyNow(); // force a refresh once
   // manual hook for testing
   window.__applyGreyNow = () => { DEBUG || console.log("[grey-v9] manual refresh"); scheduleRefresh(); };
   console.log("[grey-v9] installed (no-loop, JIT greying)");
+})();
+
+// === keep-accept-active (archives + other supported types) ===
+(() => {
+  if (window.__keepAcceptActiveInstalled) return;
+  window.__keepAcceptActiveInstalled = true;
+
+  // Union of all supported types, including archives
+  const ACCEPT = [
+    // images
+    '.png', '.jpg', '.jpeg', '.webp', '.svg', '.bmp', '.tiff', '.gif',
+    // audio
+    '.mp3', '.wav', '.ogg', '.m4a', '.flac', '.opus', '.aiff', '.aac',
+    // video
+    '.mp4', '.webm', '.mkv', '.mov', '.m4v', '.gif',
+    // docs/data
+    '.pdf', '.docx', '.pptx', '.xlsx', '.csv', '.tsv', '.txt', '.md', '.json', '.jsonl', '.html',
+    // archives
+    '.zip', '.rar', '.7z', '.tar', '.gz', '.bz2', '.xz', '.tgz', '.tbz2', '.txz'
+  ].join(',');
+
+  function applyAccept() {
+    const input = document.querySelector('input[type="file"], input#file, input[name="file"]');
+    if (input && input.getAttribute('accept') !== ACCEPT) {
+      try { input.setAttribute('accept', ACCEPT); } catch { }
+    }
+  }
+
+  // 1) Apply once at ready (handles static pages)
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', applyAccept, { once: true });
+  } else {
+    applyAccept();
+  }
+
+  // 2) Re-apply right before the chooser opens (captures clicks on buttons/labels)
+  document.addEventListener('click', () => setTimeout(applyAccept, 0), true);
+
+  // 3) Re-apply when the DOM changes (frameworks that re-render inputs)
+  new MutationObserver(() => applyAccept())
+    .observe(document.documentElement || document.body, { childList: true, subtree: true });
 })();
