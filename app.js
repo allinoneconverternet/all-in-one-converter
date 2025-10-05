@@ -2131,31 +2131,43 @@ function targetsForKind(kind) {
 }
 
 // ---- ARCHIVE → ZIP (client-only) ----
+// ---- ARCHIVE → (client-only via worker) ----
 async function convertArchiveFile(file, target) {
-  const m = await import('./archive-client.js');
+  const ab = await file.arrayBuffer();
+  const url = new URL('./src/convert.worker.js?v=' + Date.now(), location.href).toString();
+  const w = new Worker(url, { type: 'module' });
 
-  // choose writer based on target
-  let outBlob;
-  switch (target) {
-    case 'zip': outBlob = await m.convertArchiveToZip(file); break;
-    case 'tar': outBlob = await m.convertArchiveToTar(file); break;
-    case 'tar.gz': outBlob = await m.convertArchiveToTarGz(file); break;
-    case 'tar.bz2': outBlob = await m.convertArchiveToTarBz2(file); break;
-    case 'tar.xz': outBlob = await m.convertArchiveToTarXz(file); break;
-    case '7z': outBlob = await m.convertArchiveTo7z(file); break;
-    default:
-      throw new Error(`Unsupported archive target: ${target}`);
-  }
-
-  // derive a sensible filename
-  const strip = n => (n || 'archive').replace(
-    /\.(zip|rar|7z|tar|tgz|tbz2|txz|tar\.gz|tar\.bz2|tar\.xz)$/i, ''
-  );
-  const ext = target; // target already matches the desired extension strings
-  const name = `${strip(file?.name)}.${ext}`;
-
-  return [{ blob: outBlob, name }];
+  return await new Promise((resolve, reject) => {
+    w.onmessage = (ev) => {
+      const { type, pct, buf, error } = ev.data || {};
+      if (type === 'progress') {
+        // (optional) show row progress, if a row is active
+        const i = state.activeProgressIndex;
+        if (Number.isFinite(i)) {
+          const p = document.getElementById('prog-' + i);
+          const s = document.getElementById('status-' + i);
+          if (p) p.value = Math.max(0, Math.min(100, pct | 0));
+          if (s) s.textContent = pct >= 100 ? t('finishing') : t('convertingPct', { pct: pct | 0 });
+        }
+        return;
+      }
+      if (type === 'done') {
+        const blob = new Blob([buf], { type: 'application/octet-stream' });
+        const strip = n => (n || 'archive').replace(/\.(zip|rar|7z|tar|tgz|tbz2|txz|tar\.gz|tar\.bz2|tar\.xz)$/i, '');
+        resolve([{ blob, name: `${strip(file?.name)}.${target}` }]);
+        w.terminate();
+      }
+      if (type === 'error') {
+        w.terminate();
+        reject(new Error(error || 'Archive conversion failed'));
+      }
+    };
+    w.onerror = (e) => { w.terminate(); reject(e.error || new Error(e.message || 'Worker error')); };
+    w.onmessageerror = (e) => { w.terminate(); reject(new Error('Worker messageerror')); };
+    w.postMessage({ cmd: 'convert', fmt: target, buf: ab }, [ab]);
+  });
 }
+
 
 /** Intersection across all selected files */
 function possibleTargetsForFiles(files) {
