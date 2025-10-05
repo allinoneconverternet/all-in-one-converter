@@ -54,23 +54,21 @@ const INPUT_EXTS_BY_KIND = {
   pptx: ['pptx'],
   xlsx: ['xlsx'],
   csv: ['csv', 'tsv'],
-  text: ['txt', 'md', 'json', 'jsonl', 'html'],
-  archives: ['zip', 'rar', '7z', 'tar', 'gz', 'bz2', 'xz', 'tgz', 'tbz2', 'txz']
+  text: ['txt', 'md', 'json', 'jsonl', 'html']
 };
 
 // Decide which *input kinds* are usable right now by asking your own targetsForKind(kind).
 // If a kind has no outputs (given current features), we don't allow it in.
 function computeAllowedInputExts() {
-  const kinds = ['image', 'audio', 'video', 'pdf', 'docx', 'pptx', 'xlsx', 'csv', 'text', 'archives'];
-  const out = new Set();
-  for (const k of kinds) {
-    let can;
-    try { const t = targetsForKind(k); can = t && t.size > 0; } catch { can = false; }
-    if (!can) continue;
-    const exts = INPUT_EXTS_BY_KIND[k] || [];
-    for (const e of exts) out.add(e);
-  }
-  return out; // Set of extensions without dot
+  // Static union of all supported extensions; OS picker must be inclusive.
+  const exts = new Set();
+  try {
+    const map = INPUT_EXTS_BY_KIND || {};
+    for (const list of Object.values(map)) {
+      if (Array.isArray(list)) for (const e of list) exts.add(e);
+    }
+  } catch { }
+  return exts;
 }
 
 // Update the file chooser's accept list dynamically
@@ -2437,7 +2435,6 @@ function wireFileInputs(fileInput, dropzone) {
   }
 
   // Picker
-  input.addEventListener('click', () => { try { updateFileInputAccept(); } catch { } }, { capture: true });
   input.addEventListener('change', (e) => {
     const files = Array.from(e.target.files || []);
     if (files.length) addFiles(files);
@@ -2542,6 +2539,8 @@ function addFiles(files) {
   const n = incoming.length;
   showBanner(t('banner.added', { n, files: wordFiles(n, APP_LANG), total: state.files.length }), 'ok');
 
+
+  try { window.__applyGreyNow && window.__applyGreyNow(); } catch { }
 
 }
 
@@ -4351,19 +4350,11 @@ function presetTargetFromURL() {
       // Ensure accept attr reflects current capabilities
       if (typeof updateFileInputAccept === 'function') try { updateFileInputAccept(); } catch { }
       window.__file_io_wired__ = true;
-      // Ensure the file input has up-to-date accept BEFORE the picker opens
-      try {
-        const applyAcceptNow = () => { try { updateFileInputAccept(); } catch { } };
-        // Capture pointerdown so this runs before the default click opens the dialog
-        document.addEventListener('pointerdown', applyAcceptNow, true);
-      } catch { }
-
     } catch (e) { console.warn('initFileIOOnce failed', e); }
   };
 
   function attachFallback(input, zone) {
     if (input) {
-      input.addEventListener('click', () => { try { updateFileInputAccept(); } catch { } }, { capture: true });
       input.addEventListener('change', (e) => {
         const files = Array.from(e.target.files || []);
         if (files.length) addFiles(files);
@@ -4525,7 +4516,18 @@ window.__rowAnim = window.__rowAnim || {
 
   // 2) Elements
   function getSelectEl() {
-    return document.querySelector('#target-format, #targetFormat, select[name=target], select#target');
+    // Try common IDs/names first
+    let el = document.querySelector('#target-format, #targetFormat, select[name=target], select#target, #to, select[name=to], select[data-role="target-format"], select.target-format');
+    if (el) return el;
+    // Fallback: pick the first <select> whose option values look like known targets
+    const candidates = Array.from(document.querySelectorAll('select'));
+    const known = new Set(['zip', '7z', 'tar', 'tar.gz', 'tar.bz2', 'tar.xz', 'rar', 'pdf', 'docx', 'xlsx', 'csv', 'tsv', 'txt', 'md', 'html', 'png', 'jpeg', 'webp', 'svg', 'bmp', 'tiff', 'gif', 'mp3', 'wav', 'ogg', 'm4a', 'flac', 'opus', 'aiff', 'aac', 'mp4', 'webm', 'mkv', 'mov', 'm4v', 'gifv']);
+    for (const s of candidates) {
+      const vals = Array.from(s.options || []).map(o => (o && o.value || '').toLowerCase());
+      const hits = vals.filter(v => known.has(v)).length;
+      if (hits >= Math.min(3, vals.length)) return s;
+    }
+    return null;
   }
   function getConvertBtn() {
     return document.getElementById('convert-btn') || document.querySelector('[data-action="convert"]');
@@ -4849,6 +4851,7 @@ window.__applyGreyNow && window.__applyGreyNow(); // force a refresh once
     let files = filesFromState();
     if (!files.length) files = filesFromInputs();
     if (!files.length) files = filesFromCards();
+    if (!files.length && Array.isArray(window.__lastPickedFiles) && window.__lastPickedFiles.length) files = window.__lastPickedFiles;
     log("files →", files.map(f => f?.name || "(?)"));
     return files;
   }
@@ -5039,12 +5042,13 @@ window.__applyGreyNow && window.__applyGreyNow(); // force a refresh once
   function hookDOM() {
     // change on any file input
     document.addEventListener('change', (e) => {
-      if (e && e.target && e.target.matches && e.target.matches('input[type=file]')) scheduleRefresh();
+      if (e && e.target && e.target.matches && e.target.matches('input[type=file]')) { window.__lastPickedFiles = Array.from(e.target.files || []); scheduleRefresh(); }
     }, true);
     // just-in-time: when user opens the dropdown, recompute
     const tf = getSelectEl();
     if (tf && !tf.__grey_v9) {
       tf.addEventListener('mousedown', scheduleRefresh, true);
+      tf.addEventListener('click', scheduleRefresh, true);
       tf.addEventListener('focus', scheduleRefresh, true);
       tf.__grey_v9 = true;
       // observe only childList (avoid attribute loops when we toggle disabled)
@@ -5061,6 +5065,16 @@ window.__applyGreyNow && window.__applyGreyNow(); // force a refresh once
       mo2.observe(list, { childList: true, subtree: true, characterData: true });
       list.__grey_v9 = true;
     }
+    // Global drop: capture files into __lastPickedFiles
+    window.addEventListener('drop', (e) => {
+      try {
+        if (e && e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) {
+          window.__lastPickedFiles = Array.from(e.dataTransfer.files);
+          scheduleRefresh();
+        }
+      } catch { }
+    }, true);
+
   }
 
   function init() {
@@ -5085,3 +5099,64 @@ window.__applyGreyNow && window.__applyGreyNow(); // force a refresh once
   window.__applyGreyNow = () => { DEBUG || console.log("[grey-v9] manual refresh"); scheduleRefresh(); };
   console.log("[grey-v9] installed (no-loop, JIT greying)");
 })();
+
+
+// === ACCEPT_CONTROLLER v2: keep file chooser filter correct at all times ===
+(() => {
+  if (window.__ACCEPT_CTRL_V2__) return; window.__ACCEPT_CTRL_V2__ = true;
+  const ACCEPT = [
+    '.png', '.jpg', '.jpeg', '.webp', '.svg', '.bmp', '.tiff', '.gif',
+    '.mp3', '.wav', '.ogg', '.m4a', '.flac', '.opus', '.aiff', '.aac',
+    '.mp4', '.webm', '.mkv', '.mov', '.m4v', '.gif',
+    '.pdf', '.docx', '.pptx', '.xlsx', '.csv', '.tsv', '.txt', '.md', '.json', '.jsonl', '.html',
+    '.zip', '.rar', '.7z', '.tar', '.gz', '.bz2', '.xz', '.tgz', '.tbz2', '.txz'
+  ].join(',');
+  const sel = 'input[type="file"], input#file, input[name="file"], #file-input';
+  function apply(input) {
+    if (!input) return;
+    try {
+      if (input.getAttribute('accept') !== ACCEPT) input.setAttribute('accept', ACCEPT);
+      if (!input.__accObs) {
+        const obs = new MutationObserver(muts => {
+          for (const m of muts) {
+            if (m.type === 'attributes' && m.attributeName === 'accept' && input.getAttribute('accept') !== ACCEPT) {
+              input.setAttribute('accept', ACCEPT);
+            }
+          }
+        });
+        obs.observe(input, { attributes: true, attributeFilter: ['accept'] });
+        input.__accObs = obs;
+      }
+    } catch { }
+  }
+  function run() {
+    const input = document.querySelector(sel);
+    if (input) apply(input);
+  }
+  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', run, { once: true }); } else { run(); }
+  new MutationObserver(muts => {
+    for (const mu of muts) {
+      mu.addedNodes && mu.addedNodes.forEach(n => {
+        if (n.matches && n.matches('input[type="file"]')) apply(n);
+        if (n.querySelectorAll) n.querySelectorAll('input[type="file"]').forEach(apply);
+      });
+    }
+  }).observe(document.documentElement || document.body, { childList: true, subtree: true });
+  const before = () => setTimeout(run, 0);
+  document.addEventListener('pointerdown', before, true);
+  document.addEventListener('click', before, true);
+})();
+
+
+// === GREY_CONTROLLER v2: keep grey-out in sync for picker & drag/drop ===
+(() => {
+  if (window.__GREY_CTRL_V2__) return; window.__GREY_CTRL_V2__ = true;
+  function applyGreySoon() {
+    try { if (typeof window.__applyGreyNow === 'function') { setTimeout(() => { try { window.__applyGreyNow(); } catch (e) { } }, 0); } } catch { }
+  }
+  document.addEventListener('change', (e) => { const t = e.target; if (t && t.matches && t.matches('input[type="file"]')) { try { window.__lastPickedFiles = Array.from(t.files || []); } catch { } applyGreySoon(); } }, true);
+  window.addEventListener('drop', (e) => { try { if (e && e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) { window.__lastPickedFiles = Array.from(e.dataTransfer.files); } } catch { } applyGreySoon(); }, true);
+  document.addEventListener('mousedown', applyGreySoon, true);
+  document.addEventListener('click', applyGreySoon, true);
+})();
+
