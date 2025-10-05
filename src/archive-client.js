@@ -1,13 +1,28 @@
-﻿import { load7z, loadLibarchive } from "./local-first.mjs";
+﻿// archive-client.js (patched)
+
+/* Use relative import + named exports from your local-first loader */
+import { loadLibarchive, load7z } from "./src/local-first.mjs";
 
 const WORK = "/work";
 let _seven;
+
+/* ---------- helpers ---------- */
 
 async function ensureVendors() {
   if (!_seven) _seven = await load7z();
   return _seven;
 }
 function FS() { return _seven.FS; }
+
+/* Normalize archive entry paths and prevent zip-slip */
+function normalizePath(p) {
+  return String(p || "")
+    .replace(/^[A-Za-z]:/i, "")           // strip drive letters
+    .replace(/^\/+/, "")                  // strip leading slashes
+    .split(/[/\\]+/)
+    .filter(seg => seg && seg !== "." && seg !== "..")
+    .join("/");
+}
 
 async function toU8(input) {
   if (!input) throw new Error("No input");
@@ -16,27 +31,32 @@ async function toU8(input) {
   if (input.arrayBuffer) return new Uint8Array(await input.arrayBuffer());
   if (input.file?.arrayBuffer) return new Uint8Array(await input.file.arrayBuffer());
   if (input.blob?.arrayBuffer) return new Uint8Array(await input.blob.arrayBuffer());
-  // typed arrays?
-  if (input.buffer && input.byteLength != null) return new Uint8Array(input.buffer, input.byteOffset || 0, input.byteLength);
+  if (input.buffer && input.byteLength != null) {
+    return new Uint8Array(input.buffer, input.byteOffset || 0, input.byteLength);
+  }
   throw new Error("Unsupported input type: " + Object.prototype.toString.call(input));
 }
 
 async function writeFile(path, data) {
   const fs = FS();
-  const parts = path.split("/").filter(Boolean);
+  const rel = normalizePath(path);
+  const parts = rel.split("/").filter(Boolean);
   let cur = "";
   for (let i = 0; i < parts.length - 1; i++) {
     cur += "/" + parts[i];
-    try { fs.mkdir(cur); } catch {}
+    try { fs.mkdir(cur); } catch { /* exists */ }
   }
   const u8 = data instanceof Uint8Array ? data : await toU8(data);
-  fs.writeFile(path, u8);
+  fs.writeFile("/" + rel, u8);
 }
+
 async function readFile(path) {
   const fs = FS();
   const u8 = fs.readFile(path);
-  return new Blob([u8.buffer], { type: "application/octet-stream" });
+  // Use the Uint8Array itself (not .buffer) to avoid over-reading the underlying heap.
+  return new Blob([u8], { type: "application/octet-stream" });
 }
+
 function removeDir(path) {
   const fs = FS();
   try {
@@ -46,17 +66,19 @@ function removeDir(path) {
       if (name === "." || name === "..") continue;
       const p = path + "/" + name;
       const st = fs.stat(p);
-      if (fs.isDir(st.mode)) { removeDir(p); try { fs.rmdir(p); } catch {} }
-      else { try { fs.unlink(p); } catch {} }
+      if (fs.isDir(st.mode)) { removeDir(p); try { fs.rmdir(p); } catch { } }
+      else { try { fs.unlink(p); } catch { } }
     }
-  } catch {}
+  } catch { /* ignore */ }
 }
+
+/* ---------- extraction ---------- */
 
 async function extractWith7z(input, outDir = WORK + "/in") {
   const seven = await ensureVendors();
   const fs = FS();
-  try { fs.mkdir(WORK); } catch {}
-  try { fs.mkdir(outDir); } catch {}
+  try { fs.mkdir(WORK); } catch { }
+  try { fs.mkdir(outDir); } catch { }
   removeDir(outDir); // clean
   await writeFile(WORK + "/src.bin", input);
   // extract all to /work/in
@@ -67,68 +89,148 @@ async function extractWith7z(input, outDir = WORK + "/in") {
 async function extractWithLibarchive(input, outDir = WORK + "/in") {
   await ensureVendors(); // ensure FS exists
   const fs = FS();
-  try { fs.mkdir(WORK); } catch {}
-  try { fs.mkdir(outDir); } catch {}
+  try { fs.mkdir(WORK); } catch { }
+  try { fs.mkdir(outDir); } catch { }
   removeDir(outDir); // clean
 
-  const { Archive } = await loadLibarchive();
+  const lib = await loadLibarchive();
   const buf = await toU8(input);
-  const a = await Archive.open(buf);
-  try {
-    for await (const entry of a) {
-      if (entry?.file && entry?.file.size >= 0) {
-        await writeFile(`${outDir}/${entry.path}`, entry.file);
-      }
+
+  // Helper to read any entry object to a Uint8Array
+  async function entryToU8(entry) {
+    if (typeof entry.read === "function") {
+      const data = await entry.read();
+      return data instanceof Uint8Array ? data : new Uint8Array(data);
     }
-  } finally {
-    try { await a.close?.(); } catch {}
+    if (typeof entry.getData === "function") {
+      const data = await entry.getData();
+      return data instanceof Uint8Array ? data : new Uint8Array(data);
+    }
+    if (typeof entry.getStream === "function") {
+      const stream = await entry.getStream();
+      const ab = await new Response(stream).arrayBuffer();
+      return new Uint8Array(ab);
+    }
+    if (typeof entry.stream === "function") {
+      const stream = await entry.stream();
+      const ab = await new Response(stream).arrayBuffer();
+      return new Uint8Array(ab);
+    }
+    if (entry.file) return toU8(entry.file);
+    throw new Error("Unknown libarchive entry API shape");
   }
+
+  if (lib.kind === "wasm") {
+    // libarchive-wasm
+    const reader = new lib.ArchiveReader(lib.libarchive, buf);
+    for await (const entry of reader) {
+      const rawPath = entry.path || entry.name || entry.filename;
+      const rel = normalizePath(rawPath);
+      if (!rel) continue;
+      // directories often come as trailing slash or size===0 with dir flag
+      if (entry.isDirectory || /\/$/.test(rawPath)) {
+        try { fs.mkdir(outDir + "/" + rel); } catch { }
+        continue;
+      }
+      const data = await entryToU8(entry);
+      await writeFile(`${outDir}/${rel}`, data);
+    }
+    try { await reader.close?.(); } catch { }
+  } else {
+    // libarchive.js (worker-based)
+    const a = await lib.Archive.open(buf);
+    try {
+      let files;
+      if (typeof a.getFilesArray === "function") files = await a.getFilesArray();
+      else if (typeof a.extractFiles === "function") files = await a.extractFiles();
+      else if (Array.isArray(a.files)) files = a.files;
+      else throw new Error("libarchive.js: unknown reader API");
+
+      for (const f of files) {
+        const rawPath = f.path || f.name || f.file?.name;
+        const rel = normalizePath(rawPath);
+        if (!rel) continue;
+        // skip directories (libarchive.js sometimes exposes them without a File)
+        if (!f.file || (f.file.size === 0 && /\/$/.test(rawPath))) {
+          try { fs.mkdir(outDir + "/" + rel); } catch { }
+          continue;
+        }
+        await writeFile(`${outDir}/${rel}`, f.file);
+      }
+    } finally {
+      try { await a.close?.(); } catch { }
+    }
+  }
+
   return outDir;
 }
+
+/* ---------- packing ---------- */
 
 async function packFromDir(dir, target) {
   const seven = await ensureVendors();
   const fs = FS();
-  try { fs.mkdir(WORK); } catch {}
+  try { fs.mkdir(WORK); } catch { }
 
   const out = (name) => `${WORK}/${name}`;
   const is = (t) => t === target;
 
-  if (is("zip"))  { await seven.callMain(["a","-tzip", out("out.zip"),  dir, "-bd"]); return out("out.zip"); }
-  if (is("7z"))   { await seven.callMain(["a","-t7z",  out("out.7z"),   dir, "-bd"]); return out("out.7z"); }
-  if (is("tar"))  { await seven.callMain(["a","-ttar", out("out.tar"),  dir, "-bd"]); return out("out.tar"); }
+  if (is("zip")) { await seven.callMain(["a", "-tzip", out("out.zip"), dir, "-bd"]); return out("out.zip"); }
+  if (is("7z")) { await seven.callMain(["a", "-t7z", out("out.7z"), dir, "-bd"]); return out("out.7z"); }
+  if (is("tar")) { await seven.callMain(["a", "-ttar", out("out.tar"), dir, "-bd"]); return out("out.tar"); }
 
   if (is("tar.gz")) {
-    await seven.callMain(["a","-ttar", out("out.tar"), dir, "-bd"]);
-    await seven.callMain(["a","-tgzip", out("out.tar.gz"), out("out.tar"), "-bd"]);
+    await seven.callMain(["a", "-ttar", out("out.tar"), dir, "-bd"]);
+    await seven.callMain(["a", "-tgzip", out("out.tar.gz"), out("out.tar"), "-bd"]);
+    try { fs.unlink(out("out.tar")); } catch { }
     return out("out.tar.gz");
   }
   if (is("tar.bz2")) {
-    await seven.callMain(["a","-ttar", out("out.tar"), dir, "-bd"]);
-    await seven.callMain(["a","-tbzip2", out("out.tar.bz2"), out("out.tar"), "-bd"]);
+    await seven.callMain(["a", "-ttar", out("out.tar"), dir, "-bd"]);
+    await seven.callMain(["a", "-tbzip2", out("out.tar.bz2"), out("out.tar"), "-bd"]);
+    try { fs.unlink(out("out.tar")); } catch { }
     return out("out.tar.bz2");
   }
   if (is("tar.xz")) {
-    await seven.callMain(["a","-ttar", out("out.tar"), dir, "-bd"]);
-    await seven.callMain(["a","-txz", out("out.tar.xz"), out("out.tar"), "-bd"]);
+    await seven.callMain(["a", "-ttar", out("out.tar"), dir, "-bd"]);
+    await seven.callMain(["a", "-txz", out("out.tar.xz"), out("out.tar"), "-bd"]);
+    try { fs.unlink(out("out.tar")); } catch { }
     return out("out.tar.xz");
   }
 
   throw new Error("Unsupported archive target: " + target);
 }
 
-export async function convertArchiveFile(file, target /* 'zip'|'7z'|'tar'|'tar.gz'|'tar.bz2'|'tar.xz' */) {
-  const src = file?.arrayBuffer ? file : (file?.file || file?.blob || file);
-  if (!src) throw new Error("convertArchiveFile(): no File/Blob provided");
+/* ---------- public API ---------- */
 
-  const name = file?.name || file?.file?.name || "archive";
-  const base = name.replace(/\.(zip|rar|7z|tar|tgz|tbz2|txz|tar\.gz|tar\.bz2|tar\.xz)$/i, "");
+// 1) let convert accept single file or array (for multi-part), + opts
+export async function convertArchiveFile(input, target, opts = {}) {
+  // input: File/Blob OR File[] for multi-part archives
+  const files = Array.isArray(input) ? input : [input];
+  if (!files.length) throw new Error("No file(s) provided");
 
+  // write all inputs into the work dir
+  await ensureVendors();
+  const fs = FS();
+  try { fs.mkdir(WORK); } catch { }
+  const inDir = WORK + "/src";
+  try { fs.mkdir(inDir); } catch { }
+  for (const f of files) {
+    const name = f.name || "part";
+    await writeFile(`${inDir}/${name}`, f);
+  }
+
+  // choose the "primary" part for 7z (rar: .part1.rar | .r00 | .001 | .rar)
+  const primary = pickPrimary(files.map(f => f.name || ""));
+  const primaryPath = primary ? `${inDir}/${primary}` : `${inDir}/${files[0].name}`;
+
+  // extract (7z first; fall back to libarchive.js)
   let dir;
-  try { dir = await extractWith7z(src); }
-  catch (e) {
-    console.warn("[archive] 7z extract failed, falling back to libarchive:", e);
-    dir = await extractWithLibarchive(src);
+  try {
+    dir = await extractWith7zPrimary(primaryPath, WORK + "/in", opts.password);
+  } catch (e) {
+    console.warn("[archive] 7z extract failed, falling back to libarchive.js:", e);
+    dir = await extractWithLibarchive(fs.readFile(primaryPath), WORK + "/in");
   }
 
   const outPath = await packFromDir(dir, target);
@@ -136,12 +238,40 @@ export async function convertArchiveFile(file, target /* 'zip'|'7z'|'tar'|'tar.g
 
   // cleanup
   try {
-    const fs = FS();
-    try { fs.unlink(`${WORK}/src.bin`); } catch {}
-    try { fs.unlink(outPath); } catch {}
-    try { fs.unlink(`${WORK}/out.tar`); } catch {}
-    removeDir(`${WORK}/in`); try { FS().rmdir(`${WORK}/in`); } catch {}
-  } catch (err) { console.warn("Archive FS cleanup failed:", err); }
+    removeDir(WORK + "/in"); try { fs.rmdir(WORK + "/in"); } catch { }
+    removeDir(inDir); try { fs.rmdir(inDir); } catch { }
+    try { fs.unlink(outPath); } catch { }
+  } catch { }
 
+  const base = (Array.isArray(input) ? files[0].name : (input.name || "archive"))
+    .replace(/\.(zip|rar|7z|tar|tgz|tbz2|txz|tar\.gz|tar\.bz2|tar\.xz)$/i, "");
   return { blob, suggestedName: `${base}.${target}` };
 }
+
+// 2) helper: pick the first RAR/7z part sensibly
+function pickPrimary(names) {
+  const norm = n => n?.toLowerCase() || "";
+  const by = (pat) => names.find(n => pat.test(norm(n)));
+  return (
+    by(/\.part0*1\.rar$/) ||
+    by(/\.r00$/) ||
+    by(/\.0*1$/) ||
+    by(/\.rar$/) ||
+    by(/\.(7z|zip|tar|tgz|tbz2|txz)$/) ||
+    names[0]
+  );
+}
+
+// 3) extraction via 7z with optional password
+async function extractWith7zPrimary(path, outDir, password) {
+  const seven = await ensureVendors();
+  const fs = FS();
+  try { fs.mkdir(outDir); } catch { }
+  removeDir(outDir);
+
+  const args = ["x", path, "-o" + outDir, "-y", "-bd"];
+  if (password) args.splice(1, 0, `-p${password}`); // note: no space after -p
+  await seven.callMain(args);
+  return outDir;
+}
+
