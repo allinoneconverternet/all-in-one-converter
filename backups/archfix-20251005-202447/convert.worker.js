@@ -1,5 +1,4 @@
-﻿// src/convert.worker.js
-const v = Date.now().toString();
+﻿const v = Date.now().toString();
 
 // Minimal 'document' shim for worker context (for libs that peek at document.baseURI)
 if (typeof self.document === "undefined" || !self.document) {
@@ -18,7 +17,7 @@ self.onmessage = async (e) => {
     return;
   }
   try {
-    const { convertArchive, setProgressHook } = await import(`./convert.js?v=${v}`);
+    const { convertArchive, setProgressHook } = await import(./convert.js?v=);
     setProgressHook((x) => postPct(x));
     postPct(0);
     const outU8 = await convertArchive(new Uint8Array(buf), fmt);

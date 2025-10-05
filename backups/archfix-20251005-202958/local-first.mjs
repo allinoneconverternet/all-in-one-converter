@@ -1,7 +1,6 @@
-﻿// src/local-first.v2.mjs
-const baseForUrls = (() => {
-  try { return import.meta.url; } catch { }
-  try { return self?.location?.href || "/"; } catch { }
+﻿const baseForUrls = (() => {
+  try { if (typeof import !== "undefined" && typeof import.meta !== "undefined" && import.meta.url) return import.meta.url; } catch {}
+  try { if (typeof self !== "undefined" && self.location && self.location.href) return self.location.href; } catch {}
   return "/";
 })();
 const rel = (p) => new URL(p, baseForUrls).toString();
@@ -10,9 +9,9 @@ let _libarchivePromise = null;
 export async function loadLibarchive() {
   if (_libarchivePromise) return _libarchivePromise;
   _libarchivePromise = (async () => {
-    // CDN first (your host previously 404'd vendor/libarchivejs/*)
+    // CDN FIRST (your host 404s vendor/libarchivejs/dist/*)
     try {
-      const esm = "https://cdn.jsdelivr.net/npm/libarchive.js@2.0.2/+esm";
+      const esm    = "https://cdn.jsdelivr.net/npm/libarchive.js@2.0.2/+esm";
       const worker = "https://cdn.jsdelivr.net/npm/libarchive.js@2.0.2/dist/worker-bundle.js";
       const mod = await import(esm);
       const Archive = mod?.Archive ?? mod?.default?.Archive;
@@ -23,7 +22,7 @@ export async function loadLibarchive() {
       console.warn("[libarchive] CDN failed, trying local vendor", e);
     }
 
-    // Local fallback (only if you deploy these files)
+    // Local fallback (only works if you upload vendor/libarchivejs/dist/*)
     const base = rel("vendor/libarchivejs/dist/");
     const m = await import(base + "main.js");
     const Archive = m?.Archive ?? m?.default?.Archive;
@@ -46,10 +45,10 @@ export async function load7z() {
     return factory({ locateFile: (p) => (p.endsWith(".wasm") ? wasmUrl : p) });
   }
 
-  const localJS = rel("vendor/7z-wasm/7zz.es6.js");
+  const localJS   = rel("vendor/7z-wasm/7zz.es6.js");
   const localWasm = rel("vendor/7z-wasm/7zz.wasm");
-  const cdnJS = "https://cdn.jsdelivr.net/npm/7z-wasm@1.0.0-beta.5/7zz.es6.js";
-  const cdnWasm = "https://cdn.jsdelivr.net/npm/7z-wasm@1.0.0-beta.5/7zz.wasm";
+  const cdnJS     = "https://cdn.jsdelivr.net/npm/7z-wasm@1.0.0-beta.5/7zz.es6.js";
+  const cdnWasm   = "https://cdn.jsdelivr.net/npm/7z-wasm@1.0.0-beta.5/7zz.wasm";
 
   _sevenPromise = (async () => {
     try { return await initFrom(localJS, localWasm); }

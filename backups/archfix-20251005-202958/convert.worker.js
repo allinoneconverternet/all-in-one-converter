@@ -1,7 +1,6 @@
-﻿// src/convert.worker.js
-const v = Date.now().toString();
+﻿const v = "1759688688";
 
-// Minimal 'document' shim for worker context (for libs that peek at document.baseURI)
+// Minimal 'document' shim in worker BEFORE any imports (for libs that peek at it)
 if (typeof self.document === "undefined" || !self.document) {
   self.document = { baseURI: self.location?.href || "/", currentScript: { src: self.location?.href || "/" } };
 }
@@ -18,7 +17,7 @@ self.onmessage = async (e) => {
     return;
   }
   try {
-    const { convertArchive, setProgressHook } = await import(`./convert.js?v=${v}`);
+    const { convertArchive, setProgressHook } = await import(./convert.js?v=1759688688);
     setProgressHook((x) => postPct(x));
     postPct(0);
     const outU8 = await convertArchive(new Uint8Array(buf), fmt);
