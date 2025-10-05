@@ -38,7 +38,6 @@ const TB_TONE = {
   'banner.linkCopied': 'ok',
   'banner.openFolderFail': 'error',
   'banner.tooMuchData': 'error',
-  'banner.readyHint': 'info',
   'banner.exceedsBudget': 'error'
 };
 window.tb = function tb(key, vars) {
@@ -55,66 +54,33 @@ const INPUT_EXTS_BY_KIND = {
   pptx: ['pptx'],
   xlsx: ['xlsx'],
   csv: ['csv', 'tsv'],
-  text: ['txt', 'md', 'json', 'jsonl', 'html'],
-  archive: ['zip', '7z', 'tar', 'tgz', 'tbz2', 'txz', 'tar.gz', 'tar.bz2', 'tar.xz'] // ← new
+  text: ['txt', 'md', 'json', 'jsonl', 'html']
 };
-
-// Optional but recommended: help browsers filter better
-const EXT_TO_MIME = {
-  // images
-  png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', webp: 'image/webp',
-  svg: 'image/svg+xml', bmp: 'image/bmp', tiff: 'image/tiff', gif: 'image/gif',
-  // audio
-  mp3: 'audio/mpeg', wav: 'audio/wav', ogg: 'audio/ogg', m4a: 'audio/mp4',
-  flac: 'audio/flac', opus: 'audio/opus', aiff: 'audio/aiff', aac: 'audio/aac',
-  // video
-  mp4: 'video/mp4', webm: 'video/webm', mkv: 'video/x-matroska',
-  mov: 'video/quicktime', m4v: 'video/x-m4v',
-  // docs/text
-  pdf: 'application/pdf',
-  docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  pptx: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-  xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-  csv: 'text/csv', tsv: 'text/tab-separated-values',
-  txt: 'text/plain', md: 'text/markdown', json: 'application/json',
-  jsonl: 'application/x-ndjson', html: 'text/html',
-  // archives
-  zip: 'application/zip', '7z': 'application/x-7z-compressed', tar: 'application/x-tar',
-  'tar.gz': 'application/gzip', tgz: 'application/gzip',
-  'tar.bz2': 'application/x-bzip2', tbz2: 'application/x-bzip2',
-  'tar.xz': 'application/x-xz', txz: 'application/x-xz'
-};
-
 
 // Decide which *input kinds* are usable right now by asking your own targetsForKind(kind).
 // If a kind has no outputs (given current features), we don't allow it in.
 function computeAllowedInputExts() {
-  const kinds = ['image', 'audio', 'video', 'pdf', 'docx', 'pptx', 'xlsx', 'csv', 'text', 'archive']; // ← added 'archive'
-  const out = new Set();
-  for (const k of kinds) {
-    let can;
-    try { const t = targetsForKind(k); can = t && t.size > 0; } catch { can = false; }
-    if (!can) continue;
-    (INPUT_EXTS_BY_KIND[k] || []).forEach(e => out.add(e));
-  }
-  return out;
+  // Static union of all supported extensions; OS picker must be inclusive.
+  const exts = new Set();
+  try {
+    const map = INPUT_EXTS_BY_KIND || {};
+    for (const list of Object.values(map)) {
+      if (Array.isArray(list)) for (const e of list) exts.add(e);
+    }
+  } catch { }
+  return exts;
 }
-
-
 
 // Update the file chooser's accept list dynamically
 function updateFileInputAccept() {
   const exts = computeAllowedInputExts();
-  const tokens = [];
-  for (const e of exts) {
-    tokens.push('.' + e);
-    if (EXT_TO_MIME[e]) tokens.push(EXT_TO_MIME[e]);
-  }
-  const accept = tokens.join(',');
+  const accept = [...exts].map(e => '.' + e).join(',');
   const input = document.querySelector('input[type="file"], input#file, input[name="file"]');
   if (input && accept) input.setAttribute('accept', accept);
-  window.__allowedInputExts = exts; // keep your drop filter in sync
+  // stash for drop filter
+  window.__allowedInputExts = exts;
 }
+
 // Utility: get lowercase extension (no dot)
 function extOf(name) {
   const m = (name || '').toLowerCase().match(/\.([a-z0-9]+)$/i);
@@ -294,23 +260,22 @@ window.getFFmpeg ??= async function getFFmpeg() {
   return window._ffmpeg;
 };
 
+// Load the UMD wrapper (local → CDN) && adopt the global
 
-document.addEventListener('DOMContentLoaded', () => {
-  // resolve controls (you already have this)
-  resolveTargetControls?.();
+// Return a singleton; try local worker first, then CDN
 
-  // Safety: prevent landing on a disabled option
-  if (window.targetFormat && !targetFormat.__guarded) {
-    targetFormat.addEventListener('change', () => {
-      const opt = targetFormat.options[targetFormat.selectedIndex];
-      if (!opt || opt.disabled || !opt.value) {
-        const firstOK = Array.from(targetFormat.options).find(o => !o.disabled && !!o.value);
-        if (firstOK) targetFormat.value = firstOK.value;
-      }
-    });
-    targetFormat.__guarded = true;
-  }
-});
+/* duplicate removed */
+;
+
+// Load the UMD wrapper (local → CDN) && adopt the global
+
+/* duplicate removed */
+;
+
+// Return a singleton; try local worker first, then CDN
+
+/* duplicate removed */
+;
 
 document.addEventListener('DOMContentLoaded', () => {
   const run = async () => {
@@ -784,7 +749,6 @@ const I18N = {
     'banner.saveCancelled': 'Speichern abgebrochen.',
     'banner.linkCopied': 'Link in die Zwischenablage kopiert.',
     'banner.openFolderFail': 'Ordner konnte nicht geöffnet werden. Versuchen Sie es erneut oder laden Sie einzeln herunter.',
-    'banner.readyHint': 'Bereit. Füge Dateien hinzu und wähle dann ein Zielformat.',
     couldntConvert: 'Konnte nicht konvertieren: {msg}',
     unknownError: 'Unbekannter Fehler'
   },
@@ -833,7 +797,6 @@ const I18N = {
     'banner.savedAll': 'Todos los archivos guardados en la carpeta elegida.',
     'banner.saveCancelled': 'Guardado cancelado.',
     'banner.linkCopied': 'Enlace copiado al portapapeles.',
-    'banner.readyHint': 'Listo. Añade archivos para empezar y luego elige un formato de destino.',
     'banner.openFolderFail': 'No se pudo abrir la carpeta. Inténtelo de nuevo o descargue individualmente.',
     couldntConvert: 'No se pudo convertir: {msg}',
     unknownError: 'Error desconocido'
@@ -882,7 +845,6 @@ const I18N = {
     'banner.triggeredDownloads': 'Téléchargements lancés pour chaque fichier.',
     'banner.savedAll': 'Tous les fichiers enregistrés dans le dossier choisi.',
     'banner.saveCancelled': 'Enregistrement annulé.',
-    'banner.readyHint': 'Prêt. Ajoutez des fichiers pour commencer, puis choisissez un format de sortie.',
     'banner.linkCopied': 'Lien copié dans le presse-papiers.',
     'banner.openFolderFail': 'Impossible d’ouvrir le dossier. Réessayez ou téléchargez individuellement.',
     couldntConvert: 'Conversion impossible : {msg}',
@@ -932,7 +894,6 @@ const I18N = {
     'banner.triggeredDownloads': 'Avviati i download per ogni file.',
     'banner.savedAll': 'Tutti i file salvati nella cartella scelta.',
     'banner.saveCancelled': 'Salvataggio annullato.',
-    'banner.readyHint': 'Pronto. Aggiungi file per iniziare, poi scegli un formato di destinazione.',
     'banner.linkCopied': 'Link copiato negli appunti.',
     'banner.openFolderFail': 'Impossibile aprire la cartella. Riprova o scarica i file singolarmente qui sotto.',
     couldntConvert: 'Impossibile convertire: {msg}',
@@ -982,7 +943,6 @@ const I18N = {
     'banner.triggeredDownloads': 'Uruchomiono pobieranie dla każdego pliku.',
     'banner.savedAll': 'Zapisano wszystkie pliki do wybranego folderu.',
     'banner.saveCancelled': 'Zapisywanie anulowano.',
-    'banner.readyHint': 'Gotowe. Dodaj pliki, a następnie wybierz format docelowy.',
     'banner.linkCopied': 'Link skopiowano do schowka.',
     'banner.openFolderFail': 'Nie można było otworzyć folderu. Spróbuj ponownie lub pobierz pojedynczo poniżej.',
     couldntConvert: 'Nie można przekonwertować: {msg}',
@@ -1026,7 +986,6 @@ const I18N = {
     'banner.cleared': 'Limpo.',
     'banner.noOutputs': 'Ainda não há resultados. Converta primeiro.',
     'banner.addFirst': 'Adicione ficheiros primeiro.',
-    'banner.readyHint': 'Pronto. Adicione ficheiros para começar e depois escolha um formato de destino.',
     'banner.doneSummary': 'Concluído: {s} {files}!',
     'banner.tooMuchData': 'Demasiados dados de uma vez ({total}). Orçamento {budget}.',
     'banner.exceedsBudget': 'Total selecionado {total} excede o orçamento {budget}. Será processado sequencialmente.',
@@ -1077,7 +1036,6 @@ const I18N = {
     'banner.noOutputs': 'Ainda não há resultados. Converta primeiro.',
     'banner.addFirst': 'Adicione arquivos primeiro.',
     'banner.doneSummary': 'Concluído: {s} {files}!',
-    'banner.readyHint': 'Pronto. Adicione arquivos para começar e depois escolha um formato de destino.',
     'banner.tooMuchData': 'Dados demais de uma vez ({total}). Orçamento {budget}.',
     'banner.exceedsBudget': 'Total selecionado {total} excede o orçamento {budget}. Será processado sequencialmente.',
     'banner.triggeredDownloads': 'Downloads iniciados para cada arquivo.',
@@ -1132,7 +1090,6 @@ const I18N = {
     'banner.triggeredDownloads': '各ファイルのダウンロードを開始しました。',
     'banner.savedAll': 'すべてのファイルを選択したフォルダに保存しました。',
     'banner.saveCancelled': '保存をキャンセルしました。',
-    'banner.readyHint': '準備完了。まずファイルを追加し、次に出力形式を選択してください。',
     'banner.linkCopied': 'リンクをクリップボードにコピーしました。',
     'banner.openFolderFail': 'フォルダを開けませんでした。もう一度お試しになるか、下で個別にダウンロードしてください。',
     couldntConvert: '変換できませんでした: {msg}',
@@ -1183,7 +1140,6 @@ const I18N = {
     'banner.savedAll': 'Все файлы сохранены в выбранную папку.',
     'banner.saveCancelled': 'Сохранение отменено.',
     'banner.linkCopied': 'Ссылка скопирована в буфер обмена.',
-    'banner.readyHint': 'Готово. Добавьте файлы, затем выберите целевой формат.',
     'banner.openFolderFail': 'Не удалось открыть папку. Повторите попытку или загрузите файлы по одному ниже.',
     couldntConvert: 'Не удалось конвертировать: {msg}',
     unknownError: 'Неизвестная ошибка'
@@ -1233,7 +1189,6 @@ const I18N = {
     'banner.savedAll': '已将所有文件保存到你选择的文件夹。',
     'banner.saveCancelled': '已取消保存。',
     'banner.linkCopied': '链接已复制到剪贴板。',
-    'banner.readyHint': '就绪。先添加文件，然后选择目标格式。',
     'banner.openFolderFail': '无法打开该文件夹。请重试，或在下方逐个下载。',
     couldntConvert: '无法转换：{msg}',
     unknownError: '未知错误'
@@ -1282,7 +1237,6 @@ const I18N = {
     'banner.triggeredDownloads': '각 파일의 다운로드를 시작했습니다.',
     'banner.savedAll': '모든 파일을 선택한 폴더에 저장했습니다.',
     'banner.saveCancelled': '저장을 취소했습니다.',
-    'banner.readyHint': '준비되었습니다. 먼저 파일을 추가한 뒤 대상 형식을 선택하세요.',
     'banner.linkCopied': '링크가 클립보드에 복사되었습니다.',
     'banner.openFolderFail': '폴더를 열 수 없습니다. 다시 시도하거나 아래에서 개별적으로 다운로드하세요.',
     couldntConvert: '변환할 수 없습니다: {msg}',
@@ -1332,7 +1286,6 @@ const I18N = {
     'banner.triggeredDownloads': 'प्रत्येक फ़ाइल के लिए डाउनलोड शुरू किए गए।',
     'banner.savedAll': 'सभी फ़ाइलें आपके चुने हुए फ़ोल्डर में सहेजी गईं।',
     'banner.saveCancelled': 'सेव रद्द किया गया।',
-    'banner.readyHint': 'तैयार। शुरू करने के लिए फ़ाइलें जोड़ें, फिर लक्ष्य फ़ॉर्मेट चुनें।',
     'banner.linkCopied': 'लिंक क्लिपबोर्ड पर कॉपी किया गया।',
     'banner.openFolderFail': 'फ़ोल्डर नहीं खोला जा सका। फिर से प्रयास करें या नीचे अलग-अलग डाउनलोड करें।',
     couldntConvert: 'रूपांतरित नहीं कर सका: {msg}',
@@ -1382,7 +1335,6 @@ const I18N = {
     'banner.triggeredDownloads': 'تم بدء التنزيلات لكل ملف.',
     'banner.savedAll': 'تم حفظ كل الملفات في المجلد الذي اخترته.',
     'banner.saveCancelled': 'تم إلغاء الحفظ.',
-    'banner.readyHint': 'جاهز. أضف ملفات للبدء ثم اختر صيغة الإخراج.',
     'banner.linkCopied': 'تم نسخ الرابط إلى الحافظة.',
     'banner.openFolderFail': 'تعذّر فتح المجلد. حاول مجددًا أو نزّل الملفات بشكل فردي أدناه.',
     couldntConvert: 'تعذّر التحويل: {msg}',
@@ -1432,7 +1384,6 @@ const I18N = {
     'banner.triggeredDownloads': 'Запущено завантаження для кожного файлу.',
     'banner.savedAll': 'Усі файли збережено у вибрану теку.',
     'banner.saveCancelled': 'Збереження скасовано.',
-    'banner.readyHint': 'Готово. Додайте файли, а потім виберіть цільовий формат.',
     'banner.linkCopied': 'Посилання скопійовано до буфера обміну.',
     'banner.openFolderFail': 'Не вдалося відкрити теку. Спробуйте ще раз або завантажуйте окремо нижче.',
     couldntConvert: 'Не вдалося конвертувати: {msg}',
@@ -1482,9 +1433,7 @@ const I18N = {
     'banner.triggeredDownloads': 'Her dosya için indirmeler başlatıldı.',
     'banner.savedAll': 'Tüm dosyalar seçtiğiniz klasöre kaydedildi.',
     'banner.saveCancelled': 'Kaydetme iptal edildi.',
-    'banner.readyHint': 'Hazır. Başlamak için dosyalar ekleyin, ardından bir hedef biçim seçin.',
     'banner.linkCopied': 'Bağlantı panoya kopyalandı.',
-    'banner.readyHint': 'Klaar. Voeg bestanden toe om te beginnen en kies vervolgens een doelformaat.',
     'banner.openFolderFail': 'Klasör açılamadı. Yeniden deneyin veya aşağıdan tek tek indirin.',
     couldntConvert: 'Dönüştürülemedi: {msg}',
     unknownError: 'Bilinmeyen hata'
@@ -1541,13 +1490,8 @@ const I18N = {
 };
 
 (function initI18N() {
-  const navLangs = (navigator.languages && navigator.languages.length)
-    ? navigator.languages
-    : [navigator.language || navigator.userLanguage || 'en'];
-
-  const htmlLang = (document.documentElement.lang || navLangs[0] || 'en').trim();
+  const htmlLang = (document.documentElement.lang || 'en').trim();
   const norm = htmlLang.toLowerCase();
-
   const LANG_ALIAS = {
     'pt-br': 'pt-BR', 'pt_pt': 'pt',
     'zh': 'zh-CN', 'zh-hans': 'zh-CN', 'zh-cn': 'zh-CN',
@@ -2181,24 +2125,37 @@ function targetsForKind(kind) {
     if (features.ffmpeg && ENABLE_OUTPUTS.media) ['mp4', 'webm', 'gif', 'mkv', 'mov', 'm4v', 'mp3', 'wav', 'ogg', 'm4a', 'flac', 'opus'].forEach(x => out.add(x));
   } else if (kind === 'archive') {
     ['zip', '7z', 'tar', 'tar.gz', 'tar.bz2', 'tar.xz'].forEach(x => out.add(x));
-    return out;
   }
+
+  return out;
 }
+
 // ---- ARCHIVE → ZIP (client-only) ----
-// ---- ARCHIVE → ZIP/TAR/TGZ/TBZ2/TXZ/7Z (client-only) ----
-// ---- ARCHIVE → ZIP/TAR/TGZ/TBZ2/TXZ/7Z ----
-// app.js — archive wrapper used by the convert pipeline
 async function convertArchiveFile(file, target) {
   const m = await import('./archive-client.js');
-  const { blob, suggestedName } = await m.convertArchiveFile(file, target);
 
-  const strip = n => (n || 'archive').replace(/\.(zip|rar|7z|tar|tgz|tbz2|txz|tar\.gz|tar\.bz2|tar\.xz)$/i, '');
-  const name = suggestedName || `${strip(file?.name)}.${target}`;
+  // choose writer based on target
+  let outBlob;
+  switch (target) {
+    case 'zip': outBlob = await m.convertArchiveToZip(file); break;
+    case 'tar': outBlob = await m.convertArchiveToTar(file); break;
+    case 'tar.gz': outBlob = await m.convertArchiveToTarGz(file); break;
+    case 'tar.bz2': outBlob = await m.convertArchiveToTarBz2(file); break;
+    case 'tar.xz': outBlob = await m.convertArchiveToTarXz(file); break;
+    case '7z': outBlob = await m.convertArchiveTo7z(file); break;
+    default:
+      throw new Error(`Unsupported archive target: ${target}`);
+  }
 
-  return [{ blob, name }];
+  // derive a sensible filename
+  const strip = n => (n || 'archive').replace(
+    /\.(zip|rar|7z|tar|tgz|tbz2|txz|tar\.gz|tar\.bz2|tar\.xz)$/i, ''
+  );
+  const ext = target; // target already matches the desired extension strings
+  const name = `${strip(file?.name)}.${ext}`;
+
+  return [{ blob: outBlob, name }];
 }
-
-
 
 /** Intersection across all selected files */
 function possibleTargetsForFiles(files) {
@@ -2258,14 +2215,6 @@ function rebuildTargetDropdown(allowedSet) {
   }
 }
 
-// === Robustly resolve controls (works with #target-format, #targetFormat, name="target", etc.)
-function resolveTargetControls() {
-  const tf = document.querySelector('#target-format, #targetFormat, select[name=target], select#target');
-  const qw = document.querySelector('#quality-wrap, #qualityWrap, .quality-wrap, [data-role="quality"]');
-  if (tf) window.targetFormat = tf;       // overwrite if needed
-  if (qw) window.qualityWrap = qw;
-}
-document.addEventListener('DOMContentLoaded', resolveTargetControls, { once: true });
 
 
 // Build the full target dropdown (unfiltered), grouped; used on initial load.
@@ -2590,6 +2539,8 @@ function addFiles(files) {
   const n = incoming.length;
   showBanner(t('banner.added', { n, files: wordFiles(n, APP_LANG), total: state.files.length }), 'ok');
 
+
+  try { window.__applyGreyNow && window.__applyGreyNow(); } catch { }
 
 }
 
@@ -4514,23 +4465,698 @@ window.__rowAnim = window.__rowAnim || {
 
 
 
+/* === Inject dropdown styles from JS (no <head> edits required) === */
 (function ensureGreyOutStyles() {
   try {
-    let st = document.getElementById('tf-disabled-style');
-    if (!st) {
-      st = document.createElement('style');
+    if (!document.getElementById('tf-disabled-style')) {
+      const st = document.createElement('style');
       st.id = 'tf-disabled-style';
+      st.textContent =
+        '#target-format option:disabled{opacity:.55;color:var(--muted,#6b7280)}' +
+        '#target-format optgroup.dim{opacity:.5}';
       (document.head || document.documentElement).appendChild(st);
     }
-    st.textContent = [
-      '#target-format option:disabled,',
-      '#targetFormat option:disabled,',
-      'select[name=target] option:disabled,',
-      'select#target option:disabled{opacity:.55;color:var(--muted,#6b7280)}',
-      '#target-format optgroup.dim,',
-      '#targetFormat optgroup.dim,',
-      'select[name=target] optgroup.dim,',
-      'select#target optgroup.dim{opacity:.5}'
-    ].join('');
-  } catch (e) { /* no-op */ }
+  } catch (e) { /* non-fatal */ }
 })();
+
+
+/* ============================== GREY-V7: robust dropdown greying ==============================
+   Installs a single override that:
+   - Detects selected files from state.files, any <input type="file">, and wrappers {file: File}
+   - Computes the intersection of allowed outputs using targetsForKind(kind) or a fallback map
+   - Disables + dims unsupported <option>s and disables empty <optgroup>s
+   - Keeps selection valid and toggles Convert button
+   - Hooks addFiles/removeFileAt, file input changes, and file-list DOM changes
+   - Adds high-specificity CSS so dimming is visible with custom themes
+   - Adds window.manualGreyRefresh() for manual triggering
+
+   Logs prefixed with [grey-v7].
+================================================================================================ */
+/* ---------- stable target grey-out (v9) ---------- */
+(function installGreyStable() {
+  if (window.__grey_stable_installed) return;
+  window.__grey_stable_installed = true;
+
+  // 1) CSS so disabled options actually look dim
+  try {
+    let st = document.getElementById('tf-disabled-style-stable');
+    if (!st) {
+      st = document.createElement('style');
+      st.id = 'tf-disabled-style-stable';
+      st.textContent =
+        "#target-format option:disabled, #targetFormat option:disabled," +
+        "select[name=target] option:disabled, select#target option:disabled" +
+        "{opacity:.55 !important;color:var(--muted,#6b7280)!important}" +
+        "#target-format optgroup.dim, #targetFormat optgroup.dim," +
+        "select[name=target] optgroup.dim, select#target optgroup.dim" +
+        "{opacity:.5 !important}";
+      (document.head || document.documentElement).appendChild(st);
+    }
+  } catch { }
+
+  // 2) Elements
+  function getSelectEl() {
+    // Try common IDs/names first
+    let el = document.querySelector('#target-format, #targetFormat, select[name=target], select#target, #to, select[name=to], select[data-role="target-format"], select.target-format');
+    if (el) return el;
+    // Fallback: pick the first <select> whose option values look like known targets
+    const candidates = Array.from(document.querySelectorAll('select'));
+    const known = new Set(['zip', '7z', 'tar', 'tar.gz', 'tar.bz2', 'tar.xz', 'rar', 'pdf', 'docx', 'xlsx', 'csv', 'tsv', 'txt', 'md', 'html', 'png', 'jpeg', 'webp', 'svg', 'bmp', 'tiff', 'gif', 'mp3', 'wav', 'ogg', 'm4a', 'flac', 'opus', 'aiff', 'aac', 'mp4', 'webm', 'mkv', 'mov', 'm4v', 'gifv']);
+    for (const s of candidates) {
+      const vals = Array.from(s.options || []).map(o => (o && o.value || '').toLowerCase());
+      const hits = vals.filter(v => known.has(v)).length;
+      if (hits >= Math.min(3, vals.length)) return s;
+    }
+    return null;
+  }
+  function getConvertBtn() {
+    return document.getElementById('convert-btn') || document.querySelector('[data-action="convert"]');
+  }
+
+  // 3) Kind detection
+  const IMAGE = new Set(['png', 'jpg', 'jpeg', 'webp', 'svg', 'bmp', 'tiff', 'gif']);
+  const AUDIO = new Set(['mp3', 'wav', 'ogg', 'm4a', 'flac', 'opus', 'aiff', 'aac']);
+  const VIDEO = new Set(['mp4', 'webm', 'mkv', 'mov', 'm4v', 'gifv']);
+  const DOCS = new Set(['pdf', 'docx', 'pptx', 'xlsx']);
+  const TEXTS = new Set(['txt', 'md', 'html', 'csv', 'tsv', 'json', 'jsonl', 'rtf']);
+  const ARCS = new Set(['zip', '7z', 'rar', 'tar', 'tgz', 'tbz2', 'txz', 'tar.gz', 'tar.bz2', 'tar.xz']);
+
+  function extOfName(n) {
+    if (!n) return '';
+    const L = String(n).toLowerCase().trim();
+    if (L.endsWith('.tar.gz')) return 'tar.gz';
+    if (L.endsWith('.tar.bz2')) return 'tar.bz2';
+    if (L.endsWith('.tar.xz')) return 'tar.xz';
+    if (L.endsWith('.tgz')) return 'tgz';
+    if (L.endsWith('.tbz2')) return 'tbz2';
+    if (L.endsWith('.txz')) return 'txz';
+    const i = L.lastIndexOf('.');
+    return i > -1 ? L.slice(i + 1) : '';
+  }
+  function kindFromExt(ext) {
+    if (!ext) return null;
+    if (IMAGE.has(ext)) return 'image';
+    if (AUDIO.has(ext)) return 'audio';
+    if (VIDEO.has(ext)) return 'video';
+    if (DOCS.has(ext)) return ext;                  // keep 'pdf'/'docx'/'pptx'/'xlsx'
+    if (TEXTS.has(ext)) return (ext === 'csv' || ext === 'tsv') ? 'csv' : 'text';
+    if (ARCS.has(ext)) return 'archive';
+    return null;
+  }
+  function allowedForKind(kind) {
+    // Prefer your app’s map if present:
+    if (typeof window.targetsForKind === 'function') {
+      try {
+        const set = window.targetsForKind(kind);
+        if (set && typeof set.has === 'function') return set; // assume Set
+      } catch { }
+    }
+    // Fallback (kept minimal)
+    const out = new Set();
+    if (kind === 'image') ['png', 'jpeg', 'webp', 'svg', 'bmp', 'tiff', 'gif', 'pdf'].forEach(x => out.add(x));
+    if (kind === 'audio') ['mp3', 'wav', 'ogg', 'm4a', 'flac', 'opus', 'aiff', 'aac', 'mp4', 'webm'].forEach(x => out.add(x));
+    if (kind === 'video') ['mp4', 'webm', 'gif', 'mkv', 'mov', 'm4v', 'mp3', 'wav', 'ogg', 'm4a', 'flac', 'opus'].forEach(x => out.add(x));
+    if (kind === 'pdf') ['png', 'jpeg', 'webp', 'svg', 'bmp', 'tiff', 'txt', 'md', 'html', 'json', 'csv', 'jsonl', 'rtf', 'docx'].forEach(x => out.add(x));
+    if (kind === 'docx') ['png', 'jpeg', 'webp', 'svg', 'bmp', 'tiff', 'txt', 'md', 'html', 'json', 'pdf'].forEach(x => out.add(x));
+    if (kind === 'pptx') ['png', 'jpeg', 'webp', 'svg', 'bmp', 'tiff', 'txt', 'md', 'html', 'json', 'pdf', 'docx'].forEach(x => out.add(x));
+    if (kind === 'xlsx' || kind === 'csv') ['xlsx', 'csv', 'json', 'html', 'tsv', 'txt', 'md'].forEach(x => out.add(x));
+    if (kind === 'text') ['txt', 'md', 'html', 'csv', 'json', 'jsonl', 'rtf', 'png', 'jpeg', 'webp', 'svg', 'bmp', 'tiff', 'pdf', 'docx'].forEach(x => out.add(x));
+    if (kind === 'archive') ['zip', '7z', 'tar', 'tar.gz', 'tar.bz2', 'tar.xz'].forEach(x => out.add(x));
+    return out;
+  }
+  function intersect(a, b) {
+    if (!a) return new Set(b);
+    const out = new Set(); b.forEach(v => a.has(v) && out.add(v)); return out;
+  }
+
+  // 4) Where do we read “current files” from?
+  function isFileLike(x) { return x && ((x instanceof File) || (x.name && typeof x.arrayBuffer === 'function')); }
+  function unwrapFile(x) { return (x && x.file && isFileLike(x.file)) ? x.file : (isFileLike(x) ? x : null); }
+
+  function filesFromState() {
+    try {
+      const s = window.state; if (!s || !Array.isArray(s.files)) return [];
+      const out = [];
+      for (const it of s.files) {
+        const f = unwrapFile(it) || unwrapFile(it?.data) || unwrapFile(it?.blob);
+        if (f) out.push(f);
+      }
+      return out;
+    } catch { return []; }
+  }
+  function filesFromInputs() {
+    const out = [];
+    document.querySelectorAll('input[type=file]').forEach(inp => {
+      [...(inp.files || [])].forEach(f => isFileLike(f) && out.push(f));
+    });
+    return out;
+  }
+  function filesFromCards() {
+    // If your UI renders “file cards”, infer names from them as a fallback.
+    const cards = document.querySelectorAll(
+      '#file-list .file-card, #files .file-card, [data-role="file-list"] .file-card, [data-file-name]'
+    );
+    const out = [];
+    cards.forEach(c => {
+      const name = c.getAttribute('data-file-name') ||
+        c.querySelector('[data-name]')?.textContent?.trim() ||
+        c.querySelector('.name,.filename')?.textContent?.trim();
+      if (name) out.push({ name });
+    });
+    return out;
+  }
+  function getCurrentFiles() {
+    let files = filesFromState();
+    if (!files.length) files = filesFromInputs();
+    if (!files.length) files = filesFromCards();
+    return files;
+  }
+
+  // 5) Core apply (idempotent & debounced; no loops)
+  let applyScheduled = false, applying = false, lastSig = '';
+  function signature(files) { return files.map(f => f?.name || '(?)').sort().join('|'); }
+
+  function applyGrey() {
+    if (applyScheduled || applying) return;
+    applyScheduled = true;
+    requestAnimationFrame(() => {
+      applyScheduled = false;
+      const tf = getSelectEl();
+      if (!tf) return;
+
+      const files = getCurrentFiles();
+      const sig = signature(files);
+      if (sig === lastSig && tf.__grey_sig === sig && tf.__grey_count === tf.options.length) return; // nothing changed
+      lastSig = sig;
+
+      // Compute allowed
+      let allowed = null;
+      for (const f of files) {
+        const ext = extOfName(f?.name);
+        const kind = kindFromExt(ext) || (typeof window.detectKind === 'function' ? window.detectKind(f) : null);
+        const set = allowedForKind(kind);
+        allowed = intersect(allowed, set);
+      }
+
+      const hadFiles = files.length > 0;
+      const allowSet = hadFiles ? (allowed || new Set()) : null; // null ⇒ allow all
+      const opts = [...tf.querySelectorAll('option')];
+      for (const o of opts) {
+        if (!o.value) continue;
+        const mustDisable = !!(allowSet && !allowSet.has(o.value));
+        if (o.disabled !== mustDisable) o.disabled = mustDisable; // avoid attribute churn
+        if (mustDisable && !/\(unsupported\)$/.test(o.textContent || '')) {
+          o.textContent = (o.textContent || o.value) + ' (unsupported)';
+        }
+      }
+      // optgroups dimming
+      tf.querySelectorAll('optgroup').forEach(g => {
+        const any = [...g.querySelectorAll('option')].some(x => !x.disabled && !!x.value);
+        g.classList.toggle('dim', hadFiles && !any);
+        g.disabled = hadFiles && !any;
+      });
+
+      // ensure a valid selection
+      const cur = tf.options[tf.selectedIndex];
+      if (!cur || cur.disabled || !cur.value) {
+        const firstOK = [...tf.options].find(x => !x.disabled && !!x.value);
+        if (firstOK) tf.value = firstOK.value;
+      }
+
+      // convert button
+      const btn = getConvertBtn();
+      if (btn) {
+        const sel = tf.options[tf.selectedIndex];
+        btn.disabled = !sel || sel.disabled || !sel.value || tf.disabled;
+      }
+
+      // stash a lightweight signature to suppress loops
+      tf.__grey_sig = sig;
+      tf.__grey_count = tf.options.length;
+    });
+  }
+
+  // 6) Hook AFTER your app rebuilds the dropdown, so our flags persist
+  function wrap(name) {
+    const orig = window[name];
+    if (typeof orig !== 'function' || orig.__grey_wrapped) return;
+    window[name] = function (...args) {
+      const r = orig.apply(this, args);
+      // re-apply after rebuild
+      Promise.resolve().then(applyGrey);
+      return r;
+    };
+    window[name].__grey_wrapped = true;
+  }
+  wrap('buildTargets');
+  wrap('refreshTargetDropdown');
+
+  // 7) Events that change files
+  document.addEventListener('change', (e) => {
+    if (e && e.target && e.target.matches('input[type=file]')) applyGrey();
+  });
+  // If your app exposes add/remove helpers, patch them lightly:
+  ['addFiles', 'removeFileAt', 'removeFile', 'clearFiles'].forEach(fn => {
+    if (typeof window[fn] === 'function' && !window[fn].__grey_wrapped) {
+      const orig = window[fn];
+      window[fn] = function (...a) { const r = orig.apply(this, a); applyGrey(); return r; };
+      window[fn].__grey_wrapped = true;
+    }
+  });
+  // Observe the file card container for adds/removes **only** (no attribute spam)
+  const list = document.querySelector('#file-list, #files, [data-role="file-list"]');
+  if (list) {
+    const mo = new MutationObserver(muts => {
+      // Only react to structure changes that likely indicate files added/removed
+      if (muts.some(m => m.type === 'childList' && (m.addedNodes.length || m.removedNodes.length))) applyGrey();
+    });
+    mo.observe(list, { childList: true, subtree: false });
+  }
+
+  // 8) Observe the <select> for rebuild (childList only; avoid attribute loops)
+  const tf = getSelectEl();
+  if (tf) {
+    const mo2 = new MutationObserver(muts => {
+      if (muts.some(m => m.type === 'childList')) applyGrey();
+    });
+    mo2.observe(tf, { childList: true, subtree: true });
+  }
+
+  // initial
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', applyGrey, { once: true });
+  } else {
+    applyGrey();
+  }
+
+  // handy manual trigger in DevTools
+  window.__applyGreyNow = applyGrey;
+})();
+
+
+
+window.__greyDebug = true;
+window.__applyGreyNow && window.__applyGreyNow(); // force a refresh once
+
+/* ===== Grey V9: robust, no-loop, just-in-time greying for target dropdown ===== */
+(() => {
+  if (window.__grey_v9_installed) return;
+  window.__grey_v9_installed = true;
+
+  const DEBUG = !!window.__greyDebug; // set window.__greyDebug = true in console to enable logs
+  const log = (...a) => { if (DEBUG) console.log("[grey-v9]", ...a); };
+
+  // --- CSS for disabled look ---
+  try {
+    let st = document.getElementById('tf-disabled-style-v9');
+    if (!st) {
+      st = document.createElement('style');
+      st.id = 'tf-disabled-style-v9';
+      st.textContent = [
+        "#target-format option:disabled,",
+        "#targetFormat option:disabled,",
+        "select[name=target] option:disabled,",
+        "select#target option:disabled{opacity:.55!important;color:var(--muted,#6b7280)!important;}",
+        "#target-format optgroup.dim,",
+        "#targetFormat optgroup.dim,",
+        "select[name=target] optgroup.dim,",
+        "select#target optgroup.dim{opacity:.5!important;}"
+      ].join("");
+      (document.head || document.documentElement).appendChild(st);
+    }
+  } catch (e) { console.warn("[grey-v9] CSS inject failed", e); }
+
+  // --- DOM helpers ---
+  const getSelectEl = () =>
+    document.querySelector('#target-format, #targetFormat, select[name=target], select#target');
+  const getConvertBtn = () =>
+    document.getElementById('convert-btn') || document.querySelector('[data-action="convert"]');
+  const getQualityWrap = () =>
+    document.querySelector('#quality-wrap, #qualityWrap, .quality-wrap, [data-role="quality"]');
+
+  // --- file extraction helpers ---
+  function isFileLike(x) { return x && (x instanceof File || (x.name && typeof x.arrayBuffer === 'function')); }
+  function toFileFromBlobLike(x, fallbackName = "item") {
+    try {
+      if (x instanceof Blob) return new File([x], x.name || fallbackName, { type: x.type || "" });
+    } catch { }
+    return null;
+  }
+  function unwrapAny(node) {
+    if (!node) return null;
+    if (node instanceof File) return node;
+    if (node.file instanceof File) return node.file;
+    if (node.blob instanceof File) return node.blob;
+    if (node.data instanceof File) return node.data;
+    if (node.file && isFileLike(node.file)) return node.file;
+    if (node.blob) {
+      const f = toFileFromBlobLike(node.blob, node.name || "blob");
+      if (f) return f;
+    }
+    if (node.data) {
+      const f = toFileFromBlobLike(node.data, node.name || "data");
+      if (f) return f;
+    }
+    if (isFileLike(node)) return node;
+    return null;
+  }
+  function filesFromState() {
+    try {
+      const s = window.state;
+      const arr = s && Array.isArray(s.files) ? s.files : [];
+      const out = [];
+      for (const it of arr) {
+        const f = unwrapAny(it) || unwrapAny(it && it.data) || unwrapAny(it && it.blob);
+        if (f) out.push(f);
+      }
+      return out;
+    } catch { return []; }
+  }
+  function filesFromInputs() {
+    const out = [];
+    const inputs = Array.from(document.querySelectorAll('input[type=file]'));
+    for (const input of inputs) {
+      const list = Array.from(input.files || []);
+      for (const f of list) if (isFileLike(f)) out.push(f);
+    }
+    return out;
+  }
+  function filesFromCards() {
+    // As a last resort, parse file cards to collect names only (no File objects).
+    const cards = document.querySelectorAll('#file-list .file-card, #files .file, [data-role="file-card"]');
+    const names = Array.from(cards).map(c => (c.getAttribute('data-name') || c.textContent || "").trim()).filter(Boolean);
+    return names.map(n => ({ name: n, arrayBuffer: async () => new ArrayBuffer(0) })); // minimal File-like
+  }
+  function getCurrentFiles() {
+    let files = filesFromState();
+    if (!files.length) files = filesFromInputs();
+    if (!files.length) files = filesFromCards();
+    if (!files.length && Array.isArray(window.__lastPickedFiles) && window.__lastPickedFiles.length) files = window.__lastPickedFiles;
+    log("files →", files.map(f => f?.name || "(?)"));
+    return files;
+  }
+
+  // --- kind + allowed calc ---
+  const IMAGE = new Set(['png', 'jpg', 'jpeg', 'webp', 'svg', 'bmp', 'tiff', 'gif']);
+  const AUDIO = new Set(['mp3', 'wav', 'ogg', 'm4a', 'flac', 'opus', 'aiff', 'aac']);
+  const VIDEO = new Set(['mp4', 'webm', 'mkv', 'mov', 'm4v', 'gifv']);
+  const DOCS = new Set(['pdf', 'docx', 'pptx', 'xlsx']);
+  const TEXTS = new Set(['txt', 'md', 'html', 'csv', 'tsv', 'json', 'jsonl', 'rtf']);
+  const ARCS = new Set(['zip', '7z', 'rar', 'tar', 'tgz', 'tbz2', 'txz', 'tar.gz', 'tar.bz2', 'tar.xz']);
+
+  function extOfName(n) {
+    if (!n) return '';
+    const L = n.toLowerCase().trim();
+    if (L.endsWith('.tar.gz')) return 'tar.gz';
+    if (L.endsWith('.tar.bz2')) return 'tar.bz2';
+    if (L.endsWith('.tar.xz')) return 'tar.xz';
+    if (L.endsWith('.tgz')) return 'tgz';
+    if (L.endsWith('.tbz2')) return 'tbz2';
+    if (L.endsWith('.txz')) return 'txz';
+    const i = L.lastIndexOf('.'); return i > -1 ? L.slice(i + 1) : '';
+  }
+  function kindFromExt(ext) {
+    if (IMAGE.has(ext)) return 'image';
+    if (AUDIO.has(ext)) return 'audio';
+    if (VIDEO.has(ext)) return 'video';
+    if (DOCS.has(ext)) return ext; // 'pdf','docx','pptx','xlsx'
+    if (TEXTS.has(ext)) return (ext === 'csv' || ext === 'tsv') ? 'csv' : 'text';
+    if (ARCS.has(ext)) return 'archive';
+    return null;
+  }
+  function allowedForKind(kind) {
+    try {
+      if (typeof window.targetsForKind === "function") return window.targetsForKind(kind);
+    } catch { }
+    // Fallback mirror of your targets
+    const out = new Set();
+    if (kind === 'image') {
+      ['png', 'jpeg', 'webp', 'svg', 'bmp', 'tiff', 'gif'].forEach(x => out.add(x));
+      if (window.ENABLE_OUTPUTS?.documents) out.add('pdf');
+    } else if (kind === 'pdf') {
+      ['png', 'jpeg', 'webp', 'svg', 'bmp', 'tiff', 'txt', 'md', 'html', 'json', 'csv', 'jsonl', 'rtf', 'docx'].forEach(x => out.add(x));
+    } else if (kind === 'docx') {
+      ['png', 'jpeg', 'webp', 'svg', 'bmp', 'tiff', 'txt', 'md', 'html', 'json', 'pdf'].forEach(x => out.add(x));
+    } else if (kind === 'pptx') {
+      ['png', 'jpeg', 'webp', 'svg', 'bmp', 'tiff', 'txt', 'md', 'html', 'json', 'pdf', 'docx'].forEach(x => out.add(x));
+    } else if (kind === 'xlsx' || kind === 'csv') {
+      ['xlsx', 'csv', 'json', 'html', 'tsv', 'txt', 'md'].forEach(x => out.add(x));
+    } else if (kind === 'text') {
+      ['txt', 'md', 'html', 'csv', 'json', 'jsonl', 'rtf', 'png', 'jpeg', 'webp', 'svg', 'bmp', 'tiff', 'pdf', 'docx'].forEach(x => out.add(x));
+    } else if (kind === 'audio') {
+      ['mp3', 'wav', 'ogg', 'm4a', 'flac', 'opus', 'aiff', 'aac', 'mp4', 'webm'].forEach(x => out.add(x));
+    } else if (kind === 'video') {
+      ['mp4', 'webm', 'gif', 'mkv', 'mov', 'm4v', 'mp3', 'wav', 'ogg', 'm4a', 'flac', 'opus'].forEach(x => out.add(x));
+    } else if (kind === 'archive') {
+      ['zip', '7z', 'tar', 'tar.gz', 'tar.bz2', 'tar.xz'].forEach(x => out.add(x));
+    }
+    return out;
+  }
+  function intersectSets(a, b) {
+    if (!a) return new Set(b);
+    const out = new Set(); b.forEach(v => { if (a.has(v)) out.add(v); }); return out;
+  }
+  function computeAllowed(files) {
+    if (!files.length) return null; // null => allow all
+    let allowed = null;
+    for (const f of files) {
+      const name = f?.name || "";
+      const ext = extOfName(name);
+      const kind = kindFromExt(ext) || (typeof window.detectKind === 'function' ? window.detectKind(f) : null);
+      const set = allowedForKind(kind);
+      allowed = intersectSets(allowed, set);
+    }
+    return allowed || new Set(); // empty set if intersection is empty
+  }
+
+  // --- refresh core (throttled) ---
+  let refreshPending = false;
+  function scheduleRefresh() {
+    if (refreshPending) return;
+    refreshPending = true;
+    // Use rAF to batch within a frame; fallback to setTimeout
+    const cb = () => { refreshPending = false; try { refreshNow(); } catch (e) { console.warn("[grey-v9] refresh error", e); } };
+    if (typeof requestAnimationFrame === 'function') requestAnimationFrame(cb);
+    else setTimeout(cb, 0);
+  }
+
+  function refreshNow() {
+    const tf = getSelectEl();
+    if (!tf) { log("select not found"); return; }
+    const files = getCurrentFiles();
+    const allowed = computeAllowed(files);
+    log("allowed →", allowed ? (allowed.size ? Array.from(allowed).join(",") : "(none)") : "(all)");
+    const hadFiles = files.length > 0;
+    const opts = Array.from(tf.options || []);
+
+    for (const o of opts) {
+      if (!o.value) continue;
+      const mustDisable = hadFiles && !(allowed?.has(o.value));
+      if (o.disabled !== mustDisable) o.disabled = mustDisable;
+      // optional label note
+      if (mustDisable) {
+        if (!/\(unsupported\)\s*$/.test(o.textContent || "")) o.textContent = (o.textContent || o.value) + " (unsupported)";
+      } else {
+        if (/\(unsupported\)\s*$/.test(o.textContent || "")) o.textContent = (o.textContent || "").replace(/\s*\(unsupported\)\s*$/, "");
+      }
+    }
+    // optgroups
+    const groups = Array.from(tf.querySelectorAll('optgroup'));
+    for (const g of groups) {
+      const anyEnabled = Array.from(g.querySelectorAll('option')).some(x => !x.disabled && !!x.value);
+      g.classList.toggle('dim', hadFiles && !anyEnabled);
+      g.disabled = hadFiles && !anyEnabled;
+    }
+    // disable the whole select if nothing allowed
+    tf.disabled = hadFiles && allowed && allowed.size === 0;
+
+    // keep valid selection if current is disabled
+    const cur = tf.options[tf.selectedIndex];
+    if (!cur || cur.disabled || !cur.value) {
+      const firstOK = Array.from(tf.options).find(x => !x.disabled && !!x.value);
+      if (firstOK) tf.value = firstOK.value;
+    }
+
+    // convert button + quality
+    const btn = getConvertBtn();
+    if (btn) {
+      const s = tf.options[tf.selectedIndex];
+      btn.disabled = !s || s.disabled || !s.value || tf.disabled;
+      log("convertBtn.disabled =", btn.disabled);
+    }
+    const qw = getQualityWrap();
+    if (qw) {
+      const v = tf.value;
+      qw.style.display = (v === 'jpeg' || v === 'webp') ? '' : 'none';
+    }
+  }
+
+  // --- hooks ---
+  function hookFileArray() {
+    try {
+      const s = window.state;
+      if (!s || !Array.isArray(s.files)) return;
+      const arr = s.files;
+      const patch = (name) => {
+        if (typeof arr[name] === 'function' && !arr[name].__grey_v9) {
+          const orig = arr[name];
+          arr[name] = function (...args) { const r = orig.apply(this, args); scheduleRefresh(); return r; };
+          arr[name].__grey_v9 = true;
+        }
+      };
+      ['push', 'pop', 'shift', 'unshift', 'splice', 'sort', 'reverse'].forEach(patch);
+      // also patch setter of state.files when reassigned
+      if (!s.__defineFilesPatched_v9) {
+        let _files = arr;
+        Object.defineProperty(s, 'files', {
+          get() { return _files; },
+          set(v) {
+            _files = v;
+            try { hookFileArray(); } catch { }
+            scheduleRefresh();
+          }
+        });
+        s.__defineFilesPatched_v9 = true;
+      }
+      log("hooked state.files array mutators");
+    } catch (e) { log("hookFileArray err", e); }
+  }
+
+  function hookBuilders() {
+    try {
+      if (typeof window.buildTargets === 'function' && !window.buildTargets.__grey_v9) {
+        const orig = window.buildTargets;
+        window.buildTargets = function (...args) { const r = orig.apply(this, args); scheduleRefresh(); return r; };
+        window.buildTargets.__grey_v9 = true;
+      }
+    } catch { }
+    try {
+      if (typeof window.refreshTargetDropdown === 'function' && !window.refreshTargetDropdown.__grey_v9) {
+        const orig2 = window.refreshTargetDropdown;
+        window.refreshTargetDropdown = function (...args) { const r = orig2.apply(this, args); scheduleRefresh(); return r; };
+        window.refreshTargetDropdown.__grey_v9 = true;
+      }
+    } catch { }
+  }
+
+  function hookDOM() {
+    // change on any file input
+    document.addEventListener('change', (e) => {
+      if (e && e.target && e.target.matches && e.target.matches('input[type=file]')) { window.__lastPickedFiles = Array.from(e.target.files || []); scheduleRefresh(); }
+    }, true);
+    // just-in-time: when user opens the dropdown, recompute
+    const tf = getSelectEl();
+    if (tf && !tf.__grey_v9) {
+      tf.addEventListener('mousedown', scheduleRefresh, true);
+      tf.addEventListener('click', scheduleRefresh, true);
+      tf.addEventListener('focus', scheduleRefresh, true);
+      tf.__grey_v9 = true;
+      // observe only childList (avoid attribute loops when we toggle disabled)
+      const mo = new MutationObserver((muts) => {
+        // If the builder nuked/rebuilt options, refresh them disabled accordingly
+        if (muts.some(m => m.type === 'childList')) scheduleRefresh();
+      });
+      mo.observe(tf, { childList: true, subtree: true /* no attributes */ });
+    }
+    // observe file-list container being (re)rendered
+    const list = document.querySelector('#file-list, #files, [data-role="file-list"]');
+    if (list && !list.__grey_v9) {
+      const mo2 = new MutationObserver(() => scheduleRefresh());
+      mo2.observe(list, { childList: true, subtree: true, characterData: true });
+      list.__grey_v9 = true;
+    }
+    // Global drop: capture files into __lastPickedFiles
+    window.addEventListener('drop', (e) => {
+      try {
+        if (e && e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) {
+          window.__lastPickedFiles = Array.from(e.dataTransfer.files);
+          scheduleRefresh();
+        }
+      } catch { }
+    }, true);
+
+  }
+
+  function init() {
+    hookFileArray();
+    hookBuilders();
+    hookDOM();
+    // initial refresh after UI settles
+    if (typeof requestIdleCallback === 'function') {
+      requestIdleCallback(() => scheduleRefresh(), { timeout: 1500 });
+    } else {
+      setTimeout(scheduleRefresh, 50);
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init, { once: true });
+  } else {
+    init();
+  }
+
+  // manual hook for testing
+  window.__applyGreyNow = () => { DEBUG || console.log("[grey-v9] manual refresh"); scheduleRefresh(); };
+  console.log("[grey-v9] installed (no-loop, JIT greying)");
+})();
+
+
+// === ACCEPT_CONTROLLER v2: keep file chooser filter correct at all times ===
+(() => {
+  if (window.__ACCEPT_CTRL_V2__) return; window.__ACCEPT_CTRL_V2__ = true;
+  const ACCEPT = [
+    '.png', '.jpg', '.jpeg', '.webp', '.svg', '.bmp', '.tiff', '.gif',
+    '.mp3', '.wav', '.ogg', '.m4a', '.flac', '.opus', '.aiff', '.aac',
+    '.mp4', '.webm', '.mkv', '.mov', '.m4v', '.gif',
+    '.pdf', '.docx', '.pptx', '.xlsx', '.csv', '.tsv', '.txt', '.md', '.json', '.jsonl', '.html',
+    '.zip', '.rar', '.7z', '.tar', '.gz', '.bz2', '.xz', '.tgz', '.tbz2', '.txz'
+  ].join(',');
+  const sel = 'input[type="file"], input#file, input[name="file"], #file-input';
+  function apply(input) {
+    if (!input) return;
+    try {
+      if (input.getAttribute('accept') !== ACCEPT) input.setAttribute('accept', ACCEPT);
+      if (!input.__accObs) {
+        const obs = new MutationObserver(muts => {
+          for (const m of muts) {
+            if (m.type === 'attributes' && m.attributeName === 'accept' && input.getAttribute('accept') !== ACCEPT) {
+              input.setAttribute('accept', ACCEPT);
+            }
+          }
+        });
+        obs.observe(input, { attributes: true, attributeFilter: ['accept'] });
+        input.__accObs = obs;
+      }
+    } catch { }
+  }
+  function run() {
+    const input = document.querySelector(sel);
+    if (input) apply(input);
+  }
+  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', run, { once: true }); } else { run(); }
+  new MutationObserver(muts => {
+    for (const mu of muts) {
+      mu.addedNodes && mu.addedNodes.forEach(n => {
+        if (n.matches && n.matches('input[type="file"]')) apply(n);
+        if (n.querySelectorAll) n.querySelectorAll('input[type="file"]').forEach(apply);
+      });
+    }
+  }).observe(document.documentElement || document.body, { childList: true, subtree: true });
+  const before = () => setTimeout(run, 0);
+  document.addEventListener('pointerdown', before, true);
+  document.addEventListener('click', before, true);
+})();
+
+
+// === GREY_CONTROLLER v2: keep grey-out in sync for picker & drag/drop ===
+(() => {
+  if (window.__GREY_CTRL_V2__) return; window.__GREY_CTRL_V2__ = true;
+  function applyGreySoon() {
+    try { if (typeof window.__applyGreyNow === 'function') { setTimeout(() => { try { window.__applyGreyNow(); } catch (e) { } }, 0); } } catch { }
+  }
+  document.addEventListener('change', (e) => { const t = e.target; if (t && t.matches && t.matches('input[type="file"]')) { try { window.__lastPickedFiles = Array.from(t.files || []); } catch { } applyGreySoon(); } }, true);
+  window.addEventListener('drop', (e) => { try { if (e && e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) { window.__lastPickedFiles = Array.from(e.dataTransfer.files); } } catch { } applyGreySoon(); }, true);
+  document.addEventListener('mousedown', applyGreySoon, true);
+  document.addEventListener('click', applyGreySoon, true);
+})();
+

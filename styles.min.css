@@ -1499,6 +1499,7 @@ body::after {
     #file-list progress.file-progress {
         flex: 1 1 170px !important;
         min-width: 46px !important;
+        color: var(--progress-fill) !important;
         height: 6px !important;
         width: auto !important;
         margin: 0 !important;
@@ -1507,6 +1508,7 @@ body::after {
     #file-list progress.file-progress::-webkit-progress-bar,
     #file-list progress.file-progress::-webkit-progress-value {
         height: 6px;
+        color: var(--progress-fill) !important;
     }
 }
 
@@ -1516,6 +1518,7 @@ body::after {
         min-width: 46px !important;
         height: 6px !important;
         width: auto !important;
+        color: var(--progress-fill) !important;
         margin: 0 !important;
     }
 }
@@ -1527,6 +1530,7 @@ body::after {
         height: 6px !important;
         width: auto !important;
         margin: 0 !important;
+        color: var(--progress-fill) !important;
     }
 }
 
@@ -1534,6 +1538,7 @@ body::after {
     #file-list progress.file-progress {
         flex: 1 1 163px !important;
         min-width: 45px !important;
+        color: var(--progress-fill) !important;
         height: 6px !important;
         width: auto !important;
         margin: 0 !important;
@@ -1545,6 +1550,7 @@ body::after {
         flex: 1 1 160px !important;
         min-width: 44px !important;
         height: 6px !important;
+        color: var(--progress-fill) !important;
         width: auto !important;
         margin: 0 !important;
     }
@@ -1552,6 +1558,7 @@ body::after {
     #file-list progress.file-progress::-webkit-progress-bar,
     #file-list progress.file-progress::-webkit-progress-value {
         height: 6px;
+        color: var(--progress-fill) !important;
     }
 }
 
@@ -1745,6 +1752,7 @@ body::after {
         flex: 1 1 auto !important;
         min-width: 120px !important;
         width: auto !important;
+        color: var(--progress-fill) !important;
         height: 10px !important;
         margin: 0 !important;
     }
@@ -1811,8 +1819,10 @@ body::after {
         flex: 1 1 auto !important;
         min-width: 140px !important;
         width: auto !important;
+        color: var(--progress-fill) !important;
         height: 10px !important;
         margin: 0 !important;
+        color: var(--progress-fill) !important;
     }
 
     #file-list .filecard .file-remove {

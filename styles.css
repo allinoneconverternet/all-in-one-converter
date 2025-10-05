@@ -17,7 +17,9 @@
 
     --cap_okay_colour: rgb(0, 252, 42);
     --topbar_background_colour: linear-gradient(180deg, rgb(11, 16, 32), rgb(11, 16, 32));
-
+    --progress-fill: #C04519;
+    /* 🔶 your orange */
+    --progress-track: #F0F0F0;
     --advert_background_colour: #0b1226;
     --topbar_button_background_colour: #10182e;
     --panel_background_colour: linear-gradient(180deg, var(--panel), var(--panel-2));
@@ -40,6 +42,9 @@
     --accent: #3056d3;
     --danger: #b00020;
     --ok: #0b8e2a;
+    --progress-fill: #C04519;
+    /* 🔶 your orange */
+    --progress-track: rgba(255, 255, 255, .08);
     --border: #dbe1ff;
     --choose_file_background: #f7f9ff;
     --button_background_colour: #f7f9ff;
@@ -1734,6 +1739,7 @@ body::after {
         min-width: 46px !important;
         height: 6px !important;
         width: auto !important;
+        color: var(--progress-fill) !important;
         margin: 0 !important;
     }
 
@@ -1741,6 +1747,7 @@ body::after {
     #file-list progress.file-progress::-webkit-progress-bar,
     #file-list progress.file-progress::-webkit-progress-value {
         height: 6px;
+        color: var(--progress-fill) !important;
     }
 }
 
@@ -1752,6 +1759,7 @@ body::after {
         height: 6px !important;
         width: auto !important;
         margin: 0 !important;
+        color: var(--progress-fill) !important;
     }
 }
 
@@ -1760,6 +1768,7 @@ body::after {
     #file-list progress.file-progress {
         flex: 1 1 166px !important;
         min-width: 45px !important;
+        color: var(--progress-fill) !important;
         height: 6px !important;
         width: auto !important;
         margin: 0 !important;
@@ -1772,6 +1781,7 @@ body::after {
         flex: 1 1 163px !important;
         min-width: 45px !important;
         height: 6px !important;
+        color: var(--progress-fill) !important;
         width: auto !important;
         margin: 0 !important;
     }
@@ -1785,12 +1795,14 @@ body::after {
         min-width: 44px !important;
         height: 6px !important;
         width: auto !important;
+        color: var(--progress-fill) !important;
         margin: 0 !important;
     }
 
     #file-list progress.file-progress::-webkit-progress-bar,
     #file-list progress.file-progress::-webkit-progress-value {
         height: 6px;
+        color: var(--progress-fill) !important;
     }
 }
 
@@ -2026,6 +2038,7 @@ body::after {
         flex: 1 1 auto !important;
         min-width: 120px !important;
         width: auto !important;
+        color: var(--progress-fill) !important;
         height: 10px !important;
         margin: 0 !important;
     }
@@ -2098,6 +2111,7 @@ body::after {
     #file-list .filecard .file-progress {
         flex: 1 1 auto !important;
         /* fill the row */
+        color: var(--progress-fill) !important;
         min-width: 140px !important;
         width: auto !important;
         height: 10px !important;
@@ -2247,6 +2261,58 @@ body::after {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+/* === Progress bar color: orange === */
+
+
+progress.file-progress {
+    color: var(--progress-fill);
+    /* some engines use this */
+}
+
+/* WebKit/Chromium fill */
+#file-list .filecard progress::-webkit-progress-value {
+    background: var(--progress-fill) !important;
+}
+
+/* Firefox fill */
+#file-list .filecard progress::-moz-progress-bar {
+    background: var(--progress-fill) !important;
+}
+
+/* (optional) track color override, if you want a subtle grey track */
+#file-list .filecard progress::-webkit-progress-bar {
+    background: var(--progress-track);
+}
+
+/* === Progress bar color: orange === */
+
+
+/* optional: some engines also look at color/accent-color */
+progress.file-progress {
+    color: var(--progress-fill);
+    accent-color: var(--progress-fill);
+}
+
+/* WebKit/Chromium fill */
+#file-list .filecard progress::-webkit-progress-value,
+progress.file-progress::-webkit-progress-value {
+    background: var(--progress-fill) !important;
+    border-radius: 9999px;
+}
+
+/* Firefox fill */
+#file-list .filecard progress::-moz-progress-bar,
+progress.file-progress::-moz-progress-bar {
+    background: var(--progress-fill) !important;
+    border-radius: 9999px;
+}
+
+/* Track (what you see at value=0) */
+#file-list .filecard progress::-webkit-progress-bar,
+progress.file-progress::-webkit-progress-bar {
+    background: var(--progress-track) !important;
 }
 
 /* show up to ~40 characters before ellipsis for this widget */

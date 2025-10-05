@@ -5,7 +5,7 @@ let _worker;
 
 function getWorker() {
   if (_worker) return _worker;
-  _worker = new Worker(new URL("./src/convert.worker.js?v=1759681025333", import.meta.url), { type: "module" });
+  _worker = new Worker(new URL("./src/convert.worker.js", import.meta.url), { type: "module" });
   return _worker;
 }
 
@@ -69,4 +69,3 @@ export async function convertArchiveToTar(file)    { return convertWith("tar", f
 export async function convertArchiveToTarGz(file)  { return convertWith("tar.gz", file); }
 export async function convertArchiveToTarBz2(file) { return convertWith("tar.bz2", file); }
 export async function convertArchiveToTarXz(file)  { return convertWith("tar.xz", file); }
-
