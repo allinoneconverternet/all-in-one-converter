@@ -6,7 +6,7 @@
 //  - Adaptive low-memory flags for big trees
 //  - Progress preserved (0–60% extract, 60–98% pack)
 
-import { load7z, loadLibarchive } from './local-first.v2.mjs';
+import { loadLibarchive, load7z } from './local-first.v2.mjs';
 // NOTE: no need for run7z; we call seven.callMain directly
 
 let _emit = (v) => { };
