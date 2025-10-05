@@ -1,0 +1,591 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ArchiveReader > a.tar 1`] = `
+[
+  {
+    "data": "",
+    "encrypted": false,
+    "filetype": "Directory",
+    "pathname": "example/",
+    "size": 0,
+  },
+  {
+    "data": "# example
+
+\`\`\`
+archives/example
+archives/example/README.md
+archives/example/dir
+archives/example/dir/symlink
+archives/example/dir/image.png
+\`\`\`
+",
+    "encrypted": false,
+    "filetype": "File",
+    "pathname": "example/README.md",
+    "size": 144,
+  },
+  {
+    "data": "",
+    "encrypted": false,
+    "filetype": "Directory",
+    "pathname": "example/dir/",
+    "size": 0,
+  },
+  {
+    "data": "",
+    "encrypted": false,
+    "filetype": "SymbolicLink",
+    "pathname": "example/dir/symlink",
+    "size": 0,
+  },
+  {
+    "data": "",
+    "encrypted": false,
+    "filetype": "File",
+    "pathname": "example/dir/image.png",
+    "size": 1559,
+  },
+]
+`;
+
+exports[`ArchiveReader > a.tar.bz2 1`] = `
+[
+  {
+    "data": "",
+    "encrypted": false,
+    "filetype": "Directory",
+    "pathname": "example/",
+    "size": 0,
+  },
+  {
+    "data": "# example
+
+\`\`\`
+archives/example
+archives/example/README.md
+archives/example/dir
+archives/example/dir/symlink
+archives/example/dir/image.png
+\`\`\`
+",
+    "encrypted": false,
+    "filetype": "File",
+    "pathname": "example/README.md",
+    "size": 144,
+  },
+  {
+    "data": "",
+    "encrypted": false,
+    "filetype": "Directory",
+    "pathname": "example/dir/",
+    "size": 0,
+  },
+  {
+    "data": "",
+    "encrypted": false,
+    "filetype": "SymbolicLink",
+    "pathname": "example/dir/symlink",
+    "size": 0,
+  },
+  {
+    "data": "",
+    "encrypted": false,
+    "filetype": "File",
+    "pathname": "example/dir/image.png",
+    "size": 1559,
+  },
+]
+`;
+
+exports[`ArchiveReader > a.tar.gz 1`] = `
+[
+  {
+    "data": "",
+    "encrypted": false,
+    "filetype": "Directory",
+    "pathname": "example/",
+    "size": 0,
+  },
+  {
+    "data": "# example
+
+\`\`\`
+archives/example
+archives/example/README.md
+archives/example/dir
+archives/example/dir/symlink
+archives/example/dir/image.png
+\`\`\`
+",
+    "encrypted": false,
+    "filetype": "File",
+    "pathname": "example/README.md",
+    "size": 144,
+  },
+  {
+    "data": "",
+    "encrypted": false,
+    "filetype": "Directory",
+    "pathname": "example/dir/",
+    "size": 0,
+  },
+  {
+    "data": "",
+    "encrypted": false,
+    "filetype": "SymbolicLink",
+    "pathname": "example/dir/symlink",
+    "size": 0,
+  },
+  {
+    "data": "",
+    "encrypted": false,
+    "filetype": "File",
+    "pathname": "example/dir/image.png",
+    "size": 1559,
+  },
+]
+`;
+
+exports[`ArchiveReader > a.tar.xz 1`] = `
+[
+  {
+    "data": "",
+    "encrypted": false,
+    "filetype": "Directory",
+    "pathname": "example/",
+    "size": 0,
+  },
+  {
+    "data": "# example
+
+\`\`\`
+archives/example
+archives/example/README.md
+archives/example/dir
+archives/example/dir/symlink
+archives/example/dir/image.png
+\`\`\`
+",
+    "encrypted": false,
+    "filetype": "File",
+    "pathname": "example/README.md",
+    "size": 144,
+  },
+  {
+    "data": "",
+    "encrypted": false,
+    "filetype": "Directory",
+    "pathname": "example/dir/",
+    "size": 0,
+  },
+  {
+    "data": "",
+    "encrypted": false,
+    "filetype": "SymbolicLink",
+    "pathname": "example/dir/symlink",
+    "size": 0,
+  },
+  {
+    "data": "",
+    "encrypted": false,
+    "filetype": "File",
+    "pathname": "example/dir/image.png",
+    "size": 1559,
+  },
+]
+`;
+
+exports[`ArchiveReader > bzip2.7z 1`] = `
+[
+  {
+    "data": "",
+    "encrypted": false,
+    "filetype": "Directory",
+    "pathname": "example/",
+    "size": 0,
+  },
+  {
+    "data": "",
+    "encrypted": false,
+    "filetype": "Directory",
+    "pathname": "example/dir/",
+    "size": 0,
+  },
+  {
+    "data": "# example
+
+\`\`\`
+archives/example
+archives/example/README.md
+archives/example/dir
+archives/example/dir/symlink
+archives/example/dir/image.png
+\`\`\`
+",
+    "encrypted": false,
+    "filetype": "File",
+    "pathname": "example/README.md",
+    "size": 144,
+  },
+  {
+    "data": "",
+    "encrypted": false,
+    "filetype": "File",
+    "pathname": "example/dir/image.png",
+    "size": 1559,
+  },
+  {
+    "data": "",
+    "encrypted": false,
+    "filetype": "SymbolicLink",
+    "pathname": "example/dir/symlink",
+    "size": 0,
+  },
+]
+`;
+
+exports[`ArchiveReader > deflate.zip 1`] = `
+[
+  {
+    "data": "",
+    "encrypted": false,
+    "filetype": "Directory",
+    "pathname": "example/",
+    "size": 0,
+  },
+  {
+    "data": "# example
+
+\`\`\`
+archives/example
+archives/example/README.md
+archives/example/dir
+archives/example/dir/symlink
+archives/example/dir/image.png
+\`\`\`
+",
+    "encrypted": false,
+    "filetype": "File",
+    "pathname": "example/README.md",
+    "size": 144,
+  },
+  {
+    "data": "",
+    "encrypted": false,
+    "filetype": "Directory",
+    "pathname": "example/dir/",
+    "size": 0,
+  },
+  {
+    "data": "",
+    "encrypted": false,
+    "filetype": "File",
+    "pathname": "example/dir/symlink",
+    "size": 144,
+  },
+  {
+    "data": "",
+    "encrypted": false,
+    "filetype": "File",
+    "pathname": "example/dir/image.png",
+    "size": 1559,
+  },
+]
+`;
+
+exports[`ArchiveReader > deflate-encrypted.zip 1`] = `
+[
+  {
+    "data": "",
+    "encrypted": false,
+    "filetype": "Directory",
+    "pathname": "example/",
+    "size": 0,
+  },
+  {
+    "data": "# example
+
+\`\`\`
+archives/example
+archives/example/README.md
+archives/example/dir
+archives/example/dir/symlink
+archives/example/dir/image.png
+\`\`\`
+",
+    "encrypted": true,
+    "filetype": "File",
+    "pathname": "example/README.md",
+    "size": 144,
+  },
+  {
+    "data": "",
+    "encrypted": false,
+    "filetype": "Directory",
+    "pathname": "example/dir/",
+    "size": 0,
+  },
+  {
+    "data": "",
+    "encrypted": true,
+    "filetype": "File",
+    "pathname": "example/dir/symlink",
+    "size": 144,
+  },
+  {
+    "data": "",
+    "encrypted": true,
+    "filetype": "File",
+    "pathname": "example/dir/image.png",
+    "size": 1559,
+  },
+]
+`;
+
+exports[`ArchiveReader > lzma.7z 1`] = `
+[
+  {
+    "data": "",
+    "encrypted": false,
+    "filetype": "Directory",
+    "pathname": "example/",
+    "size": 0,
+  },
+  {
+    "data": "",
+    "encrypted": false,
+    "filetype": "Directory",
+    "pathname": "example/dir/",
+    "size": 0,
+  },
+  {
+    "data": "# example
+
+\`\`\`
+archives/example
+archives/example/README.md
+archives/example/dir
+archives/example/dir/symlink
+archives/example/dir/image.png
+\`\`\`
+",
+    "encrypted": false,
+    "filetype": "File",
+    "pathname": "example/README.md",
+    "size": 144,
+  },
+  {
+    "data": "",
+    "encrypted": false,
+    "filetype": "File",
+    "pathname": "example/dir/image.png",
+    "size": 1559,
+  },
+  {
+    "data": "",
+    "encrypted": false,
+    "filetype": "SymbolicLink",
+    "pathname": "example/dir/symlink",
+    "size": 0,
+  },
+]
+`;
+
+exports[`ArchiveReader > lzma2.7z 1`] = `
+[
+  {
+    "data": "",
+    "encrypted": false,
+    "filetype": "Directory",
+    "pathname": "example/",
+    "size": 0,
+  },
+  {
+    "data": "",
+    "encrypted": false,
+    "filetype": "Directory",
+    "pathname": "example/dir/",
+    "size": 0,
+  },
+  {
+    "data": "# example
+
+\`\`\`
+archives/example
+archives/example/README.md
+archives/example/dir
+archives/example/dir/symlink
+archives/example/dir/image.png
+\`\`\`
+",
+    "encrypted": false,
+    "filetype": "File",
+    "pathname": "example/README.md",
+    "size": 144,
+  },
+  {
+    "data": "",
+    "encrypted": false,
+    "filetype": "File",
+    "pathname": "example/dir/image.png",
+    "size": 1559,
+  },
+  {
+    "data": "",
+    "encrypted": false,
+    "filetype": "SymbolicLink",
+    "pathname": "example/dir/symlink",
+    "size": 0,
+  },
+]
+`;
+
+exports[`ArchiveReader > store.zip 1`] = `
+[
+  {
+    "data": "",
+    "encrypted": false,
+    "filetype": "Directory",
+    "pathname": "example/",
+    "size": 0,
+  },
+  {
+    "data": "# example
+
+\`\`\`
+archives/example
+archives/example/README.md
+archives/example/dir
+archives/example/dir/symlink
+archives/example/dir/image.png
+\`\`\`
+",
+    "encrypted": false,
+    "filetype": "File",
+    "pathname": "example/README.md",
+    "size": 144,
+  },
+  {
+    "data": "",
+    "encrypted": false,
+    "filetype": "Directory",
+    "pathname": "example/dir/",
+    "size": 0,
+  },
+  {
+    "data": "",
+    "encrypted": false,
+    "filetype": "File",
+    "pathname": "example/dir/symlink",
+    "size": 144,
+  },
+  {
+    "data": "",
+    "encrypted": false,
+    "filetype": "File",
+    "pathname": "example/dir/image.png",
+    "size": 1559,
+  },
+]
+`;
+
+exports[`ArchiveReader > v4.rar 1`] = `
+[
+  {
+    "data": "# example
+
+\`\`\`
+archives/example
+archives/example/README.md
+archives/example/dir
+archives/example/dir/symlink
+archives/example/dir/image.png
+\`\`\`
+",
+    "encrypted": false,
+    "filetype": "File",
+    "pathname": "example/README.md",
+    "size": 144,
+  },
+  {
+    "data": "",
+    "encrypted": false,
+    "filetype": "File",
+    "pathname": "example/dir/symlink",
+    "size": 144,
+  },
+  {
+    "data": "",
+    "encrypted": false,
+    "filetype": "File",
+    "pathname": "example/dir/image.png",
+    "size": 1559,
+  },
+  {
+    "data": "",
+    "encrypted": false,
+    "filetype": "Directory",
+    "pathname": "example/dir",
+    "size": 0,
+  },
+  {
+    "data": "",
+    "encrypted": false,
+    "filetype": "Directory",
+    "pathname": "example",
+    "size": 0,
+  },
+]
+`;
+
+exports[`ArchiveReader > v4-encrypted.rar 1`] = `[]`;
+
+exports[`ArchiveReader > v5.rar 1`] = `
+[
+  {
+    "data": "# example
+
+\`\`\`
+archives/example
+archives/example/README.md
+archives/example/dir
+archives/example/dir/symlink
+archives/example/dir/image.png
+\`\`\`
+",
+    "encrypted": false,
+    "filetype": "File",
+    "pathname": "example/README.md",
+    "size": 144,
+  },
+  {
+    "data": "",
+    "encrypted": false,
+    "filetype": "File",
+    "pathname": "example/dir/symlink",
+    "size": 144,
+  },
+  {
+    "data": "",
+    "encrypted": false,
+    "filetype": "File",
+    "pathname": "example/dir/image.png",
+    "size": 1559,
+  },
+  {
+    "data": "",
+    "encrypted": false,
+    "filetype": "Directory",
+    "pathname": "example/dir",
+    "size": 0,
+  },
+  {
+    "data": "",
+    "encrypted": false,
+    "filetype": "Directory",
+    "pathname": "example",
+    "size": 0,
+  },
+]
+`;
