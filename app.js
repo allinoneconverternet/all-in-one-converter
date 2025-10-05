@@ -2138,32 +2138,51 @@ async function convertArchiveFile(file, target) {
   const w = new Worker(url, { type: 'module' });
 
   return await new Promise((resolve, reject) => {
+    // Hook up optional UI once at start
+    const i = state.activeProgressIndex;
+    const p = Number.isFinite(i) ? document.getElementById('prog-' + i) : null;
+    const s = Number.isFinite(i) ? document.getElementById('status-' + i) : null;
+
+    // Indeterminate progress + static status text
+    if (p) p.removeAttribute('value'); // makes <progress> indeterminate
+    if (s) s.textContent = (typeof t === 'function' && t('converting')) || 'Converting…';
+
     w.onmessage = (ev) => {
-      const { type, pct, buf, error } = ev.data || {};
+      const { type, buf, error } = ev.data || {};
+
       if (type === 'progress') {
-        // (optional) show row progress, if a row is active
-        const i = state.activeProgressIndex;
-        if (Number.isFinite(i)) {
-          const p = document.getElementById('prog-' + i);
-          const s = document.getElementById('status-' + i);
-          if (p) p.value = Math.max(0, Math.min(100, pct | 0));
-          if (s) s.textContent = pct >= 100 ? t('finishing') : t('convertingPct', { pct: pct | 0 });
-        }
+        // Keep UI indeterminate and text constant — no percentages.
         return;
       }
+
       if (type === 'done') {
+        if (s) s.textContent = (typeof t === 'function' && t('finished')) || 'Done.';
         const blob = new Blob([buf], { type: 'application/octet-stream' });
         const strip = n => (n || 'archive').replace(/\.(zip|rar|7z|tar|tgz|tbz2|txz|tar\.gz|tar\.bz2|tar\.xz)$/i, '');
         resolve([{ blob, name: `${strip(file?.name)}.${target}` }]);
         w.terminate();
+        return;
       }
+
       if (type === 'error') {
+        if (s) s.textContent = (typeof t === 'function' && t('failed')) || 'Failed.';
         w.terminate();
         reject(new Error(error || 'Archive conversion failed'));
       }
     };
-    w.onerror = (e) => { w.terminate(); reject(e.error || new Error(e.message || 'Worker error')); };
-    w.onmessageerror = (e) => { w.terminate(); reject(new Error('Worker messageerror')); };
+
+    w.onerror = (e) => {
+      if (s) s.textContent = (typeof t === 'function' && t('failed')) || 'Failed.';
+      w.terminate();
+      reject(e.error || new Error(e.message || 'Worker error'));
+    };
+
+    w.onmessageerror = (e) => {
+      if (s) s.textContent = (typeof t === 'function' && t('failed')) || 'Failed.';
+      w.terminate();
+      reject(new Error('Worker messageerror'));
+    };
+
     w.postMessage({ cmd: 'convert', fmt: target, buf: ab }, [ab]);
   });
 }
