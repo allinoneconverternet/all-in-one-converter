@@ -54,7 +54,8 @@ const INPUT_EXTS_BY_KIND = {
   pptx: ['pptx'],
   xlsx: ['xlsx'],
   csv: ['csv', 'tsv'],
-  text: ['txt', 'md', 'json', 'jsonl', 'html']
+  text: ['txt', 'md', 'json', 'jsonl', 'html'],
+  archives: ['zip', 'rar', '7z', 'tar', 'gz', 'bz2', 'xz', 'tgz', 'tbz2', 'txz']
 };
 
 // Decide which *input kinds* are usable right now by asking your own targetsForKind(kind).
@@ -2436,6 +2437,7 @@ function wireFileInputs(fileInput, dropzone) {
   }
 
   // Picker
+  input.addEventListener('click', () => { try { updateFileInputAccept(); } catch { } }, { capture: true });
   input.addEventListener('change', (e) => {
     const files = Array.from(e.target.files || []);
     if (files.length) addFiles(files);
@@ -4349,11 +4351,19 @@ function presetTargetFromURL() {
       // Ensure accept attr reflects current capabilities
       if (typeof updateFileInputAccept === 'function') try { updateFileInputAccept(); } catch { }
       window.__file_io_wired__ = true;
+      // Ensure the file input has up-to-date accept BEFORE the picker opens
+      try {
+        const applyAcceptNow = () => { try { updateFileInputAccept(); } catch { } };
+        // Capture pointerdown so this runs before the default click opens the dialog
+        document.addEventListener('pointerdown', applyAcceptNow, true);
+      } catch { }
+
     } catch (e) { console.warn('initFileIOOnce failed', e); }
   };
 
   function attachFallback(input, zone) {
     if (input) {
+      input.addEventListener('click', () => { try { updateFileInputAccept(); } catch { } }, { capture: true });
       input.addEventListener('change', (e) => {
         const files = Array.from(e.target.files || []);
         if (files.length) addFiles(files);
@@ -5074,45 +5084,4 @@ window.__applyGreyNow && window.__applyGreyNow(); // force a refresh once
   // manual hook for testing
   window.__applyGreyNow = () => { DEBUG || console.log("[grey-v9] manual refresh"); scheduleRefresh(); };
   console.log("[grey-v9] installed (no-loop, JIT greying)");
-})();
-
-// === keep-accept-active (archives + other supported types) ===
-(() => {
-  if (window.__keepAcceptActiveInstalled) return;
-  window.__keepAcceptActiveInstalled = true;
-
-  // Union of all supported types, including archives
-  const ACCEPT = [
-    // images
-    '.png', '.jpg', '.jpeg', '.webp', '.svg', '.bmp', '.tiff', '.gif',
-    // audio
-    '.mp3', '.wav', '.ogg', '.m4a', '.flac', '.opus', '.aiff', '.aac',
-    // video
-    '.mp4', '.webm', '.mkv', '.mov', '.m4v', '.gif',
-    // docs/data
-    '.pdf', '.docx', '.pptx', '.xlsx', '.csv', '.tsv', '.txt', '.md', '.json', '.jsonl', '.html',
-    // archives
-    '.zip', '.rar', '.7z', '.tar', '.gz', '.bz2', '.xz', '.tgz', '.tbz2', '.txz'
-  ].join(',');
-
-  function applyAccept() {
-    const input = document.querySelector('input[type="file"], input#file, input[name="file"]');
-    if (input && input.getAttribute('accept') !== ACCEPT) {
-      try { input.setAttribute('accept', ACCEPT); } catch { }
-    }
-  }
-
-  // 1) Apply once at ready (handles static pages)
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', applyAccept, { once: true });
-  } else {
-    applyAccept();
-  }
-
-  // 2) Re-apply right before the chooser opens (captures clicks on buttons/labels)
-  document.addEventListener('click', () => setTimeout(applyAccept, 0), true);
-
-  // 3) Re-apply when the DOM changes (frameworks that re-render inputs)
-  new MutationObserver(() => applyAccept())
-    .observe(document.documentElement || document.body, { childList: true, subtree: true });
 })();
