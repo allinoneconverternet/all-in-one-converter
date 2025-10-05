@@ -4697,7 +4697,7 @@ window.__rowAnim = window.__rowAnim || {
         const mustDisable = !!(allowSet && !allowSet.has(o.value));
         if (o.disabled !== mustDisable) o.disabled = mustDisable; // avoid attribute churn
         if (mustDisable && !/\(unsupported\)$/.test(o.textContent || '')) {
-          o.textContent = (o.textContent || o.value) + ' (unsupported)';
+          o.textContent = (o.textContent || o.value);
         }
       }
       // optgroups dimming
@@ -4986,7 +4986,7 @@ window.__applyGreyNow && window.__applyGreyNow(); // force a refresh once
       if (o.disabled !== mustDisable) o.disabled = mustDisable;
       // optional label note
       if (mustDisable) {
-        if (!/\(unsupported\)\s*$/.test(o.textContent || "")) o.textContent = (o.textContent || o.value) + " (unsupported)";
+        if (!/\(unsupported\)\s*$/.test(o.textContent || "")) o.textContent = (o.textContent || o.value);
       } else {
         if (/\(unsupported\)\s*$/.test(o.textContent || "")) o.textContent = (o.textContent || "").replace(/\s*\(unsupported\)\s*$/, "");
       }
