@@ -1,4 +1,4 @@
-﻿// === DEBUG INSTRUMENTATION v3 ===
+// === DEBUG INSTRUMENTATION v3 ===
 window.ENABLE_OUTPUTS = { text: true, documents: true, archives: true, spreadsheets: true, images: true, media: true };
 const groupsOrder = ['text', 'documents', 'archives', 'spreadsheets', 'images', 'media'];
 // make sure these exist once
@@ -644,7 +644,6 @@ const features = {
 const I18N = {
   en: {
 
-
     // statuses / controls
     queued: 'queued',
     preparing: 'Preparing…',
@@ -721,6 +720,7 @@ const I18N = {
     group_spreadsheets: 'Tabellen',
     group_images: 'Bilder',
     group_media: 'Medien',
+    group_archives: 'Archive',
     'opt.txt': 'Einfacher Text (.txt)',
     'opt.md': 'Markdown (.md)',
     'opt.html': 'HTML (.html)',
@@ -749,6 +749,8 @@ const I18N = {
     'banner.saveCancelled': 'Speichern abgebrochen.',
     'banner.linkCopied': 'Link in die Zwischenablage kopiert.',
     'banner.openFolderFail': 'Ordner konnte nicht geöffnet werden. Versuchen Sie es erneut oder laden Sie einzeln herunter.',
+    'banner.noFilesYet': 'Noch keine Dateien. Fügen Sie zum Starten einige Dateien hinzu.',
+    'banner.readyHint': 'Bereit. Fügen Sie zunächst Dateien hinzu und wählen Sie dann ein Zielformat.',
     couldntConvert: 'Konnte nicht konvertieren: {msg}',
     unknownError: 'Unbekannter Fehler'
   },
@@ -770,6 +772,7 @@ const I18N = {
     group_spreadsheets: 'Hojas de cálculo',
     group_images: 'Imágenes',
     group_media: 'Medios',
+    group_archives: 'Archivos comprimidos',
     'opt.txt': 'Texto sin formato (.txt)',
     'opt.md': 'Markdown (.md)',
     'opt.html': 'HTML (.html)',
@@ -798,6 +801,8 @@ const I18N = {
     'banner.saveCancelled': 'Guardado cancelado.',
     'banner.linkCopied': 'Enlace copiado al portapapeles.',
     'banner.openFolderFail': 'No se pudo abrir la carpeta. Inténtelo de nuevo o descargue individualmente.',
+    'banner.noFilesYet': 'Aún no hay archivos. Añada algunos archivos para empezar.',
+    'banner.readyHint': 'Listo. Añada archivos para empezar y luego elija un formato de destino.',
     couldntConvert: 'No se pudo convertir: {msg}',
     unknownError: 'Error desconocido'
   },
@@ -819,6 +824,7 @@ const I18N = {
     group_spreadsheets: 'Feuilles de calcul',
     group_images: 'Images',
     group_media: 'Médias',
+    group_archives: 'Archives',
     'opt.txt': 'Texte brut (.txt)',
     'opt.md': 'Markdown (.md)',
     'opt.html': 'HTML (.html)',
@@ -847,6 +853,8 @@ const I18N = {
     'banner.saveCancelled': 'Enregistrement annulé.',
     'banner.linkCopied': 'Lien copié dans le presse-papiers.',
     'banner.openFolderFail': 'Impossible d’ouvrir le dossier. Réessayez ou téléchargez individuellement.',
+    'banner.noFilesYet': 'Aucun fichier pour l’instant. Ajoutez des fichiers pour commencer.',
+    'banner.readyHint': 'Prêt. Ajoutez des fichiers pour commencer, puis choisissez un format cible.',
     couldntConvert: 'Conversion impossible : {msg}',
     unknownError: 'Erreur inconnue'
   },
@@ -868,6 +876,7 @@ const I18N = {
     group_spreadsheets: 'Fogli di calcolo',
     group_images: 'Immagini',
     group_media: 'Media',
+    group_archives: 'Archivi',
     'opt.txt': 'Testo semplice (.txt)',
     'opt.md': 'Markdown (.md)',
     'opt.html': 'HTML (.html)',
@@ -896,6 +905,8 @@ const I18N = {
     'banner.saveCancelled': 'Salvataggio annullato.',
     'banner.linkCopied': 'Link copiato negli appunti.',
     'banner.openFolderFail': 'Impossibile aprire la cartella. Riprova o scarica i file singolarmente qui sotto.',
+    'banner.noFilesYet': 'Ancora nessun file. Aggiungi alcuni file per iniziare.',
+    'banner.readyHint': 'Pronto. Aggiungi dei file per iniziare, poi scegli un formato di destinazione.',
     couldntConvert: 'Impossibile convertire: {msg}',
     unknownError: 'Errore sconosciuto'
   },
@@ -917,6 +928,7 @@ const I18N = {
     group_spreadsheets: 'Arkusze kalkulacyjne',
     group_images: 'Obrazy',
     group_media: 'Multimedia',
+    group_archives: 'Archiwa',
     'opt.txt': 'Zwykły tekst (.txt)',
     'opt.md': 'Markdown (.md)',
     'opt.html': 'HTML (.html)',
@@ -945,6 +957,8 @@ const I18N = {
     'banner.saveCancelled': 'Zapisywanie anulowano.',
     'banner.linkCopied': 'Link skopiowano do schowka.',
     'banner.openFolderFail': 'Nie można było otworzyć folderu. Spróbuj ponownie lub pobierz pojedynczo poniżej.',
+    'banner.noFilesYet': 'Na razie brak plików. Dodaj kilka plików, aby rozpocząć.',
+    'banner.readyHint': 'Gotowe. Dodaj pliki, aby rozpocząć, a następnie wybierz docelowy format.',
     couldntConvert: 'Nie można przekonwertować: {msg}',
     unknownError: 'Nieznany błąd'
   },
@@ -966,6 +980,7 @@ const I18N = {
     group_spreadsheets: 'Folhas de cálculo',
     group_images: 'Imagens',
     group_media: 'Multimédia',
+    group_archives: 'Ficheiros comprimidos',
     'opt.txt': 'Texto simples (.txt)',
     'opt.md': 'Markdown (.md)',
     'opt.html': 'HTML (.html)',
@@ -994,6 +1009,8 @@ const I18N = {
     'banner.saveCancelled': 'Guardar cancelado.',
     'banner.linkCopied': 'Ligação copiada para a área de transferência.',
     'banner.openFolderFail': 'Não foi possível abrir a pasta. Tente novamente ou transfira individualmente abaixo.',
+    'banner.noFilesYet': 'Ainda não há ficheiros. Adicione alguns ficheiros para começar.',
+    'banner.readyHint': 'Pronto. Adicione ficheiros para começar e depois escolha um formato de destino.',
     couldntConvert: 'Não foi possível converter: {msg}',
     unknownError: 'Erro desconhecido'
   },
@@ -1015,6 +1032,7 @@ const I18N = {
     group_spreadsheets: 'Planilhas',
     group_images: 'Imagens',
     group_media: 'Mídia',
+    group_archives: 'Arquivos compactados',
     'opt.txt': 'Texto simples (.txt)',
     'opt.md': 'Markdown (.md)',
     'opt.html': 'HTML (.html)',
@@ -1043,6 +1061,8 @@ const I18N = {
     'banner.saveCancelled': 'Salvamento cancelado.',
     'banner.linkCopied': 'Link copiado para a área de transferência.',
     'banner.openFolderFail': 'Não foi possível abrir a pasta. Tente novamente ou baixe os arquivos individualmente abaixo.',
+    'banner.noFilesYet': 'Ainda não há arquivos. Adicione alguns arquivos para começar.',
+    'banner.readyHint': 'Pronto. Adicione arquivos para começar e depois escolha um formato de destino.',
     couldntConvert: 'Não foi possível converter: {msg}',
     unknownError: 'Erro desconhecido'
   },
@@ -1064,6 +1084,7 @@ const I18N = {
     group_spreadsheets: 'スプレッドシート',
     group_images: '画像',
     group_media: 'メディア',
+    group_archives: 'アーカイブ',
     'opt.txt': 'プレーンテキスト (.txt)',
     'opt.md': 'Markdown (.md)',
     'opt.html': 'HTML (.html)',
@@ -1092,6 +1113,8 @@ const I18N = {
     'banner.saveCancelled': '保存をキャンセルしました。',
     'banner.linkCopied': 'リンクをクリップボードにコピーしました。',
     'banner.openFolderFail': 'フォルダを開けませんでした。もう一度お試しになるか、下で個別にダウンロードしてください。',
+    'banner.noFilesYet': 'まだファイルがありません。開始するにはファイルを追加してください。',
+    'banner.readyHint': '準備完了。まずファイルを追加し、次に変換先の形式を選択してください。',
     couldntConvert: '変換できませんでした: {msg}',
     unknownError: '不明なエラー'
   },
@@ -1113,6 +1136,7 @@ const I18N = {
     group_spreadsheets: 'Таблицы',
     group_images: 'Изображения',
     group_media: 'Медиа',
+    group_archives: 'Архивы',
     'opt.txt': 'Обычный текст (.txt)',
     'opt.md': 'Markdown (.md)',
     'opt.html': 'HTML (.html)',
@@ -1141,6 +1165,8 @@ const I18N = {
     'banner.saveCancelled': 'Сохранение отменено.',
     'banner.linkCopied': 'Ссылка скопирована в буфер обмена.',
     'banner.openFolderFail': 'Не удалось открыть папку. Повторите попытку или загрузите файлы по одному ниже.',
+    'banner.noFilesYet': 'Пока нет файлов. Добавьте несколько файлов, чтобы начать.',
+    'banner.readyHint': 'Готово. Сначала добавьте файлы, затем выберите целевой формат.',
     couldntConvert: 'Не удалось конвертировать: {msg}',
     unknownError: 'Неизвестная ошибка'
   },
@@ -1162,6 +1188,7 @@ const I18N = {
     group_spreadsheets: '表格',
     group_images: '图片',
     group_media: '媒体',
+    group_archives: '压缩包',
     'opt.txt': '纯文本 (.txt)',
     'opt.md': 'Markdown (.md)',
     'opt.html': 'HTML (.html)',
@@ -1190,6 +1217,8 @@ const I18N = {
     'banner.saveCancelled': '已取消保存。',
     'banner.linkCopied': '链接已复制到剪贴板。',
     'banner.openFolderFail': '无法打开该文件夹。请重试，或在下方逐个下载。',
+    'banner.noFilesYet': '还没有文件。先添加一些文件以开始。',
+    'banner.readyHint': '就绪。先添加文件，再选择目标格式。',
     couldntConvert: '无法转换：{msg}',
     unknownError: '未知错误'
   },
@@ -1211,6 +1240,7 @@ const I18N = {
     group_spreadsheets: '스프레드시트',
     group_images: '이미지',
     group_media: '미디어',
+    group_archives: '압축파일',
     'opt.txt': '일반 텍스트 (.txt)',
     'opt.md': 'Markdown (.md)',
     'opt.html': 'HTML (.html)',
@@ -1239,6 +1269,8 @@ const I18N = {
     'banner.saveCancelled': '저장을 취소했습니다.',
     'banner.linkCopied': '링크가 클립보드에 복사되었습니다.',
     'banner.openFolderFail': '폴더를 열 수 없습니다. 다시 시도하거나 아래에서 개별적으로 다운로드하세요.',
+    'banner.noFilesYet': '아직 파일이 없습니다. 시작하려면 파일을 추가하세요.',
+    'banner.readyHint': '준비 완료. 먼저 파일을 추가한 뒤 대상 형식을 선택하세요.',
     couldntConvert: '변환할 수 없습니다: {msg}',
     unknownError: '알 수 없는 오류'
   },
@@ -1260,6 +1292,7 @@ const I18N = {
     group_spreadsheets: 'स्प्रेडशीट',
     group_images: 'छवियाँ',
     group_media: 'मीडिया',
+    group_archives: 'आर्काइव',
     'opt.txt': 'सादा पाठ (.txt)',
     'opt.md': 'Markdown (.md)',
     'opt.html': 'HTML (.html)',
@@ -1288,6 +1321,8 @@ const I18N = {
     'banner.saveCancelled': 'सेव रद्द किया गया।',
     'banner.linkCopied': 'लिंक क्लिपबोर्ड पर कॉपी किया गया।',
     'banner.openFolderFail': 'फ़ोल्डर नहीं खोला जा सका। फिर से प्रयास करें या नीचे अलग-अलग डाउनलोड करें।',
+    'banner.noFilesYet': 'अभी कोई फ़ाइल नहीं है। शुरू करने के लिए कुछ फ़ाइलें जोड़ें।',
+    'banner.readyHint': 'तैयार। पहले फ़ाइलें जोड़ें, फिर लक्ष्य फ़ॉर्मेट चुनें।',
     couldntConvert: 'रूपांतरित नहीं कर सका: {msg}',
     unknownError: 'अज्ञात त्रुटि'
   },
@@ -1309,6 +1344,7 @@ const I18N = {
     group_spreadsheets: 'جداول بيانات',
     group_images: 'صور',
     group_media: 'وسائط',
+    group_archives: 'أرشيفات',
     'opt.txt': 'نص عادي (.txt)',
     'opt.md': 'Markdown (.md)',
     'opt.html': 'HTML (.html)',
@@ -1337,6 +1373,8 @@ const I18N = {
     'banner.saveCancelled': 'تم إلغاء الحفظ.',
     'banner.linkCopied': 'تم نسخ الرابط إلى الحافظة.',
     'banner.openFolderFail': 'تعذّر فتح المجلد. حاول مجددًا أو نزّل الملفات بشكل فردي أدناه.',
+    'banner.noFilesYet': 'لا توجد ملفات بعد. أضف بعض الملفات للبدء.',
+    'banner.readyHint': 'جاهز. أضف ملفات للبدء ثم اختر صيغة الهدف.',
     couldntConvert: 'تعذّر التحويل: {msg}',
     unknownError: 'خطأ غير معروف'
   },
@@ -1358,6 +1396,7 @@ const I18N = {
     group_spreadsheets: 'Таблиці',
     group_images: 'Зображення',
     group_media: 'Медіа',
+    group_archives: 'Архіви',
     'opt.txt': 'Звичайний текст (.txt)',
     'opt.md': 'Markdown (.md)',
     'opt.html': 'HTML (.html)',
@@ -1386,6 +1425,8 @@ const I18N = {
     'banner.saveCancelled': 'Збереження скасовано.',
     'banner.linkCopied': 'Посилання скопійовано до буфера обміну.',
     'banner.openFolderFail': 'Не вдалося відкрити теку. Спробуйте ще раз або завантажуйте окремо нижче.',
+    'banner.noFilesYet': 'Поки що немає файлів. Додайте кілька файлів, щоб почати.',
+    'banner.readyHint': 'Готово. Спершу додайте файли, потім оберіть цільовий формат.',
     couldntConvert: 'Не вдалося конвертувати: {msg}',
     unknownError: 'Невідома помилка'
   },
@@ -1407,6 +1448,7 @@ const I18N = {
     group_spreadsheets: 'Elektronik tablolar',
     group_images: 'Görseller',
     group_media: 'Medya',
+    group_archives: 'Arşivler',
     'opt.txt': 'Düz metin (.txt)',
     'opt.md': 'Markdown (.md)',
     'opt.html': 'HTML (.html)',
@@ -1435,6 +1477,8 @@ const I18N = {
     'banner.saveCancelled': 'Kaydetme iptal edildi.',
     'banner.linkCopied': 'Bağlantı panoya kopyalandı.',
     'banner.openFolderFail': 'Klasör açılamadı. Yeniden deneyin veya aşağıdan tek tek indirin.',
+    'banner.noFilesYet': 'Henüz dosya yok. Başlamak için birkaç dosya ekleyin.',
+    'banner.readyHint': 'Hazır. Başlamak için dosyaları ekleyin, ardından hedef biçimi seçin.',
     couldntConvert: 'Dönüştürülemedi: {msg}',
     unknownError: 'Bilinmeyen hata'
   },
@@ -1456,6 +1500,7 @@ const I18N = {
     group_spreadsheets: 'Spreadsheets',
     group_images: 'Afbeeldingen',
     group_media: 'Media',
+    group_archives: 'Archieven',
     'opt.txt': 'Platte tekst (.txt)',
     'opt.md': 'Markdown (.md)',
     'opt.html': 'HTML (.html)',
@@ -1484,6 +1529,8 @@ const I18N = {
     'banner.saveCancelled': 'Opslaan geannuleerd.',
     'banner.linkCopied': 'Link naar klembord gekopieerd.',
     'banner.openFolderFail': 'Map kon niet worden geopend. Probeer opnieuw of download afzonderlijk hieronder.',
+    'banner.noFilesYet': 'Nog geen bestanden. Voeg enkele bestanden toe om te beginnen.',
+    'banner.readyHint': 'Klaar. Voeg eerst bestanden toe en kies daarna een doelindeling.',
     couldntConvert: 'Kon niet converteren: {msg}',
     unknownError: 'Onbekende fout'
   }
@@ -2131,62 +2178,31 @@ function targetsForKind(kind) {
 }
 
 // ---- ARCHIVE → ZIP (client-only) ----
-// ---- ARCHIVE → (client-only via worker) ----
 async function convertArchiveFile(file, target) {
-  const ab = await file.arrayBuffer();
-  const url = new URL('./src/convert.worker.js?v=' + Date.now(), location.href).toString();
-  const w = new Worker(url, { type: 'module' });
+  const m = await import('./archive-client.js');
 
-  return await new Promise((resolve, reject) => {
-    // Hook up optional UI once at start
-    const i = state.activeProgressIndex;
-    const p = Number.isFinite(i) ? document.getElementById('prog-' + i) : null;
-    const s = Number.isFinite(i) ? document.getElementById('status-' + i) : null;
+  // choose writer based on target
+  let outBlob;
+  switch (target) {
+    case 'zip': outBlob = await m.convertArchiveToZip(file); break;
+    case 'tar': outBlob = await m.convertArchiveToTar(file); break;
+    case 'tar.gz': outBlob = await m.convertArchiveToTarGz(file); break;
+    case 'tar.bz2': outBlob = await m.convertArchiveToTarBz2(file); break;
+    case 'tar.xz': outBlob = await m.convertArchiveToTarXz(file); break;
+    case '7z': outBlob = await m.convertArchiveTo7z(file); break;
+    default:
+      throw new Error(`Unsupported archive target: ${target}`);
+  }
 
-    // Indeterminate progress + static status text
-    if (p) p.removeAttribute('value'); // makes <progress> indeterminate
-    if (s) s.textContent = (typeof t === 'function' && t('converting')) || 'Converting…';
+  // derive a sensible filename
+  const strip = n => (n || 'archive').replace(
+    /\.(zip|rar|7z|tar|tgz|tbz2|txz|tar\.gz|tar\.bz2|tar\.xz)$/i, ''
+  );
+  const ext = target; // target already matches the desired extension strings
+  const name = `${strip(file?.name)}.${ext}`;
 
-    w.onmessage = (ev) => {
-      const { type, buf, error } = ev.data || {};
-
-      if (type === 'progress') {
-        // Keep UI indeterminate and text constant — no percentages.
-        return;
-      }
-
-      if (type === 'done') {
-        if (s) s.textContent = (typeof t === 'function' && t('finished')) || 'Done.';
-        const blob = new Blob([buf], { type: 'application/octet-stream' });
-        const strip = n => (n || 'archive').replace(/\.(zip|rar|7z|tar|tgz|tbz2|txz|tar\.gz|tar\.bz2|tar\.xz)$/i, '');
-        resolve([{ blob, name: `${strip(file?.name)}.${target}` }]);
-        w.terminate();
-        return;
-      }
-
-      if (type === 'error') {
-        if (s) s.textContent = (typeof t === 'function' && t('failed')) || 'Failed.';
-        w.terminate();
-        reject(new Error(error || 'Archive conversion failed'));
-      }
-    };
-
-    w.onerror = (e) => {
-      if (s) s.textContent = (typeof t === 'function' && t('failed')) || 'Failed.';
-      w.terminate();
-      reject(e.error || new Error(e.message || 'Worker error'));
-    };
-
-    w.onmessageerror = (e) => {
-      if (s) s.textContent = (typeof t === 'function' && t('failed')) || 'Failed.';
-      w.terminate();
-      reject(new Error('Worker messageerror'));
-    };
-
-    w.postMessage({ cmd: 'convert', fmt: target, buf: ab }, [ab]);
-  });
+  return [{ blob: outBlob, name }];
 }
-
 
 /** Intersection across all selected files */
 function possibleTargetsForFiles(files) {
@@ -2627,7 +2643,7 @@ function renderFileList() {
   try { if (window.__rowAnim) window.__rowAnim.sync(); } catch { }
   fileList.innerHTML = '';
   if (!state.files.length) {
-    fileList.innerHTML = `<div class="hint" style="padding:12px 0">${t('noFilesYet') || 'No files yet.'}</div>`;
+    fileList.innerHTML = `<div class="hint" style="padding:12px 0">${t('banner.noFilesYet') || 'No files yet. Add some files to start.'}</div>`;
 
     if (!state._emptyBannerShown) {
       tb('banner.readyHint');           // neutral gray banner
@@ -4697,7 +4713,7 @@ window.__rowAnim = window.__rowAnim || {
         const mustDisable = !!(allowSet && !allowSet.has(o.value));
         if (o.disabled !== mustDisable) o.disabled = mustDisable; // avoid attribute churn
         if (mustDisable && !/\(unsupported\)$/.test(o.textContent || '')) {
-          o.textContent = (o.textContent || o.value);
+          o.textContent = (o.textContent || o.value) + ' (unsupported)';
         }
       }
       // optgroups dimming
@@ -4986,7 +5002,7 @@ window.__applyGreyNow && window.__applyGreyNow(); // force a refresh once
       if (o.disabled !== mustDisable) o.disabled = mustDisable;
       // optional label note
       if (mustDisable) {
-        if (!/\(unsupported\)\s*$/.test(o.textContent || "")) o.textContent = (o.textContent || o.value);
+        if (!/\(unsupported\)\s*$/.test(o.textContent || "")) o.textContent = (o.textContent || o.value) + " (unsupported)";
       } else {
         if (/\(unsupported\)\s*$/.test(o.textContent || "")) o.textContent = (o.textContent || "").replace(/\s*\(unsupported\)\s*$/, "");
       }
