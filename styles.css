@@ -30,7 +30,7 @@
     --choose_file_background: #10182e;
 
     --body_background_colour: radial-gradient(1200px 800px at 20% -10%, #162044, transparent 60%), radial-gradient(1200px 800px at 120% 20%, #112042, transparent 60%), var(--bg);
-
+--choose_file_background_colour: #ffff;
 }
 
 :root[data-theme="light"] {
@@ -203,7 +203,9 @@ main {
 }
 
 .flex2 {
-    flex: 2
+    flex: 2;
+    max-width: 65%;
+    
 }
 
 .flex1 {
@@ -2207,6 +2209,7 @@ body::after {
 @media (max-width: 767px) {
     .mobile-inline-ad {
         display: block;
+        border-radius: 12px;
     }
 }
 
@@ -2316,3 +2319,122 @@ progress.file-progress::-webkit-progress-bar {
 }
 
 /* show up to ~40 characters before ellipsis for this widget */
+/* --- Mobile fold seam hotfix --- */
+@media (max-width: 768px) {
+
+    /* 1) Use modern viewport height so address-bar collapse doesn't reveal a different bg */
+    html,
+    body {
+        min-height: 100svh;
+        /* supported on iOS/Android; falls back below */
+    }
+
+    /* 2) If any gradient/background was fixed, make it scroll on mobile to avoid seams */
+    body {
+        background-attachment: scroll !important;
+    }
+
+    /* 3) Ensure page + panels share the same paint so no horizontal “page break” appears */
+    html,
+    body {
+        /* pick the base you already use for panels; change if yours is different */
+        background-color: var(--panel, #0f172a) !important;
+        background-image: none !important;
+        /* avoid gradient/attachment conflicts on mobile */
+    }
+
+    /* 4) Let inner blocks inherit the same background so it’s seamless */
+    .app,
+    .container,
+    .panel,
+    .card,
+    .section,
+    .dropzone,
+    .file-input {
+        background-color: transparent !important;
+    }
+}
+/* ==== Native-like file input (exact look) ==== */
+.file-picker-wrap {
+    /* outer field */
+    display: block;
+    width: 100%;
+    
+    border-radius: 14px;
+    padding: 8px;              /* space between outer border and inner button/text */
+    background: transparent;
+  }
+  
+  .file-picker {
+    display: flex;
+    align-items: center;
+    gap: 14px;                 /* space between button and text */
+    width: 100%;
+    min-height: 32px;
+  }
+  
+  /* Keep a real input for functionality but hide it visually */
+  .file-input-native {
+    position: absolute;
+    width: 1px; height: 1px;
+    margin: -1px; padding: 0; border: 0;
+    overflow: hidden; clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+  
+  /* The left pill-like button */
+  .file-picker-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 16px;
+    min-height: 32px;
+    border: 1px solid var(--convert_border, rgba(255,255,255,.16));
+    border-radius: 12px;
+    background: var(--choose_file_background);   /* matches your native control on dark theme */
+    color: var(--text, #fff);
+    font: inherit;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+font: 500 14px/1 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+max-width: fit-content;
+  }
+  
+  .file-picker-btn:hover {
+    background: rgba(255,255,255,.04);
+  }
+  .file-picker-btn:active {
+    background: rgba(255,255,255,.06);
+  }
+  .file-picker-btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(99,132,255,.20);
+  }
+  
+  /* Filename text on the right */
+  .file-picker-name {
+    flex: 1 1 auto;
+    min-width: 0;        
+    font: 500 14px/1 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif  ;       /* required so ellipsis can shrink */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;      /* CSS fallback; JS does middle-ellipsis */
+    color: var(--muted, rgba(255,255,255,.65));
+    line-height: 1.2;
+
+
+ 
+  }
+  
+  .file-picker.has-files .file-picker-name {
+    color: var(--text, #fff);
+  }
+  
+  /* Optional: make the whole row clickable like many native controls */
+  .file-picker-wrap.is-clickable .file-picker {
+    cursor: pointer;
+  }
+  .file-picker.js-ready .file-picker-name {
+    text-overflow: clip;  /* no extra dots at the end */
+  }

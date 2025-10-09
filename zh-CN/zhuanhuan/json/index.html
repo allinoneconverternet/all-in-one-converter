@@ -112,6 +112,9 @@
   
 <meta name="robots" content="index,follow" />
 <link rel="canonical" href="https://www.all-in-one-converter.netzh-CN/zhuanhuan/json/" />
+
+<script defer src="/js/vendor/pdfjs/pdf.min.js"></script>
+<script>window.pdfjsLib && (pdfjsLib.GlobalWorkerOptions.workerSrc="/js/vendor/pdfjs/pdf.worker.min.js");</script>
 </head>
 
 <body>
@@ -151,7 +154,28 @@
       <section class="controls">
         <h2>1）添加文件</h2>
         <div class="row">
-          <div class="flex2"><input class="file-input" id="file-input" type="file" multiple></div>
+          <div class="flex2"><div class="file-picker-wrap">
+  <div
+    class="file-picker"
+    data-i18n-choose="选择文件"
+    data-i18n-no-file="未选择文件"
+    data-i18n-multiple="已选择 {n} 个文件"
+    data-left-pref="10"
+    data-tail-min="5"
+    data-always-ellipsis="true"
+  >
+    <input
+      id="file-input"
+      class="file-input-native"
+      type="file"
+      multiple
+      accept=".png,.jpg,.jpeg,.webp,.svg,.bmp,.tiff,.gif,.mp3,.wav,.ogg,.m4a,.flac,.opus,.aiff,.aac,.mp4,.webm,.mkv,.mov,.m4v,.pdf,.docx,.pptx,.xlsx,.csv,.tsv,.txt,.md,.json,.jsonl,.html,.zip,.rar,.7z,.tar,.gz,.bz2,.xz,.tgz,.tbz2,.txz"
+    />
+    <button type="button" class="btn-ghost file-picker-btn" id="file-btn">选择文件</button>
+    <span class="file-picker-name" id="file-label" aria-live="polite">未选择文件</span>
+  </div>
+</div>
+</div>
           <div class="flex1"><button class="btn-ghost" id="clear-btn">清除</button></div>
         </div>
         <div id="dropzone" class="dropzone" aria-label="将文件拖拽到此处">
@@ -652,6 +676,117 @@
   </div>
   <script defer src="/vendor/ffmpeg/app.ffmpeg-loader.js"></script>
 <script type="module" defer src="/app.js"></script>
+
+<script>
+(() => {
+  const picker = document.querySelector(".file-picker");
+  if (!picker) return;
+
+  const input = document.getElementById("file-input");
+  const btn   = document.getElementById("file-btn");
+  const label = document.getElementById("file-label");
+
+  picker.classList.add("js-ready");
+
+  const T_CHOOSE   = picker.dataset.i18nChoose   || "Choose files";
+  const T_NOFILE   = picker.dataset.i18nNoFile   || "No file chosen";
+  const T_MULTIPLE = picker.dataset.i18nMultiple || "{n} files selected";
+
+  const LEFT_PREF = Math.max(1, parseInt(picker.dataset.leftPref || "10", 10));
+  const TAIL_MIN  = Math.max(0, parseInt(picker.dataset.tailMin  || "5", 10));
+  const ALWAYS    = String(picker.dataset.alwaysEllipsis || "").toLowerCase() === "true";
+
+  btn.textContent   = T_CHOOSE;
+  label.textContent = T_NOFILE;
+
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  function setCtxFontFrom(el) {
+    const cs = getComputedStyle(el);
+    ctx.font = [cs.fontStyle, cs.fontVariant, cs.fontWeight, cs.fontStretch, cs.fontSize, cs.fontFamily]
+      .filter(Boolean).join(" ");
+    const ls = parseFloat(cs.letterSpacing);
+    ctx._ls = isNaN(ls) ? 0 : ls;
+  }
+  function measure(text) {
+    const w = ctx.measureText(text).width;
+    return w + (ctx._ls ? ctx._ls * Math.max(0, text.length - 1) : 0);
+  }
+
+  function formatMiddle(filename, el, leftPref, tailMin) {
+    setCtxFontFrom(el);
+    const maxW = Math.max(0, (el.clientWidth || el.offsetWidth || 0) - 2);
+    if (!maxW) return filename;
+
+    const dot = filename.lastIndexOf(".");
+    const ext  = dot > 0 ? filename.slice(dot) : "";
+    const base = dot > 0 ? filename.slice(0, dot) : filename;
+
+    if (!ALWAYS && measure(filename) <= maxW) return filename;
+
+    let rk = Math.min(Math.max(tailMin, 0), base.length);
+    let lk = Math.min(Math.max(LEFT_PREF, 1), Math.max(1, base.length - rk));
+    const build = (L, R) => base.slice(0, L) + "…" + base.slice(base.length - R) + ext;
+
+    let out = build(lk, rk);
+    while (measure(out) > maxW && (lk > 1 || rk > tailMin)) {
+      if (lk > 1) lk--;
+      else if (rk > tailMin) rk--;
+      out = build(lk, rk);
+    }
+    if (measure(out) > maxW) {
+      let e = ext;
+      out = "…" + e;
+      while (measure(out) > maxW && e.length) {
+        e = e.slice(0, -1);
+        out = "…" + e;
+      }
+    }
+    return out;
+  }
+
+  let lastFullName = null;
+  function render() {
+    const fs = input.files;
+    if (!fs || fs.length === 0) {
+      label.textContent = T_NOFILE;
+      label.removeAttribute("title");
+      picker.classList.remove("has-files");
+      lastFullName = null;
+      return;
+    }
+    picker.classList.add("has-files");
+
+    if (fs.length === 1) {
+      lastFullName = fs[0].name;
+      label.textContent = formatMiddle(lastFullName, label, LEFT_PREF, TAIL_MIN);
+      label.title = lastFullName;
+    } else {
+      lastFullName = null;
+      label.textContent = T_MULTIPLE.replace("{n}", fs.length);
+      label.title = Array.from(fs).map(f => f.name).join("\n");
+    }
+  }
+
+  btn.addEventListener("click", () => input.click());
+  picker.addEventListener("click", (e) => { if (e.target !== btn && e.target !== input) input.click(); });
+  input.addEventListener("change", render);
+
+  const ro = new ResizeObserver(() => {
+    if (lastFullName) label.textContent = formatMiddle(lastFullName, label, LEFT_PREF, TAIL_MIN);
+  });
+  ro.observe(label);
+  window.addEventListener("resize", () => {
+    if (lastFullName) label.textContent = formatMiddle(lastFullName, label, LEFT_PREF, TAIL_MIN);
+  });
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => {
+      if (lastFullName) label.textContent = formatMiddle(lastFullName, label, LEFT_PREF, TAIL_MIN);
+    });
+  }
+  render();
+})();
+</script>
 </body>
 
 </html>
