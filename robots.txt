@@ -1,8 +1,7 @@
 # AdSense & all crawlers allowed
 User-agent: Mediapartners-Google
 Disallow:
-
 User-agent: *
-Disallow:
-
 Sitemap: https://www.all-in-one-converter.net/sitemap-index.xml
+Disallow: /___trash_redirects/
+Sitemap: https://www.all-in-one-converter.net/sitemap.xml

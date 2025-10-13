@@ -2,11 +2,27 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8" />
-  <title>All-in-One Converter — Fast, Private, In-Browser (MP3, MP4, PDF, DOCX, JPG…)</title>
+    <link rel="canonical" href="https://www.all-in-one-converter.net/en/convert/mp3/">
+    <meta property="og:url" content="https://www.all-in-one-converter.net/en/convert/mp3/">
+    <meta property="og:title" content="Convert to MP3 - Fast, private, in-browser (no uploads)">
+    <meta property="og:description" content="Convert files to MP3 locally in your browser - fast, private, and free. No uploads; supports popular formats.">
+    <meta property="og:image" content="https://www.all-in-one-converter.net/assets/og-placeholder.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta charset="utf-8">
+
+
+
+
+
+
+
+
+
+
+    <meta charset="utf-8" />
+  <title>Convert to MP3 - Fast, private, in-browser (no uploads)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description"
-    content="Convert audio, video, documents and images (MP3, MP4, WAV, PDF, DOCX, XLSX, JPG, PNG, WebP…) instantly in your browser. No uploads — files never leave your device. Free and private.">
+  <meta name="description" content="Convert files to MP3 locally in your browser - fast, private, and free. No uploads; supports popular formats.">
   
   <!-- Basic favicon -->
   <link rel="icon" href="/favicon.ico">
@@ -27,17 +43,11 @@
 
   <!-- Canonical / hreflang -->
   
-  <link rel="alternate" href="https://www.all-in-one-converter.net/" hreflang="en" />
+  
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="All-in-One Converter — Fast, Private, In-Browser">
-  <meta property="og:description" content="Convert MP3, MP4, PDF, DOCX, JPG and more — no uploads.">
-  <meta property="og:url" content="https://www.all-in-one-converter.net/en/">
-  <meta property="og:image" content="https://www.all-in-one-converter.net/og/home.png">
-
   <!-- Twitter -->
-  <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="All-in-One Converter — Fast, Private, In-Browser">
   <meta name="twitter:description" content="Convert MP3, MP4, PDF, DOCX, JPG and more — no uploads.">
   <meta name="twitter:image" content="https://www.all-in-one-converter.net/og/home.png">
@@ -85,8 +95,6 @@
   <link rel="manifest" href="/site.webmanifest">
   <!-- icons end -->
 <meta name="robots" content="index,follow" />
-<link rel="canonical" href="https://www.all-in-one-converter.neten/convert/mp3/" />
-
 <script defer src="/js/vendor/pdfjs/pdf.min.js"></script>
 <script>window.pdfjsLib && (pdfjsLib.GlobalWorkerOptions.workerSrc="/js/vendor/pdfjs/pdf.worker.min.js");</script>
 
@@ -103,6 +111,12 @@
 
 
   <header>
+    <link rel="canonical" href="https://www.all-in-one-converter.net/en/convert/mp3/">
+    <meta property="og:url" content="https://www.all-in-one-converter.net/en/convert/mp3/">
+    <meta property="og:title" content="Convert to MP3 - Fast, private, in-browser (no uploads)">
+    <meta property="og:description" content="Convert files to MP3 locally in your browser - fast, private, and free. No uploads; supports popular formats.">
+    <meta property="og:image" content="https://www.all-in-one-converter.net/assets/og-placeholder.png">
+    <meta name="twitter:card" content="summary_large_image">
     <div class="wrap  header-row">
       <h1>All-in-one converter</h1>
 
@@ -505,11 +519,11 @@
   </script>
 
   <!-- Vendor libs (load before app.js) -->
-  <script src="/vendor/mammoth.browser.min.js"></script>
-  <script src="/vendor/jszip.min.js"></script>
-  <script src="/vendor/xlsx.full.min.js"></script>
-  <script src="/vendor/jspdf.umd.min.js"></script>
-  <script src="/vendor/docx.min.js"></script>
+  <script src="/vendor/mammoth.browser.min.js" defer></script>
+  <script src="/vendor/jszip.min.js" defer></script>
+  <script src="/vendor/xlsx.full.min.js" defer></script>
+  <script src="/vendor/jspdf.umd.min.js" defer></script>
+  <script src="/vendor/docx.min.js" defer></script>
 
 
 
@@ -519,7 +533,7 @@
 
   <!-- Tesseract (offline) -->
   <!-- Tesseract (offline) -->
-  <script src="/vendor/tesseract.min.js"></script>
+  <script src="/vendor/tesseract.min.js" defer></script>
   <script>
     window.OCR_OPTS = {
       workerPath: '/vendor/tesseract/worker.min.js',
