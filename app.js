@@ -1,4 +1,4 @@
-// === DEBUG INSTRUMENTATION v3 ===
+﻿// === DEBUG INSTRUMENTATION v3 ===
 window.ENABLE_OUTPUTS = { text: true, documents: true, archives: true, spreadsheets: true, images: true, media: true };
 const groupsOrder = ['text', 'documents', 'archives', 'spreadsheets', 'images', 'media'];
 // make sure these exist once
@@ -576,6 +576,136 @@ window.showBanner = function (msg, kind = 'info') {
 // Populate the dropdown from these (popular output types)
 // Which groups to show && in what order
 const GROUPS_ORDER = ['text', 'documents', 'archives', 'spreadsheets', 'images', 'media'];
+// Loader for html2pdf (includes html2canvas + jsPDF)
+async function needHtml2pdf() {
+  if (window.html2pdf && window.jspdf && window.jspdf.jsPDF) {
+    try { features.makePdf = true; ensureVendors?.(); } catch {}
+    return;
+  }
+  const tryLoad = (src) => new Promise((res, rej) => {
+    const s = document.createElement('script'); s.src = src; s.defer = true;
+    s.onload = () => res(); s.onerror = () => rej(new Error('Failed ' + src));
+    document.head.appendChild(s);
+  });
+  try {
+    await tryLoad(urlFromApp ? urlFromApp('vendor/html2pdf.bundle.min.js')
+    : '/vendor/html2pdf.bundle.min.js');
+  } catch {
+    await tryLoad('https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js');
+  }
+  try { features.makePdf = !!(window.jspdf && window.jspdf.jsPDF); ensureVendors?.(); } catch {}
+}
+
+// DOCX converter
+async function convertDocxFile(file, target) {
+  // Make sure Mammoth is available (local vendor first, then CDN)
+  await needMammoth?.();
+  if (!window.mammoth) throw new Error('DOCX support needs Mammoth');
+
+  // Parse the DOCX into HTML; inline images as data: URLs so html2pdf can capture them
+  const ab = await file.arrayBuffer();
+  const result = await window.mammoth.convertToHtml(
+    { arrayBuffer: ab },
+    {
+      convertImage: window.mammoth.images.inline(async (elem) => {
+        const base64 = await elem.read('base64');
+        return { src: `data:${elem.contentType};base64,${base64}` };
+      })
+    }
+  );
+  const html = result.value || '';
+  const base = (file.name.lastIndexOf('.') > 0 ? file.name.slice(0, file.name.lastIndexOf('.')) : file.name);
+
+  // Text-ish targets
+  if (target === 'txt') {
+    return [{ blob: new Blob([stripHtml(html)], { type: 'text/plain' }), name: base + '.txt' }];
+  }
+  if (target === 'md') {
+    return [{ blob: new Blob([htmlToMarkdown(html)], { type: 'text/markdown' }), name: base + '.md' }];
+  }
+  if (target === 'html') {
+    const doc = `<!doctype html><meta charset="utf-8">
+<style>
+  body{font:16px/1.5 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Arial,Helvetica,sans-serif;color:#111;margin:24px;}
+  img{max-width:100%;height:auto;}
+  h1,h2,h3,h4,h5,h6{line-height:1.25;margin:1.2em 0 .6em}
+  p,li{margin:.6em 0}
+</style>
+${html}`;
+    return [{ blob: new Blob([doc], { type: 'text/html' }), name: base + '.html' }];
+  }
+
+  // PDF target
+  if (target === 'pdf') {
+    if (!ENABLE_OUTPUTS?.documents) throw new Error('Document outputs disabled.');
+    await needHtml2pdf();
+    const container = document.createElement('div');
+    container.style.position = 'fixed';
+    container.style.left = '-99999px';
+    container.style.top = '0';
+    container.style.width = '794px';          // ~A4 width @ 96dpi (helps pagination)
+    container.style.padding = '24px';
+    container.style.background = '#fff';
+    container.innerHTML = `
+      <style>
+        body,div{font:16px/1.5 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Arial,Helvetica,sans-serif;color:#111}
+        img{max-width:100%;height:auto}
+        h1,h2,h3,h4,h5,h6{line-height:1.25;margin:1.2em 0 .6em}
+        p,li{margin:.6em 0}
+        table{border-collapse:collapse} td,th{border:1px solid #ccc;padding:6px}
+        /* Allow manual breaks via CSS if present */
+        .page-break{page-break-before:always; break-before: page}
+      </style>
+      ${html}
+    `;
+    document.body.appendChild(container);
+
+    const opt = {
+      margin: [10, 10, 10, 10],         // pts
+      image: { type: 'jpeg', quality: 0.96 },
+      html2canvas: { scale: 2, useCORS: true, logging: false },
+      jsPDF: { unit: 'pt', format: 'a4' },
+      pagebreak: { mode: ['css', 'legacy'] }
+    };
+
+    let blob;
+    try {
+      if (typeof html2pdf === 'function') {
+        // Preferred API (newer html2pdf)
+        try {
+          blob = await html2pdf().set(opt).from(container).outputPdf('blob');
+        } catch {
+          // Fallback chain for older versions
+          const pdf = await html2pdf().set(opt).from(container).toPdf().get('pdf');
+          blob = pdf.output('blob');
+        }
+      } else if (window.jspdf?.jsPDF) {
+        // Emergency fallback: very simple text-only PDF
+        const txt = stripHtml(html);
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+        const margin = 40, lh = 16, pageW = 595 - 2 * margin, pageH = 842 - 2 * margin;
+        const lines = doc.splitTextToSize(txt, pageW);
+        let y = margin;
+        for (const line of lines) { if (y > pageH) { doc.addPage(); y = margin; } doc.text(line, margin, y); y += lh; }
+        blob = doc.output('blob');
+      } else {
+        throw new Error('PDF engine not available');
+      }
+    } finally {
+      container.remove();
+    }
+    return [{ blob, name: base + '.pdf' }];
+  }
+
+  // Image targets — reuse your text→image helper
+  if (['png', 'jpeg', 'webp', 'svg'].includes(target)) {
+    const text = stripHtml(html);
+    return await textToImageBlobs(text, target, base);
+  }
+
+  throw new Error('DOCX → ' + String(target).toUpperCase() + ' not supported');
+}
 
 // Value/label pairs per group (labels are resolved by optLabel())
 const TARGET_GROUPS = {
@@ -3205,7 +3335,8 @@ async function convertImageFile(file, target) {
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${canvas.width}" height="${canvas.height}"><image href="${dataUrl}" width="100%" height="100%"/></svg>`;
     return [{ blob: new Blob([svg], { type: 'image/svg+xml' }), name: swapExt(file.name, 'svg') }];
   }
-  const q = Number(quality.value || 0.92); const mime = target === 'png' ? 'image/png' : (target === 'jpeg' ? 'image/jpeg' : 'image/webp');
+  const q = Number(((window.quality && window.quality.value) || 0.92));
+  const mime = target === 'png' ? 'image/png' : (target === 'jpeg' ? 'image/jpeg' : 'image/webp');
   const blob = await new Promise(res => canvas.toBlob(res, mime, target === 'png' ? undefined : q));
   return [{ blob, name: swapExt(file.name, target) }];
 }
@@ -3306,16 +3437,52 @@ async function textishToDocx(text, filename) {
 function stripHtml(html) { const d = document.createElement('div'); d.innerHTML = html; return d.textContent || d.innerText || ''; }
 function htmlToMarkdown(html) {
   const d = document.createElement('div'); d.innerHTML = html;
-  d.querySelectorAll('h1,h2,h3,h4,h5,h6').forEach(h => { const lvl = +h.tagName[1]; h.outerHTML = '\n' + ('#'.repeat(lvl)) + ' ' + h.textContent + '\n'; });
+
+  d.querySelectorAll('h1,h2,h3,h4,h5,h6')
+    .forEach(h => { const lvl = +h.tagName[1]; h.outerHTML = '\n' + '#'.repeat(lvl) + ' ' + h.textContent.trim() + '\n'; });
+
   d.querySelectorAll('strong,b').forEach(n => { n.outerHTML = '**' + n.textContent + '**'; });
   d.querySelectorAll('em,i').forEach(n => { n.outerHTML = '*' + n.textContent + '*'; });
   d.querySelectorAll('a').forEach(a => { const href = a.getAttribute('href') || ''; a.outerHTML = '[' + a.textContent + '](' + href + ')'; });
   d.querySelectorAll('br').forEach(br => { br.outerHTML = '\n'; });
   d.querySelectorAll('p').forEach(p => { p.outerHTML = '\n' + p.textContent + '\n'; });
-  d.querySelectorAll('ul').forEach(ul => { const lines = [...ul.querySelectorAll('li')].map(li => ' - ' + li.textContent).join('\n'); ul.outerHTML = '\n' + lines + '\n'; });
-  d.querySelectorAll('ol').forEach((ol) => { const lines = [...ol.querySelectorAll('li')].map((li, i) => ` ${i + 1}. ${li.textContent}`).join('\n'); ol.outerHTML = '\n' + lines + '\n'; });
-  return stripHtml(d.innerHTML).replace(/\n{3,}/g, '\n\n');
+
+  // bullets
+  d.querySelectorAll('ul').forEach(ul => {
+    const lines = Array.from(ul.querySelectorAll(':scope > li')).map(li => ' - ' + li.textContent).join('\n');
+    ul.outerHTML = '\n' + lines + '\n';
+  });
+
+  // numbers
+  d.querySelectorAll('ol').forEach(ol => {
+    const lines = Array.from(ol.querySelectorAll(':scope > li')).map((li, i) => ` ${i + 1}. ${li.textContent}`).join('\n');
+    ol.outerHTML = '\n' + lines + '\n';
+  });
+
+  return stripHtml(d.innerHTML).replace(/\n{3,}/g, '\n\n').trim();
 }
+
+
+function drawTextToCanvas(text, { width = 1200, padding = 40, lineHeight = 28, font = '16px Arial' } = {}) {
+  const c = document.createElement('canvas'); const ctx = c.getContext('2d');
+  ctx.font = font;
+  const maxWidth = width - padding * 2;
+  const paragraphs = text.split(/\n{2,}/);
+  const lines = [];
+  for (const p of paragraphs) {
+    const pLines = wrapText(ctx, p.replace(/\n/g, ' '), maxWidth);
+    lines.push(...pLines, ''); // blank line
+  }
+  if (lines.length && lines[lines.length - 1] === '') lines.pop();
+  const height = padding * 2 + Math.max(lineHeight * lines.length, lineHeight * 2);
+  c.width = width; c.height = height;
+  ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, width, height);
+  ctx.fillStyle = '#111'; ctx.font = font;
+  let y = padding + lineHeight;
+  for (const ln of lines) { ctx.fillText(ln, padding, y); y += lineHeight; }
+  return c;
+}
+
 
 /* ========= 8) Orchestration ========= */
 
@@ -5109,8 +5276,8 @@ window.__applyGreyNow && window.__applyGreyNow(); // force a refresh once
     const list = document.querySelector('#file-list, #files, [data-role="file-list"]');
     if (list && !list.__grey_v9) {
       const mo2 = new MutationObserver(() => scheduleRefresh());
-      mo2.observe(list, { childList: true, subtree: true, characterData: true });
-      list.__grey_v9 = true;
+      mo2.observe(list, { childList: true, subtree: true });
+      list.__grey_v9 = true;      
     }
     // Global drop: capture files into __lastPickedFiles
     window.addEventListener('drop', (e) => {
