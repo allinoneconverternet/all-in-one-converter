@@ -1,4 +1,4 @@
-﻿// === DEBUG INSTRUMENTATION v3 ===
+// === DEBUG INSTRUMENTATION v3 ===
 window.ENABLE_OUTPUTS = { text: true, documents: true, archives: true, spreadsheets: true, images: true, media: true };
 const groupsOrder = ['text', 'documents', 'archives', 'spreadsheets', 'images', 'media'];
 // make sure these exist once
@@ -3461,9 +3461,7 @@ function htmlToMarkdown(html) {
 
   return stripHtml(d.innerHTML).replace(/\n{3,}/g, '\n\n').trim();
 }
-
-
-function drawTextToCanvas(text, { width = 1200, padding = 40, lineHeight = 28, font = '16px Arial' } = {}) {
+function drawTextToCanvas_dup2(text, { width = 1200, padding = 40, lineHeight = 28, font = '16px Arial' } = {}) {
   const c = document.createElement('canvas'); const ctx = c.getContext('2d');
   ctx.font = font;
   const maxWidth = width - padding * 2;
