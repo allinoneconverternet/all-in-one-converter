@@ -711,7 +711,7 @@ ${html}`;
 const TARGET_GROUPS = {
   text: [['txt'], ['md'], ['html']],
   documents: [['pdf'], ['docx']],
-  archives: [['zip'], ['tar.gz'], ['tar.bz2'], ['tar.xz'], ['7z'], ['rar']],
+  archives: [['zip'], ['tar.gz'], ['tar.bz2'], ['tar.xz'], ['7z'], ],
   spreadsheets: [['xlsx'], ['csv'], ['tsv']],
   images: [['png'], ['jpeg'], ['webp'], ['svg'], ['bmp'], ['tiff'], ['gif']],
   media: [
@@ -2272,36 +2272,37 @@ function targetsForKind(kind) {
   const out = new Set();
 
   if (kind === 'image') {
-    if (ENABLE_OUTPUTS.images) ['png', 'jpeg', 'webp', 'svg', 'bmp', 'tiff', 'gif'].forEach(x => out.add(x));
+    if (ENABLE_OUTPUTS.images) ['png','jpeg','webp','svg','bmp','tiff','gif'].forEach(x => out.add(x));
     if (ENABLE_OUTPUTS.documents && features.makePdf) out.add('pdf');
   } else if (kind === 'pdf') {
-    if (ENABLE_OUTPUTS.images) ['png', 'jpeg', 'webp', 'svg', 'bmp', 'tiff'].forEach(x => out.add(x));
-    ['txt', 'md', 'html', 'json', 'csv', 'jsonl', 'rtf'].forEach(x => out.add(x));
+    if (ENABLE_OUTPUTS.images) ['png','jpeg','webp','svg','bmp','tiff'].forEach(x => out.add(x));
+    ['txt','md','html','json','csv','jsonl','rtf'].forEach(x => out.add(x));
     if (ENABLE_OUTPUTS.documents && features.makeDocx) out.add('docx');
   } else if (kind === 'docx') {
-    if (ENABLE_OUTPUTS.images) ['png', 'jpeg', 'webp', 'svg', 'bmp', 'tiff'].forEach(x => out.add(x));
-    ['txt', 'md', 'html', 'json'].forEach(x => out.add(x));
+    // Keep image outputs aligned with convertDocxFile: png/jpeg/webp/svg
+    if (ENABLE_OUTPUTS.images) ['png','jpeg','webp','svg'].forEach(x => out.add(x));
+    ['txt','md','html','json'].forEach(x => out.add(x));
     if (ENABLE_OUTPUTS.documents && features.makePdf) out.add('pdf');
   } else if (kind === 'pptx') {
-    if (ENABLE_OUTPUTS.images) ['png', 'jpeg', 'webp', 'svg', 'bmp', 'tiff'].forEach(x => out.add(x));
-    ['txt', 'md', 'html', 'json'].forEach(x => out.add(x));
+    if (ENABLE_OUTPUTS.images) ['png','jpeg','webp','svg'].forEach(x => out.add(x));
+    ['txt','md','html','json'].forEach(x => out.add(x));
     if (ENABLE_OUTPUTS.documents && features.makePdf) out.add('pdf');
     if (ENABLE_OUTPUTS.documents && features.makeDocx) out.add('docx');
   } else if (kind === 'xlsx') {
-    ['csv', 'json', 'html', 'xlsx', 'tsv'].forEach(x => out.add(x));
+    ['csv','json','html','xlsx','tsv'].forEach(x => out.add(x));
   } else if (kind === 'csv') {
-    ['xlsx', 'json', 'html', 'txt', 'md', 'csv', 'tsv'].forEach(x => out.add(x));
+    ['xlsx','json','html','txt','md','csv','tsv'].forEach(x => out.add(x));
   } else if (kind === 'text') {
-    ['txt', 'md', 'html', 'csv', 'json', 'jsonl', 'rtf'].forEach(x => out.add(x));
-    if (ENABLE_OUTPUTS.images) ['png', 'jpeg', 'webp', 'svg', 'bmp', 'tiff'].forEach(x => out.add(x));
+    ['txt','md','html','csv','json','jsonl','rtf'].forEach(x => out.add(x));
+    if (ENABLE_OUTPUTS.images) ['png','jpeg','webp','svg'].forEach(x => out.add(x));
     if (ENABLE_OUTPUTS.documents && features.makePdf) out.add('pdf');
     if (ENABLE_OUTPUTS.documents && features.makeDocx) out.add('docx');
   } else if (kind === 'audio') {
-    if (features.ffmpeg && ENABLE_OUTPUTS.media) ['mp3', 'wav', 'ogg', 'm4a', 'flac', 'opus', 'aiff', 'aac', 'mp4', 'webm'].forEach(x => out.add(x));
+    if (features.ffmpeg && ENABLE_OUTPUTS.media) ['mp3','wav','ogg','m4a','flac','opus','aiff','aac','mp4','webm'].forEach(x => out.add(x));
   } else if (kind === 'video') {
-    if (features.ffmpeg && ENABLE_OUTPUTS.media) ['mp4', 'webm', 'gif', 'mkv', 'mov', 'm4v', 'mp3', 'wav', 'ogg', 'm4a', 'flac', 'opus'].forEach(x => out.add(x));
+    if (features.ffmpeg && ENABLE_OUTPUTS.media) ['mp4','webm','gif','mkv','mov','m4v','mp3','wav','ogg','m4a','flac','opus'].forEach(x => out.add(x));
   } else if (kind === 'archive') {
-    ['zip', '7z', 'tar', 'tar.gz', 'tar.bz2', 'tar.xz'].forEach(x => out.add(x));
+    ['zip','7z','tar','tar.gz','tar.bz2','tar.xz'].forEach(x => out.add(x));
   }
 
   return out;
@@ -2345,6 +2346,39 @@ function possibleTargetsForFiles(files) {
   }
   return acc || new Set();
 }
+async function convertDocxToJpeg(file, { cssWidthPx = 794, scale = 2, quality = 0.92 } = {}) {
+  if (!window.mammoth) throw new Error('Mammoth not loaded');
+  if (!window.html2canvas) await needHtml2pdf(); // loads html2canvas via your existing loader
+
+  // DOCX → HTML (inline images)
+  const ab = await file.arrayBuffer();
+  const res = await window.mammoth.convertToHtml(
+    { arrayBuffer: ab },
+    {
+      convertImage: window.mammoth.images.inline(async (elem) => {
+        const base64 = await elem.read('base64');
+        return { src: `data:${elem.contentType};base64,${base64}` };
+      })
+    }
+  );
+  const html = res.value || '';
+
+  // Off-DOM container for clean render
+  const host = document.createElement('div');
+  host.style.cssText = 'position:fixed;left:-99999px;top:0;background:#fff;';
+  host.innerHTML = `<div id="__docx_stage" style="width:${cssWidthPx}px;padding:24px">${html}</div>`;
+  document.body.appendChild(host);
+  const stage = host.firstElementChild;
+
+  try {
+    const canvas = await html2canvas(stage, { scale, useCORS: true, logging: false });
+    const blob = await new Promise(r => canvas.toBlob(r, 'image/jpeg', quality));
+    const base = file.name.replace(/\.[^.]+$/, '') || 'doc';
+    return new File([blob], base + '.jpeg', { type: 'image/jpeg' });
+  } finally {
+    host.remove();
+  }
+}
 
 // Rebuilds the dropdown; doesn't force selection here.
 // Selection logic is handled in refreshTargetDropdown().
@@ -2355,7 +2389,7 @@ function rebuildTargetDropdown(allowedSet) {
   const TARGET_GROUPS = {
     text: [['txt'], ['md'], ['html'], ['csv'], ['json'], ['jsonl'], ['rtf']],
     documents: [['pdf'], ['docx']],
-    archives: [['zip'], ['tar.gz'], ['tar.bz2'], ['tar.xz'], ['7z'], ['rar']],
+    archives: [['zip'], ['tar.gz'], ['tar.bz2'], ['tar.xz'], ['7z'], ],
     spreadsheets: [['xlsx'], ['csv'], ['tsv']],
     images: [['png'], ['jpeg'], ['webp'], ['svg'], ['bmp'], ['tiff'], ['gif']],
     media: [['mp3'], ['wav'], ['ogg'], ['m4a'], ['flac'], ['opus'], ['aiff'], ['aac'], ['mp4'], ['webm'], ['gif'], ['mkv'], ['mov'], ['m4v']]
@@ -2401,7 +2435,7 @@ function buildTargets() {
   const TARGET_GROUPS = {
     text: [['txt'], ['md'], ['html'], ['csv'], ['json'], ['jsonl'], ['rtf']],
     documents: [['pdf'], ['docx']],
-    archives: [['zip'], ['tar.gz'], ['tar.bz2'], ['tar.xz'], ['7z'], ['rar']],
+    archives: [['zip'], ['tar.gz'], ['tar.bz2'], ['tar.xz'], ['7z'], ],
     spreadsheets: [['xlsx'], ['csv'], ['tsv']],
     images: [['png'], ['jpeg'], ['webp'], ['svg'], ['bmp'], ['tiff'], ['gif']],
     media: [['mp3'], ['wav'], ['ogg'], ['m4a'], ['flac'], ['opus'], ['aiff'], ['aac'], ['mp4'], ['webm'], ['gif'], ['mkv'], ['mov'], ['m4v']]
@@ -4931,7 +4965,7 @@ window.__rowAnim = window.__rowAnim || {
   ['addFiles', 'removeFileAt', 'removeFile', 'clearFiles'].forEach(fn => {
     if (typeof window[fn] === 'function' && !window[fn].__grey_wrapped) {
       const orig = window[fn];
-      window[fn] = function (...a) { const r = orig.apply(this, a); applyGrey(); return r; };
+      window[fn] = function (...a) { const r = orig.apply(this, a); applyGrey(); };
       window[fn].__grey_wrapped = true;
     }
   });
@@ -5371,4 +5405,3 @@ window.__applyGreyNow && window.__applyGreyNow(); // force a refresh once
   document.addEventListener('mousedown', applyGreySoon, true);
   document.addEventListener('click', applyGreySoon, true);
 })();
-
