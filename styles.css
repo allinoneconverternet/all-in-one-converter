@@ -74,12 +74,18 @@ ins.adsbygoogle[data-ad-status="unfilled"] {
     display: none !important;
 }
 
+/* keep the gradient only on html */
 html {
     background: var(--body_background_colour);
     background-attachment: fixed, fixed, fixed;
     background-repeat: no-repeat;
     background-color: var(--bg);
-    height: 100%;
+}
+
+/* stop body from painting a second background */
+body {
+    background: none !important;
+    /* was: var(--body_background_colour) */
 }
 
 body {

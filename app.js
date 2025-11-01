@@ -1,4 +1,4 @@
-// === DEBUG INSTRUMENTATION v3 ===
+﻿// === DEBUG INSTRUMENTATION v3 ===
 window.ENABLE_OUTPUTS = { text: true, documents: true, archives: true, spreadsheets: true, images: true, media: true };
 const groupsOrder = ['text', 'documents', 'archives', 'spreadsheets', 'images', 'media'];
 // make sure these exist once
@@ -105,75 +105,90 @@ function notifyUnsupported(file) {
   else { alert(msg); }
 }
 
-// adopt any known global shape
-// Normalize any wrapper namespace to window.FFmpeg
-// Normalize any wrapper namespace to window.FFmpeg
-// Normalize any wrapper namespace to window.FFmpeg
-function adoptFFmpegGlobal() {
-  const cands = [
-    () => globalThis.FFmpeg,
-    () => window.FFmpeg,
-    () => window.FFmpegWASM?.FFmpeg,
-    () => window.FFmpegWasm?.FFmpeg,
-    () => window.ffmpeg && window.ffmpeg.FFmpeg ? window.ffmpeg : null
-  ];
-  for (const get of cands) {
-    const g = get();
-    if (g && typeof g.createFFmpeg === 'function') {
-      window.FFmpeg = g;
-      return true;
-    }
-    if (g && g.FFmpeg && typeof g.FFmpeg === 'function') {
-      const C = g.FFmpeg, fetchFile = g.fetchFile || window.fetchFile;
-      window.FFmpeg = { createFFmpeg: (opts = {}) => new C(opts), fetchFile };
-      return true;
-    }
-  }
-  return false;
-}
 
-// Load the UMD wrapper (local → CDN) && adopt the global
+// Load the UMD wrapper (local → CDN) & adopt the global
+// Try to make FFmpeg available (ESM if present → local UMD → CDN UMD), then adopt a global
 window.needFFmpeg ??= async function needFFmpeg() {
-  function load(src) {
+  if (adoptFFmpegGlobal()) return;
+
+  const DEV = ['localhost', '127.0.0.1'].includes(location.hostname);
+
+  // 1) ESM (only if actually present, to avoid noisy 404)
+  try {
+    const esmUrl = '/vendor/@ffmpeg/ffmpeg/ffmpeg.mjs';
+    const hasLocalEsm = !DEV && await fetch(esmUrl, { method: 'HEAD', cache: 'no-store' })
+      .then(r => r.ok).catch(() => false);
+    if (hasLocalEsm) {
+      const mod = await import(esmUrl);
+      if (mod && typeof mod.createFFmpeg === 'function') {
+        window.FFmpeg = { createFFmpeg: mod.createFFmpeg, fetchFile: mod.fetchFile };
+        return;
+      }
+    }
+  } catch { /* fall through */ }
+
+  // 2) UMD helper + candidates
+  function loadUMD(src) {
     return new Promise((res, rej) => {
       const s = document.createElement('script');
-      s.src = src; s.async = true;
-      s.onload = () => res();
+      s.src = src; s.async = true; s.crossOrigin = 'anonymous';
+      s.onload = () => res(true);
       s.onerror = () => rej(new Error('Failed to load ' + src));
       document.head.appendChild(s);
     });
   }
-
   const urls = [
     '/vendor/ffmpeg/ffmpeg.min.js',
     'https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.min.js',
-    'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.min.js',
-    'https://unpkg.com/@ffmpeg/ffmpeg@0.12.6/dist/umd/ffmpeg.min.js',
-    'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.6/dist/umd/ffmpeg.min.js'
+    'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.min.js'
   ];
-
-  let loaded = false;
+  let lastErr = null;
   for (const u of urls) {
-    try { await load(u); loaded = true; if (adoptFFmpegGlobal()) break; } catch { }
+    try { await loadUMD(u); if (adoptFFmpegGlobal()) return; }
+    catch (e) { lastErr = e; }
   }
-  if (!loaded || !adoptFFmpegGlobal() || !window.FFmpeg?.createFFmpeg) {
-    throw new Error('FFmpeg UMD wrapper missing (loaded, but no window.FFmpeg)');
-  }
-}
+  throw lastErr || new Error('FFmpeg wrapper unavailable');
+};
 
-// === FFmpeg instance pool (new) ===
+// Return a singleton; try local core first, then CDN
+window.getFFmpeg ??= async function getFFmpeg() {
+  await needFFmpeg();
+  if (!adoptFFmpegGlobal() || !(window.FFmpeg && window.FFmpeg.createFFmpeg)) {
+    throw new Error('FFmpeg wrapper loaded, but no usable window.FFmpeg');
+  }
+  if (!window._ffmpeg) {
+    const { createFFmpeg } = window.FFmpeg;
+
+    const localBases = ['/vendor/ffmpeg/', '/vendor/@ffmpeg/core/', '/vendor/@ffmpeg/'];
+    let corePath = null;
+    for (const b of localBases) {
+      try {
+        const probe = b.replace(/\/+$/, '') + '/ffmpeg-core.js';
+        const ok = await fetch(probe, { method: 'HEAD', cache: 'no-store' }).then(r => r.ok).catch(() => false);
+        if (ok) { corePath = probe; break; }
+      } catch { }
+    }
+    if (!corePath) corePath = 'https://unpkg.com/@ffmpeg/core@0.12.10/dist/umd/ffmpeg-core.js';
+
+    let lastErr;
+    try { const ff = createFFmpeg({ corePath, log: false }); await ff.load(); window._ffmpeg = ff; }
+    catch (e) { lastErr = e; }
+
+    if (!window._ffmpeg) throw lastErr || new Error('FFmpeg core failed to load');
+  }
+  return window._ffmpeg;
+};
+
+
+// Optional: small pool for parallel jobs
 window._ffPool = window._ffPool || { size: 0, list: [] };
 
-/** Create && load a brand-new FFmpeg instance (wrapper must already be loaded). */
 async function createLoadedFFmpegInstance() {
   if (!window.FFmpeg || !window.FFmpeg.createFFmpeg) throw new Error('FFmpeg wrapper not loaded');
   const { createFFmpeg } = window.FFmpeg;
 
-  // Try the same sort of options our singleton uses; fall back to defaults.
   const attemptOpts = [
-    { corePath: '/vendor/ffmpeg/ffmpeg-core.js', wasmPath: '/vendor/ffmpeg/ffmpeg-core.wasm', workerPath: '/vendor/ffmpeg/ffmpeg-core.worker.js', log: false },
-    { corePath: '/vendor/ffmpeg/ffmpeg-core.js', wasmPath: '/vendor/ffmpeg/ffmpeg-core.wasm', workerPath: '/vendor/ffmpeg/worker.js', log: false },
-    { corePath: '/vendor/ffmpeg/ffmpeg-core.js', wasmPath: '/vendor/ffmpeg/ffmpeg-core.wasm', log: false },
+    { corePath: '/vendor/ffmpeg/ffmpeg-core.js', log: false },
     { corePath: 'https://unpkg.com/@ffmpeg/core@0.12.10/dist/umd/ffmpeg-core.js', log: false },
     { log: false }
   ];
@@ -189,93 +204,133 @@ async function createLoadedFFmpegInstance() {
   throw lastErr || new Error('FFmpeg core failed to load for pool instance');
 }
 
-/** Ensure we have N ready FFmpeg instances for concurrent media jobs. */
-async function ensureFFmpegPool(n) {
-  n = Math.max(1, Math.min(4, n | 0)); // cap to 4
-  await needFFmpeg(); // make sure wrapper is loaded
-  const pool = window._ffPool;
 
-  if (pool.size === n && pool.list.length === n) return;
-  // If shrinking, drop extras
-  if (pool.list.length > n) {
-    pool.list = pool.list.slice(0, n);
+
+/* ===== FFmpeg loader (drop-in block; remove any older duplicates) ===== */
+function adoptFFmpegGlobal() {
+  try {
+    if (globalThis.FFmpeg && typeof globalThis.FFmpeg.createFFmpeg === 'function') {
+      window.FFmpeg = globalThis.FFmpeg; return true;
+    }
+    if (window.FFmpeg && typeof window.FFmpeg.createFFmpeg === 'function') {
+      return true;
+    }
+    if (typeof globalThis.createFFmpeg === 'function') {
+      window.FFmpeg = { createFFmpeg: globalThis.createFFmpeg, fetchFile: globalThis.fetchFile || undefined };
+      return true;
+    }
+    if (globalThis.FFmpegWASM && typeof globalThis.FFmpegWASM.FFmpeg === 'function') {
+      const C = globalThis.FFmpegWASM.FFmpeg;
+      window.FFmpeg = { createFFmpeg: (opts = {}) => new C(opts), fetchFile: globalThis.FFmpegWASM.fetchFile || globalThis.fetchFile };
+      return true;
+    }
+    if (globalThis.FFmpegWasm && typeof globalThis.FFmpegWasm.FFmpeg === 'function') {
+      const C = globalThis.FFmpegWasm.FFmpeg;
+      window.FFmpeg = { createFFmpeg: (opts = {}) => new C(opts), fetchFile: globalThis.FFmpegWasm.fetchFile || globalThis.fetchFile };
+      return true;
+    }
+    if (globalThis.ffmpeg && globalThis.ffmpeg.FFmpeg) {
+      const C = globalThis.ffmpeg.FFmpeg;
+      window.FFmpeg = { createFFmpeg: (opts = {}) => new C(opts), fetchFile: globalThis.ffmpeg.fetchFile || globalThis.fetchFile };
+      return true;
+    }
+  } catch (_) { }
+  return false;
+}
+
+// Try to make FFmpeg available (ESM -> local UMD -> CDN UMD), then adopt a global
+window.needFFmpeg ??= async function needFFmpeg() {
+  if (adoptFFmpegGlobal()) return;
+
+  // 1) ESM (no globals)
+  try {
+    const mod = await import('/vendor/@ffmpeg/ffmpeg/ffmpeg.mjs');
+    if (mod && typeof mod.createFFmpeg === 'function') {
+      window.FFmpeg = { createFFmpeg: mod.createFFmpeg, fetchFile: mod.fetchFile };
+      return;
+    }
+  } catch (_) { }
+
+  // 2) UMD helper + candidates
+  function loadUMD(src) {
+    return new Promise((res, rej) => {
+      const s = document.createElement('script');
+      s.src = src; s.async = true; s.crossOrigin = 'anonymous';
+      s.onload = () => res(true);
+      s.onerror = () => rej(new Error('Failed to load ' + src));
+      document.head.appendChild(s);
+    });
   }
-  // If growing, create && load more instances
+  const urls = [
+    '/vendor/ffmpeg/ffmpeg.min.js',
+    'https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.min.js',
+    'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.min.js',
+    'https://unpkg.com/@ffmpeg/ffmpeg@0.12.6/dist/umd/ffmpeg.min.js',
+    'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.6/dist/umd/ffmpeg.min.js'
+  ];
+  let lastErr = null;
+  for (const u of urls) {
+    try { await loadUMD(u); if (adoptFFmpegGlobal()) return; } catch (e) { lastErr = e; }
+  }
+  throw lastErr || new Error('FFmpeg wrapper unavailable');
+};
+
+// ---- Optional: small pool for concurrent jobs ----
+window._ffPool = window._ffPool || { size: 0, list: [] };
+
+
+
+async function ensureFFmpegPool(n) {
+  n = Math.max(1, Math.min(4, n | 0));
+  await needFFmpeg();
+  const pool = window._ffPool;
+  if (pool.size === n && pool.list.length === n) return;
+  if (pool.list.length > n) pool.list = pool.list.slice(0, n);
   while (pool.list.length < n) {
     const ff = await createLoadedFFmpegInstance();
     pool.list.push(ff);
   }
   pool.size = n;
 }
-
-/** Pick an FFmpeg instance for a given job index. */
 function ffFromPool(index) {
   const pool = window._ffPool;
   if (!pool || !pool.list || pool.list.length === 0) return null;
   return pool.list[index % pool.list.length];
 }
 
-;
-
-// Return a singleton; try local worker first, then CDN
+// ---- Singleton: try local core first, then CDN ----
 window.getFFmpeg ??= async function getFFmpeg() {
   await needFFmpeg();
-  if (!adoptFFmpegGlobal() || !window.FFmpeg?.createFFmpeg) {
+  if (!adoptFFmpegGlobal() || !(window.FFmpeg && window.FFmpeg.createFFmpeg)) {
     throw new Error('FFmpeg wrapper loaded, but no usable window.FFmpeg');
   }
-
   if (!window._ffmpeg) {
     const { createFFmpeg } = window.FFmpeg;
-    const attempts = [
-      {
-        corePath: '/vendor/ffmpeg/ffmpeg-core.js',
-        wasmPath: '/vendor/ffmpeg/ffmpeg-core.wasm',
-        workerPath: '/vendor/ffmpeg/ffmpeg-core.worker.js', log: false
-      },
-      {
-        corePath: '/vendor/ffmpeg/ffmpeg-core.js',
-        wasmPath: '/vendor/ffmpeg/ffmpeg-core.wasm',
-        workerPath: '/vendor/ffmpeg/worker.js', log: false
-      },
-      {
-        corePath: '/vendor/ffmpeg/ffmpeg-core.js',
-        wasmPath: '/vendor/ffmpeg/ffmpeg-core.wasm',
-        workerPath: 'https://unpkg.com/@ffmpeg/core@0.12.10/dist/umd/ffmpeg-core.worker.js', log: false
-      },
-      { corePath: 'https://unpkg.com/@ffmpeg/core@0.12.10/dist/umd/ffmpeg-core.js', log: false },
-      { corePath: 'https://unpkg.com/@ffmpeg/core@0.12.10/dist/ffmpeg-core.js', log: false }
-    ];
+
+    const localBases = ['/vendor/ffmpeg/', '/vendor/@ffmpeg/core/', '/vendor/@ffmpeg/'];
+    let corePath = null;
+    for (const b of localBases) {
+      try {
+        const probe = b.replace(/\/+$/, '') + '/ffmpeg-core.js';
+        const ok = await fetch(probe, { method: 'HEAD', cache: 'no-store' }).then(r => r.ok).catch(() => false);
+        if (ok) { corePath = probe; break; }
+      } catch { }
+    }
+    if (!corePath) corePath = 'https://unpkg.com/@ffmpeg/core@0.12.10/dist/umd/ffmpeg-core.js';
 
     let lastErr;
-    for (const opt of attempts) {
-      try {
-        const ff = createFFmpeg(opt);
-        await ff.load();
-        window._ffmpeg = ff;
-        break;
-      } catch (e) { lastErr = e; }
-    }
+    try { const ff = createFFmpeg({ corePath, log: false }); await ff.load(); window._ffmpeg = ff; }
+    catch (e) { lastErr = e; }
+
     if (!window._ffmpeg) throw lastErr || new Error('FFmpeg core failed to load');
   }
   return window._ffmpeg;
 };
+/* ===== end FFmpeg loader ===== */
 
-// Load the UMD wrapper (local → CDN) && adopt the global
 
-// Return a singleton; try local worker first, then CDN
 
-/* duplicate removed */
-;
 
-// Load the UMD wrapper (local → CDN) && adopt the global
-
-/* duplicate removed */
-;
-
-// Return a singleton; try local worker first, then CDN
-
-/* duplicate removed */
-;
 
 document.addEventListener('DOMContentLoaded', () => {
   const run = async () => {
@@ -301,6 +356,24 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // libarchive-wasm reader (RAR/7Z/TAR/ZIP inputs)
+window.needLibArchive ??= async function needLibArchive() {
+  if (window.LibArchive || window.libarchive) return true;
+  async function exists(p) {
+    try { return await fetch(p, { method: 'HEAD', cache: 'no-store' }).then(r => r.ok); } catch { return false; }
+  }
+  const candidates = [
+    '/vendor/libarchive-wasm/dist/index.js',
+    '/vendor/libarchivejs/libarchive.js'
+  ];
+  for (const u of candidates) {
+    if (await exists(u)) {
+      await loadScript(u);
+      return (window.LibArchive || window.libarchive) ? true : false;
+    }
+  }
+
+};
+
 
 let mod = null;
 
@@ -579,7 +652,7 @@ const GROUPS_ORDER = ['text', 'documents', 'archives', 'spreadsheets', 'images',
 // Loader for html2pdf (includes html2canvas + jsPDF)
 async function needHtml2pdf() {
   if (window.html2pdf && window.jspdf && window.jspdf.jsPDF) {
-    try { features.makePdf = true; ensureVendors?.(); } catch {}
+    try { features.makePdf = true; ensureVendors?.(); } catch { }
     return;
   }
   const tryLoad = (src) => new Promise((res, rej) => {
@@ -589,11 +662,11 @@ async function needHtml2pdf() {
   });
   try {
     await tryLoad(urlFromApp ? urlFromApp('vendor/html2pdf.bundle.min.js')
-    : '/vendor/html2pdf.bundle.min.js');
+      : '/vendor/html2pdf.bundle.min.js');
   } catch {
     await tryLoad('https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js');
   }
-  try { features.makePdf = !!(window.jspdf && window.jspdf.jsPDF); ensureVendors?.(); } catch {}
+  try { features.makePdf = !!(window.jspdf && window.jspdf.jsPDF); ensureVendors?.(); } catch { }
 }
 
 // DOCX converter
@@ -711,7 +784,7 @@ ${html}`;
 const TARGET_GROUPS = {
   text: [['txt'], ['md'], ['html']],
   documents: [['pdf'], ['docx']],
-  archives: [['zip'], ['tar.gz'], ['tar.bz2'], ['tar.xz'], ['7z'], ],
+  archives: [['zip'], ['tar.gz'], ['tar.bz2'], ['tar.xz'], ['7z'],],
   spreadsheets: [['xlsx'], ['csv'], ['tsv']],
   images: [['png'], ['jpeg'], ['webp'], ['svg'], ['bmp'], ['tiff'], ['gif']],
   media: [
@@ -1857,9 +1930,7 @@ async function ensureVendors() {
       console.info('FFmpeg note: crossOriginIsolated=false → threads/SIMD may be disabled (OK for basic usage).');
     }
 
-    console.groupCollapsed('[FFmpeg] diagnostics');
-    checks.forEach(c => console.log(c));
-    console.groupEnd();
+
 
     const msg = issues.length
       ? 'FFmpeg not ready: ' + issues[0]
@@ -2050,9 +2121,7 @@ async function diagnoseFFmpeg() {
     console.info('FFmpeg note: crossOriginIsolated=false → threads/SIMD may be disabled (OK for basic usage).');
   }
 
-  console.groupCollapsed('[FFmpeg] diagnostics');
-  checks.forEach(c => console.log(c));
-  console.groupEnd();
+
 
   const msg = issues.length ? 'FFmpeg not ready: ' + issues[0] : 'FFmpeg wrapper present && core/WASM look reachable.';
   show(msg, issues.length ? 'error' : 'ok');
@@ -2272,37 +2341,37 @@ function targetsForKind(kind) {
   const out = new Set();
 
   if (kind === 'image') {
-    if (ENABLE_OUTPUTS.images) ['png','jpeg','webp','svg','bmp','tiff','gif'].forEach(x => out.add(x));
+    if (ENABLE_OUTPUTS.images) ['png', 'jpeg', 'webp', 'svg', 'bmp', 'tiff', 'gif'].forEach(x => out.add(x));
     if (ENABLE_OUTPUTS.documents && features.makePdf) out.add('pdf');
   } else if (kind === 'pdf') {
-    if (ENABLE_OUTPUTS.images) ['png','jpeg','webp','svg','bmp','tiff'].forEach(x => out.add(x));
-    ['txt','md','html','json','csv','jsonl','rtf'].forEach(x => out.add(x));
+    if (ENABLE_OUTPUTS.images) ['png', 'jpeg', 'webp', 'svg', 'bmp', 'tiff'].forEach(x => out.add(x));
+    ['txt', 'md', 'html', 'json', 'csv', 'jsonl', 'rtf'].forEach(x => out.add(x));
     if (ENABLE_OUTPUTS.documents && features.makeDocx) out.add('docx');
   } else if (kind === 'docx') {
     // Keep image outputs aligned with convertDocxFile: png/jpeg/webp/svg
-    if (ENABLE_OUTPUTS.images) ['png','jpeg','webp','svg'].forEach(x => out.add(x));
-    ['txt','md','html','json'].forEach(x => out.add(x));
+    if (ENABLE_OUTPUTS.images) ['png', 'jpeg', 'webp', 'svg'].forEach(x => out.add(x));
+    ['txt', 'md', 'html', 'json'].forEach(x => out.add(x));
     if (ENABLE_OUTPUTS.documents && features.makePdf) out.add('pdf');
   } else if (kind === 'pptx') {
-    if (ENABLE_OUTPUTS.images) ['png','jpeg','webp','svg'].forEach(x => out.add(x));
-    ['txt','md','html','json'].forEach(x => out.add(x));
+    if (ENABLE_OUTPUTS.images) ['png', 'jpeg', 'webp', 'svg'].forEach(x => out.add(x));
+    ['txt', 'md', 'html', 'json'].forEach(x => out.add(x));
     if (ENABLE_OUTPUTS.documents && features.makePdf) out.add('pdf');
     if (ENABLE_OUTPUTS.documents && features.makeDocx) out.add('docx');
   } else if (kind === 'xlsx') {
-    ['csv','json','html','xlsx','tsv'].forEach(x => out.add(x));
+    ['csv', 'json', 'html', 'xlsx', 'tsv'].forEach(x => out.add(x));
   } else if (kind === 'csv') {
-    ['xlsx','json','html','txt','md','csv','tsv'].forEach(x => out.add(x));
+    ['xlsx', 'json', 'html', 'txt', 'md', 'csv', 'tsv'].forEach(x => out.add(x));
   } else if (kind === 'text') {
-    ['txt','md','html','csv','json','jsonl','rtf'].forEach(x => out.add(x));
-    if (ENABLE_OUTPUTS.images) ['png','jpeg','webp','svg'].forEach(x => out.add(x));
+    ['txt', 'md', 'html', 'csv', 'json', 'jsonl', 'rtf'].forEach(x => out.add(x));
+    if (ENABLE_OUTPUTS.images) ['png', 'jpeg', 'webp', 'svg'].forEach(x => out.add(x));
     if (ENABLE_OUTPUTS.documents && features.makePdf) out.add('pdf');
     if (ENABLE_OUTPUTS.documents && features.makeDocx) out.add('docx');
   } else if (kind === 'audio') {
-    if (features.ffmpeg && ENABLE_OUTPUTS.media) ['mp3','wav','ogg','m4a','flac','opus','aiff','aac','mp4','webm'].forEach(x => out.add(x));
+    if (features.ffmpeg && ENABLE_OUTPUTS.media) ['mp3', 'wav', 'ogg', 'm4a', 'flac', 'opus', 'aiff', 'aac', 'mp4', 'webm'].forEach(x => out.add(x));
   } else if (kind === 'video') {
-    if (features.ffmpeg && ENABLE_OUTPUTS.media) ['mp4','webm','gif','mkv','mov','m4v','mp3','wav','ogg','m4a','flac','opus'].forEach(x => out.add(x));
+    if (features.ffmpeg && ENABLE_OUTPUTS.media) ['mp4', 'webm', 'gif', 'mkv', 'mov', 'm4v', 'mp3', 'wav', 'ogg', 'm4a', 'flac', 'opus'].forEach(x => out.add(x));
   } else if (kind === 'archive') {
-    ['zip','7z','tar','tar.gz','tar.bz2','tar.xz'].forEach(x => out.add(x));
+    ['zip', '7z', 'tar', 'tar.gz', 'tar.bz2', 'tar.xz'].forEach(x => out.add(x));
   }
 
   return out;
@@ -2389,7 +2458,7 @@ function rebuildTargetDropdown(allowedSet) {
   const TARGET_GROUPS = {
     text: [['txt'], ['md'], ['html'], ['csv'], ['json'], ['jsonl'], ['rtf']],
     documents: [['pdf'], ['docx']],
-    archives: [['zip'], ['tar.gz'], ['tar.bz2'], ['tar.xz'], ['7z'], ],
+    archives: [['zip'], ['tar.gz'], ['tar.bz2'], ['tar.xz'], ['7z'],],
     spreadsheets: [['xlsx'], ['csv'], ['tsv']],
     images: [['png'], ['jpeg'], ['webp'], ['svg'], ['bmp'], ['tiff'], ['gif']],
     media: [['mp3'], ['wav'], ['ogg'], ['m4a'], ['flac'], ['opus'], ['aiff'], ['aac'], ['mp4'], ['webm'], ['gif'], ['mkv'], ['mov'], ['m4v']]
@@ -2435,7 +2504,7 @@ function buildTargets() {
   const TARGET_GROUPS = {
     text: [['txt'], ['md'], ['html'], ['csv'], ['json'], ['jsonl'], ['rtf']],
     documents: [['pdf'], ['docx']],
-    archives: [['zip'], ['tar.gz'], ['tar.bz2'], ['tar.xz'], ['7z'], ],
+    archives: [['zip'], ['tar.gz'], ['tar.bz2'], ['tar.xz'], ['7z'],],
     spreadsheets: [['xlsx'], ['csv'], ['tsv']],
     images: [['png'], ['jpeg'], ['webp'], ['svg'], ['bmp'], ['tiff'], ['gif']],
     media: [['mp3'], ['wav'], ['ogg'], ['m4a'], ['flac'], ['opus'], ['aiff'], ['aac'], ['mp4'], ['webm'], ['gif'], ['mkv'], ['mov'], ['m4v']]
@@ -5010,7 +5079,7 @@ window.__applyGreyNow && window.__applyGreyNow(); // force a refresh once
   window.__grey_v9_installed = true;
 
   const DEBUG = !!window.__greyDebug; // set window.__greyDebug = true in console to enable logs
-  const log = (...a) => { if (DEBUG) console.log("[grey-v9]", ...a); };
+
 
   // --- CSS for disabled look ---
   try {
@@ -5309,7 +5378,7 @@ window.__applyGreyNow && window.__applyGreyNow(); // force a refresh once
     if (list && !list.__grey_v9) {
       const mo2 = new MutationObserver(() => scheduleRefresh());
       mo2.observe(list, { childList: true, subtree: true });
-      list.__grey_v9 = true;      
+      list.__grey_v9 = true;
     }
     // Global drop: capture files into __lastPickedFiles
     window.addEventListener('drop', (e) => {
@@ -5342,8 +5411,8 @@ window.__applyGreyNow && window.__applyGreyNow(); // force a refresh once
   }
 
   // manual hook for testing
-  window.__applyGreyNow = () => { DEBUG || console.log("[grey-v9] manual refresh"); scheduleRefresh(); };
-  console.log("[grey-v9] installed (no-loop, JIT greying)");
+  window.__applyGreyNow = () => { DEBUG };
+
 })();
 
 
@@ -5404,4 +5473,325 @@ window.__applyGreyNow && window.__applyGreyNow(); // force a refresh once
   window.addEventListener('drop', (e) => { try { if (e && e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) { window.__lastPickedFiles = Array.from(e.dataTransfer.files); } } catch { } applyGreySoon(); }, true);
   document.addEventListener('mousedown', applyGreySoon, true);
   document.addEventListener('click', applyGreySoon, true);
+})();
+// --- File picker + cloud buttons wiring (minimal) ---
+document.addEventListener('DOMContentLoaded', () => {
+  const input = document.getElementById('file-input');
+  const button = document.getElementById('file-btn');
+  const dropzone = document.getElementById('dropzone');
+
+  const openPicker = () => {
+    if (!input) return;
+    input.value = '';       // allow selecting the same file twice
+    input.click();
+  };
+
+  // Button: open picker and DON'T bubble to dropzone
+  if (button && input) {
+    button.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();        // <<< key line
+      openPicker();
+    });
+  }
+
+  // Dropzone: only open picker if click didn't start on the button/input
+  if (dropzone && input) {
+    dropzone.addEventListener('click', (e) => {
+      if (e.target.closest('#file-btn, #file-input')) return; // ignore button/input
+      openPicker();
+    });
+  }
+
+  // Cloud buttons (unchanged)
+  const gdriveBtn = document.getElementById('btn-gdrive');
+  const dropboxBtn = document.getElementById('btn-dropbox');
+
+  if (dropboxBtn && window.Dropbox) {
+    dropboxBtn.addEventListener('click', () =>
+      pickFromDropbox().then(files => files?.length && addFiles(files))
+    );
+  }
+  if (gdriveBtn && window.google && window.gapi) {
+    gdriveBtn.addEventListener('click', async () => {
+      const files = await pickFromDrive();
+      if (files?.length) addFiles(files);
+    });
+  }
+});
+
+
+/* ===== Lazy SDK loaders (no index.html tags needed) ===== */
+
+/** Optional CSP nonce (set window.__CSP_NONCE = '...'; in your bootstrap if you use CSP nonces) */
+const __NONCE = window.__CSP_NONCE || null;
+
+/** Inject a <script> once and resolve when loaded. Re-uses if already present. */
+function loadScriptOnce(src, { id, attrs = {}, timeout = 15000 } = {}) {
+  return new Promise((resolve, reject) => {
+    // If it’s already loaded, resolve immediately
+    if (/googleapis\.com\/js\/api\.js/.test(src) && window.gapi) return resolve('gapi');
+    if (/accounts\.google\.com\/gsi\/client/.test(src) && window.google?.accounts?.oauth2) return resolve('gsi');
+    if (/dropbox\.com\/static\/api\/2\/dropins\.js/.test(src) && window.Dropbox) return resolve('dropbox');
+
+    // If a tag with the same src or id already exists, wait for it to load
+    const byId = id ? document.getElementById(id) : null;
+    const bySrc = Array.from(document.scripts).find(s => s.src === src);
+    const existing = byId || bySrc;
+    if (existing) {
+      existing.addEventListener('load', () => resolve('existing'));
+      existing.addEventListener('error', () => reject(new Error('Failed ' + src)));
+      return;
+    }
+
+    // Create a fresh script tag
+    const s = document.createElement('script');
+    s.src = src;
+    s.async = true; s.defer = true;
+    if (id) s.id = id;
+    if (__NONCE) s.nonce = __NONCE;
+    for (const [k, v] of Object.entries(attrs)) s.setAttribute(k, v);
+    s.onload = () => resolve('loaded');
+    s.onerror = () => reject(new Error('Failed to load ' + src));
+
+    document.head.appendChild(s);
+
+    // Timeout (optional)
+    if (timeout) setTimeout(() => {
+      if (!s.dataset.__loaded) reject(new Error('Timeout loading ' + src));
+    }, timeout);
+  });
+}
+
+/** Ensure Google APIs (gapi client + picker) and Google Identity Services are ready. */
+async function ensureGoogleSdk({ API_KEY, CLIENT_ID }) {
+  // 1) gapi (client + picker)
+  await loadScriptOnce('https://apis.google.com/js/api.js');
+  await new Promise((res, rej) => {
+    // gapi.load is only available after api.js is evaluated
+    window.gapi.load('client:picker', {
+      callback: async () => {
+        try {
+          await gapi.client.init({
+            apiKey: API_KEY,
+            discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'],
+          });
+          res();
+        } catch (e) { rej(e); }
+      },
+      onerror: () => rej(new Error('gapi.load failed')),
+      timeout: 15000,
+      ontimeout: () => rej(new Error('gapi.load timeout')),
+    });
+  });
+
+  // 2) Google Identity Services (for OAuth token)
+  await loadScriptOnce('https://accounts.google.com/gsi/client');
+
+  // Quick sanity
+  if (!window.google?.accounts?.oauth2) throw new Error('GSI not available');
+  if (!window.gapi?.client?.drive) throw new Error('gapi drive client not ready');
+
+  return { gapi: window.gapi, google: window.google, CLIENT_ID };
+}
+
+/** Ensure Dropbox Chooser SDK is present with your app key. */
+async function ensureDropboxSdk(APP_KEY) {
+  await loadScriptOnce('https://www.dropbox.com/static/api/2/dropins.js', {
+    id: 'dropboxjs',
+    attrs: { 'data-app-key': APP_KEY },
+  });
+  if (!window.Dropbox) throw new Error('Dropbox SDK not available');
+  return window.Dropbox;
+}
+
+/* ===== File-type filtering helpers (reuse your own if you have them) ===== */
+function computeAllowedInputExtsSafe() {
+  // If you already have computeAllowedInputExts(), use that
+  if (typeof computeAllowedInputExts === 'function') return computeAllowedInputExts();
+  // Fallback: a broad, safe default set (edit as needed)
+  return new Set(['png', 'jpg', 'jpeg', 'webp', 'svg', 'bmp', 'tiff', 'gif',
+    'mp3', 'wav', 'ogg', 'm4a', 'flac', 'opus', 'aiff', 'aac',
+    'mp4', 'webm', 'mkv', 'mov', 'm4v',
+    'pdf', 'docx', 'pptx', 'xlsx', 'csv', 'tsv', 'txt', 'md', 'json', 'jsonl', 'html',
+    'zip', 'rar', '7z', 'tar', 'tgz', 'gz', 'tbz2', 'bz2', 'txz', 'xz']);
+}
+function allowedExtensionsWithDots() {
+  return [...computeAllowedInputExtsSafe()].map(e => '.' + e);
+}
+const DRIVE_MIME_BY_KIND = {
+  image: 'image/*',
+  audio: 'audio/*',
+  video: 'video/*',
+  pdf: 'application/pdf',
+  docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  pptx: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+  xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  text: 'text/plain,text/markdown,application/json,text/html',
+  archive: 'application/zip,application/x-7z-compressed,application/x-rar-compressed,application/x-tar,application/gzip,application/x-bzip2,application/x-xz,application/octet-stream'
+};
+function driveMimeFilter() {
+  const exts = computeAllowedInputExtsSafe();
+  const kinds = new Set();
+  for (const e of exts) {
+    if (['png', 'jpg', 'jpeg', 'webp', 'svg', 'bmp', 'tiff', 'gif'].includes(e)) kinds.add('image');
+    else if (['mp3', 'wav', 'ogg', 'm4a', 'flac', 'opus', 'aiff', 'aac'].includes(e)) kinds.add('audio');
+    else if (['mp4', 'webm', 'mkv', 'mov', 'm4v'].includes(e)) kinds.add('video');
+    else if (e === 'pdf') kinds.add('pdf');
+    else if (e === 'docx') kinds.add('docx');
+    else if (e === 'pptx') kinds.add('pptx');
+    else if (e === 'xlsx') kinds.add('xlsx');
+    else if (['csv', 'tsv', 'txt', 'md', 'json', 'jsonl', 'html'].includes(e)) kinds.add('text');
+    else if (['zip', 'rar', '7z', 'tar', 'tgz', 'gz', 'tbz2', 'bz2', 'txz', 'xz'].includes(e)) kinds.add('archive');
+  }
+  return [...kinds].map(k => DRIVE_MIME_BY_KIND[k]).filter(Boolean).join(',');
+}
+
+/* ===== Pickers wired to your existing buttons (lazy-load SDKs on click) ===== */
+
+// 1) Dropbox Chooser
+(function wireDropbox() {
+  const btn = document.getElementById('btn-dropbox');
+  if (!btn) return;
+  const APP_KEY = 'YOUR_DROPBOX_APP_KEY'; // TODO: fill in
+
+  btn.addEventListener('click', async () => {
+    try {
+      const Dropbox = await ensureDropboxSdk(APP_KEY);
+      Dropbox.choose({
+        linkType: 'direct',
+        multiselect: true,
+        extensions: allowedExtensionsWithDots(), // filter UI
+        success: async (files) => {
+          const blobs = await Promise.all(files.map(async f => {
+            const r = await fetch(f.link);
+            const b = await r.blob();
+            return new File([b], f.name, { type: b.type || 'application/octet-stream', lastModified: Date.now() });
+          }));
+          const ok = (typeof isSupportedFile === 'function') ? blobs.filter(isSupportedFile) : blobs;
+          if (ok.length && typeof addFiles === 'function') addFiles(ok);
+        }
+      });
+    } catch (e) {
+      alert('Dropbox picker failed: ' + (e?.message || e));
+    }
+  });
+})();
+
+// 2) Google Drive Picker
+(function wireGoogleDrive() {
+  const btn = document.getElementById('btn-gdrive');
+  if (!btn) return;
+
+  // TODO: fill in your keys (HTTPS origin required)
+  const GOOGLE = { API_KEY: 'YOUR_GOOGLE_API_KEY', CLIENT_ID: 'YOUR_GOOGLE_OAUTH_CLIENT_ID.apps.googleusercontent.com' };
+
+  btn.addEventListener('click', async () => {
+    try {
+      const { gapi, google } = await ensureGoogleSdk(GOOGLE);
+
+      // Get (or request) OAuth token
+      let token = gapi.auth.getToken();
+      if (!token?.access_token) {
+        token = await new Promise((res, rej) => {
+          google.accounts.oauth2.initTokenClient({
+            client_id: GOOGLE.CLIENT_ID,
+            scope: 'https://www.googleapis.com/auth/drive.readonly',
+            callback: (resp) => resp?.access_token ? res(resp) : rej(new Error('No token'))
+          }).requestAccessToken();
+        });
+      }
+
+      // Build filtered view
+      const mimeFilter = driveMimeFilter();
+      const view = new google.picker.DocsView(google.picker.ViewId.DOCS)
+        .setIncludeFolders(false)
+        .setSelectFolderEnabled(false)
+        .setMode(google.picker.DocsViewMode.LIST);
+      if (mimeFilter) view.setMimeTypes(mimeFilter);
+
+      // Show picker
+      await new Promise((resolve) => {
+        const picker = new google.picker.PickerBuilder()
+          .enableFeature(google.picker.Feature.NAV_HIDDEN)
+          .enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
+          .setOAuthToken(token.access_token)
+          .addView(view)
+          .setCallback(resolve)
+          .build();
+        picker.setVisible(true);
+      }).then(async (data) => {
+        if (data?.action !== google.picker.Action.PICKED) return;
+        const files = await Promise.all((data.docs || []).map(async d => {
+          const r = await gapi.client.drive.files.get({ fileId: d.id, alt: 'media' });
+          const blob = new Blob([r.body], { type: d.mimeType || 'application/octet-stream' });
+          return new File([blob], d.name || ('drive-' + d.id), { type: blob.type, lastModified: Date.now() });
+        }));
+        const ok = (typeof isSupportedFile === 'function') ? files.filter(isSupportedFile) : files;
+        if (ok.length && typeof addFiles === 'function') addFiles(ok);
+      });
+
+    } catch (e) {
+      alert('Google Drive picker failed: ' + (e?.message || e));
+    }
+  });
+})();
+// --- Hardening: make the file dialog open exactly once (app.js-only fix) ---
+(() => {
+  if (window.__PICKER_HARDENED__) return;
+  window.__PICKER_HARDENED__ = true;
+
+  const $ = (s) => document.querySelector(s);
+
+  function safeOpen(input) {
+    if (!input) return;
+    try { input.value = ''; } catch { }
+    input.click();
+  }
+
+  function onReady() {
+    // Be permissive with selectors so this works on all subpages.
+    const input = $('#file-input') || document.querySelector('input[type="file"]');
+    const button = $('#file-btn');
+    // Some pages use #dropzone, some a .file-picker wrapper — catch both.
+    const zone = $('#dropzone') || document.querySelector('.file-picker');
+
+    if (!input) return;
+
+    // 1) Button: capture-phase handler that opens ONCE and suppresses others.
+    if (button) {
+      button.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopImmediatePropagation(); // swallow all other click handlers
+        safeOpen(input);
+      }, true); // <-- capture!
+    }
+
+    // 2) Zone: prevent its "click-anywhere" handler from re-opening after dialog close.
+    if (zone) {
+      let downOnZone = false;
+
+      zone.addEventListener('pointerdown', (e) => {
+        // Only count presses that START on empty zone space (not the button/input)
+        downOnZone = !e.target.closest('#file-btn, #file-input');
+      }, true); // capture
+
+      zone.addEventListener('click', (e) => {
+        // If the click didn’t start on the zone itself, swallow it before other handlers see it.
+        if (!downOnZone || e.target.closest('#file-btn, #file-input')) {
+          e.stopImmediatePropagation();
+          return;
+        }
+        // If it DID start on the zone, open once and block the duplicate handler.
+        e.stopImmediatePropagation();
+        safeOpen(input);
+      }, true); // capture
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', onReady, { once: true });
+  } else {
+    onReady();
+  }
 })();
