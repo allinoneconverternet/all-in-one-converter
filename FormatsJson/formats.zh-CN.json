@@ -1,0 +1,1104 @@
+{
+    "language":  "zh-CN",
+    "version":  "1.0",
+    "last_updated":  "2025-10-25",
+    "formats":  {
+                    "png":  {
+                                "name":  "PNG",
+                                "category":  "image",
+                                "extensions":  [
+                                                   "png"
+                                               ],
+                                "mime":  [
+                                             "image/png"
+                                         ],
+                                "synonyms":  [
+                                                 "可移植网络图形（Portable Network Graphics）"
+                                             ],
+                                "one_liner":  "无损位图格式，支持透明和锋利边缘，适合 UI、徽标与截图。",
+                                "about_to":  "PNG 是一种无损位图格式，保留每个像素并支持完整的 Alpha 透明，适合 UI 元素、徽标、图表和截图。对于纯色区域与锐利边缘，它具有良好的压缩效率，并且多次保存不会劣化。与 JPEG 相比，PNG 在照片上通常体积更大，但对文字与图形更干净。需要清晰细节、透明背景或在各类浏览器与应用中可预测的呈现时，请选择 PNG。",
+                                "about_from":  "PNG 非常适合图形，但照片通常用 JPEG 或 WebP 压缩更好。从 PNG 转换通常是为了获得更小的网页图片或更适合照片的格式。转为有损格式可显著减小体积，但无法提升原有质量。",
+                                "common_uses":  [
+                                                    "网页图形",
+                                                    "UI 资源",
+                                                    "截图",
+                                                    "带透明的徽标"
+                                                ],
+                                "limitations":  [
+                                                    "对照片体积较大",
+                                                    "不支持动画（请用 APNG 或 GIF/WebM）"
+                                                ]
+                            },
+                    "jpg":  {
+                                "name":  "JPG",
+                                "category":  "image",
+                                "extensions":  [
+                                                   "jpg",
+                                                   "jpeg"
+                                               ],
+                                "mime":  [
+                                             "image/jpeg"
+                                         ],
+                                "synonyms":  [
+                                                 "JPEG"
+                                             ],
+                                "one_liner":  "最常见的有损照片格式，兼容性好、体积小。",
+                                "about_to":  "JPEG 是 Web 上最具兼容性的照片格式，在较小体积与可接受画质之间取得平衡。它适合摄影和逼真图像，允许一定的压缩痕迹。JPEG 不支持透明或矢量数据，反复编辑/保存会产生累积损失。需要在几乎所有设备上快速加载的图片时，选择 JPEG。",
+                                "about_from":  "如果你从 JPEG 转换，目的通常是获得透明（PNG/WebP）或在相似画质下更高压缩效率的现代格式（WebP）。将有损 JPEG 转到另一种有损格式无法恢复已丢失的细节；只能改变体积/兼容性。",
+                                "common_uses":  [
+                                                    "摄影",
+                                                    "网页图片",
+                                                    "邮件分享",
+                                                    "社交媒体"
+                                                ],
+                                "limitations":  [
+                                                    "不支持透明",
+                                                    "有损；反复保存会降低画质"
+                                                ]
+                            },
+                    "jpeg":  {
+                                 "alias_of":  "jpg"
+                             },
+                    "webp":  {
+                                 "name":  "WebP",
+                                 "category":  "image",
+                                 "extensions":  [
+                                                    "webp"
+                                                ],
+                                 "mime":  [
+                                              "image/webp"
+                                          ],
+                                 "synonyms":  [
+
+                                              ],
+                                 "one_liner":  "现代图像格式，支持有损/无损压缩与 Alpha 透明。",
+                                 "about_to":  "WebP 对照片和图形都有出色的压缩效果，支持透明与可选无损模式。与 JPEG/PNG 相比，它常能在相近画质下获得更小体积，有利于页面速度与 Core Web Vitals。它已获主流浏览器与近年大部分应用原生支持。想要高效、现代的网页投递，请选 WebP。",
+                                 "about_from":  "若从 WebP 转换，通常是为了迎合偏好 JPEG/PNG 的工具。请注意，从有损 WebP 转到另一种有损格式并不会提升质量；重点应放在兼容性或透明需求。",
+                                 "common_uses":  [
+                                                     "现代网页图片",
+                                                     "响应式站点",
+                                                     "带透明的图形"
+                                                 ],
+                                 "limitations":  [
+                                                     "老旧软件可能支持不完整",
+                                                     "浏览器之外对动画 WebP 的支持不一"
+                                                 ]
+                             },
+                    "svg":  {
+                                "name":  "SVG",
+                                "category":  "image",
+                                "extensions":  [
+                                                   "svg"
+                                               ],
+                                "mime":  [
+                                             "image/svg+xml"
+                                         ],
+                                "synonyms":  [
+                                                 "可缩放矢量图形（Scalable Vector Graphics）"
+                                             ],
+                                "one_liner":  "分辨率无关的矢量图形，适合图标、徽标与示意图。",
+                                "about_to":  "SVG 基于 XML 的矢量格式，可在任意尺寸下保持锐利不失真。非常适合图标、徽标、简洁插画与图表，并可用 CSS 样式或 JavaScript 脚本控制。对几何图形而言，文件通常很小。需要清晰线条、小体积与无限缩放时，请选择 SVG。",
+                                "about_from":  "从 SVG 转换常见于目标应用不支持矢量或要发布到社交平台时，需要位图（PNG/JPEG）。栅格化会把细节“烘焙”为像素；请保留 SVG 源文件以便编辑，并导出所需尺寸的位图。",
+                                "common_uses":  [
+                                                    "图标",
+                                                    "徽标",
+                                                    "示意图",
+                                                    "图表"
+                                                ],
+                                "limitations":  [
+                                                    "不适合照片",
+                                                    "复杂 SVG 体积可能较大，或跨应用渲染差异"
+                                                ]
+                            },
+                    "bmp":  {
+                                "name":  "BMP",
+                                "category":  "image",
+                                "extensions":  [
+                                                   "bmp"
+                                               ],
+                                "mime":  [
+                                             "image/bmp"
+                                         ],
+                                "synonyms":  [
+                                                 "位图（Bitmap）"
+                                             ],
+                                "one_liner":  "原始/未压缩位图，常见于旧版 Windows；文件非常大。",
+                                "about_to":  "BMP 以极少压缩存储像素，文件很大但解码简单。多用于遗留工作流或设备抓取。日常分享可转为 PNG 或 JPEG，在可见质量基本不变的情况下显著减小体积。",
+                                "about_from":  "从 BMP 转换通常是为了更小体积或更友好的 Web 格式。图形/截图可用 PNG；照片可用 JPEG。通常能在肉眼无明显差异下获得巨大体积缩减。",
+                                "common_uses":  [
+                                                    "旧版 Windows 图像",
+                                                    "设备截图",
+                                                    "原始位图"
+                                                ],
+                                "limitations":  [
+                                                    "文件极大",
+                                                    "不支持透明（除非使用遮罩）"
+                                                ]
+                            },
+                    "tiff":  {
+                                 "name":  "TIFF",
+                                 "category":  "image",
+                                 "extensions":  [
+                                                    "tiff",
+                                                    "tif"
+                                                ],
+                                 "mime":  [
+                                              "image/tiff"
+                                          ],
+                                 "synonyms":  [
+                                                  "标记图像文件格式（Tagged Image File Format）"
+                                              ],
+                                 "one_liner":  "灵活的档案级图像格式，支持无损与多页。",
+                                 "about_to":  "TIFF 以高保真著称，广泛用于扫描、印前与存档。它支持多种色彩空间、图层以及多页文档，并常用 LZW 或 Deflate 等无损压缩。需要可长期保存、可编辑的母版级图像时，请选 TIFF。",
+                                 "about_from":  "从 TIFF 转换通常是为了 Web 发布或节省空间。照片可转 JPEG/WebP；图形可转 PNG；多页扫描可封装为 PDF。经常能在保持感知质量的同时显著减小体积。",
+                                 "common_uses":  [
+                                                     "扫描",
+                                                     "印前",
+                                                     "图像存档",
+                                                     "多页文档"
+                                                 ],
+                                 "limitations":  [
+                                                     "体积较大",
+                                                     "不适合快速 Web 投递"
+                                                 ]
+                             },
+                    "gif":  {
+                                "name":  "GIF",
+                                "category":  "image",
+                                "extensions":  [
+                                                   "gif"
+                                               ],
+                                "mime":  [
+                                             "image/gif"
+                                         ],
+                                "synonyms":  [
+                                                 "图形交换格式（Graphics Interchange Format）"
+                                             ],
+                                "one_liner":  "8 位调色板图像，支持基础动画；适合简短循环与贴纸。",
+                                "about_to":  "GIF 每帧最多 256 色并支持简单动画，适合轻量循环与贴纸。静态图片建议用 PNG 或 WebP，画质更好且体积更小；视频内容用 MP4/WebM 更流畅、体积更小。只有在需要最广泛兼容的短动图时才选择 GIF。",
+                                "about_from":  "从 GIF 转换多见于把动图压缩成 MP4/WebM，或提取静帧为 PNG/JPEG。把较长或类照片的 GIF 转成视频通常可大幅减小体积。",
+                                "common_uses":  [
+                                                    "表情包与贴纸",
+                                                    "简单动画",
+                                                    "UI 动效演示"
+                                                ],
+                                "limitations":  [
+                                                    "仅 256 色",
+                                                    "对照片类内容体积庞大",
+                                                    "无真正的半透明（仅 1 位透明）"
+                                                ]
+                            },
+                    "mp3":  {
+                                "name":  "MP3",
+                                "category":  "audio",
+                                "extensions":  [
+                                                   "mp3"
+                                               ],
+                                "mime":  [
+                                             "audio/mpeg"
+                                         ],
+                                "synonyms":  [
+
+                                             ],
+                                "one_liner":  "无处不在的有损音频，用于音乐与播客；体积小、通用性强。",
+                                "about_to":  "MP3 在音质与体积之间取得平衡，几乎可在所有设备上播放——手机、车载、音箱和浏览器。音乐建议用较高码率，语音可用较低码率。若追求在相似音质下更小体积，AAC 或 Opus 往往更高效，但 MP3 仍是通用性最强的选择。",
+                                "about_from":  "从 MP3 转换无法恢复有损压缩丢失的质量。可转 AAC/Opus 获得更小体积，或转 WAV/FLAC 便于编辑/存档。若想提升保真度，应从无损源重新编码而非转码旧 MP3。",
+                                "common_uses":  [
+                                                    "音乐发行",
+                                                    "播客",
+                                                    "有声书",
+                                                    "Web 音频"
+                                                ],
+                                "limitations":  [
+                                                    "有损；低码率会有失真",
+                                                    "多声道/元数据支持有限"
+                                                ]
+                            },
+                    "wav":  {
+                                "name":  "WAV",
+                                "category":  "audio",
+                                "extensions":  [
+                                                   "wav"
+                                               ],
+                                "mime":  [
+                                             "audio/wav",
+                                             "audio/x-wav",
+                                             "audio/vnd.wave"
+                                         ],
+                                "synonyms":  [
+                                                 "波形音频（Waveform Audio）"
+                                             ],
+                                "one_liner":  "未压缩 PCM 音频，提供最高质量与充足的编辑余量。",
+                                "about_to":  "WAV 以未压缩 PCM 存储音频，逐样本保真，便于混音、母带或分析。非常适合需要纯净音质与易编辑性的场景，但文件体积很大。用于分发/分享时，可转 AAC/MP3/Opus 大幅缩小体积且保持可接受音质。",
+                                "about_from":  "若从 WAV 转换，通常是为了发布或节省空间。针对音乐/语音选择合适的现代有损编码与码率。若需要无损压缩且更小体积，可选 FLAC。",
+                                "common_uses":  [
+                                                    "录音与编辑",
+                                                    "母带文件",
+                                                    "音频归档"
+                                                ],
+                                "limitations":  [
+                                                    "体积非常大",
+                                                    "默认不压缩"
+                                                ]
+                            },
+                    "ogg":  {
+                                "name":  "Ogg Vorbis",
+                                "category":  "audio",
+                                "extensions":  [
+                                                   "ogg"
+                                               ],
+                                "mime":  [
+                                             "audio/ogg"
+                                         ],
+                                "synonyms":  [
+                                                 "Ogg 容器中的 Vorbis（Vorbis in Ogg container）"
+                                             ],
+                                "one_liner":  "开放、免版税的有损音频，在中等码率下音质良好。",
+                                "about_to":  "Ogg Vorbis 提供高效且免版税的压缩，常与 AAC 在相似码率下表现相当。它在现代浏览器与播放器中支持良好。需要开放许可与扎实音质的流媒体或下载时可选 Ogg。",
+                                "about_from":  "从 Ogg 转换多为设备兼容性（MP3/AAC）或编辑需要（WAV/FLAC）。不同有损编码间的转码会引入额外失真；尽量保留无损母带。",
+                                "common_uses":  [
+                                                    "音频流媒体",
+                                                    "开源项目",
+                                                    "游戏音频资源"
+                                                ],
+                                "limitations":  [
+                                                    "部分旧设备支持较差",
+                                                    "有损压缩"
+                                                ]
+                            },
+                    "m4a":  {
+                                "name":  "M4A",
+                                "category":  "audio",
+                                "extensions":  [
+                                                   "m4a"
+                                               ],
+                                "mime":  [
+                                             "audio/mp4",
+                                             "audio/x-m4a"
+                                         ],
+                                "synonyms":  [
+                                                 "MP4 容器中的 AAC 或 ALAC（AAC or ALAC in MP4 container）"
+                                             ],
+                                "one_liner":  "MP4 音频容器——通常为 AAC（有损）或 ALAC（无损）。",
+                                "about_to":  "M4A 是用于音频的 MP4 容器。多数 M4A 文件包含 AAC（有损），以获得小体积与广泛支持；也有使用 ALAC（无损）以获取高保真。它在 Apple 与现代设备上播放良好。想在效率与兼容间平衡，可选 M4A。",
+                                "about_from":  "从 M4A 转换时，先确认源是否为 AAC（有损）或 ALAC（无损）。将有损 AAC 转到另一种有损格式不会提升质量；无损源可按需导出为目标分发编码与码率。",
+                                "common_uses":  [
+                                                    "音乐库",
+                                                    "播客",
+                                                    "Apple 生态音频"
+                                                ],
+                                "limitations":  [
+                                                    "相关的 M4P/M4B 可能带 DRM",
+                                                    "容器细节可能使旧工具困惑"
+                                                ]
+                            },
+                    "flac":  {
+                                 "name":  "FLAC",
+                                 "category":  "audio",
+                                 "extensions":  [
+                                                    "flac"
+                                                ],
+                                 "mime":  [
+                                              "audio/flac"
+                                          ],
+                                 "synonyms":  [
+                                                  "自由无损音频编码（Free Lossless Audio Codec）"
+                                              ],
+                                 "one_liner":  "无损音频压缩——适合归档与高保真聆听。",
+                                 "about_to":  "FLAC 在不丢失任何信息的前提下压缩音频，相比 WAV 通常可减小 30–60% 的体积。它非常适合音乐存档、保存母带以及无缝播放。需要比特级无损且比 WAV 更小的文件时请选择 FLAC。",
+                                 "about_from":  "从 FLAC 转换常用于生成便携版本（AAC/MP3/Opus）。请保留 FLAC 作为母版；为手机、流媒体或分享按需导出有损副本与码率。",
+                                 "common_uses":  [
+                                                     "音乐存档",
+                                                     "无损分发",
+                                                     "高保真播放"
+                                                 ],
+                                 "limitations":  [
+                                                     "比 AAC/MP3 更大",
+                                                     "部分设备仍更偏好 MP3/AAC"
+                                                 ]
+                             },
+                    "opus":  {
+                                 "name":  "Opus",
+                                 "category":  "audio",
+                                 "extensions":  [
+                                                    "opus"
+                                                ],
+                                 "mime":  [
+                                              "audio/ogg",
+                                              "audio/opus"
+                                          ],
+                                 "synonyms":  [
+
+                                              ],
+                                 "one_liner":  "当代先进的低码率音频；非常适合流媒体、VoIP 与语音。",
+                                 "about_to":  "Opus 在低码率下也能提供出色音质，并能很好地适应语音与音乐。它开放、免版税，并在浏览器与现代播放器中获得广泛支持。需要小体积且清晰度令人满意的音频（尤其是流媒体或语音）时，请选择 Opus。",
+                                 "about_from":  "从 Opus 转换多为设备兼容性（MP3/AAC）或编辑（WAV）。转到另一种有损编码会产生叠代损失；若要多次转换，请保留无损源。",
+                                 "common_uses":  [
+                                                     "流媒体",
+                                                     "VoIP",
+                                                     "播客",
+                                                     "游戏音频"
+                                                 ],
+                                 "limitations":  [
+                                                     "旧硬件支持有限",
+                                                     "有损编码"
+                                                 ]
+                             },
+                    "aiff":  {
+                                 "name":  "AIFF",
+                                 "category":  "audio",
+                                 "extensions":  [
+                                                    "aiff",
+                                                    "aif"
+                                                ],
+                                 "mime":  [
+                                              "audio/aiff",
+                                              "audio/x-aiff"
+                                          ],
+                                 "synonyms":  [
+                                                  "音频交换文件格式（Audio Interchange File Format）"
+                                              ],
+                                 "one_liner":  "未压缩 PCM 音频，常见于 macOS 工作流。",
+                                 "about_to":  "AIFF 与 WAV 类似，以未压缩音频存储，提供优秀音质与简便编辑。它在 Apple 工作流和较旧的音频工作站中常见。用于分发或云存储时，可转 AAC/MP3/Opus 以减少体积。",
+                                 "about_from":  "从 AIFF 转换为 WAV 有助于跨平台编辑且保持质量。用于分享时，选择合适的现代有损编码与码率；若需无损压缩，可选 FLAC。",
+                                 "common_uses":  [
+                                                     "音频制作",
+                                                     "母带存档",
+                                                     "macOS 项目"
+                                                 ],
+                                 "limitations":  [
+                                                     "体积大",
+                                                     "在 Apple 生态外较少见"
+                                                 ]
+                             },
+                    "aac":  {
+                                "name":  "AAC",
+                                "category":  "audio",
+                                "extensions":  [
+                                                   "aac"
+                                               ],
+                                "mime":  [
+                                             "audio/aac"
+                                         ],
+                                "synonyms":  [
+                                                 "高级音频编码（Advanced Audio Coding）"
+                                             ],
+                                "one_liner":  "现代有损音频编码；高效且广泛支持（常以 M4A 容器存储）。",
+                                "about_to":  "AAC 相比 MP3 在多数码率下更为高效，受到 iOS、Android、浏览器和智能设备的广泛支持。作为音乐分发的默认选择非常稳妥。许多 AAC 文件以 M4A 形式存储在 MP4 容器中。",
+                                "about_from":  "将 AAC 转到另一种有损编码不会增加细节。需要编辑时转 WAV/FLAC；为兼容性可转 MP3。若计划频繁转码，请保留无损母带。",
+                                "common_uses":  [
+                                                    "流媒体与下载",
+                                                    "音乐库",
+                                                    "移动端播放"
+                                                ],
+                                "limitations":  [
+                                                    "有损；多次转码会劣化",
+                                                    "容器差异（AAC 与 M4A）可能引起困惑"
+                                                ]
+                            },
+                    "mp4":  {
+                                "name":  "MP4",
+                                "category":  "video",
+                                "extensions":  [
+                                                   "mp4"
+                                               ],
+                                "mime":  [
+                                             "video/mp4"
+                                         ],
+                                "synonyms":  [
+                                                 "MPEG‑4 第 14 部分容器（MPEG-4 Part 14 container）"
+                                             ],
+                                "one_liner":  "最具兼容性的视频容器；通常为 H.264 视频 + AAC 音频。",
+                                "about_to":  "MP4 是广泛支持的音视频容器，常用 H.264/AVC 视频与 AAC 音频。对于设备、浏览器与社交平台而言，它是最保险的选择。需要稳定播放与分享且少出意外时，请选 MP4。",
+                                "about_from":  "从 MP4 转换可能是为了开放格式（WebM）或更灵活的容器（MKV）。仅更换容器（如 MP4→MKV）可无损；若需更换编码以压缩或兼容，则必须重新编码。",
+                                "common_uses":  [
+                                                    "网络视频",
+                                                    "移动端播放",
+                                                    "社交平台上传",
+                                                    "流媒体"
+                                                ],
+                                "limitations":  [
+                                                    "旧版 MP4 可能不含现代编码",
+                                                    "部分文件可能含 DRM 或元数据兼容性问题"
+                                                ]
+                            },
+                    "webm":  {
+                                 "name":  "WebM",
+                                 "category":  "video",
+                                 "extensions":  [
+                                                    "webm"
+                                                ],
+                                 "mime":  [
+                                              "video/webm"
+                                          ],
+                                 "synonyms":  [
+                                                  "面向 Web 的 VP8/VP9/AV1 视频 + Opus/Vorbis 音频容器（VP9/AV1 + Opus container）"
+                                              ],
+                                 "one_liner":  "开放的 Web 优先容器，搭配 VP8/VP9/AV1 与 Opus/Vorbis。",
+                                 "about_to":  "WebM 采用现代且免版税的编解码器（视频 VP9/AV1，音频 Opus/Vorbis）与轻量容器，在主流浏览器中原生播放，并常以较低码率获得优良画质。若你优先考虑开放性与压缩效率的网页投递，请选择 WebM。",
+                                 "about_from":  "从 WebM 转换多为兼容旧播放器（偏好 MP4/H.264）。若原视频已是 VP9/AV1，转码到 H.264 往往在相同画质下体积更大。",
+                                 "common_uses":  [
+                                                     "网页内嵌视频",
+                                                     "背景循环",
+                                                     "开源工作流"
+                                                 ],
+                                 "limitations":  [
+                                                     "旧设备/软件更偏好 MP4/H.264",
+                                                     "AV1 编码在多数系统上更慢"
+                                                 ]
+                             },
+                    "mkv":  {
+                                "name":  "MKV",
+                                "category":  "video",
+                                "extensions":  [
+                                                   "mkv"
+                                               ],
+                                "mime":  [
+                                             "video/x-matroska"
+                                         ],
+                                "synonyms":  [
+                                                 "Matroska"
+                                             ],
+                                "one_liner":  "功能丰富的容器，支持多音轨、字幕与章节。",
+                                "about_to":  "MKV（Matroska）极为灵活，几乎可容纳任意编解码器、多音轨/字幕与章节信息。适合归档与进阶播放需求。需要超出 MP4 的特性，或想在不重新编码的情况下进行无损换容器时，请选 MKV。",
+                                "about_from":  "从 MKV 转为 MP4 以提高设备兼容性，若视频/音频已是 H.264/AAC，通常可直接无损换容器；否则需重新编码以匹配目标支持。",
+                                "common_uses":  [
+                                                    "视频存档",
+                                                    "多音轨或内嵌字幕发行",
+                                                    "换容器（remux）流程"
+                                                ],
+                                "limitations":  [
+                                                    "部分设备/应用不原生支持 MKV",
+                                                    "流媒体平台通常偏好 MP4"
+                                                ]
+                            },
+                    "mov":  {
+                                "name":  "MOV",
+                                "category":  "video",
+                                "extensions":  [
+                                                   "mov"
+                                               ],
+                                "mime":  [
+                                             "video/quicktime"
+                                         ],
+                                "synonyms":  [
+                                                 "QuickTime 影片（QuickTime Movie）"
+                                             ],
+                                "one_liner":  "Apple 的 QuickTime 容器，常见于相机/手机拍摄；质量高、体积大。",
+                                "about_to":  "MOV 常由相机与 iOS 设备产生，码率较高且便于剪辑。它非常适合制作环节，但对网页投递较重。分享时可转 MP4/H.264 以获得更广兼容与更小体积。",
+                                "about_from":  "从 MOV 转换通常是为分享优化。若编码已兼容，可换容器为 MP4；否则转码为 H.264/AAC 或 WebM 以便高效流式播放。",
+                                "common_uses":  [
+                                                    "相机母带",
+                                                    "剪辑工作流",
+                                                    "Apple 生态"
+                                                ],
+                                "limitations":  [
+                                                    "体积大",
+                                                    "不适合直接 Web 投递"
+                                                ]
+                            },
+                    "m4v":  {
+                                "name":  "M4V",
+                                "category":  "video",
+                                "extensions":  [
+                                                   "m4v"
+                                               ],
+                                "mime":  [
+                                             "video/x-m4v",
+                                             "video/mp4"
+                                         ],
+                                "synonyms":  [
+                                                 "Apple 的 MP4 变体（Apple MP4 variant）"
+                                             ],
+                                "one_liner":  "Apple 使用的 MP4 家族容器；与 MP4 类似，有时带 DRM。",
+                                "about_to":  "M4V 是 Apple 风格的 MP4 容器，通常包含 H.264 视频与 AAC 音频。文件可能包含元数据或 DRM。若可无损换容器，转成标准 MP4 常能在不改变质量的情况下提升兼容性。",
+                                "about_from":  "从 M4V 转换多是为了去除容器差异以便通用播放。若存在 DRM，则可能受法律或平台限制。",
+                                "common_uses":  [
+                                                    "iTunes 视频",
+                                                    "Apple 设备"
+                                                ],
+                                "limitations":  [
+                                                    "可能存在 DRM",
+                                                    "除此之外功能上与 MP4 相近"
+                                                ]
+                            },
+                    "pdf":  {
+                                "name":  "PDF",
+                                "category":  "document",
+                                "extensions":  [
+                                                   "pdf"
+                                               ],
+                                "mime":  [
+                                             "application/pdf"
+                                         ],
+                                "synonyms":  [
+                                                 "可移植文档格式（Portable Document Format）"
+                                             ],
+                                "one_liner":  "固定版式文档，在所有设备上可靠查看与打印。",
+                                "about_to":  "PDF 保留版式、字体与图形，使文档在任何设备上呈现一致。它是分享或打印终稿的最佳选择。PDF 可内嵌图像与文本；若使用 OCR，扫描件也能变为可搜索。需要一致性、可移植性与专业呈现时，选 PDF。",
+                                "about_from":  "将 PDF 转为可编辑格式（Word/PowerPoint/Excel）需要重建结构与版式；效果因内容而异。对于扫描 PDF，需要 OCR 才能提取可选文本。",
+                                "common_uses":  [
+                                                    "报告",
+                                                    "表单",
+                                                    "手册",
+                                                    "合同"
+                                                ],
+                                "limitations":  [
+                                                    "编辑能力有限",
+                                                    "复杂版式的转换未必完美"
+                                                ]
+                            },
+                    "docx":  {
+                                 "name":  "DOCX",
+                                 "category":  "document",
+                                 "extensions":  [
+                                                    "docx"
+                                                ],
+                                 "mime":  [
+                                              "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                                          ],
+                                 "synonyms":  [
+                                                  "Microsoft Word 文档（Microsoft Word document）"
+                                              ],
+                                 "one_liner":  "可编辑的文字处理文件，支持样式、图片与丰富版式。",
+                                 "about_to":  "DOCX 是写作与协作的标准格式，支持标题、图片、表格、样式与修订。发布时可导出为 PDF，或为网页发布导出为 HTML。",
+                                 "about_from":  "从 DOCX 转换常见于导出不可编辑的终稿（PDF）或为网页做准备（HTML/Markdown）。请检查输出版式，尤其是表格与列表。",
+                                 "common_uses":  [
+                                                     "商务文档",
+                                                     "论文与报告",
+                                                     "模版"
+                                                 ],
+                                 "limitations":  [
+                                                     "外观可能因应用不同而变化",
+                                                     "嵌入字体/对象可能在导出时不保留"
+                                                 ]
+                             },
+                    "pptx":  {
+                                 "name":  "PPTX",
+                                 "category":  "document",
+                                 "extensions":  [
+                                                    "pptx"
+                                                ],
+                                 "mime":  [
+                                              "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+                                          ],
+                                 "synonyms":  [
+                                                  "Microsoft PowerPoint 演示文稿（Microsoft PowerPoint presentation）"
+                                              ],
+                                 "one_liner":  "演示文稿，支持文字、图片、动画与媒体。",
+                                 "about_to":  "PPTX 是演示的标准格式，支持动画、视频与演讲者备注。分享/打印可转为 PDF，自播放场景可转为 MP4。",
+                                 "about_from":  "从 PPTX 转换时要注意：动画、过渡与嵌入媒体在目标格式中可能被简化或扁平化。发布前务必预览结果。",
+                                 "common_uses":  [
+                                                     "商务演示",
+                                                     "课程讲授",
+                                                     "大会演讲"
+                                                 ],
+                                 "limitations":  [
+                                                     "动画不一定能带到静态格式",
+                                                     "未嵌入字体可能导致重排"
+                                                 ]
+                             },
+                    "xlsx":  {
+                                 "name":  "XLSX",
+                                 "category":  "document",
+                                 "extensions":  [
+                                                    "xlsx"
+                                                ],
+                                 "mime":  [
+                                              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                                          ],
+                                 "synonyms":  [
+                                                  "Microsoft Excel 工作簿（Microsoft Excel workbook）"
+                                              ],
+                                 "one_liner":  "电子表格工作簿，支持公式、格式与多工作表。",
+                                 "about_to":  "XLSX 可在多张工作表中存储结构化数据、公式、图表与格式。为通用交换可导出为 CSV/TSV；为只读分享可导出为 PDF。对于大型数据集，建议另存干净的 CSV 以供管道使用。",
+                                 "about_from":  "从 XLSX 到 CSV/TSV 会丢失公式与样式，只保留原始值。对数据科学或 ETL，这通常更可取且便于自动化。",
+                                 "common_uses":  [
+                                                     "数据分析",
+                                                     "财务模型",
+                                                     "报表"
+                                                 ],
+                                 "limitations":  [
+                                                     "格式与公式不会转入 CSV/TSV",
+                                                     "大型工作簿可能较重"
+                                                 ]
+                             },
+                    "csv":  {
+                                "name":  "CSV",
+                                "category":  "data",
+                                "extensions":  [
+                                                   "csv"
+                                               ],
+                                "mime":  [
+                                             "text/csv"
+                                         ],
+                                "synonyms":  [
+                                                 "逗号分隔值（Comma‑Separated Values）"
+                                             ],
+                                "one_liner":  "纯文本表格数据；几乎可在任何工具中导入。",
+                                "about_to":  "CSV 以纯文本形式表示表格，字段以逗号分隔。它轻量、可读性强且广泛支持，非常适合数据交换。需要最大可移植性且不需要公式或格式时，请选择 CSV。",
+                                "about_from":  "从 CSV 转成 XLSX 或 JSON 可增加结构以便分析或应用使用。注意分隔符、行结尾与编码——尤其包含非 ASCII 数据时。",
+                                "common_uses":  [
+                                                    "数据导出/导入",
+                                                    "ETL 管道",
+                                                    "API 与日志"
+                                                ],
+                                "limitations":  [
+                                                    "无公式或样式",
+                                                    "逗号/引号/换行处理可能引发歧义"
+                                                ]
+                            },
+                    "tsv":  {
+                                "name":  "TSV",
+                                "category":  "data",
+                                "extensions":  [
+                                                   "tsv"
+                                               ],
+                                "mime":  [
+                                             "text/tab-separated-values"
+                                         ],
+                                "synonyms":  [
+                                                 "制表符分隔值（Tab‑Separated Values）"
+                                             ],
+                                "one_liner":  "使用制表符分隔的纯文本表格；可避免许多 CSV 的引号问题。",
+                                "about_to":  "TSV 用制表符分隔字段，通常减少了对引号与转义的需求。字段可能包含逗号时尤其方便。当你希望更少的引号陷阱时，可选 TSV。",
+                                "about_from":  "从 TSV 转为 CSV 或 XLSX 十分直接。注意字段内的制表符；不同工具的转义方式可能不同。",
+                                "common_uses":  [
+                                                    "数据交换",
+                                                    "生物信息学",
+                                                    "日志处理"
+                                                ],
+                                "limitations":  [
+                                                    "字段内的制表符仍可能带来问题",
+                                                    "无公式或格式"
+                                                ]
+                            },
+                    "txt":  {
+                                "name":  "TXT",
+                                "category":  "text",
+                                "extensions":  [
+                                                   "txt"
+                                               ],
+                                "mime":  [
+                                             "text/plain"
+                                         ],
+                                "synonyms":  [
+                                                 "纯文本（Plain text）"
+                                             ],
+                                "one_liner":  "不含格式的简单文本；可在任何编辑器或设备上打开。",
+                                "about_to":  "TXT 是最简单的文本存储方式——小巧、可移植、具前瞻性。适合笔记、快速导出与脚本。分享可转 PDF，或转 Markdown/HTML 以获得丰富格式。",
+                                "about_from":  "从 TXT 出发，你可以组织为 Markdown、HTML 或 DOCX。请使用 UTF‑8 编码以避免乱码。",
+                                "common_uses":  [
+                                                    "笔记",
+                                                    "日志",
+                                                    "Readme 文件"
+                                                ],
+                                "limitations":  [
+                                                    "无格式",
+                                                    "若非 UTF‑8 可能出现编码问题"
+                                                ]
+                            },
+                    "md":  {
+                               "name":  "Markdown",
+                               "category":  "text",
+                               "extensions":  [
+                                                  "md",
+                                                  "markdown"
+                                              ],
+                               "mime":  [
+                                            "text/markdown"
+                                        ],
+                               "synonyms":  [
+                                                "MD"
+                                            ],
+                               "one_liner":  "轻量级标记语法，可干净地导出为 HTML 与 PDF。",
+                               "about_to":  "Markdown 提供对标题、列表、链接与代码的友好语法。文件小、便于差异比较，并可编译为 HTML 或 PDF 发布。想要易写、易改且导出干净的格式时，请选 Markdown。",
+                               "about_from":  "从 Markdown 导出到 HTML 或 PDF 可生成精美的成品。建议把 MD 作为“真源”，按需导出不同格式。",
+                               "common_uses":  [
+                                                   "文档",
+                                                   "博客",
+                                                   "自述文件（Readme）"
+                                               ],
+                               "limitations":  [
+                                                   "精细布局控制有限",
+                                                   "扩展语法随渲染器而异"
+                                               ]
+                           },
+                    "json":  {
+                                 "name":  "JSON",
+                                 "category":  "data",
+                                 "extensions":  [
+                                                    "json"
+                                                ],
+                                 "mime":  [
+                                              "application/json"
+                                          ],
+                                 "synonyms":  [
+                                                  "JavaScript 对象表示法（JavaScript Object Notation）"
+                                              ],
+                                 "one_liner":  "用于 API 与应用的结构化数据格式；可读、与语言无关。",
+                                 "about_to":  "JSON 以轻量文本形式编码对象、数组与值，程序易于解析。它是 Web API 与配置的事实标准。需要嵌套结构时保留 JSON；要扁平表格可转 CSV。",
+                                 "about_from":  "从 JSON 转换通常意味着扁平化为 CSV 或为分析重整字段。注意嵌套数组/对象——复杂结构可能需要自定义映射。",
+                                 "common_uses":  [
+                                                     "API",
+                                                     "配置",
+                                                     "事件日志"
+                                                 ],
+                                 "limitations":  [
+                                                     "不适合大型二进制数据",
+                                                     "深度嵌套不利于表格化导出"
+                                                 ]
+                             },
+                    "jsonl":  {
+                                  "name":  "JSON Lines",
+                                  "category":  "data",
+                                  "extensions":  [
+                                                     "jsonl",
+                                                     "ndjson"
+                                                 ],
+                                  "mime":  [
+                                               "application/x-ndjson",
+                                               "application/json"
+                                           ],
+                                  "synonyms":  [
+                                                   "换行分隔 JSON（NDJSON）"
+                                               ],
+                                  "one_liner":  "每行一个 JSON 对象，便于流式处理与大数据管道。",
+                                  "about_to":  "JSON Lines 按行存储记录，具备良好的流式能力并可扩展至大型数据集。非常适合日志与机器学习管道。若每行都是可独立处理的对象，请选择 JSONL。",
+                                  "about_from":  "从 JSONL 出发可把多行合并为一个 JSON 数组，或扁平为 CSV 以便分析。请确保跨系统的一致换行处理。",
+                                  "common_uses":  [
+                                                      "日志",
+                                                      "机器学习数据集",
+                                                      "ETL"
+                                                  ],
+                                  "limitations":  [
+                                                      "对复杂嵌套数据不够友好",
+                                                      "必须仔细处理换行"
+                                                  ]
+                              },
+                    "html":  {
+                                 "name":  "HTML",
+                                 "category":  "web",
+                                 "extensions":  [
+                                                    "html",
+                                                    "htm"
+                                                ],
+                                 "mime":  [
+                                              "text/html"
+                                          ],
+                                 "synonyms":  [
+                                                  "超文本标记语言（HyperText Markup Language）"
+                                              ],
+                                 "one_liner":  "用于网页的标记语言；可包含文本、图像、CSS 与脚本。",
+                                 "about_to":  "HTML 为浏览器组织内容。转为 PDF 可得到固定快照；转 TXT 得到纯文本；转 Markdown 可保留可读结构。用于网页呈现时选 HTML，需要静态可分享输出时再做转换。",
+                                 "about_from":  "从 HTML 转 PDF 或图像常见于报告与收据。动态脚本与样式未必能完整带入——导出时应准备可打印样式。",
+                                 "common_uses":  [
+                                                     "网页",
+                                                     "电子邮件",
+                                                     "报告"
+                                                 ],
+                                 "limitations":  [
+                                                     "不同渲染引擎呈现存在差异",
+                                                     "动态内容可能无法按预期导出"
+                                                 ]
+                             },
+                    "zip":  {
+                                "name":  "ZIP",
+                                "category":  "archive",
+                                "extensions":  [
+                                                   "zip"
+                                               ],
+                                "mime":  [
+                                             "application/zip"
+                                         ],
+                                "synonyms":  [
+
+                                             ],
+                                "one_liner":  "通用压缩包，系统原生支持，并可选 AES 加密。",
+                                "about_to":  "ZIP 将文件与文件夹打包压缩。Windows、macOS 与 Linux 均可直接打开，是分享的最稳妥选择。许多工具还支持在 ZIP 中使用强 AES 加密。",
+                                "about_from":  "从 ZIP 转为 7Z/RAR 在大型/重复数据上可能获得更高压缩率。若接收方的兼容性最重要，继续使用 ZIP。",
+                                "common_uses":  [
+                                                    "打包下载",
+                                                    "邮件附件",
+                                                    "备份"
+                                                ],
+                                "limitations":  [
+                                                    "相对 7Z/XZ 压缩率一般",
+                                                    "不同工具的密码实现不一"
+                                                ]
+                            },
+                    "rar":  {
+                                "name":  "RAR",
+                                "category":  "archive",
+                                "extensions":  [
+                                                   "rar"
+                                               ],
+                                "mime":  [
+                                             "application/vnd.rar"
+                                         ],
+                                "synonyms":  [
+
+                                             ],
+                                "one_liner":  "专有压缩包，压缩率出色并支持恢复记录。",
+                                "about_to":  "RAR 提供较强压缩，并可加入恢复记录以应对损坏。它在高阶用户社区中很流行，但创建/打开需兼容软件。需要良好压缩与纠错能力时可选 RAR。",
+                                "about_from":  "从 RAR 转为 ZIP 或 7Z 可提高开放性并便于分享。注意创建 RAR 往往需要商业软件。",
+                                "common_uses":  [
+                                                    "大型文件集合",
+                                                    "长期存储",
+                                                    "发布打包"
+                                                ],
+                                "limitations":  [
+                                                    "专有格式",
+                                                    "创建通常需要付费工具"
+                                                ]
+                            },
+                    "7z":  {
+                               "name":  "7Z",
+                               "category":  "archive",
+                               "extensions":  [
+                                                  "7z"
+                                              ],
+                               "mime":  [
+                                            "application/x-7z-compressed"
+                                        ],
+                               "synonyms":  [
+                                                "7‑Zip 压缩包（7-Zip archive）"
+                                            ],
+                               "one_liner":  "采用 LZMA/LZMA2 的高压缩率格式，可选 AES‑256 加密。",
+                               "about_to":  "7Z 在大型或重复数据上压缩效果极佳，支持固实压缩、超大体积与 AES‑256 加密。当你更看重体积而非系统原生支持时，请选择 7Z。",
+                               "about_from":  "从 7Z 转为 ZIP 可获得在所有设备上的更好开箱即用兼容性，但体积可能略大。",
+                               "common_uses":  [
+                                                   "软件分发",
+                                                   "备份",
+                                                   "大型数据集打包"
+                                               ],
+                               "limitations":  [
+                                                   "一些系统不原生支持",
+                                                   "高压缩可能更耗 CPU"
+                                               ]
+                           },
+                    "tar":  {
+                                "name":  "TAR",
+                                "category":  "archive",
+                                "extensions":  [
+                                                   "tar"
+                                               ],
+                                "mime":  [
+                                             "application/x-tar"
+                                         ],
+                                "synonyms":  [
+                                                 "磁带归档（Tape Archive）"
+                                             ],
+                                "one_liner":  "文件系统打包器，将多文件合成单一流——自身不压缩。",
+                                "about_to":  "TAR 将多个文件与文件夹打包为单个归档，并保留权限与元数据。本身不压缩；常与 Gzip、Bzip2 或 XZ 搭配（如 .tgz）。需要类 UNIX 的元数据保真打包时请用 TAR。",
+                                "about_from":  "从 TAR 转 ZIP 或 7Z 可添加压缩并提升非 UNIX 用户的兼容性。对小型集合，仅用 ZIP 可能更简单。",
+                                "common_uses":  [
+                                                    "UNIX 备份",
+                                                    "源代码发布",
+                                                    "服务器部署"
+                                                ],
+                                "limitations":  [
+                                                    "自身不压缩",
+                                                    "对非技术用户不够直观"
+                                                ]
+                            },
+                    "gz":  {
+                               "name":  "GZ",
+                               "category":  "archive",
+                               "extensions":  [
+                                                  "gz"
+                                              ],
+                               "mime":  [
+                                            "application/gzip"
+                                        ],
+                               "synonyms":  [
+                                                "Gzip"
+                                            ],
+                               "one_liner":  "常与 TAR 搭配形成 .tgz 的流压缩格式。",
+                               "about_to":  "Gzip 使用 DEFLATE 算法压缩单个数据流——通常是 TAR 文件。它速度快、在服务器与工具上广泛支持。需要速度/体积折中良好的压缩 tarball 时请用 .tgz。",
+                               "about_from":  "从 GZ 转换通常意味着解包 .tar.gz 并重新打包为 ZIP/7Z。独立的 .gz 仅压缩单个条目；对混合文件夹而言，ZIP 更实用。",
+                               "common_uses":  [
+                                                   "服务器日志",
+                                                   "软件包 tarball（.tgz）",
+                                                   "UNIX 管道"
+                                               ],
+                               "limitations":  [
+                                                   "单一数据流",
+                                                   "对某些数据的压缩弱于 XZ"
+                                               ]
+                           },
+                    "bz2":  {
+                                "name":  "BZ2",
+                                "category":  "archive",
+                                "extensions":  [
+                                                   "bz2"
+                                               ],
+                                "mime":  [
+                                             "application/x-bzip2"
+                                         ],
+                                "synonyms":  [
+                                                 "Bzip2"
+                                             ],
+                                "one_liner":  "比 Gzip 更小但更耗 CPU 的压缩；常与 TAR 搭配。",
+                                "about_to":  "Bzip2 优先更高压缩率而非速度，常见为 .tar.bz2 归档。若你愿意牺牲一些时间换取更小体积，可以选择它。",
+                                "about_from":  "从 BZ2 转换通常涉及解包 .tar.bz2 并转为 ZIP/7Z。若要最大开放性，ZIP 对非技术用户更友好。",
+                                "common_uses":  [
+                                                    "源代码归档",
+                                                    "类 *nix 系统备份"
+                                                ],
+                                "limitations":  [
+                                                    "比 Gzip 更慢",
+                                                    "与 GZ 一样是单流压缩"
+                                                ]
+                            },
+                    "xz":  {
+                               "name":  "XZ",
+                               "category":  "archive",
+                               "extensions":  [
+                                                  "xz"
+                                              ],
+                               "mime":  [
+                                            "application/x-xz"
+                                        ],
+                               "synonyms":  [
+                                                "LZMA2 压缩（LZMA2 compression）"
+                                            ],
+                               "one_liner":  "使用 LZMA2 的超高压缩；速度较慢，适合长期存档。",
+                               "about_to":  "XZ 通过 LZMA2 获得极佳压缩，常与 TAR 组合为 .tar.xz。适合把体积最小化优先于速度的长期存储与分发。",
+                               "about_from":  "从 XZ/TAR.XZ 转为 7Z 或 ZIP 可提升可用性，但体积可能增大。",
+                               "common_uses":  [
+                                                   "源代码分发",
+                                                   "Linux 软件包",
+                                                   "长期归档"
+                                               ],
+                               "limitations":  [
+                                                   "压缩速度慢",
+                                                   "单数据流（多文件需配合 TAR）"
+                                               ]
+                           },
+                    "tgz":  {
+                                "name":  "TGZ",
+                                "category":  "archive",
+                                "extensions":  [
+                                                   "tgz",
+                                                   "tar.gz"
+                                               ],
+                                "mime":  [
+                                             "application/gzip"
+                                         ],
+                                "synonyms":  [
+                                                 "tar.gz"
+                                             ],
+                                "one_liner":  "用 Gzip 压缩的 TAR——标准的 Linux/UNIX tarball。",
+                                "about_to":  "TGZ 将 TAR 的多文件打包与 Gzip 的压缩结合，速度与体积平衡良好，在 UNIX 工具与包管理中随处可见。",
+                                "about_from":  "从 TGZ 转换通常是为非技术用户重压缩为 ZIP，或为获得更小体积改用 7Z/XZ。",
+                                "common_uses":  [
+                                                    "开源发布",
+                                                    "服务器部署",
+                                                    "软件包分发"
+                                                ],
+                                "limitations":  [
+                                                    "在 Windows 上不够直观（需额外工具）",
+                                                    "不适合随机访问"
+                                                ]
+                            },
+                    "tbz2":  {
+                                 "name":  "TBZ2",
+                                 "category":  "archive",
+                                 "extensions":  [
+                                                    "tbz2",
+                                                    "tar.bz2"
+                                                ],
+                                 "mime":  [
+                                              "application/x-bzip2"
+                                          ],
+                                 "synonyms":  [
+                                                  "tar.bz2"
+                                              ],
+                                 "one_liner":  "用 Bzip2 压缩的 TAR，比 Gzip 体积更小。",
+                                 "about_to":  "TBZ2 将 TAR 与 Bzip2 结合，相比 Gzip 获得更高压缩但速度更慢。适用于更看重体积且目标用户能处理类 UNIX 归档的场景。",
+                                 "about_from":  "从 TBZ2 出发，可转 ZIP 以获得通用分享，或转 7Z/XZ 以求最大压缩。",
+                                 "common_uses":  [
+                                                     "源代码打包",
+                                                     "备份"
+                                                 ],
+                                 "limitations":  [
+                                                     "压缩更慢",
+                                                     "在 UNIX 生态外不够常见"
+                                                 ]
+                             },
+                    "txz":  {
+                                "name":  "TXZ",
+                                "category":  "archive",
+                                "extensions":  [
+                                                   "txz",
+                                                   "tar.xz"
+                                               ],
+                                "mime":  [
+                                             "application/x-xz"
+                                         ],
+                                "synonyms":  [
+                                                 "tar.xz"
+                                             ],
+                                "one_liner":  "用 XZ 压缩的 TAR，体积优秀但速度较慢。",
+                                "about_to":  "TXZ 将 TAR 与 XZ（LZMA2）结合，压缩率出色，适合把体积最小化放在首位的长期分发场景。",
+                                "about_from":  "从 TXZ 转为 ZIP 可能增大体积，但可提升在 Windows 与 macOS 上的原生兼容性。",
+                                "common_uses":  [
+                                                    "Linux 软件包",
+                                                    "长期归档"
+                                                ],
+                                "limitations":  [
+                                                    "压缩较慢",
+                                                    "对普通用户不够友好"
+                                                ]
+                            },
+                    "rtf":  {
+                                "name":  "RTF",
+                                "category":  "document",
+                                "extensions":  [
+                                                   "rtf"
+                                               ],
+                                "mime":  [
+                                             "application/rtf",
+                                             "text/rtf"
+                                         ],
+                                "synonyms":  [
+                                                 "Rich Text Format"
+                                             ],
+                                "one_liner":  "Formatted text exchange format that preserves basic styling across word processors.",
+                                "about_to":  "RTF (Rich Text Format) keeps fonts, basic styles, and simple images while remaining widely compatible. Convert to DOCX or PDF for modern editing or fixed-layout sharing.",
+                                "about_from":  "Converting from RTF is common when you want cleaner layouts (DOCX) or a print-perfect file (PDF). Complex elements may simplify because RTF focuses on portability.",
+                                "common_uses":  [
+                                                    "Cross-platform text",
+                                                    "Simple documents",
+                                                    "Interchange between editors"
+                                                ],
+                                "limitations":  [
+                                                    "Limited advanced layout",
+                                                    "Larger than plain text"
+                                                ]
+                            },
+                    "tar.gz":  {
+                                   "alias_of":  "tgz"
+                               },
+                    "tar.bz2":  {
+                                    "alias_of":  "tbz2"
+                                },
+                    "tar.xz":  {
+                                   "alias_of":  "txz"
+                               },
+                    "tbz":  {
+                                "alias_of":  "tbz2"
+                            },
+                    "tif":  {
+                                "alias_of":  "tiff"
+                            }
+                },
+    "pair_notes_templates":  {
+                                 "lossy_to_lossy":  "将 {FROM} 转换为 {TO} 不会提升质量，因为两者都是有损编码。要获得更佳效果，请选择更高比特率或从无损源开始。",
+                                 "container_swap":  "当音视频编解码器已兼容时，更换容器（例如 {FROM} 到 {TO}）可以无损；否则需要转码。",
+                                 "archive_note":  "将 {FROM} 文件归档为 {TO} 仅用于打包/分享与存储；它不会重新编码或改变媒体质量。",
+                                 "scan_ocr":  "如果你的 PDF 是扫描图像，转换时请启用 OCR，这样输出将变为可搜索/可编辑。",
+                                 "photo_graphic":  "带文字或需要透明的图形使用 PNG/WebP；照片内容使用 JPEG/WebP 以保持较小体积。"
+                             }
+}

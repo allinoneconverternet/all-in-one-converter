@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<!-- CMP-START (auto-inserted) -->
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){ dataLayer.push(arguments); }
+gtag('consent','default',{
+ad_storage:'denied',
+analytics_storage:'denied',
+ad_user_data:'denied',
+ad_personalization:'denied'
+});
+</script>
+<script async src="https://fundingchoicesmessages.google.com/i/pub-6251303109610053?ers=1"></script>
+<script>
+(function signalGooglefcPresent(){
+if(!window.frames['googlefcPresent']){
+if(document.body){
+var f=document.createElement('iframe');
+f.style='width:0;height:0;border:none;position:absolute;left:-9999px;';
+f.name='googlefcPresent';
+document.body.appendChild(f);
+} else { setTimeout(signalGooglefcPresent,0); }
+}
+})();
+(function waitForTCF(){
+function go(){
+if(window.__adsLoaded) return;
+window.__adsLoaded = true;
+if(typeof window.loadAdSense==='function'){ window.loadAdSense(); }
+else{
+if(document.getElementById('adsbygoogle-js')) return;
+var s=document.createElement('script');
+s.id='adsbygoogle-js';
+s.async=true;
+s.src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6251303109610053';
+s.crossOrigin='anonymous';
+document.head.appendChild(s);
+}
+}
+if(typeof __tcfapi!=='function'){ setTimeout(waitForTCF,50); return; }
+__tcfapi('addEventListener',2,function(tcData,success){
+if(!success) return;
+if(['useractioncomplete','tcloaded'].indexOf(tcData.eventStatus)>-1){ go(); }
+});
+})();
+</script>
+<!-- CMP-END (auto-inserted) -->
+<meta charset="utf-8">
+<title>安全 | {{BRAND}} — 本地、设备端转换（无需上传）</title>
+<meta name="description" content="{{BRAND}} 在你的浏览器内完成文件处理。无需上传。了解我们的安全模型：HTTPS/HSTS、CSP、SRI、隔离与披露政策。">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="index,follow">
+
+<!-- <link rel="alternate" hreflang="x-default" href="https://www.all-in-one-converter.net/languages/en/"/><link rel="alternate" hreflang="en" href="https://www.all-in-one-converter.net/languages/en/"/> -->
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="{{BRAND}}">
+<meta property="og:title" content="安全 | {{BRAND}}">
+<meta property="og:description" content="本地、设备端转换。了解我们如何保护应用与你的隐私。">
+<meta property="og:url" content="https://www.all-in-one-converter.net/languages/zh-CN/%E5%AE%89%E5%85%A8/"/>
+<!-- <meta property="og:image" content="https://yourcdn.example/og/security.png"> -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="安全 | {{BRAND}}">
+<meta name="twitter:description" content="设备端转换、HTTPS/HSTS、CSP、SRI、隔离与披露政策。">
+<!-- 结构化数据 -->
+<script type="application/ld+json">
+{
+"@context":"https://schema.org",
+"@type":"WebPage",
+"name":"安全",
+"url":"https://www\.all-in-one-converter\.net/zh-CN/安全/",
+"inLanguage":"zh-CN",
+"datePublished":"2025-10-19",
+"dateModified":"2025-10-19"
+}
+</script>
+<script type="application/ld+json">
+{
+"@context":"https://schema.org",
+"@type":"BreadcrumbList",
+"itemListElement":[
+{"@type":"ListItem","position":1,"name":"首页","item":"https://www\.all-in-one-converter\.net/zh-CN/安全//../"},
+{"@type":"ListItem","position":2,"name":"安全","item":"https://www\.all-in-one-converter\.net/zh-CN/安全/"}
+]
+}
+</script>
+  <link rel="canonical" href="https://www.all-in-one-converter.net/languages/zh-CN/%E5%AE%89%E5%85%A8/"/>
+</head>
+<body>
+<main>
+<header>
+
+<h1>{{BRAND}} 的安全</h1>
+<p><strong>最近更新：</strong>2025年10月19日</p>
+<p>{{BRAND}} 在<strong>你的浏览器内</strong>完成文件转换。你的文件<strong>从不上传</strong>到我们的服务器。以下是我们如何保护用户与应用本身。</p>
+</header>
+<section id="threat-model">
+<h2>威胁模型与理念</h2>
+<ul>
+<li><strong>数据最小化：</strong>文件与敏感内容保留在你的设备上。</li>
+<li><strong>传输安全：</strong>所有页面均通过 HTTPS 提供，并启用 HSTS。</li>
+<li><strong>隔离：</strong>在可用的情况下，繁重处理使用 WebAssembly/Web Workers，使任务在浏览器中沙箱化。</li>
+</ul>
+</section>
+<section id="app-security">
+<h2>应用安全实践</h2>
+<ul>
+<li><strong>内容安全策略（CSP）：</strong>采用严格的默认策略，限制脚本来源与内联代码。</li>
+<li><strong>子资源完整性（SRI）：</strong>在适用时，为第三方脚本/样式添加 integrity 属性进行防护。</li>
+<li><strong>响应头：</strong>使用 COOP/COEP/CORP 与 Permissions-Policy，降低跨源风险并收紧高权限 API 的使用。</li>
+<li><strong>供应链：</strong>持续跟踪依赖更新并及时应用安全补丁。</li>
+<li><strong>广告沙箱化：</strong>广告位采用固定尺寸与沙箱 iframe，尽量减少版面位移并降低风险。</li>
+</ul>
+<p><em>说明：</em>具体策略可能因部署而异；如你是研究人员，欢迎与我们联系以获取详情。</p>
+</section>
+<section id="user-data">
+<h2>你的文件与数据</h2>
+<ul>
+<li><strong>不上传：</strong>转换在你的浏览器内本地完成。</li>
+<li><strong>不保留：</strong>我们不会在服务器上存储你的文件。</li>
+<li><strong>仅限广告与同意：</strong>我们可能在你的同意偏好约束下处理少量标识符，以投放与衡量广告。详见我们的 <a href="/languages/zh-CN/隐私/">隐私政策</a>。</li>
+</ul>
+</section>
+<section id="disclosure">
+<h2>漏洞披露</h2>
+<p>如果你认为发现了安全问题，请发送邮件至 <a href="mailto:{{SECURITY_EMAIL}}">{{SECURITY_EMAIL}}</a> 并附上细节。我们会在负责任披露框架下确认收到并尽快修复。</p>
+<p>可选项：我们还提供 <code>/.well-known/security.txt</code>，其中包含最新的联系信息。</p>
+</section>
+<section id="availability">
+<h2>服务可用性</h2>
+<p>作为一款浏览器内工具，{{BRAND}} 依赖于你的设备性能与浏览器能力。我们致力于支持桌面与移动端主流浏览器的当前版本。</p>
+</section>
+<nav aria-label="相关内容">
+<ul>
+<li><a href="/languages/zh-CN/隐私/">隐私</a></li>
+<li><a href="/languages/zh-CN/常见问题/">常见问题</a></li>
+<li><a href="/languages/zh-CN/使用指南/">使用指南</a></li>
+<li><a href="/languages/zh-CN/条款/">条款</a></li>
+</ul>
+</nav>
+</main>
+<!-- CMP-FOOTER-LINK (auto-inserted) -->
+
+<!-- /CMP-FOOTER-LINK -->
+</body>
+</html>

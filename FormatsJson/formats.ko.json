@@ -1,0 +1,1132 @@
+{
+    "language":  "ko",
+    "version":  "1.0",
+    "last_updated":  "2025-10-25",
+    "formats":  {
+                    "png":  {
+                                "name":  "PNG",
+                                "category":  "이미지",
+                                "extensions":  [
+                                                   "png"
+                                               ],
+                                "mime":  [
+                                             "image/png"
+                                         ],
+                                "synonyms":  [
+                                                 "Portable Network Graphics",
+                                                 "포터블 네트워크 그래픽스"
+                                             ],
+                                "one_liner":  "투명도와 선명한 가장자리를 지원하는 무손실 래스터 이미지. UI, 로고, 스크린샷에 적합합니다.",
+                                "about_to":  "PNG는 모든 픽셀을 보존하고 완전한 알파 투명도를 지원하는 무손실 래스터 형식으로, UI 요소, 로고, 차트, 스크린샷에 이상적입니다. 단색이나 날카로운 선에서는 효율적으로 압축되며, 여러 번 저장해도 품질 저하가 없습니다. 사진에서는 JPEG보다 파일이 크지만, 텍스트와 그래픽은 더 선명합니다. 투명 배경이 필요하거나 브라우저·앱 전반에서 예측 가능한 렌더링이 중요할 때 PNG를 선택하세요.",
+                                "about_from":  "PNG는 그래픽에 뛰어나지만, 사진은 JPEG나 WebP가 더 작게 압축되는 경우가 많습니다. PNG에서 다른 손실 형식으로 변환하면 용량은 줄일 수 있으나, 원본 품질 이상으로 좋아지지는 않습니다.",
+                                "common_uses":  [
+                                                    "웹 그래픽",
+                                                    "UI 에셋",
+                                                    "스크린샷",
+                                                    "투명 로고"
+                                                ],
+                                "limitations":  [
+                                                    "사진에서는 JPEG보다 용량이 큼",
+                                                    "애니메이션 미지원(APNG 또는 GIF/WebM 사용)"
+                                                ]
+                            },
+                    "jpg":  {
+                                "name":  "JPG",
+                                "category":  "이미지",
+                                "extensions":  [
+                                                   "jpg",
+                                                   "jpeg"
+                                               ],
+                                "mime":  [
+                                             "image/jpeg"
+                                         ],
+                                "synonyms":  [
+                                                 "JPEG"
+                                             ],
+                                "one_liner":  "호환성이 뛰어나고 파일이 작은 손실 압축 사진 형식.",
+                                "about_to":  "JPEG는 웹에서 가장 호환성이 좋은 사진 형식으로, 시각적 품질과 작은 파일 크기 간 균형이 뛰어납니다. 사진 및 현실적인 이미지를 다룰 때 적합하며, 약간의 압축 자국은 감수합니다. 투명도나 벡터 데이터는 지원하지 않으며, 반복 편집/저장은 누적 손실을 유발할 수 있습니다. 대부분의 기기에서 빠르게 로드되는 이미지가 필요할 때 JPEG를 선택하세요.",
+                                "about_from":  "JPEG에서 변환하는 목적은 보통 투명도(PNG/WebP) 확보나 비슷한 품질에서 더 나은 압축(WebP)입니다. 손실 JPEG를 다른 형식으로 바꿔도 잃은 디테일이 복구되지는 않습니다.",
+                                "common_uses":  [
+                                                    "사진",
+                                                    "웹 이미지",
+                                                    "이메일 공유",
+                                                    "소셜 게시물"
+                                                ],
+                                "limitations":  [
+                                                    "투명도 미지원",
+                                                    "손실 압축; 반복 저장 시 품질 저하"
+                                                ]
+                            },
+                    "jpeg":  {
+                                 "alias_of":  "jpg"
+                             },
+                    "webp":  {
+                                 "name":  "WebP",
+                                 "category":  "이미지",
+                                 "extensions":  [
+                                                    "webp"
+                                                ],
+                                 "mime":  [
+                                              "image/webp"
+                                          ],
+                                 "synonyms":  [
+
+                                              ],
+                                 "one_liner":  "손실/무손실 압축과 알파를 지원하는 현대적 이미지 형식.",
+                                 "about_to":  "WebP는 사진과 그래픽 모두에서 뛰어난 압축 효율을 제공하며, 투명도와 무손실 모드도 지원합니다. JPEG/PNG와 비교해 대체로 더 작은 파일 크기로 비슷한 품질을 제공하여 페이지 속도와 Core Web Vitals에 유리합니다. 최근의 주요 브라우저와 앱에서 기본 지원됩니다. 현대적인 웹 배포에 적합합니다.",
+                                 "about_from":  "WebP에서 변환하는 경우는 주로 JPEG/PNG를 선호하는 도구와의 호환성 때문입니다. 손실 WebP를 다른 손실 형식으로 바꿔도 품질이 좋아지지는 않습니다. 목적에 맞춘 호환성과 투명도 요구를 우선하세요.",
+                                 "common_uses":  [
+                                                     "현대적 웹 이미지",
+                                                     "반응형 사이트",
+                                                     "투명 그래픽"
+                                                 ],
+                                 "limitations":  [
+                                                     "구형 소프트웨어에서는 지원이 제한될 수 있음",
+                                                     "브라우저 외부에서의 애니메이션 WebP 지원은 제각각"
+                                                 ]
+                             },
+                    "svg":  {
+                                "name":  "SVG",
+                                "category":  "이미지",
+                                "extensions":  [
+                                                   "svg"
+                                               ],
+                                "mime":  [
+                                             "image/svg+xml"
+                                         ],
+                                "synonyms":  [
+                                                 "Scalable Vector Graphics",
+                                                 "스케일러블 벡터 그래픽스"
+                                             ],
+                                "one_liner":  "해상도에 독립적인 벡터 그래픽—아이콘, 로고, 도표에 이상적.",
+                                "about_to":  "SVG는 XML 기반의 벡터 형식으로, 어떤 크기에서도 픽셀 깨짐 없이 또렷하게 표시됩니다. 아이콘, 로고, 단순 일러스트, 차트에 적합하며 CSS로 스타일링하고 JavaScript로 스크립팅할 수 있습니다. 기하학적 아트에서는 파일 크기가 매우 작습니다. 무한한 확장성과 가벼운 페이로드가 필요할 때 선택하세요.",
+                                "about_from":  "SVG에서 PNG/JPEG 같은 비트맵으로 내보내는 일은 벡터를 지원하지 않는 앱이나 소셜 플랫폼에 사용하기 위해 흔합니다. 래스터 변환은 디테일을 픽셀로 평탄화하므로, 편집용 원본 SVG는 보관하고 필요 크기로 내보내세요.",
+                                "common_uses":  [
+                                                    "아이콘",
+                                                    "로고",
+                                                    "다이어그램",
+                                                    "차트"
+                                                ],
+                                "limitations":  [
+                                                    "사진에는 부적합",
+                                                    "복잡한 SVG는 무거워지거나 앱마다 렌더링 차이가 날 수 있음"
+                                                ]
+                            },
+                    "bmp":  {
+                                "name":  "BMP",
+                                "category":  "이미지",
+                                "extensions":  [
+                                                   "bmp"
+                                               ],
+                                "mime":  [
+                                             "image/bmp"
+                                         ],
+                                "synonyms":  [
+                                                 "Bitmap",
+                                                 "비트맵"
+                                             ],
+                                "one_liner":  "압축이 거의 없는 원시 비트맵—구형 Windows에서 흔하지만 파일이 매우 큼.",
+                                "about_to":  "BMP는 최소한의 압축으로 픽셀을 저장하여 파일은 크지만 디코딩은 단순합니다. 주로 레거시 워크플로나 디바이스 캡처에 사용됩니다. 일상적인 공유에는 PNG나 JPEG로 변환하면 가시 품질을 유지하며 용량을 크게 줄일 수 있습니다.",
+                                "about_from":  "BMP에서 변환하는 목적은 대개 더 작은 파일이나 웹 친화적 형식 확보입니다. 그래픽·스크린샷은 PNG, 사진은 JPEG가 어울리며, 보통 큰 용량 절감을 기대할 수 있습니다.",
+                                "common_uses":  [
+                                                    "레거시 Windows 이미지",
+                                                    "디바이스 스크린샷",
+                                                    "원시 비트맵"
+                                                ],
+                                "limitations":  [
+                                                    "매우 큰 파일",
+                                                    "투명도 미지원(마스크로 대체)"
+                                                ]
+                            },
+                    "tiff":  {
+                                 "name":  "TIFF",
+                                 "category":  "이미지",
+                                 "extensions":  [
+                                                    "tiff",
+                                                    "tif"
+                                                ],
+                                 "mime":  [
+                                              "image/tiff"
+                                          ],
+                                 "synonyms":  [
+                                                  "Tagged Image File Format",
+                                                  "태그드 이미지 파일 포맷"
+                                              ],
+                                 "one_liner":  "무손실 옵션과 다중 페이지를 지원하는 유연한 보존급 이미지 형식.",
+                                 "about_to":  "TIFF는 스캐닝, 인쇄, 보존 작업에서 선호되는 고충실도 형식입니다. 다양한 색 공간, 레이어, 다중 페이지를 지원하며 LZW나 Deflate 같은 무손실 압축을 자주 사용합니다. 편집이나 장기 보관이 필요한 마스터급 이미지에 적합합니다.",
+                                 "about_from":  "TIFF에서 변환하는 경우는 대개 웹 배포나 저장 공간 절약을 위한 것입니다. 사진에는 JPEG/WebP, 그래픽에는 PNG, 다중 페이지 스캔에는 PDF가 적합합니다. 적은 시각적 차이로 큰 용량 절감을 기대할 수 있습니다.",
+                                 "common_uses":  [
+                                                     "스캐닝",
+                                                     "프리프레스",
+                                                     "보존용 이미지",
+                                                     "다중 페이지 문서"
+                                                 ],
+                                 "limitations":  [
+                                                     "큰 파일 크기",
+                                                     "빠른 웹 전달에는 부적합"
+                                                 ]
+                             },
+                    "gif":  {
+                                "name":  "GIF",
+                                "category":  "이미지",
+                                "extensions":  [
+                                                   "gif"
+                                               ],
+                                "mime":  [
+                                             "image/gif"
+                                         ],
+                                "synonyms":  [
+                                                 "Graphics Interchange Format",
+                                                 "그래픽스 인터체인지 포맷"
+                                             ],
+                                "one_liner":  "8비트 팔레트와 기본 애니메이션—간단한 루프나 스티커에 적합.",
+                                "about_to":  "GIF는 프레임당 최대 256색과 단순한 애니메이션을 지원하여 가벼운 루프와 스티커에 좋습니다. 정지 이미지는 보통 PNG나 WebP가 더 보기 좋고 더 작습니다. 동영상은 MP4/WebM이 재생이 부드럽고 크기가 훨씬 작습니다. 짧은 애니메이션 루프에 대한 폭넓은 호환성이 특히 필요할 때만 GIF를 선택하세요.",
+                                "about_from":  "GIF에서 변환하는 목적은 대개 긴 또는 사진 같은 GIF를 MP4/WebM으로 줄이거나, 정지 프레임을 PNG/JPEG로 추출하는 것입니다. 동영상을 사용하면 큰 용량 절감이 가능합니다.",
+                                "common_uses":  [
+                                                    "밈·스티커",
+                                                    "간단한 애니메이션",
+                                                    "UI 모션 데모"
+                                                ],
+                                "limitations":  [
+                                                    "256색 제한",
+                                                    "사진 콘텐츠에서는 큰 파일",
+                                                    "진정한 알파 없음(1비트 투명만)"
+                                                ]
+                            },
+                    "mp3":  {
+                                "name":  "MP3",
+                                "category":  "오디오",
+                                "extensions":  [
+                                                   "mp3"
+                                               ],
+                                "mime":  [
+                                             "audio/mpeg"
+                                         ],
+                                "synonyms":  [
+
+                                             ],
+                                "one_liner":  "음악·팟캐스트에 널리 쓰이는 손실 오디오—작은 파일, 보편적 지원.",
+                                "about_to":  "MP3는 작은 파일 크기와 적당한 음질의 균형이 좋아 휴대폰, 자동차, 스피커, 브라우저 등 거의 어디서나 재생됩니다. 음악에는 높은 비트레이트, 음성에는 낮은 비트레이트가 적합합니다. 같은 품질에서 더 작은 용량은 AAC나 Opus가 가능하지만, 호환성 면에서 MP3가 가장 안전한 선택입니다.",
+                                "about_from":  "MP3에서의 변환으로 잃은 품질을 되돌릴 수는 없습니다. 더 작은 용량을 원하면 AAC/Opus로, 편집·보존을 원하면 WAV/FLAC으로 변환하세요.",
+                                "common_uses":  [
+                                                    "음악 배포",
+                                                    "팟캐스트",
+                                                    "오디오북",
+                                                    "웹 오디오"
+                                                ],
+                                "limitations":  [
+                                                    "손실 압축; 저비트에서 아티팩트",
+                                                    "멀티채널 메타데이터는 제한적"
+                                                ]
+                            },
+                    "wav":  {
+                                "name":  "WAV",
+                                "category":  "오디오",
+                                "extensions":  [
+                                                   "wav"
+                                               ],
+                                "mime":  [
+                                             "audio/wav",
+                                             "audio/x-wav",
+                                             "audio/vnd.wave"
+                                         ],
+                                "synonyms":  [
+                                                 "Waveform Audio",
+                                                 "웨이브폼 오디오"
+                                             ],
+                                "one_liner":  "최대 품질과 편집 여유를 위한 비압축 PCM 오디오.",
+                                "about_to":  "WAV는 비압축 PCM으로 모든 샘플을 보존하여 믹싱, 마스터링, 분석에 적합합니다. 품질은 뛰어나지만 파일이 큽니다. 배포나 공유에는 AAC/MP3/Opus로 변환하면 품질을 유지하면서 용량을 크게 줄일 수 있습니다.",
+                                "about_from":  "WAV에서 변환한다면 대개 배포나 저장 공간 절약 목적입니다. 콘텐츠(음악/음성)에 맞는 현대적 손실 코덱과 비트레이트를 고르세요. 무손실 압축이 필요하면 FLAC이 대안입니다.",
+                                "common_uses":  [
+                                                    "녹음·편집",
+                                                    "마스터 파일",
+                                                    "오디오 보관"
+                                                ],
+                                "limitations":  [
+                                                    "매우 큰 파일",
+                                                    "기본적으로 압축 없음"
+                                                ]
+                            },
+                    "ogg":  {
+                                "name":  "Ogg Vorbis",
+                                "category":  "오디오",
+                                "extensions":  [
+                                                   "ogg"
+                                               ],
+                                "mime":  [
+                                             "audio/ogg"
+                                         ],
+                                "synonyms":  [
+                                                 "Vorbis in Ogg container",
+                                                 "Ogg 컨테이너의 Vorbis"
+                                             ],
+                                "one_liner":  "무료·로열티 프리 손실 오디오—적당한 비트레이트에서 좋은 음질.",
+                                "about_to":  "Ogg Vorbis는 효율적인 로열티 프리 압축을 제공하여 비슷한 비트레이트에서 AAC에 필적합니다. 현대 브라우저와 플레이어에서 널리 지원됩니다. 개방형 라이선스와 안정적인 품질이 필요할 때 선택하세요.",
+                                "about_from":  "Ogg에서 변환하는 이유는 주로 기기 호환성(MP3/AAC) 또는 편집(WAV/FLAC)입니다. 손실 코덱 간 트랜스코딩은 추가 손실을 유발하므로, 가능하면 무손실 원본을 유지하세요.",
+                                "common_uses":  [
+                                                    "스트리밍 오디오",
+                                                    "오픈소스 프로젝트",
+                                                    "게임 에셋"
+                                                ],
+                                "limitations":  [
+                                                    "일부 레거시 기기에서 지원 미흡",
+                                                    "손실 압축"
+                                                ]
+                            },
+                    "m4a":  {
+                                "name":  "M4A",
+                                "category":  "오디오",
+                                "extensions":  [
+                                                   "m4a"
+                                               ],
+                                "mime":  [
+                                             "audio/mp4",
+                                             "audio/x-m4a"
+                                         ],
+                                "synonyms":  [
+                                                 "AAC or ALAC in MP4 container",
+                                                 "MP4 컨테이너의 AAC 또는 ALAC"
+                                             ],
+                                "one_liner":  "MP4 오디오 컨테이너—보통 AAC(손실) 또는 ALAC(무손실).",
+                                "about_to":  "M4A는 오디오를 담는 MP4 컨테이너입니다. 대부분의 M4A는 작은 용량과 넓은 지원을 위한 AAC(손실)를 담고, 일부는 최고 품질을 위한 ALAC(무손실)를 담습니다. Apple 및 현대 기기에서 호환성이 좋습니다.",
+                                "about_from":  "M4A에서 변환할 때, 소스가 AAC(손실)인지 ALAC(무손실)인지 확인하세요. 손실 AAC를 다른 손실 형식으로 바꿔도 품질은 좋아지지 않습니다. 무손실 소스라면 목적에 맞게 배포용 코덱과 비트레이트를 고르세요.",
+                                "common_uses":  [
+                                                    "음악 라이브러리",
+                                                    "팟캐스트",
+                                                    "Apple 생태계 오디오"
+                                                ],
+                                "limitations":  [
+                                                    "M4P/M4B 등 DRM이 존재할 수 있음",
+                                                    "컨테이너 특성으로 구형 도구에서 혼선"
+                                                ]
+                            },
+                    "flac":  {
+                                 "name":  "FLAC",
+                                 "category":  "오디오",
+                                 "extensions":  [
+                                                    "flac"
+                                                ],
+                                 "mime":  [
+                                              "audio/flac"
+                                          ],
+                                 "synonyms":  [
+                                                  "Free Lossless Audio Codec",
+                                                  "무손실 오디오 코덱(FLAC)"
+                                              ],
+                                 "one_liner":  "무손실 오디오 압축—보관 및 고음질 감상에 적합.",
+                                 "about_to":  "FLAC은 정보를 잃지 않는 무손실 압축으로 WAV 대비 30–60% 정도 용량을 줄입니다. 음악 보관, 마스터 보존, 갭리스 재생에 뛰어납니다. WAV보다 작으면서 비트 퍼펙트가 필요할 때 선택하세요.",
+                                 "about_from":  "FLAC에서 변환하는 일은 휴대용 버전(AAC/MP3/Opus) 제작이 일반적입니다. FLAC은 마스터로 보관하고, 휴대·스트리밍·공유 용도로 손실 사본을 만드세요.",
+                                 "common_uses":  [
+                                                     "음악 보관",
+                                                     "무손실 배포",
+                                                     "하이파이 재생"
+                                                 ],
+                                 "limitations":  [
+                                                     "AAC/MP3보다 큼",
+                                                     "일부 기기는 여전히 MP3/AAC 선호"
+                                                 ]
+                             },
+                    "opus":  {
+                                 "name":  "Opus",
+                                 "category":  "오디오",
+                                 "extensions":  [
+                                                    "opus"
+                                                ],
+                                 "mime":  [
+                                              "audio/ogg",
+                                              "audio/opus"
+                                          ],
+                                 "synonyms":  [
+
+                                              ],
+                                 "one_liner":  "최신 저비트 오디오—스트리밍, VoIP, 음성에 탁월.",
+                                 "about_to":  "Opus는 낮은 비트레이트에서도 뛰어난 품질을 내며, 음성·음악 모두에 잘 적응합니다. 오픈·로열티 프리이며, 브라우저와 현대 플레이어에서 폭넓게 지원됩니다. 특히 스트리밍이나 음성 콘텐츠에서 작은 용량과 놀라운 명료도를 원할 때 적합합니다.",
+                                 "about_from":  "Opus에서 변환하는 이유는 주로 기기 호환성(MP3/AAC)이나 편집(WAV)입니다. 다른 손실 코덱으로 변환하면 세대 손실이 생기므로, 여러 번 변환할 계획이라면 무손실 소스를 보관하세요.",
+                                 "common_uses":  [
+                                                     "스트리밍",
+                                                     "VoIP",
+                                                     "팟캐스트",
+                                                     "게임 오디오"
+                                                 ],
+                                 "limitations":  [
+                                                     "구형 하드웨어 지원 제한",
+                                                     "손실 코덱"
+                                                 ]
+                             },
+                    "aiff":  {
+                                 "name":  "AIFF",
+                                 "category":  "오디오",
+                                 "extensions":  [
+                                                    "aiff",
+                                                    "aif"
+                                                ],
+                                 "mime":  [
+                                              "audio/aiff",
+                                              "audio/x-aiff"
+                                          ],
+                                 "synonyms":  [
+                                                  "Audio Interchange File Format",
+                                                  "오디오 인터체인지 파일 포맷"
+                                              ],
+                                 "one_liner":  "맥 환경에서 흔한 비압축 PCM 오디오.",
+                                 "about_to":  "AIFF는 WAV와 유사한 비압축 오디오를 저장해 뛰어난 품질과 간편한 편집을 제공합니다. Apple 워크플로우와 구형 DAW에서 인기가 있습니다. 배포나 클라우드 저장에는 AAC/MP3/Opus로 변환해 용량을 줄이는 것이 유리합니다.",
+                                 "about_from":  "AIFF를 WAV로 바꾸면 교차 플랫폼 편집을 유지하면서 품질을 보존할 수 있습니다. 공유 용도라면 적절한 손실 코덱과 비트레이트를, 무손실 압축이 필요하면 FLAC을 고려하세요.",
+                                 "common_uses":  [
+                                                     "오디오 제작",
+                                                     "보존용 마스터",
+                                                     "macOS 프로젝트"
+                                                 ],
+                                 "limitations":  [
+                                                     "큰 파일",
+                                                     "Apple 생태계 밖에서는 덜 보편적"
+                                                 ]
+                             },
+                    "aac":  {
+                                "name":  "AAC",
+                                "category":  "오디오",
+                                "extensions":  [
+                                                   "aac"
+                                               ],
+                                "mime":  [
+                                             "audio/aac"
+                                         ],
+                                "synonyms":  [
+                                                 "Advanced Audio Coding",
+                                                 "고급 오디오 코딩"
+                                             ],
+                                "one_liner":  "현대적 손실 오디오 코덱—효율적이고 폭넓게 지원(M4A로 담기는 경우 많음).",
+                                "about_to":  "AAC는 대부분의 비트레이트에서 MP3보다 개선된 품질을 제공하며, iOS/Android/브라우저/스마트 기기에서 널리 지원됩니다. 품질과 용량의 균형이 좋아 음악 배포의 기본값으로 적합합니다. 많은 AAC 파일은 MP4 기반의 M4A 컨테이너에 저장됩니다.",
+                                "about_from":  "AAC를 다른 손실 코덱으로 바꿔도 디테일이 늘지 않습니다. 편집에는 WAV/FLAC, 호환성에는 여전히 MP3가 가장 보편적입니다. 잦은 트랜스코딩이 예상되면 무손실 소스를 보관하세요.",
+                                "common_uses":  [
+                                                    "스트리밍/다운로드",
+                                                    "음악 라이브러리",
+                                                    "모바일 재생"
+                                                ],
+                                "limitations":  [
+                                                    "손실 압축; 변환 시 세대 손실",
+                                                    "컨테이너 혼동(AAC vs. M4A)"
+                                                ]
+                            },
+                    "mp4":  {
+                                "name":  "MP4",
+                                "category":  "비디오",
+                                "extensions":  [
+                                                   "mp4"
+                                               ],
+                                "mime":  [
+                                             "video/mp4"
+                                         ],
+                                "synonyms":  [
+                                                 "MPEG-4 Part 14 container",
+                                                 "MPEG-4 Part 14 컨테이너"
+                                             ],
+                                "one_liner":  "가장 호환성 높은 비디오 컨테이너—보통 H.264 비디오와 AAC 오디오.",
+                                "about_to":  "MP4는 비디오와 오디오를 널리 지원하는 컨테이너로, 보통 H.264/AVC 비디오와 AAC 오디오를 사용합니다. 기기·브라우저·소셜 플랫폼 전반에서 가장 안전한 선택입니다. 재생과 공유에 놀랄 일이 적은 형식을 원할 때 선택하세요.",
+                                "about_from":  "MP4에서 변환하는 목적은 대개 개방형 형식(WebM)이나 더 유연한 컨테이너(MKV)로 옮기기입니다. 컨테이너만 바꾸는 리먹스는 손실이 없을 수 있으나, 코덱을 재인코딩하면 시간과 품질 손실이 발생할 수 있습니다.",
+                                "common_uses":  [
+                                                    "웹 비디오",
+                                                    "모바일 재생",
+                                                    "소셜 업로드",
+                                                    "스트리밍"
+                                                ],
+                                "limitations":  [
+                                                    "구형 MP4 변형은 최신 코덱 누락 가능",
+                                                    "일부 파일의 DRM/메타데이터 문제"
+                                                ]
+                            },
+                    "webm":  {
+                                 "name":  "WebM",
+                                 "category":  "비디오",
+                                 "extensions":  [
+                                                    "webm"
+                                                ],
+                                 "mime":  [
+                                              "video/webm"
+                                          ],
+                                 "synonyms":  [
+                                                  "VP9/AV1 + Opus container",
+                                                  "VP9/AV1 + Opus 컨테이너"
+                                              ],
+                                 "one_liner":  "웹 중심의 개방형 컨테이너—VP8/VP9/AV1 비디오와 Opus/Vorbis 오디오.",
+                                 "about_to":  "WebM은 현대적·로열티 프리 코덱(VP9/AV1, 오디오는 Opus/Vorbis)을 가벼운 컨테이너와 결합합니다. 주요 브라우저에서 기본 재생되며, 낮은 비트레이트에서도 우수한 품질을 제공합니다. 개방성과 압축 효율을 우선하는 웹 배포에 적합합니다.",
+                                 "about_from":  "WebM에서 변환하는 경우는 대개 MP4/H.264를 선호하는 레거시 플레이어 호환을 위해서입니다. 이미 VP9/AV1을 사용 중이라면 H.264로 재인코딩 시 같은 품질에 더 큰 용량이 될 수 있습니다.",
+                                 "common_uses":  [
+                                                     "임베디드 웹 비디오",
+                                                     "배경 루프",
+                                                     "오픈소스 워크플로"
+                                                 ],
+                                 "limitations":  [
+                                                     "레거시 기기는 MP4/H.264를 선호할 수 있음",
+                                                     "AV1 인코딩은 대체로 느림"
+                                                 ]
+                             },
+                    "mkv":  {
+                                "name":  "MKV",
+                                "category":  "비디오",
+                                "extensions":  [
+                                                   "mkv"
+                                               ],
+                                "mime":  [
+                                             "video/x-matroska"
+                                         ],
+                                "synonyms":  [
+                                                 "Matroska",
+                                                 "마트로슈카"
+                                             ],
+                                "one_liner":  "다중 오디오, 자막, 챕터를 지원하는 기능 풍부한 컨테이너.",
+                                "about_to":  "MKV(마트로슈카)는 사실상 어떤 코덱이든 담을 수 있고, 여러 오디오/자막 트랙과 챕터를 지원하는 유연한 컨테이너입니다. 보관과 고급 재생 설정에 유리합니다. 단순한 MP4를 넘어서는 기능이 필요하거나, 재인코딩 없이 MP4를 손실 없이 리먹스하려면 MKV를 선택하세요.",
+                                "about_from":  "기기 호환성을 위해 MKV를 MP4로 바꾸는 경우, 코덱이 이미 H.264/AAC라면 대개 리먹스(컨테이너 교체)만으로 충분합니다. 그렇지 않다면 재인코딩이 필요할 수 있습니다.",
+                                "common_uses":  [
+                                                    "영상 보관",
+                                                    "다중 오디오/자막 릴리스",
+                                                    "리먹스 워크플로"
+                                                ],
+                                "limitations":  [
+                                                    "일부 기기/앱은 MKV를 기본 지원하지 않음",
+                                                    "스트리밍 플랫폼은 보통 MP4 선호"
+                                                ]
+                            },
+                    "mov":  {
+                                "name":  "MOV",
+                                "category":  "비디오",
+                                "extensions":  [
+                                                   "mov"
+                                               ],
+                                "mime":  [
+                                             "video/quicktime"
+                                         ],
+                                "synonyms":  [
+                                                 "QuickTime Movie",
+                                                 "퀵타임 무비"
+                                             ],
+                                "one_liner":  "카메라·에디터가 자주 쓰는 Apple 컨테이너—고품질, 큰 용량.",
+                                "about_to":  "MOV는 카메라와 iOS 장치가 자주 생성하는 형식으로, 높은 비트레이트와 편집 친화적 설정을 갖습니다. 프로덕션에는 훌륭하지만 웹 배포에는 무겁습니다. 폭넓은 호환성과 작은 크기가 필요하면 MP4/H.264로 변환하세요.",
+                                "about_from":  "MOV에서 변환하는 목적은 보통 공유 최적화입니다. 코덱이 이미 호환된다면 MP4로 리먹스하고, 그렇지 않다면 H.264/AAC 또는 WebM으로 재인코딩하세요.",
+                                "common_uses":  [
+                                                    "카메라 원본",
+                                                    "편집 워크플로",
+                                                    "Apple 생태계"
+                                                ],
+                                "limitations":  [
+                                                    "큰 파일",
+                                                    "직접 웹 배포에는 덜 적합"
+                                                ]
+                            },
+                    "m4v":  {
+                                "name":  "M4V",
+                                "category":  "비디오",
+                                "extensions":  [
+                                                   "m4v"
+                                               ],
+                                "mime":  [
+                                             "video/x-m4v",
+                                             "video/mp4"
+                                         ],
+                                "synonyms":  [
+                                                 "Apple MP4 variant",
+                                                 "애플 MP4 변형"
+                                             ],
+                                "one_liner":  "Apple이 쓰는 MP4 계열 컨테이너—MP4와 유사하며 DRM이 있을 수 있음.",
+                                "about_to":  "M4V는 보통 H.264 비디오와 AAC 오디오를 담는 Apple 풍의 MP4 컨테이너입니다. 메타데이터나 DRM이 포함될 수 있습니다. 코덱이 호환되는 경우 표준 MP4로 변환하면 품질 손실 없이 호환성이 좋아집니다.",
+                                "about_from":  "M4V에서 표준 MP4로 변환하면 컨테이너 차이를 줄여 보편적 재생성을 높일 수 있습니다. DRM이 있으면 법·플랫폼 제약을 받습니다.",
+                                "common_uses":  [
+                                                    "아이튠즈 비디오",
+                                                    "Apple 기기"
+                                                ],
+                                "limitations":  [
+                                                    "DRM 가능성",
+                                                    "기능상 MP4와 유사"
+                                                ]
+                            },
+                    "pdf":  {
+                                "name":  "PDF",
+                                "category":  "문서",
+                                "extensions":  [
+                                                   "pdf"
+                                               ],
+                                "mime":  [
+                                             "application/pdf"
+                                         ],
+                                "synonyms":  [
+                                                 "Portable Document Format",
+                                                 "포터블 도큐먼트 포맷"
+                                             ],
+                                "one_liner":  "모든 장치에서 동일하게 보이는 고정 레이아웃 문서—보기·인쇄에 최적.",
+                                "about_to":  "PDF는 레이아웃, 글꼴, 그래픽을 보존하여 어디서나 같은 모양으로 표시합니다. 공유나 인쇄용 최종 파일에 가장 적합합니다. 이미지와 텍스트를 함께 담을 수 있으며, 스캔 문서는 OCR을 통해 검색 가능해집니다.",
+                                "about_from":  "PDF를 편집 가능한 형식(Word/PowerPoint/Excel)으로 변환할 때는 구조와 레이아웃을 복원하려 시도하지만 내용에 따라 결과가 달라질 수 있습니다. 스캔 PDF에서는 선택 가능한 텍스트를 얻으려면 OCR이 필요합니다.",
+                                "common_uses":  [
+                                                    "리포트",
+                                                    "양식",
+                                                    "매뉴얼",
+                                                    "계약서"
+                                                ],
+                                "limitations":  [
+                                                    "편집이 제한적",
+                                                    "복잡한 레이아웃은 완벽 변환이 어려움"
+                                                ]
+                            },
+                    "docx":  {
+                                 "name":  "DOCX",
+                                 "category":  "문서",
+                                 "extensions":  [
+                                                    "docx"
+                                                ],
+                                 "mime":  [
+                                              "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                                          ],
+                                 "synonyms":  [
+                                                  "Microsoft Word document",
+                                                  "마이크로소프트 워드 문서"
+                                              ],
+                                 "one_liner":  "스타일·이미지·리치 레이아웃을 지원하는 편집 가능한 워드 파일.",
+                                 "about_to":  "DOCX는 협업에 표준적인 워드 형식입니다. 제목, 이미지, 표, 스타일, 변경 추적 등을 지원합니다. 최종 배포에는 PDF로, 웹 게시에는 HTML로 변환하세요.",
+                                 "about_from":  "DOCX에서 변환할 때는 보통 수정 불가능한 최종본(PDF)이나 웹 게시용(HTML/Markdown)을 만듭니다. 특히 표와 목록의 레이아웃을 확인하세요.",
+                                 "common_uses":  [
+                                                     "업무 문서",
+                                                     "에세이·리포트",
+                                                     "템플릿"
+                                                 ],
+                                 "limitations":  [
+                                                     "앱마다 모양이 달라질 수 있음",
+                                                     "임베디드 글꼴/객체는 내보내기에서 누락 가능"
+                                                 ]
+                             },
+                    "pptx":  {
+                                 "name":  "PPTX",
+                                 "category":  "문서",
+                                 "extensions":  [
+                                                    "pptx"
+                                                ],
+                                 "mime":  [
+                                              "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+                                          ],
+                                 "synonyms":  [
+                                                  "Microsoft PowerPoint presentation",
+                                                  "마이크로소프트 파워포인트 프레젠테이션"
+                                              ],
+                                 "one_liner":  "텍스트·이미지·애니메이션·미디어를 담는 슬라이드 프레젠테이션.",
+                                 "about_to":  "PPTX는 프레젠테이션의 표준 형식으로, 애니메이션·비디오·발표자 노트를 지원합니다. 쉬운 공유/인쇄에는 PDF로, 자동 재생 슬라이드 비디오는 MP4로 변환하세요.",
+                                 "about_from":  "PPTX에서 변환할 때는 애니메이션, 전환, 임베디드 미디어가 대상 형식에서 간소화되거나 평탄화될 수 있습니다. 게시 전에 반드시 미리보기로 확인하세요.",
+                                 "common_uses":  [
+                                                     "비즈니스 데크",
+                                                     "강의",
+                                                     "컨퍼런스 발표"
+                                                 ],
+                                 "limitations":  [
+                                                     "정적 형식으로 변환 시 애니메이션 손실",
+                                                     "글꼴을 임베드하지 않으면 재흐름 가능"
+                                                 ]
+                             },
+                    "xlsx":  {
+                                 "name":  "XLSX",
+                                 "category":  "문서",
+                                 "extensions":  [
+                                                    "xlsx"
+                                                ],
+                                 "mime":  [
+                                              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                                          ],
+                                 "synonyms":  [
+                                                  "Microsoft Excel workbook",
+                                                  "마이크로소프트 엑셀 통합 문서"
+                                              ],
+                                 "one_liner":  "수식·서식·다중 시트를 포함하는 스프레드시트 워크북.",
+                                 "about_to":  "XLSX는 시트 간 구조화된 데이터, 수식, 차트, 서식을 저장합니다. 앱에 구애받지 않는 단순 교환에는 CSV/TSV로, 읽기 전용 공유에는 PDF로 변환하세요. 대규모 데이터셋은 깔끔한 CSV 추출본을 저장해 파이프라인에서 활용하는 것이 좋습니다.",
+                                 "about_from":  "XLSX를 CSV/TSV로 내보내면 수식과 서식은 사라지고 값만 유지됩니다. 데이터 과학이나 ETL에는 오히려 이 방식이 선호되는 경우가 많습니다.",
+                                 "common_uses":  [
+                                                     "데이터 분석",
+                                                     "재무 모델",
+                                                     "리포트"
+                                                 ],
+                                 "limitations":  [
+                                                     "CSV/TSV로는 서식·수식을 보존할 수 없음",
+                                                     "큰 워크북은 무거울 수 있음"
+                                                 ]
+                             },
+                    "csv":  {
+                                "name":  "CSV",
+                                "category":  "데이터",
+                                "extensions":  [
+                                                   "csv"
+                                               ],
+                                "mime":  [
+                                             "text/csv"
+                                         ],
+                                "synonyms":  [
+                                                 "Comma‑Separated Values",
+                                                 "쉼표로 구분된 값"
+                                             ],
+                                "one_liner":  "평문 표 형식 데이터—대부분의 도구로 손쉽게 가져오기.",
+                                "about_to":  "CSV는 필드를 쉼표로 구분한 평문 표 형식입니다. 가볍고 사람이 읽을 수 있으며 광범위하게 지원되어 데이터 교환에 적합합니다. 서식이나 수식 없이 최대한의 이식성을 원할 때 선택하세요.",
+                                "about_from":  "CSV에서 XLSX나 JSON으로 변환하면 분석 또는 앱 사용을 위한 구조를 더할 수 있습니다. 비ASCII 데이터에서는 구분자, 줄바꿈, 인코딩(특히 UTF-8)을 주의하세요.",
+                                "common_uses":  [
+                                                    "데이터 내보내기/가져오기",
+                                                    "ETL 파이프라인",
+                                                    "API·로그"
+                                                ],
+                                "limitations":  [
+                                                    "수식·서식 없음",
+                                                    "쉼표/따옴표/줄바꿈 처리의 모호성"
+                                                ]
+                            },
+                    "tsv":  {
+                                "name":  "TSV",
+                                "category":  "데이터",
+                                "extensions":  [
+                                                   "tsv"
+                                               ],
+                                "mime":  [
+                                             "text/tab-separated-values"
+                                         ],
+                                "synonyms":  [
+                                                 "Tab‑Separated Values",
+                                                 "탭으로 구분된 값"
+                                             ],
+                                "one_liner":  "탭으로 구분한 평문 표—CSV의 인용 문제를 많이 회피.",
+                                "about_to":  "TSV는 필드 사이를 탭으로 구분하여 따옴표와 이스케이프의 필요를 줄입니다. 필드에 쉼표가 들어갈 가능성이 있을 때 유용합니다. 인용 문제를 줄인 깔끔한 교환 형식이 필요하면 TSV를 선택하세요.",
+                                "about_from":  "TSV에서 CSV나 XLSX로의 변환은 간단합니다. 다만 필드 내부의 탭 문자가 도구마다 다르게 처리될 수 있으니 유의하세요.",
+                                "common_uses":  [
+                                                    "데이터 교환",
+                                                    "바이오인포매틱스",
+                                                    "로그 처리"
+                                                ],
+                                "limitations":  [
+                                                    "필드 내부 탭은 여전히 문제 가능",
+                                                    "서식·수식 없음"
+                                                ]
+                            },
+                    "txt":  {
+                                "name":  "TXT",
+                                "category":  "텍스트",
+                                "extensions":  [
+                                                   "txt"
+                                               ],
+                                "mime":  [
+                                             "text/plain"
+                                         ],
+                                "synonyms":  [
+                                                 "Plain text",
+                                                 "일반 텍스트"
+                                             ],
+                                "one_liner":  "서식 없는 단순 텍스트—모든 편집기와 기기에서 열림.",
+                                "about_to":  "TXT는 가장 단순한 텍스트 저장 방식으로, 작고 이식성이 뛰어나며 미래에도 읽기 쉽습니다. 메모, 빠른 내보내기, 스크립트에 적합합니다. 공유용 PDF나 리치 포맷이 필요하면 Markdown/HTML로 변환하세요.",
+                                "about_from":  "TXT에서 Markdown, HTML, DOCX로 구조를 부여할 수 있습니다. 문자 인코딩(UTF-8)을 명시해 글자가 깨지는 문제를 방지하세요.",
+                                "common_uses":  [
+                                                    "메모",
+                                                    "로그",
+                                                    "README 파일"
+                                                ],
+                                "limitations":  [
+                                                    "서식 없음",
+                                                    "인코딩 문제(UTF-8 미지정 시)"
+                                                ]
+                            },
+                    "md":  {
+                               "name":  "Markdown",
+                               "category":  "텍스트",
+                               "extensions":  [
+                                                  "md",
+                                                  "markdown"
+                                              ],
+                               "mime":  [
+                                            "text/markdown"
+                                        ],
+                               "synonyms":  [
+                                                "MD"
+                                            ],
+                               "one_liner":  "가벼운 마크업—HTML과 PDF로 깔끔하게 변환.",
+                               "about_to":  "Markdown은 제목, 목록, 링크, 코드 등을 위한 작성자 친화적 문법입니다. 파일이 작고 버전 관리에 유리하며, HTML이나 PDF로 컴파일하여 게시할 수 있습니다. 쉬운 편집과 깔끔한 내보내기를 원할 때 적합합니다.",
+                               "about_from":  "Markdown에서 HTML이나 PDF로 변환하면 다듬어진 결과물을 얻을 수 있습니다. 원본 MD를 사실상의 소스로 유지하고, 필요할 때 다양한 형식으로 내보내세요.",
+                               "common_uses":  [
+                                                   "문서화",
+                                                   "블로그",
+                                                   "README"
+                                               ],
+                               "limitations":  [
+                                                   "세밀한 레이아웃 제어는 제한적",
+                                                   "렌더러마다 확장 문법이 다름"
+                                               ]
+                           },
+                    "json":  {
+                                 "name":  "JSON",
+                                 "category":  "데이터",
+                                 "extensions":  [
+                                                    "json"
+                                                ],
+                                 "mime":  [
+                                              "application/json"
+                                          ],
+                                 "synonyms":  [
+                                                  "JavaScript Object Notation",
+                                                  "자바스크립트 오브젝트 표기법"
+                                              ],
+                                 "one_liner":  "API와 앱을 위한 구조화 데이터—사람도 읽기 쉬우며 언어 중립적.",
+                                 "about_to":  "JSON은 객체·배열·값을 가벼운 텍스트로 인코딩하여 프로그램이 쉽게 파싱할 수 있습니다. 웹 API와 설정의 사실상 표준입니다. 평평한 표로 내보내려면 CSV를, 중첩 구조가 필요하면 JSON을 유지하세요.",
+                                 "about_from":  "JSON에서 변환할 때는 보통 CSV로 평탄화하거나 분석 목적에 맞게 필드를 변형합니다. 중첩 배열/객체는 표 형식으로 옮기기 전에 맞춤 매핑이 필요할 수 있습니다.",
+                                 "common_uses":  [
+                                                     "API",
+                                                     "설정 파일",
+                                                     "이벤트 로그"
+                                                 ],
+                                 "limitations":  [
+                                                     "대용량 바이너리에는 부적합",
+                                                     "깊은 중첩은 표 변환을 어렵게 함"
+                                                 ]
+                             },
+                    "jsonl":  {
+                                  "name":  "JSON Lines",
+                                  "category":  "데이터",
+                                  "extensions":  [
+                                                     "jsonl",
+                                                     "ndjson"
+                                                 ],
+                                  "mime":  [
+                                               "application/x-ndjson",
+                                               "application/json"
+                                           ],
+                                  "synonyms":  [
+                                                   "NDJSON"
+                                               ],
+                                  "one_liner":  "한 줄에 하나의 JSON 객체—스트리밍·대규모 데이터 파이프라인에 적합.",
+                                  "about_to":  "JSON Lines는 레코드를 줄 단위로 저장해 스트리밍이 쉽고 대규모 데이터에도 잘 확장됩니다. 로그와 머신러닝 파이프라인에 이상적입니다. 각 줄이 독립적인 객체인 데이터를 점진적으로 처리할 때 선택하세요.",
+                                  "about_from":  "JSONL에서 단일 JSON 배열로 묶거나, 분석을 위해 CSV로 평탄화할 수 있습니다. 시스템 간 줄바꿈 처리 일관성을 유지하세요.",
+                                  "common_uses":  [
+                                                      "로그",
+                                                      "머신러닝 데이터셋",
+                                                      "ETL"
+                                                  ],
+                                  "limitations":  [
+                                                      "복잡한 중첩 데이터에는 사람이 읽기 어려움",
+                                                      "줄바꿈 처리 주의 필요"
+                                                  ]
+                              },
+                    "html":  {
+                                 "name":  "HTML",
+                                 "category":  "웹",
+                                 "extensions":  [
+                                                    "html",
+                                                    "htm"
+                                                ],
+                                 "mime":  [
+                                              "text/html"
+                                          ],
+                                 "synonyms":  [
+                                                  "HyperText Markup Language",
+                                                  "하이퍼텍스트 마크업 언어"
+                                              ],
+                                 "one_liner":  "웹 페이지용 마크업—텍스트, 이미지, CSS, 스크립트를 포함 가능.",
+                                 "about_to":  "HTML은 브라우저를 위한 콘텐츠 구조를 정의합니다. PDF로 변환하면 고정 스냅샷이 되고, TXT로 변환하면 순수 텍스트만 남습니다. Markdown으로 변환하면 사람이 읽기 쉬운 구조를 유지합니다. 웹 표현에 적합하며, 고정·공유가 필요할 때 변환을 고려하세요.",
+                                 "about_from":  "HTML에서 PDF나 이미지로 변환하는 일은 리포트·영수증 제작에 흔합니다. 동적 스크립트와 스타일은 완벽히 보존되지 않을 수 있으니, 내보내기용 인쇄 스타일을 준비하세요.",
+                                 "common_uses":  [
+                                                     "웹 페이지",
+                                                     "이메일",
+                                                     "리포트"
+                                                 ],
+                                 "limitations":  [
+                                                     "엔진마다 렌더링 차이",
+                                                     "동적 콘텐츠는 변환 시 제한"
+                                                 ]
+                             },
+                    "zip":  {
+                                "name":  "ZIP",
+                                "category":  "압축/아카이브",
+                                "extensions":  [
+                                                   "zip"
+                                               ],
+                                "mime":  [
+                                             "application/zip"
+                                         ],
+                                "synonyms":  [
+
+                                             ],
+                                "one_liner":  "광범위한 OS 지원과 선택적 AES 암호화를 갖춘 범용 아카이브.",
+                                "about_to":  "ZIP은 파일과 폴더를 하나로 묶고 압축합니다. Windows, macOS, Linux에서 기본 열기 가능해 가장 안전한 공유 선택지입니다. 많은 도구가 강력한 AES 암호화도 지원합니다.",
+                                "about_from":  "ZIP에서 7Z/RAR로 옮기면 다양한 대용량·혼합 데이터에서 더 나은 압축률을 얻을 수 있습니다. 하지만 수신자 호환성이 중요하면 ZIP을 유지하세요.",
+                                "common_uses":  [
+                                                    "다운로드 패키징",
+                                                    "이메일 첨부",
+                                                    "백업"
+                                                ],
+                                "limitations":  [
+                                                    "7Z/XZ보다 압축률이 낮을 수 있음",
+                                                    "암호 보호 방식이 도구마다 다를 수 있음"
+                                                ]
+                            },
+                    "rar":  {
+                                "name":  "RAR",
+                                "category":  "압축/아카이브",
+                                "extensions":  [
+                                                   "rar"
+                                               ],
+                                "mime":  [
+                                             "application/vnd.rar"
+                                         ],
+                                "synonyms":  [
+
+                                             ],
+                                "one_liner":  "탄탄한 압축과 복구 기능을 갖춘 독점 아카이브.",
+                                "about_to":  "RAR는 강한 압축과 손상 복구 레코드를 제공할 수 있습니다. 고급 사용자 커뮤니티에서 인기가 있지만, 생성/열기에 호환 소프트웨어가 필요합니다.",
+                                "about_from":  "RAR에서 ZIP이나 7Z로 변환하면 개방성과 공유 편의성이 좋아질 수 있습니다. RAR 생성은 대개 상용 도구가 필요하다는 점을 유의하세요.",
+                                "common_uses":  [
+                                                    "대용량 파일 세트",
+                                                    "장기 보관",
+                                                    "커뮤니티 배포"
+                                                ],
+                                "limitations":  [
+                                                    "독점 형식",
+                                                    "생성에 유료 소프트가 필요한 경우 많음"
+                                                ]
+                            },
+                    "7z":  {
+                               "name":  "7Z",
+                               "category":  "압축/아카이브",
+                               "extensions":  [
+                                                  "7z"
+                                              ],
+                               "mime":  [
+                                            "application/x-7z-compressed"
+                                        ],
+                               "synonyms":  [
+                                                "7‑Zip archive",
+                                                "7‑Zip 아카이브"
+                                            ],
+                               "one_liner":  "LZMA/LZMA2 기반의 고압축 아카이브—AES‑256 암호화 지원.",
+                               "about_to":  "7Z는 특히 크거나 반복 데이터에서 뛰어난 압축률을 달성합니다. 고정 블록, 초대형 아카이브, AES‑256 암호화를 지원합니다. 크기가 호환성보다 중요한 경우에 적합합니다.",
+                               "about_from":  "7Z에서 ZIP으로 바꾸면 모든 기기에서 기본 열기 쉬워지지만, 파일 크기는 다소 커질 수 있습니다.",
+                               "common_uses":  [
+                                                   "소프트웨어 번들",
+                                                   "백업",
+                                                   "대용량 데이터 배포"
+                                               ],
+                               "limitations":  [
+                                                   "일부 시스템에서 기본으로 열 수 없음",
+                                                   "압축이 CPU 집약적"
+                                               ]
+                           },
+                    "tar":  {
+                                "name":  "TAR",
+                                "category":  "압축/아카이브",
+                                "extensions":  [
+                                                   "tar"
+                                               ],
+                                "mime":  [
+                                             "application/x-tar"
+                                         ],
+                                "synonyms":  [
+                                                 "Tape Archive",
+                                                 "테이프 아카이브"
+                                             ],
+                                "one_liner":  "여러 파일을 하나로 묶는 파일시스템 번들—자체 압축은 없음.",
+                                "about_to":  "TAR는 권한과 메타데이터를 보존하며 파일과 폴더를 하나의 스트림으로 묶습니다. 단독으로는 압축하지 않으며, 보통 Gzip/Bzip2/XZ와 함께 사용(.tgz 등)됩니다. UNIX 친화적 번들이나 정확한 메타데이터가 필요할 때 적합합니다.",
+                                "about_from":  "TAR에서 ZIP이나 7Z로 변환하면 압축을 추가하고 비UNIX 사용자와의 호환성을 높일 수 있습니다. 작은 파일 집합에는 ZIP만 쓰는 편이 더 단순할 수 있습니다.",
+                                "common_uses":  [
+                                                    "UNIX 백업",
+                                                    "소스 코드 릴리스",
+                                                    "서버 배포"
+                                                ],
+                                "limitations":  [
+                                                    "단독으로는 압축 없음",
+                                                    "비기술 사용자에게 덜 친숙"
+                                                ]
+                            },
+                    "gz":  {
+                               "name":  "GZ",
+                               "category":  "압축/아카이브",
+                               "extensions":  [
+                                                  "gz"
+                                              ],
+                               "mime":  [
+                                            "application/gzip"
+                                        ],
+                               "synonyms":  [
+                                                "Gzip"
+                                            ],
+                               "one_liner":  "흔히 TAR와 함께 쓰이는 스트림 압축—.tgz 아카이브 생성.",
+                               "about_to":  "Gzip은 하나의 스트림(주로 TAR 파일)을 DEFLATE 알고리즘으로 압축합니다. 빠르고 서버·도구 전반에서 폭넓게 지원됩니다. 실용적 속도/크기 균형의 압축 타르볼(.tgz)이 필요할 때 사용하세요.",
+                               "about_from":  "GZ에서 변환하는 일은 보통 .tar.gz를 풀고 ZIP/7Z로 다시 묶는 것입니다. 단일 아이템만 압축된 경우가 많으니, 혼합 폴더에는 ZIP이 더 실용적일 수 있습니다.",
+                               "common_uses":  [
+                                                   "서버 로그",
+                                                   "패키지 타르볼(.tgz)",
+                                                   "유닉스 파이프라인"
+                                               ],
+                               "limitations":  [
+                                                   "단일 파일 스트림",
+                                                   "데이터에 따라 XZ보다 압축률이 낮음"
+                                               ]
+                           },
+                    "bz2":  {
+                                "name":  "BZ2",
+                                "category":  "압축/아카이브",
+                                "extensions":  [
+                                                   "bz2"
+                                               ],
+                                "mime":  [
+                                             "application/x-bzip2"
+                                         ],
+                                "synonyms":  [
+                                                 "Bzip2"
+                                             ],
+                                "one_liner":  "Gzip보다 작은 결과를 위해 CPU를 더 쓰는 압축—보통 TAR와 함께 사용.",
+                                "about_to":  "Bzip2는 압축률을 속도보다 우선시합니다. 보통 .tar.bz2 타르볼로 쓰입니다. 크기가 더 중요한 경우 Gzip보다 작은 파일을 얻을 수 있으나, 시간이 더 듭니다.",
+                                "about_from":  "BZ2에서 변환할 때는 .tar.bz2를 풀어 ZIP/7Z로 옮기는 경우가 많습니다. 최대 개방성이 필요하면 ZIP이 더 친숙합니다.",
+                                "common_uses":  [
+                                                    "소스 아카이브",
+                                                    "유닉스 백업"
+                                                ],
+                                "limitations":  [
+                                                    "Gzip보다 느림",
+                                                    "GZ처럼 단일 스트림"
+                                                ]
+                            },
+                    "xz":  {
+                               "name":  "XZ",
+                               "category":  "압축/아카이브",
+                               "extensions":  [
+                                                  "xz"
+                                              ],
+                               "mime":  [
+                                            "application/x-xz"
+                                        ],
+                               "synonyms":  [
+                                                "LZMA2 compression",
+                                                "LZMA2 압축"
+                                            ],
+                               "one_liner":  "아주 높은 압축률의 XZ(LZMA2)—느리지만 보관에 탁월.",
+                               "about_to":  "XZ는 LZMA2로 뛰어난 압축률을 달성하며, 보통 TAR 파일을 감싼 .tar.xz 형태로 쓰입니다. 크기가 중요한 장기 보관·배포에 적합합니다.",
+                               "about_from":  "XZ/TAR.XZ에서 7Z나 ZIP으로 변환하면 사용성은 좋아지지만 크기는 커질 수 있습니다.",
+                               "common_uses":  [
+                                                   "소스 배포",
+                                                   "리눅스 패키지",
+                                                   "장기 아카이브"
+                                               ],
+                               "limitations":  [
+                                                   "압축이 느림",
+                                                   "단일 스트림(여러 파일에는 TAR 병용)"
+                                               ]
+                           },
+                    "tgz":  {
+                                "name":  "TGZ",
+                                "category":  "압축/아카이브",
+                                "extensions":  [
+                                                   "tgz",
+                                                   "tar.gz"
+                                               ],
+                                "mime":  [
+                                             "application/gzip"
+                                         ],
+                                "synonyms":  [
+                                                 "tar.gz"
+                                             ],
+                                "one_liner":  "Gzip으로 압축한 TAR—표준적인 리눅스/유닉스 타르볼.",
+                                "about_to":  "TGZ는 TAR의 파일 묶음과 Gzip의 압축을 결합해 속도와 크기의 실용적 균형을 이룹니다. 유닉스 도구와 패키지 관리자 전반에서 보편적입니다.",
+                                "about_from":  "TGZ에서 변환할 때는 비기술 사용자에게는 ZIP이, 최대 압축에는 7Z/XZ가 유리할 수 있습니다.",
+                                "common_uses":  [
+                                                    "오픈소스 릴리스",
+                                                    "서버 배포",
+                                                    "패키지 배포"
+                                                ],
+                                "limitations":  [
+                                                    "Windows에서는 도구 없이 덜 친숙",
+                                                    "랜덤 액세스에는 부적합"
+                                                ]
+                            },
+                    "tbz2":  {
+                                 "name":  "TBZ2",
+                                 "category":  "압축/아카이브",
+                                 "extensions":  [
+                                                    "tbz2",
+                                                    "tar.bz2"
+                                                ],
+                                 "mime":  [
+                                              "application/x-bzip2"
+                                          ],
+                                 "synonyms":  [
+                                                  "tar.bz2"
+                                              ],
+                                 "one_liner":  "Bzip2로 압축한 TAR—Gzip보다 더 작은 크기.",
+                                 "about_to":  "TBZ2는 TAR와 Bzip2를 결합해 Gzip보다 더 나은 압축률을 제공하지만 속도는 느립니다. 크기가 중요하고 대상 사용자가 유닉스 스타일 아카이브를 다룰 수 있을 때 적합합니다.",
+                                 "about_from":  "TBZ2에서 ZIP으로 바꾸면 보편적 공유에는 유리하고, 7Z/XZ로는 최대 압축을 노릴 수 있습니다.",
+                                 "common_uses":  [
+                                                     "소스 코드 타르볼",
+                                                     "백업"
+                                                 ],
+                                 "limitations":  [
+                                                     "압축 속도가 느림",
+                                                     "유닉스 도구 외에는 덜 친숙"
+                                                 ]
+                             },
+                    "txz":  {
+                                "name":  "TXZ",
+                                "category":  "압축/아카이브",
+                                "extensions":  [
+                                                   "txz",
+                                                   "tar.xz"
+                                               ],
+                                "mime":  [
+                                             "application/x-xz"
+                                         ],
+                                "synonyms":  [
+                                                 "tar.xz"
+                                             ],
+                                "one_liner":  "XZ로 압축한 TAR—느리지만 크기가 매우 작음.",
+                                "about_to":  "TXZ는 TAR와 XZ(LZMA2)를 결합해 매우 우수한 압축률을 제공합니다. 속도보다 크기 최소화가 중요한 장기 배포에 적합합니다.",
+                                "about_from":  "TXZ에서 ZIP으로 바꾸면 Windows와 macOS에서 기본 호환성이 좋아지지만, 파일 크기는 커질 수 있습니다.",
+                                "common_uses":  [
+                                                    "리눅스 패키지",
+                                                    "장기 보관"
+                                                ],
+                                "limitations":  [
+                                                    "압축 속도 느림",
+                                                    "일반 사용자에게는 덜 친숙"
+                                                ]
+                            },
+                    "rtf":  {
+                                "name":  "RTF",
+                                "category":  "document",
+                                "extensions":  [
+                                                   "rtf"
+                                               ],
+                                "mime":  [
+                                             "application/rtf",
+                                             "text/rtf"
+                                         ],
+                                "synonyms":  [
+                                                 "Rich Text Format"
+                                             ],
+                                "one_liner":  "Formatted text exchange format that preserves basic styling across word processors.",
+                                "about_to":  "RTF (Rich Text Format) keeps fonts, basic styles, and simple images while remaining widely compatible. Convert to DOCX or PDF for modern editing or fixed-layout sharing.",
+                                "about_from":  "Converting from RTF is common when you want cleaner layouts (DOCX) or a print-perfect file (PDF). Complex elements may simplify because RTF focuses on portability.",
+                                "common_uses":  [
+                                                    "Cross-platform text",
+                                                    "Simple documents",
+                                                    "Interchange between editors"
+                                                ],
+                                "limitations":  [
+                                                    "Limited advanced layout",
+                                                    "Larger than plain text"
+                                                ]
+                            },
+                    "tar.gz":  {
+                                   "alias_of":  "tgz"
+                               },
+                    "tar.bz2":  {
+                                    "alias_of":  "tbz2"
+                                },
+                    "tar.xz":  {
+                                   "alias_of":  "txz"
+                               },
+                    "tbz":  {
+                                "alias_of":  "tbz2"
+                            },
+                    "tif":  {
+                                "alias_of":  "tiff"
+                            }
+                },
+    "pair_notes_templates":  {
+                                 "lossy_to_lossy":  "둘 다 손실 코덱이므로 {FROM}에서 {TO}(으)로 변환해도 품질이 좋아지지 않습니다. 더 높은 비트레이트를 사용하거나 무손실 소스에서 시작하세요.",
+                                 "container_swap":  "컨테이너만 변경({FROM} → {TO})하는 경우 코덱이 이미 호환되면 무손실일 수 있습니다. 그렇지 않다면 트랜스코딩이 필요합니다.",
+                                 "archive_note":  "여러 {FROM} 파일을 {TO} 아카이브로 묶으면 공유/보관이 쉬워지지만, 미디어 품질이 바뀌지는 않습니다.",
+                                 "scan_ocr":  "PDF가 스캔 이미지라면 변환 시 OCR을 켜서 결과를 검색·편집 가능하게 만드세요.",
+                                 "photo_graphic":  "텍스트나 투명이 있는 그래픽에는 PNG/WebP, 사진에는 JPEG/WebP를 사용해 용량을 줄이세요."
+                             }
+}

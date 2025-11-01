@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # AdSense & all crawlers allowed
 User-agent: Mediapartners-Google
 Disallow:
@@ -5,3 +6,26 @@ User-agent: *
 Sitemap: https://www.all-in-one-converter.net/sitemap-index.xml
 Disallow: /___trash_redirects/
 Sitemap: https://www.all-in-one-converter.net/sitemap.xml
+=======
+﻿# Sitemaps
+Sitemap: https://www.all-in-one-converter.net/sitemaps/sitemap-index.xml
+
+# AdSense / Ads landing-page crawlers (fully allowed)
+User-agent: Mediapartners-Google
+Disallow:
+
+User-agent: AdsBot-Google
+Disallow:
+
+User-agent: AdsBot-Google-Mobile
+Disallow:
+
+# Default rules
+User-agent: *
+Disallow: /___trash_redirects/
+
+# (Optional) add if these folders exist:
+# Disallow: /__archive_pairs_extra/
+# Disallow: /node_modules/
+# Disallow: /vendor/
+>>>>>>> 5f42b62d2 (Update 2025-11-01 17:35:17)

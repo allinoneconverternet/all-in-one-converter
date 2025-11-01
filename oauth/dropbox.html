@@ -1,0 +1,14 @@
+<!doctype html>
+<meta charset="utf-8">
+<script>
+  (function () {
+    const q = new URLSearchParams(location.search);
+    const msg = q.get('error')
+      ? { provider: 'dropbox', error: q.get('error') }
+      : { provider: 'dropbox', code: q.get('code') };
+
+    // send to the opener (your main app). Use same-origin for safety.
+    if (window.opener) window.opener.postMessage(msg, location.origin);
+    window.close();
+  })();
+</script>

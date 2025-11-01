@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<!-- CMP-START (auto-inserted) -->
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){ dataLayer.push(arguments); }
+gtag('consent','default',{
+ad_storage:'denied',
+analytics_storage:'denied',
+ad_user_data:'denied',
+ad_personalization:'denied'
+});
+</script>
+<script async src="https://fundingchoicesmessages.google.com/i/pub-6251303109610053?ers=1"></script>
+<script>
+(function signalGooglefcPresent(){
+if(!window.frames['googlefcPresent']){
+if(document.body){
+var f=document.createElement('iframe');
+f.style='width:0;height:0;border:none;position:absolute;left:-9999px;';
+f.name='googlefcPresent';
+document.body.appendChild(f);
+} else { setTimeout(signalGooglefcPresent,0); }
+}
+})();
+(function waitForTCF(){
+function go(){
+if(window.__adsLoaded) return;
+window.__adsLoaded = true;
+if(typeof window.loadAdSense==='function'){ window.loadAdSense(); }
+else{
+if(document.getElementById('adsbygoogle-js')) return;
+var s=document.createElement('script');
+s.id='adsbygoogle-js';
+s.async=true;
+s.src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6251303109610053';
+s.crossOrigin='anonymous';
+document.head.appendChild(s);
+}
+}
+if(typeof __tcfapi!=='function'){ setTimeout(waitForTCF,50); return; }
+__tcfapi('addEventListener',2,function(tcData,success){
+if(!success) return;
+if(['useractioncomplete','tcloaded'].indexOf(tcData.eventStatus)>-1){ go(); }
+});
+})();
+</script>
+<!-- CMP-END (auto-inserted) -->
+<meta charset="utf-8">
+<title>Beveiliging | {{BRAND}} — Lokale conversies op je apparaat (geen uploads)</title>
+<meta name="description" content="{{BRAND}} verwerkt bestanden volledig in je browser. Geen uploads. Lees meer over ons beveiligingsmodel: HTTPS/HSTS, CSP, SRI, isolatie en beleid voor melding van kwetsbaarheden.">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="index,follow">
+
+<!-- <link rel="alternate" hreflang="x-default" href="https://www.all-in-one-converter.net/languages/en/"/><link rel="alternate" hreflang="en" href="https://www.all-in-one-converter.net/languages/en/"/> -->
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="{{BRAND}}">
+<meta property="og:title" content="Beveiliging | {{BRAND}}">
+<meta property="og:description" content="Lokale conversies op je apparaat. Lees hoe wij de app en jouw privacy beveiligen.">
+<meta property="og:url" content="https://www.all-in-one-converter.net/languages/nl/beveiliging/"/>
+<!-- <meta property="og:image" content="https://yourcdn.example/og/security.png"> -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Beveiliging | {{BRAND}}">
+<meta name="twitter:description" content="Conversies op het apparaat, HTTPS/HSTS, CSP, SRI, isolatie en beleid voor melding van kwetsbaarheden.">
+<!-- Gestructureerde data -->
+<script type="application/ld+json">
+{
+"@context":"https://schema.org",
+"@type":"WebPage",
+"name":"Beveiliging",
+"url":"https://www\.all-in-one-converter\.net/nl/beveiliging/",
+"inLanguage":"nl",
+"datePublished":"2025-10-19",
+"dateModified":"2025-10-19"
+}
+</script>
+<script type="application/ld+json">
+{
+"@context":"https://schema.org",
+"@type":"BreadcrumbList",
+"itemListElement":[
+{"@type":"ListItem","position":1,"name":"Startpagina","item":"https://www\.all-in-one-converter\.net/nl/beveiliging//../"},
+{"@type":"ListItem","position":2,"name":"Beveiliging","item":"https://www\.all-in-one-converter\.net/nl/beveiliging/"}
+]
+}
+</script>
+  <link rel="canonical" href="https://www.all-in-one-converter.net/languages/nl/beveiliging/"/>
+</head>
+<body>
+<main>
+<header>
+
+<h1>Beveiliging bij {{BRAND}}</h1>
+<p><strong>Laatst bijgewerkt:</strong> 19 oktober 2025</p>
+<p>{{BRAND}} voert bestandsconversies <strong>volledig in je browser</strong> uit. Je bestanden worden <strong>nooit geüpload</strong> naar onze servers. Hieronder lees je hoe we gebruikers en de app zelf beschermen.</p>
+</header>
+<section id="threat-model">
+<h2>Dreigingsmodel &amp; filosofie</h2>
+<ul>
+<li><strong>Dataminimalisatie:</strong> bestanden en gevoelige inhoud blijven op je apparaat.</li>
+<li><strong>Transportbeveiliging:</strong> alle pagina’s worden via HTTPS geserveerd met HSTS ingeschakeld.</li>
+<li><strong>Isolatie:</strong> waar mogelijk gebruiken we WebAssembly/Web Workers voor zware verwerking, zodat taken in de browser gesandboxed blijven.</li>
+</ul>
+</section>
+<section id="app-security">
+<h2>Beveiligingspraktijken voor de applicatie</h2>
+<ul>
+<li><strong>Content Security Policy (CSP):</strong> restrictieve standaardinstellingen om scriptherkomst en inline code te beperken.</li>
+<li><strong>Subresource Integrity (SRI):</strong> externe scripts/styles zijn waar van toepassing voorzien van <code>integrity</code>-attributen.</li>
+<li><strong>Headers:</strong> COOP/COEP/CORP en Permissions-Policy worden gebruikt om cross-origin risico’s te verkleinen en krachtige API’s te beperken.</li>
+<li><strong>Softwareketen:</strong> afhankelijkheden worden bijgehouden en beveiligingspatches snel toegepast.</li>
+<li><strong>Advertentiesandboxing:</strong> advertentieposities gebruiken vaste afmetingen en gesandboxte iframes om layoutverschuiving te minimaliseren en risico’s te verlagen.</li>
+</ul>
+<p><em>Opmerking:</em> exacte policies kunnen per deployment verschillen; ben je onderzoeker, neem dan contact met ons op voor details.</p>
+</section>
+<section id="user-data">
+<h2>Je bestanden &amp; gegevens</h2>
+<ul>
+<li><strong>Geen uploads:</strong> conversies gebeuren lokaal in je browser.</li>
+<li><strong>Geen bewaring:</strong> we slaan je bestanden niet op onze servers op.</li>
+<li><strong>Alleen ads &amp; toestemming:</strong> we kunnen beperkte identificatoren verwerken om advertenties te tonen en te meten, afhankelijk van jouw toestemmingsvoorkeuren. Zie ons <a href="/languages/nl/privacy/">privacybeleid</a>.</li>
+</ul>
+</section>
+<section id="disclosure">
+<h2>Melding van kwetsbaarheden</h2>
+<p>Denk je een beveiligingsprobleem te hebben gevonden? Stuur dan een e-mail naar <a href="mailto:{{SECURITY_EMAIL}}">{{SECURITY_EMAIL}}</a> met de details. Bij responsible disclosure bevestigen we je melding en werken we snel aan een oplossing.</p>
+<p>Optioneel: we bieden ook <code>/.well-known/security.txt</code> aan met onze actuele contactgegevens.</p>
+</section>
+<section id="availability">
+<h2>Beschikbaarheid van de dienst</h2>
+<p>Als tool in de browser is {{BRAND}} afhankelijk van de prestaties van je apparaat en de mogelijkheden van je browser. We streven ernaar de huidige versies van de belangrijkste desktop- en mobiele browsers te ondersteunen.</p>
+</section>
+<nav aria-label="Gerelateerd">
+<ul>
+<li><a href="/languages/nl/privacy/">Privacy</a></li>
+<li><a href="/languages/nl/veelgestelde-vragen/">Veelgestelde vragen</a></li>
+<li><a href="/languages/nl/handleiding/">Handleiding</a></li>
+<li><a href="/languages/nl/voorwaarden/">Voorwaarden</a></li>
+</ul>
+</nav>
+</main>
+<!-- CMP-FOOTER-LINK (auto-inserted) -->
+
+<!-- /CMP-FOOTER-LINK -->
+</body>
+</html>

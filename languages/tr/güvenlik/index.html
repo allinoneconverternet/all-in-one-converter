@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<!-- CMP-START (auto-inserted) -->
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){ dataLayer.push(arguments); }
+gtag('consent','default',{
+ad_storage:'denied',
+analytics_storage:'denied',
+ad_user_data:'denied',
+ad_personalization:'denied'
+});
+</script>
+<script async src="https://fundingchoicesmessages.google.com/i/pub-6251303109610053?ers=1"></script>
+<script>
+(function signalGooglefcPresent(){
+if(!window.frames['googlefcPresent']){
+if(document.body){
+var f=document.createElement('iframe');
+f.style='width:0;height:0;border:none;position:absolute;left:-9999px;';
+f.name='googlefcPresent';
+document.body.appendChild(f);
+} else { setTimeout(signalGooglefcPresent,0); }
+}
+})();
+(function waitForTCF(){
+function go(){
+if(window.__adsLoaded) return;
+window.__adsLoaded = true;
+if(typeof window.loadAdSense==='function'){ window.loadAdSense(); }
+else{
+if(document.getElementById('adsbygoogle-js')) return;
+var s=document.createElement('script');
+s.id='adsbygoogle-js';
+s.async=true;
+s.src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6251303109610053';
+s.crossOrigin='anonymous';
+document.head.appendChild(s);
+}
+}
+if(typeof __tcfapi!=='function'){ setTimeout(waitForTCF,50); return; }
+__tcfapi('addEventListener',2,function(tcData,success){
+if(!success) return;
+if(['useractioncomplete','tcloaded'].indexOf(tcData.eventStatus)>-1){ go(); }
+});
+})();
+</script>
+<!-- CMP-END (auto-inserted) -->
+<meta charset="utf-8">
+<title>Güvenlik | {{BRAND}} — Yerel, Cihaz Üzerinde Dönüştürmeler (Yükleme Yok)</title>
+<meta name="description" content="{{BRAND}} dosyaları tamamen tarayıcınızda işler. Yükleme yok. Güvenlik modelimiz hakkında bilgi edinin: HTTPS/HSTS, CSP, SRI, yalıtım ve açıklama politikası.">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="index,follow">
+
+<!-- <link rel="alternate" hreflang="x-default" href="https://www.all-in-one-converter.net/languages/en/"/><link rel="alternate" hreflang="en" href="https://www.all-in-one-converter.net/languages/en/"/> -->
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="{{BRAND}}">
+<meta property="og:title" content="Güvenlik | {{BRAND}}">
+<meta property="og:description" content="Yerel, cihaz üzerinde dönüştürmeler. Uygulamayı ve gizliliğinizi nasıl koruduğumuzu öğrenin.">
+<meta property="og:url" content="https://www.all-in-one-converter.net/languages/tr/g%C3%BCvenlik/"/>
+<!-- <meta property="og:image" content="https://yourcdn.example/og/security.png"> -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Güvenlik | {{BRAND}}">
+<meta name="twitter:description" content="Cihaz üzerinde dönüşümler, HTTPS/HSTS, CSP, SRI, yalıtım ve açıklama politikası.">
+<!-- Structured Data -->
+<script type="application/ld+json">
+{
+"@context":"https://schema.org",
+"@type":"WebPage",
+"name":"Güvenlik",
+"url":"https://www\.all-in-one-converter\.net/tr/güvenlik/",
+"inLanguage":"tr",
+"datePublished":"2025-10-19",
+"dateModified":"2025-10-19"
+}
+</script>
+<script type="application/ld+json">
+{
+"@context":"https://schema.org",
+"@type":"BreadcrumbList",
+"itemListElement":[
+{"@type":"ListItem","position":1,"name":"Ana sayfa","item":"https://www\.all-in-one-converter\.net/tr/güvenlik//../"},
+{"@type":"ListItem","position":2,"name":"Güvenlik","item":"https://www\.all-in-one-converter\.net/tr/güvenlik/"}
+]
+}
+</script>
+  <link rel="canonical" href="https://www.all-in-one-converter.net/languages/tr/g%C3%BCvenlik/"/>
+</head>
+<body>
+<main>
+<header>
+
+<h1>{{BRAND}}’de Güvenlik</h1>
+<p><strong>Son güncelleme:</strong> 19 Ekim 2025</p>
+<p>{{BRAND}}, dosya dönüştürmelerini <strong>tamamen tarayıcınızda</strong> gerçekleştirir. Dosyalarınız <strong>asla</strong> sunucularımıza yüklenmez. Aşağıda kullanıcıları ve uygulamanın kendisini nasıl koruduğumuzu bulabilirsiniz.</p>
+</header>
+<section id="threat-model">
+<h2>Tehdit Modeli ve Felsefesi</h2>
+<ul>
+<li><strong>Veri minimizasyonu:</strong> dosyalar ve hassas içerik cihazınızda kalır.</li>
+<li><strong>Taşıma güvenliği:</strong> tüm sayfalar HSTS etkinleştirilmiş HTTPS üzerinden sunulur.</li>
+<li><strong>Yalıtım:</strong> mümkün olduğunda yoğun işlemler WebAssembly/Web Workers kullanılarak tarayıcı içinde sandbox’ta tutulur.</li>
+</ul>
+</section>
+<section id="app-security">
+<h2>Uygulama Güvenliği Uygulamaları</h2>
+<ul>
+<li><strong>Content Security Policy (CSP):</strong> komut dosyası kaynaklarını ve satır içi kodu sınırlamak için kısıtlayıcı varsayılanlar.</li>
+<li><strong>Subresource Integrity (SRI):</strong> üçüncü taraf betik/stiller uygun olduğunda <code>integrity</code> öznitelikleriyle korunur.</li>
+<li><strong>Üstbilgiler:</strong> COOP/COEP/CORP ve Permissions-Policy, kökenler arası riskleri azaltmak ve güçlü API’leri kısıtlamak için kullanılır.</li>
+<li><strong>Tedarik zinciri:</strong> bağımlılık güncellemeleri izlenir ve güvenlik yamaları hızlıca uygulanır.</li>
+<li><strong>Reklam sandbox’ı:</strong> reklam alanları sabit boyutlar ve sandbox’lı iframe’lerle sunularak yerleşim kayması en aza indirilir ve risk azaltılır.</li>
+</ul>
+<p><em>Not:</em> kesin politikalar dağıtıma göre değişebilir; bir araştırmacıysanız ayrıntılar için bizimle iletişime geçin.</p>
+</section>
+<section id="user-data">
+<h2>Dosyalarınız ve Verileriniz</h2>
+<ul>
+<li><strong>Yükleme yok:</strong> dönüştürmeler tarayıcınızda yerel olarak gerçekleşir.</li>
+<li><strong>Saklama yok:</strong> dosyalarınızı sunucularımızda saklamayız.</li>
+<li><strong>Yalnızca reklam &amp; rıza:</strong> rıza tercihlerinize tabi olarak reklam sunmak ve ölçmek için sınırlı tanımlayıcılar işlenebilir. Ayrıntılar için <a href="/languages/tr/gizlilik/">Gizlilik Politikası</a>’na bakın.</li>
+</ul>
+</section>
+<section id="disclosure">
+<h2>Güvenlik Açığı Bildirimi</h2>
+<p>Bir güvenlik sorunu bulduğunuza inanıyorsanız, lütfen ayrıntılarla birlikte <a href="mailto:{{SECURITY_EMAIL}}">{{SECURITY_EMAIL}}</a> adresine e-posta gönderin. Sorumlu açıklama kapsamında raporunuzu alır, teşekkür eder ve sorunu hızla çözmek için çalışırız.</p>
+<p>İsteğe bağlı: güncel iletişim bilgilerimizin yer aldığı <code>/.well-known/security.txt</code> dosyasını da sunuyoruz.</p>
+</section>
+<section id="availability">
+<h2>Hizmetin Kullanılabilirliği</h2>
+<p>Tarayıcı içi bir araç olarak {{BRAND}}, cihazınızın performansına ve tarayıcınızın yeteneklerine bağlıdır. Masaüstü ve mobilde önde gelen tarayıcıların güncel sürümlerini desteklemeyi hedefliyoruz.</p>
+</section>
+<nav aria-label="İlgili">
+<ul>
+<li><a href="/languages/tr/gizlilik/">Gizlilik</a></li>
+<li><a href="/languages/tr/sss/">SSS</a></li>
+<li><a href="/languages/tr/nasıl-yapılır/">Nasıl yapılır</a></li>
+<li><a href="/languages/tr/kullanım-koşulları/">Koşullar</a></li>
+</ul>
+</nav>
+</main>
+<!-- CMP-FOOTER-LINK (auto-inserted) -->
+
+<!-- /CMP-FOOTER-LINK -->
+</body>
+</html>

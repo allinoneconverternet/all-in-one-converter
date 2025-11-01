@@ -1,0 +1,1104 @@
+{
+    "language":  "nl",
+    "version":  "1.0",
+    "last_updated":  "2025-10-25",
+    "formats":  {
+                    "png":  {
+                                "name":  "PNG",
+                                "category":  "afbeelding",
+                                "extensions":  [
+                                                   "png"
+                                               ],
+                                "mime":  [
+                                             "image/png"
+                                         ],
+                                "synonyms":  [
+                                                 "Portable Network Graphics"
+                                             ],
+                                "one_liner":  "Verliesloze rasterafbeelding met transparantie en scherpe randen voor UI, logo’s en schermafbeeldingen.",
+                                "about_to":  "PNG is een verliesloos rasterformaat dat elke pixel bewaart en volledige alpha‑transparantie ondersteunt, ideaal voor UI‑elementen, logo’s, diagrammen en schermafbeeldingen. Het comprimeert efficiënt voor vlakke kleuren en scherpe lijnen en verliest geen kwaliteit bij herhaald opslaan. In vergelijking met JPEG is PNG voor foto’s meestal groter, maar het oogt schoner bij tekst en graphics. Kies PNG wanneer je scherpe details, transparante achtergronden of voorspelbare rendering in browsers en apps nodig hebt.",
+                                "about_from":  "PNG‑bestanden zijn uitstekend voor grafische elementen, maar foto’s comprimeren vaak beter als JPEG of WebP. Als je van PNG converteert, zoek je waarschijnlijk een kleiner webbestand of een formaat dat beter past bij fotografie. Converteren naar een verliesgevend formaat kan de grootte aanzienlijk verkleinen, maar verhoogt de kwaliteit niet boven het origineel uit.",
+                                "common_uses":  [
+                                                    "Webafbeeldingen",
+                                                    "UI‑assets",
+                                                    "Schermafbeeldingen",
+                                                    "Logo’s met transparantie"
+                                                ],
+                                "limitations":  [
+                                                    "Groter dan JPEG voor foto’s",
+                                                    "Geen animatie (gebruik APNG of GIF/WebM)"
+                                                ]
+                            },
+                    "jpg":  {
+                                "name":  "JPG",
+                                "category":  "afbeelding",
+                                "extensions":  [
+                                                   "jpg",
+                                                   "jpeg"
+                                               ],
+                                "mime":  [
+                                             "image/jpeg"
+                                         ],
+                                "synonyms":  [
+                                                 "JPEG"
+                                             ],
+                                "one_liner":  "Alomtegenwoordige verliesgevende foto‑indeling met grote compatibiliteit en kleine bestandsgroottes.",
+                                "about_to":  "JPEG is het meest compatibele fotoformaat op het web en combineert goede beeldkwaliteit met kleine bestanden. Het is ideaal voor fotografie en realistische beelden waar subtiele compressie‑artefacten acceptabel zijn. JPEG ondersteunt geen transparantie of vectorgegevens, en herhaald bewerken/opslaan kan cumulatief kwaliteitsverlies veroorzaken. Kies JPEG wanneer je snel ladende beelden wilt die op vrijwel elk apparaat goed worden weergegeven.",
+                                "about_from":  "Als je van JPEG converteert, mik je mogelijk op transparantie (PNG/WebP) of een moderner formaat met betere compressie bij vergelijkbare kwaliteit (WebP). Het omzetten van een verliesgevende JPEG naar een ander formaat herstelt geen verloren detail; het verandert alleen de grootte/compatibiliteit.",
+                                "common_uses":  [
+                                                    "Fotografie",
+                                                    "Webafbeeldingen",
+                                                    "E‑maildeling",
+                                                    "Sociale posts"
+                                                ],
+                                "limitations":  [
+                                                    "Geen transparantie",
+                                                    "Verliesgevend; herhaald opslaan kan de kwaliteit verminderen"
+                                                ]
+                            },
+                    "jpeg":  {
+                                 "alias_of":  "jpg"
+                             },
+                    "webp":  {
+                                 "name":  "WebP",
+                                 "category":  "afbeelding",
+                                 "extensions":  [
+                                                    "webp"
+                                                ],
+                                 "mime":  [
+                                              "image/webp"
+                                          ],
+                                 "synonyms":  [
+
+                                              ],
+                                 "one_liner":  "Modern afbeeldingsformaat met verliesgevende of verliesloze compressie en alpha‑ondersteuning.",
+                                 "about_to":  "WebP levert uitstekende compressie voor zowel foto’s als grafische elementen, met ondersteuning voor transparantie en optionele verliesloze modus. In vergelijking met JPEG en PNG haalt het vaak kleinere bestanden bij vergelijkbare kwaliteit, wat paginasnelheid en Core Web Vitals verbetert. WebP wordt door alle grote browsers en de meeste recente apps native ondersteund. Kies WebP voor efficiënte, moderne weblevering.",
+                                 "about_from":  "Als je van WebP converteert, mik je waarschijnlijk op een tool die JPEG/PNG verkiest. Onthoud dat overstappen van lossy WebP naar een ander verliesgevend formaat de kwaliteit niet verbetert; focus op compatibiliteit of transparantiebehoeften.",
+                                 "common_uses":  [
+                                                     "Moderne webafbeeldingen",
+                                                     "Responsieve sites",
+                                                     "Graphics met transparantie"
+                                                 ],
+                                 "limitations":  [
+                                                     "Oudere software biedt mogelijk geen volledige ondersteuning",
+                                                     "Ondersteuning voor geanimeerde WebP varieert buiten browsers"
+                                                 ]
+                             },
+                    "svg":  {
+                                "name":  "SVG",
+                                "category":  "afbeelding",
+                                "extensions":  [
+                                                   "svg"
+                                               ],
+                                "mime":  [
+                                             "image/svg+xml"
+                                         ],
+                                "synonyms":  [
+                                                 "Scalable Vector Graphics"
+                                             ],
+                                "one_liner":  "Resolutie‑onafhankelijke vectorafbeeldingen, ideaal voor pictogrammen, logo’s en diagrammen.",
+                                "about_to":  "SVG is een vectorformaat op basis van XML, waardoor illustraties op elke grootte scherp blijven zonder pixelvorming. Perfect voor iconen, logo’s, eenvoudige illustraties en grafieken, en het kan via CSS worden gestyled of met JavaScript gescript. Bestanden zijn doorgaans zeer klein bij geometrische kunst. Kies SVG wanneer je scherpe lijnen, kleine payloads en oneindige schaalbaarheid wilt.",
+                                "about_from":  "Converten van SVG is gebruikelijk wanneer je een bitmap (PNG/JPEG) nodig hebt voor apps die geen vectorgraphics ondersteunen of voor sociale platforms. Rasterconversies zetten details om in pixels; bewaar de SVG‑bron voor bewerking en exporteer verschillende maten naar behoefte.",
+                                "common_uses":  [
+                                                    "Pictogrammen",
+                                                    "Logo’s",
+                                                    "Diagrammen",
+                                                    "Grafieken"
+                                                ],
+                                "limitations":  [
+                                                    "Niet ideaal voor foto’s",
+                                                    "Complexe SVG’s kunnen groot zijn of anders renderen tussen apps"
+                                                ]
+                            },
+                    "bmp":  {
+                                "name":  "BMP",
+                                "category":  "afbeelding",
+                                "extensions":  [
+                                                   "bmp"
+                                               ],
+                                "mime":  [
+                                             "image/bmp"
+                                         ],
+                                "synonyms":  [
+                                                 "Bitmap"
+                                             ],
+                                "one_liner":  "Ruwe/ongecomprimeerde bitmap, gangbaar op oudere Windows‑systemen; zeer grote bestanden.",
+                                "about_to":  "BMP slaat pixels met minimale compressie op, dus bestanden zijn groot maar eenvoudig te decoderen. Het wordt vooral gebruikt in legacy‑workflows en apparaatopnames. Voor alledaagse deling reduceert converteren naar PNG of JPEG de grootte drastisch met behoud van zichtbare kwaliteit voor de meeste content.",
+                                "about_from":  "Als je van BMP converteert, wil je waarschijnlijk kleinere bestanden of webvriendelijke formaten. PNG past bij graphics en schermafbeeldingen; JPEG bij foto’s. Reken op grote besparingen in bestandsgrootte met weinig tot geen zichtbaar kwaliteitsverlies bij typische inhoud.",
+                                "common_uses":  [
+                                                    "Legacy Windows‑afbeeldingen",
+                                                    "Apparaatschermafbeeldingen",
+                                                    "Ruwe bitmaps"
+                                                ],
+                                "limitations":  [
+                                                    "Zeer grote bestanden",
+                                                    "Geen transparantie (behalve via masks)"
+                                                ]
+                            },
+                    "tiff":  {
+                                 "name":  "TIFF",
+                                 "category":  "afbeelding",
+                                 "extensions":  [
+                                                    "tiff",
+                                                    "tif"
+                                                ],
+                                 "mime":  [
+                                              "image/tiff"
+                                          ],
+                                 "synonyms":  [
+                                                  "Tagged Image File Format"
+                                              ],
+                                 "one_liner":  "Flexibel, archiefwaardig beeldformaat met verliesloze opties en ondersteuning voor meerdere pagina’s.",
+                                 "about_to":  "TIFF is een hoogwaardig formaat dat populair is bij scannen, drukwerk en archivering. Het ondersteunt meerdere kleurprofielen, lagen en zelfs documenten met meerdere pagina’s, vaak met verliesloze compressie zoals LZW of Deflate. Kies TIFF wanneer je beelden van meesterkwaliteit nodig hebt voor bewerking of langdurige opslag.",
+                                 "about_from":  "Bij converteren vanaf TIFF optimaliseer je meestal voor weblevering of kleinere opslag. JPEG/WebP zijn geschikt voor foto’s; PNG voor graphics; PDF kan meerpagina‑scans bundelen. Converteren vanaf TIFF kan de grootte aanzienlijk verminderen met minimale zichtbare verandering.",
+                                 "common_uses":  [
+                                                     "Scannen",
+                                                     "Prepress",
+                                                     "Archiefbeelden",
+                                                     "Documenten met meerdere pagina’s"
+                                                 ],
+                                 "limitations":  [
+                                                     "Grote bestanden",
+                                                     "Minder geschikt voor snelle weblevering"
+                                                 ]
+                             },
+                    "gif":  {
+                                "name":  "GIF",
+                                "category":  "afbeelding",
+                                "extensions":  [
+                                                   "gif"
+                                               ],
+                                "mime":  [
+                                             "image/gif"
+                                         ],
+                                "synonyms":  [
+                                                 "Graphics Interchange Format"
+                                             ],
+                                "one_liner":  "8‑bits paletafbeeldingen met basisanimatie; het best voor eenvoudige loops en stickers.",
+                                "about_to":  "GIF ondersteunt tot 256 kleuren per frame en eenvoudige animatie, waardoor het geschikt is voor lichte loops en stickers. Voor stilstaande beelden zien PNG of WebP er meestal beter uit en comprimeren ze kleiner. Voor bewegend beeld leveren MP4/WebM vloeiendere weergave en veel kleinere bestanden. Kies GIF alleen wanneer brede compatibiliteit voor korte geanimeerde loops essentieel is.",
+                                "about_from":  "Converteren vanaf GIF is gebruikelijk om animaties te verkleinen naar MP4/WebM of om stilstaande frames te extraheren naar PNG/JPEG. Verwacht grote besparingen wanneer je lange of foto‑achtige GIF’s naar videoformaten omzet.",
+                                "common_uses":  [
+                                                    "Memes en stickers",
+                                                    "Eenvoudige animaties",
+                                                    "UI‑bewegingsdemo’s"
+                                                ],
+                                "limitations":  [
+                                                    "256‑kleurenlimiet",
+                                                    "Grote bestanden voor fotocontent",
+                                                    "Geen echte alpha (alleen 1‑bit transparantie)"
+                                                ]
+                            },
+                    "mp3":  {
+                                "name":  "MP3",
+                                "category":  "audio",
+                                "extensions":  [
+                                                   "mp3"
+                                               ],
+                                "mime":  [
+                                             "audio/mpeg"
+                                         ],
+                                "synonyms":  [
+
+                                             ],
+                                "one_liner":  "Alomtegenwoordige verliesgevende audio voor muziek en podcasts; kleine bestanden, universele ondersteuning.",
+                                "about_to":  "MP3 balanceert geluidskwaliteit met kleine bestandsgroottes en speelt overal af—telefoons, auto’s, speakers en browsers. Gebruik hogere bitrates voor muziek en lagere voor spraak. Voor de allerkleinste bestanden bij vergelijkbare kwaliteit kunnen moderne codecs zoals AAC of Opus efficiënter zijn, maar MP3 blijft de meest universeel compatibele keuze.",
+                                "about_from":  "Converteren vanaf MP3 kan de door compressie verloren kwaliteit niet herstellen. Je kunt naar AAC/Opus gaan voor kleinere bestanden, of naar WAV/FLAC voor bewerken of archiveren. Wil je betere geluidskwaliteit, begin dan met een verliesloze bron in plaats van een oude MP3 te transcoderen.",
+                                "common_uses":  [
+                                                    "Muziekdistributie",
+                                                    "Podcasts",
+                                                    "Audioboeken",
+                                                    "Webaudio"
+                                                ],
+                                "limitations":  [
+                                                    "Verliesgevend; artefacten bij lage bitrates",
+                                                    "Beperkte multikanaalmetadata"
+                                                ]
+                            },
+                    "wav":  {
+                                "name":  "WAV",
+                                "category":  "audio",
+                                "extensions":  [
+                                                   "wav"
+                                               ],
+                                "mime":  [
+                                             "audio/wav",
+                                             "audio/x-wav",
+                                             "audio/vnd.wave"
+                                         ],
+                                "synonyms":  [
+                                                 "Waveform Audio"
+                                             ],
+                                "one_liner":  "Ongecomprimeerde PCM‑audio voor maximale kwaliteit en bewerkingsruimte.",
+                                "about_to":  "WAV slaat audio op in ongecomprimeerde PCM en bewaart elke sample voor mixen, masteren of analyse. Perfect wanneer je onberispelijke kwaliteit en eenvoudig bewerken nodig hebt, maar bestanden zijn groot. Voor distributie of delen kun je converteren naar AAC/MP3/Opus om de grootte drastisch te verlagen met behoud van acceptabele kwaliteit.",
+                                "about_from":  "Als je van WAV converteert, ben je waarschijnlijk aan het publiceren of ruimte aan het besparen. Kies een moderne verliesgevende codec en een bitrate die past bij je inhoud (muziek vs. spraak). Voor verliesloze compressie met kleinere bestanden is FLAC een goed alternatief.",
+                                "common_uses":  [
+                                                    "Opnemen en bewerken",
+                                                    "Masterbestanden",
+                                                    "Audio‑archivering"
+                                                ],
+                                "limitations":  [
+                                                    "Zeer grote bestanden",
+                                                    "Geen compressie standaard"
+                                                ]
+                            },
+                    "ogg":  {
+                                "name":  "Ogg Vorbis",
+                                "category":  "audio",
+                                "extensions":  [
+                                                   "ogg"
+                                               ],
+                                "mime":  [
+                                             "audio/ogg"
+                                         ],
+                                "synonyms":  [
+                                                 "Vorbis in Ogg‑container"
+                                             ],
+                                "one_liner":  "Open, royalty‑vrije verliesgevende audio met goede kwaliteit bij bescheiden bitrates.",
+                                "about_to":  "Ogg Vorbis biedt efficiënte, royalty‑vrije compressie die vaak gelijkwaardig is aan AAC bij vergelijkbare bitrates. Het wordt breed ondersteund in moderne browsers en spelers. Kies Ogg wanneer je open licenties en degelijke kwaliteit voor streaming of downloads wilt.",
+                                "about_from":  "Converteren vanaf Ogg gebeurt meestal voor apparaatcompatibiliteit (MP3/AAC) of voor bewerken (WAV/FLAC). Transcoderen tussen verliesgevende codecs kan extra artefacten introduceren; behoud een verliesloze bron waar mogelijk.",
+                                "common_uses":  [
+                                                    "Streamingaudio",
+                                                    "Open‑sourceprojecten",
+                                                    "Game‑assets"
+                                                ],
+                                "limitations":  [
+                                                    "Minder ondersteuning op sommige oudere apparaten",
+                                                    "Verliesgevende compressie"
+                                                ]
+                            },
+                    "m4a":  {
+                                "name":  "M4A",
+                                "category":  "audio",
+                                "extensions":  [
+                                                   "m4a"
+                                               ],
+                                "mime":  [
+                                             "audio/mp4",
+                                             "audio/x-m4a"
+                                         ],
+                                "synonyms":  [
+                                                 "AAC of ALAC in MP4‑container"
+                                             ],
+                                "one_liner":  "MP4‑audiocontainer—meestal AAC (verliesgevend) of ALAC (verliesloos).",
+                                "about_to":  "M4A is een MP4‑container voor audio. De meeste M4A‑bestanden bevatten AAC (verliesgevend) voor kleine bestanden en brede ondersteuning, terwijl sommige ALAC (verliesloos) gebruiken voor onberispelijke kwaliteit. Het speelt goed af op Apple‑ en moderne apparaten. Kies M4A voor een goede balans tussen efficiëntie en compatibiliteit.",
+                                "about_from":  "Als je van M4A converteert, bepaal dan of de bron AAC (verliesgevend) of ALAC (verliesloos) is. Transcoderen van verliesgevende AAC naar een andere verliesgevende codec voegt geen kwaliteit toe; converteer verliesloze bronnen naar je voorkeurscodec en bitrate voor distributie.",
+                                "common_uses":  [
+                                                    "Muziekbibliotheken",
+                                                    "Podcasts",
+                                                    "Audio in het Apple‑ecosysteem"
+                                                ],
+                                "limitations":  [
+                                                    "DRM kan voorkomen in gerelateerde M4P/M4B‑content",
+                                                    "Containerspecificaties kunnen oudere tools verwarren"
+                                                ]
+                            },
+                    "flac":  {
+                                 "name":  "FLAC",
+                                 "category":  "audio",
+                                 "extensions":  [
+                                                    "flac"
+                                                ],
+                                 "mime":  [
+                                              "audio/flac"
+                                          ],
+                                 "synonyms":  [
+                                                  "Free Lossless Audio Codec"
+                                              ],
+                                 "one_liner":  "Verliesloze audiocompressie—perfect voor archivering en luisteren in hoge kwaliteit.",
+                                 "about_to":  "FLAC comprimeert audio zonder informatieverlies en verkleint bestanden typisch met 30–60% vergeleken met WAV. Uitstekend voor het archiveren van muziek, het bewaren van masters en gapless weergave. Kies FLAC wanneer je bit‑perfecte audio wilt met kleinere bestanden dan WAV.",
+                                 "about_from":  "Converteren vanaf FLAC is gebruikelijk om draagbare versies te maken (AAC/MP3/Opus). Bewaar FLAC als master; genereer verliesgevende kopieën met geschikte bitrates voor telefoons, streaming of delen.",
+                                 "common_uses":  [
+                                                     "Muziekarchivering",
+                                                     "Verliesloze distributie",
+                                                     "Hi‑fi‑weergave"
+                                                 ],
+                                 "limitations":  [
+                                                     "Groter dan AAC/MP3",
+                                                     "Sommige apparaten verkiezen nog steeds MP3/AAC"
+                                                 ]
+                             },
+                    "opus":  {
+                                 "name":  "Opus",
+                                 "category":  "audio",
+                                 "extensions":  [
+                                                    "opus"
+                                                ],
+                                 "mime":  [
+                                              "audio/ogg",
+                                              "audio/opus"
+                                          ],
+                                 "synonyms":  [
+
+                                              ],
+                                 "one_liner":  "State‑of‑the‑art audio bij lage bitrates; geweldig voor streaming, VoIP en spraak.",
+                                 "about_to":  "Opus levert uitstekende kwaliteit bij lage bitrates en past zich goed aan spraak en muziek aan. Het is open, royalty‑vrij en breed ondersteund in browsers en moderne spelers. Kies Opus wanneer je kleine bestanden met indrukwekkende helderheid wilt, vooral voor streaming of voice‑content.",
+                                 "about_from":  "Je kunt van Opus converteren voor apparaatcompatibiliteit (MP3/AAC) of bewerken (WAV). Transcoderen naar een andere verliesgevende codec voegt generatieverlies toe; behoud een verliesloze bron als je meerdere conversies plant.",
+                                 "common_uses":  [
+                                                     "Streaming",
+                                                     "VoIP",
+                                                     "Podcasts",
+                                                     "Game‑audio"
+                                                 ],
+                                 "limitations":  [
+                                                     "Beperkte ondersteuning in oudere hardware",
+                                                     "Verliesgevend codec"
+                                                 ]
+                             },
+                    "aiff":  {
+                                 "name":  "AIFF",
+                                 "category":  "audio",
+                                 "extensions":  [
+                                                    "aiff",
+                                                    "aif"
+                                                ],
+                                 "mime":  [
+                                              "audio/aiff",
+                                              "audio/x-aiff"
+                                          ],
+                                 "synonyms":  [
+                                                  "Audio Interchange File Format"
+                                              ],
+                                 "one_liner":  "Ongecomprimeerde PCM‑audio, veelgebruikt op macOS‑systemen.",
+                                 "about_to":  "AIFF slaat ongecomprimeerde audio op vergelijkbaar met WAV en biedt uitstekende kwaliteit en eenvoudig bewerken. Populair in Apple‑workflows en oudere DAW’s. Voor distributie of cloudopslag kun je converteren naar AAC/MP3/Opus om de grootte te verminderen zonder opnieuw op te nemen.",
+                                 "about_from":  "Converteren van AIFF naar WAV behoudt de kwaliteit voor platformonafhankelijk bewerken. Voor delen kies je een moderne verliesgevende codec met een passende bitrate, of FLAC voor verliesloze compressie.",
+                                 "common_uses":  [
+                                                     "Audioproductie",
+                                                     "Archiefmasters",
+                                                     "macOS‑projecten"
+                                                 ],
+                                 "limitations":  [
+                                                     "Grote bestanden",
+                                                     "Minder gangbaar buiten Apple‑ecosystemen"
+                                                 ]
+                             },
+                    "aac":  {
+                                "name":  "AAC",
+                                "category":  "audio",
+                                "extensions":  [
+                                                   "aac"
+                                               ],
+                                "mime":  [
+                                             "audio/aac"
+                                         ],
+                                "synonyms":  [
+                                                 "Advanced Audio Coding"
+                                             ],
+                                "one_liner":  "Moderne verliesgevende audiocodec; efficiënt en breed ondersteund (vaak opgeslagen als M4A).",
+                                "about_to":  "AAC verbetert MP3 op de meeste bitrates en wordt ondersteund op iOS, Android, browsers en smart‑devices. Het is een sterke standaard voor muziekdistributie wanneer je kwaliteit en kleine bestanden wilt. Veel AAC‑bestanden worden als M4A binnen een MP4‑container opgeslagen.",
+                                "about_from":  "Converteren van AAC naar een andere verliesgevende codec voegt geen detail toe. Voor bewerken ga je naar WAV/FLAC; voor compatibiliteit blijft MP3 universeel. Bewaar een verliesloze bron als je vaak wilt transcoderen.",
+                                "common_uses":  [
+                                                    "Streaming en downloads",
+                                                    "Muziekbibliotheken",
+                                                    "Mobiele weergave"
+                                                ],
+                                "limitations":  [
+                                                    "Verliesgevend; generatieverlies bij transcoderen",
+                                                    "Containerverwarring (AAC vs. M4A)"
+                                                ]
+                            },
+                    "mp4":  {
+                                "name":  "MP4",
+                                "category":  "video",
+                                "extensions":  [
+                                                   "mp4"
+                                               ],
+                                "mime":  [
+                                             "video/mp4"
+                                         ],
+                                "synonyms":  [
+                                                 "MPEG‑4 Part 14‑container"
+                                             ],
+                                "one_liner":  "De meest compatibele videocontainer; doorgaans H.264‑video met AAC‑audio.",
+                                "about_to":  "MP4 is een breed ondersteunde container voor video en audio, meestal met H.264/AVC voor video en AAC voor audio. Het is de veiligste keuze voor compatibiliteit op apparaten, in browsers en op sociale platforms. Kies MP4 wanneer je betrouwbare weergave en delen zonder verrassingen nodig hebt.",
+                                "about_from":  "Als je van MP4 converteert, mik je mogelijk op een open formaat (WebM) of een flexibelere container (MKV). Remuxen van containers (bijv. MP4→MKV) kan verliesloos zijn; opnieuw encoderen naar een nieuwe codec kan de grootte verlagen ten koste van tijd en soms kwaliteit.",
+                                "common_uses":  [
+                                                    "Webvideo",
+                                                    "Mobiele weergave",
+                                                    "Sociale uploads",
+                                                    "Streaming"
+                                                ],
+                                "limitations":  [
+                                                    "Oudere MP4‑varianten missen soms moderne codecs",
+                                                    "DRM of metadata‑eigenaardigheden in sommige bestanden"
+                                                ]
+                            },
+                    "webm":  {
+                                 "name":  "WebM",
+                                 "category":  "video",
+                                 "extensions":  [
+                                                    "webm"
+                                                ],
+                                 "mime":  [
+                                              "video/webm"
+                                          ],
+                                 "synonyms":  [
+                                                  "VP9/AV1 + Opus‑container"
+                                              ],
+                                 "one_liner":  "Open, web‑first container voor VP8/VP9/AV1‑video en Opus/Vorbis‑audio.",
+                                 "about_to":  "WebM combineert moderne, royalty‑vrije codecs (VP9/AV1 voor video, Opus/Vorbis voor audio) in een lichte container. Het speelt native af in alle grote browsers en levert vaak uitstekende kwaliteit bij lage bitrates. Kies WebM voor weblevering wanneer openheid en compressie‑efficiëntie prioriteit hebben.",
+                                 "about_from":  "Converteren van WebM gebeurt vooral voor compatibiliteit met oudere spelers die MP4/H.264 verkiezen. Als je WebM al VP9/AV1 gebruikt, kan opnieuw encoderen naar H.264 grotere bestanden opleveren voor dezelfde kwaliteit.",
+                                 "common_uses":  [
+                                                     "Ingesloten webvideo",
+                                                     "Achtergrondloops",
+                                                     "Open‑source‑workflows"
+                                                 ],
+                                 "limitations":  [
+                                                     "Legacy‑apparaten verkiezen soms MP4/H.264",
+                                                     "AV1‑encoderen is trager op de meeste systemen"
+                                                 ]
+                             },
+                    "mkv":  {
+                                "name":  "MKV",
+                                "category":  "video",
+                                "extensions":  [
+                                                   "mkv"
+                                               ],
+                                "mime":  [
+                                             "video/x-matroska"
+                                         ],
+                                "synonyms":  [
+                                                 "Matroska"
+                                             ],
+                                "one_liner":  "Functierijke container met ondersteuning voor meerdere audiotracks, ondertitels en hoofdstukken.",
+                                "about_to":  "MKV (Matroska) is een flexibele container die vrijwel elke codec kan bevatten, meerdere audio/ondertitelsporen en hoofdstukken. Uitstekend voor archivering en geavanceerde afspeelopstellingen. Kies MKV wanneer je meer functies nodig hebt dan plain MP4, of wanneer je verliesloos wilt remuxen van MP4 zonder opnieuw te encoderen.",
+                                "about_from":  "Converteren van MKV naar MP4 voor apparaatcompatibiliteit werkt vaak via remuxen (containerswap) als de codecs al H.264/AAC zijn. Anders is opnieuw encoderen nodig om aan de doelondersteuning te voldoen.",
+                                "common_uses":  [
+                                                    "Video‑archivering",
+                                                    "Multi‑audio of ondertitelreleases",
+                                                    "Remux‑workflows"
+                                                ],
+                                "limitations":  [
+                                                    "Niet alle apparaten/apps ondersteunen MKV native",
+                                                    "Streamingplatforms geven doorgaans de voorkeur aan MP4"
+                                                ]
+                            },
+                    "mov":  {
+                                "name":  "MOV",
+                                "category":  "video",
+                                "extensions":  [
+                                                   "mov"
+                                               ],
+                                "mime":  [
+                                             "video/quicktime"
+                                         ],
+                                "synonyms":  [
+                                                 "QuickTime Movie"
+                                             ],
+                                "one_liner":  "Apple’s QuickTime‑container, gebruikt door camera’s en editors; hoge kwaliteit, grote bestanden.",
+                                "about_to":  "MOV wordt vaak geproduceerd door camera’s en iOS‑apparaten, vaak met hoge bitrates en bewerkingsvriendelijke instellingen. Uitstekend voor productie, maar zwaarder voor weblevering. Converteer naar MP4/H.264 voor brede compatibiliteit en kleinere bestanden.",
+                                "about_from":  "Als je van MOV converteert, optimaliseer je waarschijnlijk voor delen. Remux naar MP4 als de codecs al compatibel zijn; encodeer anders naar H.264/AAC of WebM voor efficiënte streaming.",
+                                "common_uses":  [
+                                                    "Camera‑originelen",
+                                                    "Bewerkingsworkflows",
+                                                    "Apple‑ecosysteem"
+                                                ],
+                                "limitations":  [
+                                                    "Grote bestanden",
+                                                    "Minder ideaal voor directe weblevering"
+                                                ]
+                            },
+                    "m4v":  {
+                                "name":  "M4V",
+                                "category":  "video",
+                                "extensions":  [
+                                                   "m4v"
+                                               ],
+                                "mime":  [
+                                             "video/x-m4v",
+                                             "video/mp4"
+                                         ],
+                                "synonyms":  [
+                                                 "Apple MP4‑variant"
+                                             ],
+                                "one_liner":  "MP4‑familiecontainer gebruikt door Apple; vergelijkbaar met MP4, soms met DRM.",
+                                "about_to":  "M4V is een door Apple beïnvloede MP4‑container met doorgaans H.264‑video en AAC‑audio. Bestanden kunnen metadata of DRM bevatten afhankelijk van de bron. Converteren naar standaard MP4 verbetert vaak de compatibiliteit zonder kwaliteitsverandering wanneer remuxen mogelijk is.",
+                                "about_from":  "Converteren vanaf M4V betekent meestal container‑eigenaardigheden verwijderen voor universele weergave. Als er DRM aanwezig is, kan conversie wettelijk of door het platform beperkt zijn.",
+                                "common_uses":  [
+                                                    "iTunes‑video’s",
+                                                    "Apple‑apparaten"
+                                                ],
+                                "limitations":  [
+                                                    "Mogelijke DRM",
+                                                    "Functioneel verder vergelijkbaar met MP4"
+                                                ]
+                            },
+                    "pdf":  {
+                                "name":  "PDF",
+                                "category":  "document",
+                                "extensions":  [
+                                                   "pdf"
+                                               ],
+                                "mime":  [
+                                             "application/pdf"
+                                         ],
+                                "synonyms":  [
+                                                 "Portable Document Format"
+                                             ],
+                                "one_liner":  "Documenten met vaste lay‑out voor betrouwbare weergave en afdruk op elk apparaat.",
+                                "about_to":  "PDF bewaart lay‑out, lettertypen en graphics zodat documenten er overal hetzelfde uitzien. Het is de beste keuze voor definitieve bestanden die je deelt of print. PDF’s kunnen afbeeldingen en tekst insluiten; met OCR worden scans doorzoekbaar. Kies PDF wanneer consistentie, draagbaarheid en een professionele presentatie belangrijk zijn.",
+                                "about_from":  "Converteren van PDF naar bewerkbare formaten (Word/PowerPoint/Excel) probeert structuur en lay‑out te reconstrueren; resultaten variëren per inhoud. Voor gescande PDF’s is OCR nodig om selecteerbare tekst te extraheren.",
+                                "common_uses":  [
+                                                    "Rapporten",
+                                                    "Formulieren",
+                                                    "Handleidingen",
+                                                    "Contracten"
+                                                ],
+                                "limitations":  [
+                                                    "Bewerken is beperkt",
+                                                    "Complexe lay‑outs zijn lastig perfect te converteren"
+                                                ]
+                            },
+                    "docx":  {
+                                 "name":  "DOCX",
+                                 "category":  "document",
+                                 "extensions":  [
+                                                    "docx"
+                                                ],
+                                 "mime":  [
+                                              "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                                          ],
+                                 "synonyms":  [
+                                                  "Microsoft Word‑document"
+                                              ],
+                                 "one_liner":  "Bewerkbare tekstbestanden met stijlen, afbeeldingen en rijke lay‑out.",
+                                 "about_to":  "DOCX is het standaard Word‑formaat voor schrijven en samenwerken. Het ondersteunt koppen, afbeeldingen, tabellen, stijlen en revisies. Converteer naar PDF voor definitieve distributie of naar HTML voor webpublicatie.",
+                                 "about_from":  "Converteren vanaf DOCX is gebruikelijk voor export naar een definitieve, niet‑bewerkbare versie (PDF) of voor het voorbereiden van content voor het web (HTML/Markdown). Controleer de uitvoer op lay‑outaanpassingen—vooral tabellen en lijsten.",
+                                 "common_uses":  [
+                                                     "Zakelijke documenten",
+                                                     "Essays en rapporten",
+                                                     "Sjablonen"
+                                                 ],
+                                 "limitations":  [
+                                                     "Uiterlijk kan per app verschillen",
+                                                     "Ingesloten lettertypen/objecten overleven export niet altijd"
+                                                 ]
+                             },
+                    "pptx":  {
+                                 "name":  "PPTX",
+                                 "category":  "document",
+                                 "extensions":  [
+                                                    "pptx"
+                                                ],
+                                 "mime":  [
+                                              "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+                                          ],
+                                 "synonyms":  [
+                                                  "Microsoft PowerPoint‑presentatie"
+                                              ],
+                                 "one_liner":  "Presentaties met dia’s, tekst, afbeeldingen, animaties en media.",
+                                 "about_to":  "PPTX is het standaardformaat voor presentaties. Het ondersteunt animaties, video en sprekersnotities. Converteer naar PDF voor eenvoudig delen/printen of naar MP4 voor automatisch afspelende slide‑video’s.",
+                                 "about_from":  "Bij converteren van PPTX kunnen animaties, overgangen en ingesloten media worden vereenvoudigd of afgevlakt afhankelijk van het doelformaat. Bekijk het resultaat altijd vooraf voordat je publiceert.",
+                                 "common_uses":  [
+                                                     "Zakelijke decks",
+                                                     "Colleges",
+                                                     "Conferentietalks"
+                                                 ],
+                                 "limitations":  [
+                                                     "Animaties dragen mogelijk niet over naar statische formaten",
+                                                     "Lettertypen kunnen verschuiven zonder insluiting"
+                                                 ]
+                             },
+                    "xlsx":  {
+                                 "name":  "XLSX",
+                                 "category":  "document",
+                                 "extensions":  [
+                                                    "xlsx"
+                                                ],
+                                 "mime":  [
+                                              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                                          ],
+                                 "synonyms":  [
+                                                  "Microsoft Excel‑werkmap"
+                                              ],
+                                 "one_liner":  "Spreadsheet‑werkmappen met formules, opmaak en meerdere werkbladen.",
+                                 "about_to":  "XLSX slaat gestructureerde data, formules, grafieken en opmaak over meerdere bladen op. Converteer naar CSV/TSV voor eenvoudige, app‑agnostische data‑uitwisseling, of naar PDF voor read‑only delen. Voor grote datasets kun je schone CSV‑extracten opslaan voor pipelines.",
+                                 "about_from":  "Van XLSX naar CSV/TSV verlies je formules en opmaak en behoud je alleen ruwe waarden. Voor data science of ETL is dat vaak juist wenselijk en makkelijker te automatiseren.",
+                                 "common_uses":  [
+                                                     "Data‑analyse",
+                                                     "Financiële modellen",
+                                                     "Rapporten"
+                                                 ],
+                                 "limitations":  [
+                                                     "Opmaak en formules gaan niet mee naar CSV/TSV",
+                                                     "Grote werkmappen kunnen zwaar zijn"
+                                                 ]
+                             },
+                    "csv":  {
+                                "name":  "CSV",
+                                "category":  "gegevens",
+                                "extensions":  [
+                                                   "csv"
+                                               ],
+                                "mime":  [
+                                             "text/csv"
+                                         ],
+                                "synonyms":  [
+                                                 "Comma‑Separated Values"
+                                             ],
+                                "one_liner":  "Platte‑tekst tabeldata; eenvoudig te importeren in bijna elke tool.",
+                                "about_to":  "CSV stelt tabellen voor als platte tekst met komma’s tussen velden. Het is lichtgewicht, leesbaar voor mensen en breed ondersteund—perfect voor gegevensuitwisseling. Kies CSV wanneer je maximale portabiliteit wilt zonder formules of opmaak.",
+                                "about_from":  "Converteren van CSV naar XLSX of JSON voegt structuur toe voor analyse of apps. Let op scheidingstekens, regeleinden en encoderingen—vooral bij niet‑ASCII‑data.",
+                                "common_uses":  [
+                                                    "Data‑export/import",
+                                                    "ETL‑pijplijnen",
+                                                    "API’s en logs"
+                                                ],
+                                "limitations":  [
+                                                    "Geen formules of styling",
+                                                    "Ambiguïteit met komma’s/quotes/nieuwe regels"
+                                                ]
+                            },
+                    "tsv":  {
+                                "name":  "TSV",
+                                "category":  "gegevens",
+                                "extensions":  [
+                                                   "tsv"
+                                               ],
+                                "mime":  [
+                                             "text/tab-separated-values"
+                                         ],
+                                "synonyms":  [
+                                                 "Tab‑Separated Values"
+                                             ],
+                                "one_liner":  "Platte‑tekst tabellen met tabs; voorkomt veel CSV‑quoteproblemen.",
+                                "about_to":  "TSV slaat tabeldata op met tabs tussen velden, waardoor minder quotes en escaping nodig zijn. Handig wanneer velden komma’s kunnen bevatten. Kies TSV voor schone uitwisseling met minder valkuilen rond quoten.",
+                                "about_from":  "Converteren van TSV naar CSV of XLSX is eenvoudig. Let op tabs binnen velden; sommige tools escapen die anders.",
+                                "common_uses":  [
+                                                    "Gegevensuitwisseling",
+                                                    "Bio‑informatica",
+                                                    "Logverwerking"
+                                                ],
+                                "limitations":  [
+                                                    "Tabs binnen velden kunnen nog steeds problemen geven",
+                                                    "Geen formules of opmaak"
+                                                ]
+                            },
+                    "txt":  {
+                                "name":  "TXT",
+                                "category":  "tekst",
+                                "extensions":  [
+                                                   "txt"
+                                               ],
+                                "mime":  [
+                                             "text/plain"
+                                         ],
+                                "synonyms":  [
+                                                 "Platte tekst"
+                                             ],
+                                "one_liner":  "Eenvoudige tekst zonder opmaak; opent in elke editor of op elk apparaat.",
+                                "about_to":  "TXT is de eenvoudigste manier om tekst op te slaan—klein, draagbaar en toekomstbestendig. Ideaal voor notities, snelle exports en scripts. Converteer naar PDF voor delen of naar Markdown/HTML voor rijke opmaak.",
+                                "about_from":  "Vanaf TXT kun je de inhoud structureren in Markdown, HTML of DOCX. Geef de codering (UTF‑8) op om verminkte tekens te voorkomen.",
+                                "common_uses":  [
+                                                    "Notities",
+                                                    "Logs",
+                                                    "Readme‑bestanden"
+                                                ],
+                                "limitations":  [
+                                                    "Geen opmaak",
+                                                    "Codering kan problemen geven als niet UTF‑8"
+                                                ]
+                            },
+                    "md":  {
+                               "name":  "Markdown",
+                               "category":  "tekst",
+                               "extensions":  [
+                                                  "md",
+                                                  "markdown"
+                                              ],
+                               "mime":  [
+                                            "text/markdown"
+                                        ],
+                               "synonyms":  [
+                                                "MD"
+                                            ],
+                               "one_liner":  "Lichtgewicht markup die netjes omzet naar HTML en PDF.",
+                               "about_to":  "Markdown is een schrijfvriendelijke syntax voor koppen, lijsten, links en code. Bestanden blijven klein en zijn goed te vergelijken in versiebeheer; daarna compileer je naar HTML of PDF voor publicatie. Kies Markdown wanneer je eenvoudig wilt schrijven met schone exports.",
+                               "about_from":  "Converteren van Markdown naar HTML of PDF levert verzorgde uitvoer op. Bewaar de MD als bron van waarheid en exporteer naar behoefte verschillende formaten.",
+                               "common_uses":  [
+                                                   "Documentatie",
+                                                   "Blogs",
+                                                   "Readme‑bestanden"
+                                               ],
+                               "limitations":  [
+                                                   "Beperkte fijne lay‑outcontrole",
+                                                   "Extensies verschillen per renderer"
+                                               ]
+                           },
+                    "json":  {
+                                 "name":  "JSON",
+                                 "category":  "gegevens",
+                                 "extensions":  [
+                                                    "json"
+                                                ],
+                                 "mime":  [
+                                              "application/json"
+                                          ],
+                                 "synonyms":  [
+                                                  "JavaScript Object Notation"
+                                              ],
+                                 "one_liner":  "Gestructureerd dataformaat voor API’s en apps; leesbaar en taalonafhankelijk.",
+                                 "about_to":  "JSON codeert objecten, arrays en waarden in lichtgewicht tekst die programma’s eenvoudig kunnen parsen. Het is de facto standaard voor web‑API’s en configuratie. Converteer naar CSV voor platte tabellen of blijf bij JSON voor gestructureerde data met nesting.",
+                                 "about_from":  "Converteren vanaf JSON betekent vaak platmaken naar CSV of velden transformeren voor analyse. Let op geneste arrays/objecten—complexe structuren vragen maatwerkmapping.",
+                                 "common_uses":  [
+                                                     "API’s",
+                                                     "Configs",
+                                                     "Gebeurtenislogs"
+                                                 ],
+                                 "limitations":  [
+                                                     "Niet ideaal voor grote binaire data",
+                                                     "Diepe nesting bemoeilijkt tabel‑export"
+                                                 ]
+                             },
+                    "jsonl":  {
+                                  "name":  "JSON Lines",
+                                  "category":  "gegevens",
+                                  "extensions":  [
+                                                     "jsonl",
+                                                     "ndjson"
+                                                 ],
+                                  "mime":  [
+                                               "application/x-ndjson",
+                                               "application/json"
+                                           ],
+                                  "synonyms":  [
+                                                   "NDJSON"
+                                               ],
+                                  "one_liner":  "Eén JSON‑object per regel voor streaming en big‑data‑pijplijnen.",
+                                  "about_to":  "JSON Lines slaat records regel voor regel op, wat goed streamt en schaalt naar grote datasets. Ideaal voor logs en ML‑pijplijnen. Kies JSONL wanneer elke regel een zelfstandig object is dat je incrementeel kunt verwerken.",
+                                  "about_from":  "Vanaf JSONL kun je records bundelen in één JSON‑array of ze platmaken naar CSV voor analyse. Zorg dat de afhandeling van nieuwe regels consistent blijft over systemen.",
+                                  "common_uses":  [
+                                                      "Logs",
+                                                      "Machine‑learningdatasets",
+                                                      "ETL"
+                                                  ],
+                                  "limitations":  [
+                                                      "Minder vriendelijk voor mensen bij complexe geneste data",
+                                                      "Voorzichtig omgaan met regeleinden vereist"
+                                                  ]
+                              },
+                    "html":  {
+                                 "name":  "HTML",
+                                 "category":  "web",
+                                 "extensions":  [
+                                                    "html",
+                                                    "htm"
+                                                ],
+                                 "mime":  [
+                                              "text/html"
+                                          ],
+                                 "synonyms":  [
+                                                  "HyperText Markup Language"
+                                              ],
+                                 "one_liner":  "Markup voor webpagina’s; kan tekst, afbeeldingen, CSS en scripts bevatten.",
+                                 "about_to":  "HTML structureert content voor browsers. Bij conversie naar PDF krijg je een vaste momentopname; naar TXT krijg je platte tekst; naar Markdown behoud je leesbare structuur. Kies HTML voor webpresentatie en converteer wanneer je statische, deelbare output nodig hebt.",
+                                 "about_from":  "Converteren van HTML naar PDF of afbeeldingen is gebruikelijk voor rapporten en bonnetjes. Dynamische scripts en stijlen worden mogelijk niet volledig overgenomen—maak afdrukvriendelijke stijlen voor export.",
+                                 "common_uses":  [
+                                                     "Webpagina’s",
+                                                     "E‑mails",
+                                                     "Rapporten"
+                                                 ],
+                                 "limitations":  [
+                                                     "Rendering verschilt per engine",
+                                                     "Dynamische content exporteert mogelijk niet zoals verwacht"
+                                                 ]
+                             },
+                    "zip":  {
+                                "name":  "ZIP",
+                                "category":  "archief",
+                                "extensions":  [
+                                                   "zip"
+                                               ],
+                                "mime":  [
+                                             "application/zip"
+                                         ],
+                                "synonyms":  [
+
+                                             ],
+                                "one_liner":  "Universeel archief met brede OS‑ondersteuning en optionele AES‑versleuteling.",
+                                "about_to":  "ZIP bundelt bestanden en mappen in één pakket met compressie. Het opent native op Windows, macOS en Linux, waardoor het de veiligste keuze is voor delen. Veel tools ondersteunen ook sterke AES‑versleuteling in ZIP‑archieven.",
+                                "about_from":  "Converteren van ZIP naar 7Z/RAR kan de compressie verbeteren op grote, diverse datasets. Gebruik ZIP wanneer compatibiliteit voor de ontvanger het belangrijkst is.",
+                                "common_uses":  [
+                                                    "Downloads verpakken",
+                                                    "E‑mailbijlagen",
+                                                    "Back‑ups"
+                                                ],
+                                "limitations":  [
+                                                    "Compressie is bescheiden t.o.v. 7Z/XZ",
+                                                    "Wachtwoordbeveiliging varieert per tool"
+                                                ]
+                            },
+                    "rar":  {
+                                "name":  "RAR",
+                                "category":  "archief",
+                                "extensions":  [
+                                                   "rar"
+                                               ],
+                                "mime":  [
+                                             "application/vnd.rar"
+                                         ],
+                                "synonyms":  [
+
+                                             ],
+                                "one_liner":  "Proprietair archief met solide compressie en herstelmogelijkheden.",
+                                "about_to":  "RAR biedt sterke compressie en kan herstelrecords bevatten voor beschadigde archieven. Populair bij power‑users maar vereist compatibele software om te maken/te openen. Kies RAR wanneer je goede compressie en foutherstel wilt.",
+                                "about_from":  "Converteren van RAR naar ZIP of 7Z verbetert openheid en kan delen vergemakkelijken. Let op: RAR’s maken vereist doorgaans commerciële tools.",
+                                "common_uses":  [
+                                                    "Grote bestandsets",
+                                                    "Langetermijnopslag",
+                                                    "Scene‑releases"
+                                                ],
+                                "limitations":  [
+                                                    "Proprietair formaat",
+                                                    "Aanmaken vereist vaak betaalde software"
+                                                ]
+                            },
+                    "7z":  {
+                               "name":  "7Z",
+                               "category":  "archief",
+                               "extensions":  [
+                                                  "7z"
+                                              ],
+                               "mime":  [
+                                            "application/x-7z-compressed"
+                                        ],
+                               "synonyms":  [
+                                                "7‑Zip‑archief"
+                                            ],
+                               "one_liner":  "Hoge compressieverhouding met LZMA/LZMA2 en optionele AES‑256‑versleuteling.",
+                               "about_to":  "7Z behaalt uitstekende compressie, vooral op grote of repetitieve data. Het ondersteunt solide blokken, zeer grote archieven en AES‑256‑versleuteling. Kies 7Z wanneer grootte belangrijker is dan out‑of‑the‑box OS‑ondersteuning.",
+                               "about_from":  "Converteren van 7Z naar ZIP verbetert de native compatibiliteit op alle devices, tegen iets grotere bestanden.",
+                               "common_uses":  [
+                                                   "Softwarebundels",
+                                                   "Back‑ups",
+                                                   "Grote datasets distribueren"
+                                               ],
+                               "limitations":  [
+                                                   "Niet overal native te openen",
+                                                   "Compressie kan CPU‑intensief zijn"
+                                               ]
+                           },
+                    "tar":  {
+                                "name":  "TAR",
+                                "category":  "archief",
+                                "extensions":  [
+                                                   "tar"
+                                               ],
+                                "mime":  [
+                                             "application/x-tar"
+                                         ],
+                                "synonyms":  [
+                                                 "Tape Archive"
+                                             ],
+                                "one_liner":  "Bestandssysteem‑bundelaar die veel bestanden als één stream opslaat—zonder compressie.",
+                                "about_to":  "TAR combineert meerdere bestanden en mappen in één archief en bewaart rechten en metadata. Het comprimeert niet zelf; het wordt vaak gepaard met Gzip, Bzip2 of XZ (bijv. .tgz). Kies TAR wanneer je een UNIX‑vriendelijke bundel wilt met nauwkeurige metadata.",
+                                "about_from":  "Converteren van TAR naar ZIP of 7Z voegt compressie toe en verbetert de compatibiliteit met niet‑UNIX‑gebruikers. Voor kleine sets is alleen ZIP vaak eenvoudiger.",
+                                "common_uses":  [
+                                                    "UNIX‑back‑ups",
+                                                    "Broncode‑releases",
+                                                    "Serverdeployments"
+                                                ],
+                                "limitations":  [
+                                                    "Geen compressie op zichzelf",
+                                                    "Minder bekend bij niet‑technische gebruikers"
+                                                ]
+                            },
+                    "gz":  {
+                               "name":  "GZ",
+                               "category":  "archief",
+                               "extensions":  [
+                                                  "gz"
+                                              ],
+                               "mime":  [
+                                            "application/gzip"
+                                        ],
+                               "synonyms":  [
+                                                "Gzip"
+                                            ],
+                               "one_liner":  "Streamcompressie die vaak met TAR wordt gebruikt om .tgz‑archieven te maken.",
+                               "about_to":  "Gzip comprimeert één stream—vaak een TAR‑bestand—met het DEFLATE‑algoritme. Het is snel en breed ondersteund op servers en in tools. Gebruik .tgz wanneer je een gecomprimeerde tarball met een goede balans tussen snelheid en grootte nodig hebt.",
+                               "about_from":  "Converteren van GZ betekent meestal een .tar.gz uitpakken en opnieuw verpakken als ZIP/7Z. Losse .gz‑bestanden comprimeren één item; ZIP is praktischer voor gemengde mappen.",
+                               "common_uses":  [
+                                                   "Serverlogs",
+                                                   "Pakket‑tarballs (.tgz)",
+                                                   "Unix‑pipes"
+                                               ],
+                               "limitations":  [
+                                                   "Enkelbestandsstream",
+                                                   "Zwakkere compressie dan XZ voor sommige data"
+                                               ]
+                           },
+                    "bz2":  {
+                                "name":  "BZ2",
+                                "category":  "archief",
+                                "extensions":  [
+                                                   "bz2"
+                                               ],
+                                "mime":  [
+                                             "application/x-bzip2"
+                                         ],
+                                "synonyms":  [
+                                                 "Bzip2"
+                                             ],
+                                "one_liner":  "CPU‑zwaardere compressie dan Gzip met kleinere resultaten; vaak gebruikt met TAR.",
+                                "about_to":  "Bzip2 geeft compactheid prioriteit boven snelheid. Het verschijnt vaak als .tar.bz2‑tarballs. Gebruik het wanneer je kleinere bestanden wilt dan Gzip en wat tijd kunt inruilen.",
+                                "about_from":  "Converteren van BZ2 houdt vaak in dat je .tar.bz2 uitpakt en overschakelt naar ZIP/7Z. Voor maximale openheid is ZIP gebruiksvriendelijker.",
+                                "common_uses":  [
+                                                    "Bronarchieven",
+                                                    "Back‑ups op *nix‑systemen"
+                                                ],
+                                "limitations":  [
+                                                    "Trager dan Gzip",
+                                                    "Net als GZ een enkelestream"
+                                                ]
+                            },
+                    "xz":  {
+                               "name":  "XZ",
+                               "category":  "archief",
+                               "extensions":  [
+                                                  "xz"
+                                              ],
+                               "mime":  [
+                                            "application/x-xz"
+                                        ],
+                               "synonyms":  [
+                                                "LZMA2‑compressie"
+                                            ],
+                               "one_liner":  "Zeer hoge compressie via LZMA2; trager maar uitstekend voor archivering.",
+                               "about_to":  "XZ gebruikt LZMA2 om uitstekende compressie te bereiken en wikkelt vaak TAR‑bestanden in als .tar.xz. Geweldig voor langdurige opslag en distributie waar grootte belangrijker is dan snelheid.",
+                               "about_from":  "Vanaf XZ/TAR.XZ kun je naar 7Z of ZIP voor bredere bruikbaarheid. Reken op grotere bestanden als je overstapt naar snellere, meer compatibele formaten.",
+                               "common_uses":  [
+                                                   "Brondistributies",
+                                                   "Linux‑pakketten",
+                                                   "Langetermijnarchieven"
+                                               ],
+                               "limitations":  [
+                                                   "Langzame compressie",
+                                                   "Enkelestream (combineer met TAR voor meerdere bestanden)"
+                                               ]
+                           },
+                    "tgz":  {
+                                "name":  "TGZ",
+                                "category":  "archief",
+                                "extensions":  [
+                                                   "tgz",
+                                                   "tar.gz"
+                                               ],
+                                "mime":  [
+                                             "application/gzip"
+                                         ],
+                                "synonyms":  [
+                                                 "tar.gz"
+                                             ],
+                                "one_liner":  "Een TAR‑archief gecomprimeerd met Gzip; de standaard Linux/UNIX‑tarball.",
+                                "about_to":  "TGZ combineert het bundelen van TAR met de compressie van Gzip voor een praktische balans tussen snelheid en grootte. Het is alomtegenwoordig in UNIX‑tools en pakketmanagers.",
+                                "about_from":  "Converteren vanaf TGZ betekent meestal recomprimeren naar ZIP voor niet‑technische gebruikers of naar 7Z/XZ voor kleinere bestanden.",
+                                "common_uses":  [
+                                                    "Open‑source‑releases",
+                                                    "Serverdeployments",
+                                                    "Pakketdistributie"
+                                                ],
+                                "limitations":  [
+                                                    "Minder bekend op Windows zonder tools",
+                                                    "Niet ideaal voor willekeurige toegang"
+                                                ]
+                            },
+                    "tbz2":  {
+                                 "name":  "TBZ2",
+                                 "category":  "archief",
+                                 "extensions":  [
+                                                    "tbz2",
+                                                    "tar.bz2"
+                                                ],
+                                 "mime":  [
+                                              "application/x-bzip2"
+                                          ],
+                                 "synonyms":  [
+                                                  "tar.bz2"
+                                              ],
+                                 "one_liner":  "Een TAR‑archief gecomprimeerd met Bzip2 voor kleinere bestanden dan Gzip.",
+                                 "about_to":  "TBZ2 koppelt TAR aan Bzip2 voor betere compressie dan Gzip, tegen lagere snelheid. Gebruik het wanneer formaat telt en het publiek met UNIX‑achtige archieven overweg kan.",
+                                 "about_from":  "Vanaf TBZ2 kun je naar ZIP voor universeel delen of naar 7Z/XZ voor maximale compressie.",
+                                 "common_uses":  [
+                                                     "Broncode‑tarballs",
+                                                     "Back‑ups"
+                                                 ],
+                                 "limitations":  [
+                                                     "Langzamere compressie",
+                                                     "Minder bekend buiten UNIX‑tooling"
+                                                 ]
+                             },
+                    "txz":  {
+                                "name":  "TXZ",
+                                "category":  "archief",
+                                "extensions":  [
+                                                   "txz",
+                                                   "tar.xz"
+                                               ],
+                                "mime":  [
+                                             "application/x-xz"
+                                         ],
+                                "synonyms":  [
+                                                 "tar.xz"
+                                             ],
+                                "one_liner":  "Een TAR‑archief gecomprimeerd met XZ voor uitstekende grootte bij lagere snelheden.",
+                                "about_to":  "TXZ biedt sterke compressie door TAR te combineren met XZ (LZMA2). Een goede keuze voor langdurige distributie wanneer minimaliseren van grootte belangrijker is dan snelheid.",
+                                "about_from":  "Converteren van TXZ naar ZIP kan de bestandsgrootte vergroten maar verbetert de native compatibiliteit op Windows en macOS.",
+                                "common_uses":  [
+                                                    "Linux‑pakketten",
+                                                    "Langetermijnarchieven"
+                                                ],
+                                "limitations":  [
+                                                    "Langzame compressie",
+                                                    "Minder vriendelijk voor casual gebruikers"
+                                                ]
+                            },
+                    "rtf":  {
+                                "name":  "RTF",
+                                "category":  "document",
+                                "extensions":  [
+                                                   "rtf"
+                                               ],
+                                "mime":  [
+                                             "application/rtf",
+                                             "text/rtf"
+                                         ],
+                                "synonyms":  [
+                                                 "Rich Text Format"
+                                             ],
+                                "one_liner":  "Formatted text exchange format that preserves basic styling across word processors.",
+                                "about_to":  "RTF (Rich Text Format) keeps fonts, basic styles, and simple images while remaining widely compatible. Convert to DOCX or PDF for modern editing or fixed-layout sharing.",
+                                "about_from":  "Converting from RTF is common when you want cleaner layouts (DOCX) or a print-perfect file (PDF). Complex elements may simplify because RTF focuses on portability.",
+                                "common_uses":  [
+                                                    "Cross-platform text",
+                                                    "Simple documents",
+                                                    "Interchange between editors"
+                                                ],
+                                "limitations":  [
+                                                    "Limited advanced layout",
+                                                    "Larger than plain text"
+                                                ]
+                            },
+                    "tar.gz":  {
+                                   "alias_of":  "tgz"
+                               },
+                    "tar.bz2":  {
+                                    "alias_of":  "tbz2"
+                                },
+                    "tar.xz":  {
+                                   "alias_of":  "txz"
+                               },
+                    "tbz":  {
+                                "alias_of":  "tbz2"
+                            },
+                    "tif":  {
+                                "alias_of":  "tiff"
+                            }
+                },
+    "pair_notes_templates":  {
+                                 "lossy_to_lossy":  "Converten van {FROM} naar {TO} verbetert de kwaliteit niet omdat beide verliesgevende codecs zijn. Kies een hogere bitrate of begin met een verliesloos bronbestand voor het beste resultaat.",
+                                 "container_swap":  "Het wijzigen van containers (bijv. {FROM} naar {TO}) kan verliesloos zijn als audio-/videocodecs al compatibel zijn; anders is transcodering nodig.",
+                                 "archive_note":  "Archiveren van {FROM}-bestanden in {TO} bundelt items voor delen/opslag; het hercodeert media niet en verandert de kwaliteit niet.",
+                                 "scan_ocr":  "Als je PDF een gescande afbeelding is, schakel dan OCR in bij het converteren zodat de uitvoer doorzoekbaar/bewerkbaar wordt.",
+                                 "photo_graphic":  "Gebruik PNG/WebP voor graphics met tekst of transparantie; gebruik JPEG/WebP voor foto’s om de bestandsgrootte klein te houden."
+                             }
+}

@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="de">
+<head>
+<!-- CMP-START (auto-inserted) -->
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){ dataLayer.push(arguments); }
+gtag('consent','default',{
+ad_storage:'denied',
+analytics_storage:'denied',
+ad_user_data:'denied',
+ad_personalization:'denied'
+});
+</script>
+<script async src="https://fundingchoicesmessages.google.com/i/pub-6251303109610053?ers=1"></script>
+<script>
+(function signalGooglefcPresent(){
+if(!window.frames['googlefcPresent']){
+if(document.body){
+var f=document.createElement('iframe');
+f.style='width:0;height:0;border:none;position:absolute;left:-9999px;';
+f.name='googlefcPresent';
+document.body.appendChild(f);
+} else { setTimeout(signalGooglefcPresent,0); }
+}
+})();
+(function waitForTCF(){
+function go(){
+if(window.__adsLoaded) return;
+window.__adsLoaded = true;
+if(typeof window.loadAdSense==='function'){ window.loadAdSense(); }
+else{
+if(document.getElementById('adsbygoogle-js')) return;
+var s=document.createElement('script');
+s.id='adsbygoogle-js';
+s.async=true;
+s.src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6251303109610053';
+s.crossOrigin='anonymous';
+document.head.appendChild(s);
+}
+}
+if(typeof __tcfapi!=='function'){ setTimeout(waitForTCF,50); return; }
+__tcfapi('addEventListener',2,function(tcData,success){
+if(!success) return;
+if(['useractioncomplete','tcloaded'].indexOf(tcData.eventStatus)>-1){ go(); }
+});
+})();
+</script>
+<!-- CMP-END (auto-inserted) -->
+<meta charset="utf-8">
+<title>Sicherheit | {{BRAND}} — Lokale, geräteinterne Konvertierungen (ohne Uploads)</title>
+<meta name="description" content="{{BRAND}} verarbeitet Dateien vollständig in Ihrem Browser. Keine Uploads. Erfahren Sie mehr über unser Sicherheitsmodell: HTTPS/HSTS, CSP, SRI, Isolation und Offenlegungsrichtlinie.">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="index,follow">
+
+<!-- <link rel="alternate" hreflang="x-default" href="https://www.all-in-one-converter.net/languages/en/"/><link rel="alternate" hreflang="en" href="https://www.all-in-one-converter.net/languages/en/"/> -->
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="{{BRAND}}">
+<meta property="og:title" content="Sicherheit | {{BRAND}}">
+<meta property="og:description" content="Geräteinterne Konvertierungen. So schützen wir die App und Ihre Privatsphäre.">
+<meta property="og:url" content="https://www.all-in-one-converter.net/languages/de/sicherheit/"/>
+<!-- <meta property="og:image" content="https://yourcdn.example/og/security.png"> -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Sicherheit | {{BRAND}}">
+<meta name="twitter:description" content="Geräteinterne Konvertierungen, HTTPS/HSTS, CSP, SRI, Isolation und Offenlegungsrichtlinie.">
+<!-- Structured Data -->
+<script type="application/ld+json">
+{
+"@context":"https://schema.org",
+"@type":"WebPage",
+"name":"Sicherheit",
+"url":"https://www\.all-in-one-converter\.net/de/sicherheit/",
+"inLanguage":"de",
+"datePublished":"2025-10-19",
+"dateModified":"2025-10-19"
+}
+</script>
+<script type="application/ld+json">
+{
+"@context":"https://schema.org",
+"@type":"BreadcrumbList",
+"itemListElement":[
+{"@type":"ListItem","position":1,"name":"Startseite","item":"https://www\.all-in-one-converter\.net/de/sicherheit//../"},
+{"@type":"ListItem","position":2,"name":"Sicherheit","item":"https://www\.all-in-one-converter\.net/de/sicherheit/"}
+]
+}
+</script>
+  <link rel="canonical" href="https://www.all-in-one-converter.net/languages/de/sicherheit/"/>
+</head>
+<body>
+<main>
+<header>
+
+<h1>Sicherheit bei {{BRAND}}</h1>
+<p><strong>Zuletzt aktualisiert:</strong> 19. Oktober 2025</p>
+<p>{{BRAND}} führt Dateikonvertierungen <strong>vollständig in Ihrem Browser</strong> aus. Ihre Dateien werden <strong>nie</strong> auf unsere Server hochgeladen. Nachfolgend zeigen wir, wie wir Nutzer und die App selbst schützen.</p>
+</header>
+<section id="threat-model">
+<h2>Bedrohungsmodell &amp; Philosophie</h2>
+<ul>
+<li><strong>Datenminimierung:</strong> Dateien und sensible Inhalte verbleiben auf Ihrem Gerät.</li>
+<li><strong>Transportsicherheit:</strong> Alle Seiten werden über HTTPS mit aktiviertem HSTS ausgeliefert.</li>
+<li><strong>Isolierung:</strong> Rechenintensive Verarbeitung nutzt – sofern verfügbar – WebAssembly/Web Workers, um Aufgaben im Browser zu sandboxen.</li>
+</ul>
+</section>
+<section id="app-security">
+<h2>Maßnahmen zur Anwendungssicherheit</h2>
+<ul>
+<li><strong>Content Security Policy (CSP):</strong> restriktive Standardregeln begrenzen Skriptquellen und Inline-Code.</li>
+<li><strong>Subresource Integrity (SRI):</strong> Drittanbieter-Skripte/-Styles werden, wo möglich, mit <code>integrity</code>-Attributen abgesichert.</li>
+<li><strong>Header:</strong> COOP/COEP/CORP und Permissions Policy reduzieren Cross-Origin-Risiken und beschränken leistungsfähige APIs.</li>
+<li><strong>Lieferkette:</strong> Abhängigkeits-Updates werden verfolgt und Sicherheits-Patches zeitnah eingespielt.</li>
+<li><strong>Sandboxing für Anzeigen:</strong> Anzeigenplätze nutzen feste Größen und sandboxed Iframes, um Layout-Verschiebungen zu minimieren und Risiken zu reduzieren.</li>
+</ul>
+<p><em>Hinweis:</em> Konkrete Richtlinien können je nach Deployment variieren; wenn Sie forschen, kontaktieren Sie uns für Details.</p>
+</section>
+<section id="user-data">
+<h2>Ihre Dateien &amp; Daten</h2>
+<ul>
+<li><strong>Keine Uploads:</strong> Die Konvertierung erfolgt lokal in Ihrem Browser.</li>
+<li><strong>Keine Aufbewahrung:</strong> Wir speichern Ihre Dateien nicht auf unseren Servern.</li>
+<li><strong>Nur Werbung &amp; Einwilligung:</strong> Wir können in begrenztem Umfang Kennungen verarbeiten, um Anzeigen auszuliefern und zu messen – gemäß Ihren Einwilligungspräferenzen. Siehe unsere <a href="/languages/de/datenschutz/">Datenschutzerklärung</a>.</li>
+</ul>
+</section>
+<section id="disclosure">
+<h2>Verantwortungsvolle Offenlegung von Schwachstellen</h2>
+<p>Wenn Sie ein Sicherheitsproblem gefunden haben, senden Sie bitte eine E-Mail mit Details an <a href="mailto:{{SECURITY_EMAIL}}">{{SECURITY_EMAIL}}</a>. Bei verantwortungsvoller Offenlegung bestätigen wir den Eingang und arbeiten zügig an der Behebung.</p>
+<p>Optional: Wir stellen auch <code>/.well-known/security.txt</code> mit unseren aktuellen Kontaktinformationen bereit.</p>
+</section>
+<section id="availability">
+<h2>Dienstverfügbarkeit</h2>
+<p>Als In-Browser-Tool hängt {{BRAND}} von der Leistungsfähigkeit Ihres Geräts und den Fähigkeiten Ihres Browsers ab. Wir unterstützen aktuelle Versionen gängiger Browser auf Desktop und Mobilgeräten.</p>
+</section>
+<nav aria-label="Verwandte Links">
+<ul>
+<li><a href="/languages/de/datenschutz/">Datenschutz</a></li>
+<li><a href="/languages/de/fragen-und-antworten/">FAQ</a></li>
+<li><a href="/languages/de/anleitung/">Anleitungen</a></li>
+<li><a href="/languages/de/nutzungsbedingungen/">Nutzungsbedingungen</a></li>
+</ul>
+</nav>
+</main>
+<!-- CMP-FOOTER-LINK (auto-inserted) -->
+
+<!-- /CMP-FOOTER-LINK -->
+</body>
+</html>

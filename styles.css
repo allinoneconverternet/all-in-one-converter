@@ -1,5 +1,4 @@
-﻿/* styles.css */
-:root {
+﻿:root {
     --bottom-safe: 0px;
     --rail-offset: 24px;
     --scroll-slack: 5vh;
@@ -14,11 +13,15 @@
     --border: #263154;
     --shadow: 0 10px 30px rgba(0, 0, 0, .25);
     --radius: 16px;
-
     --cap_okay_colour: rgb(0, 252, 42);
+<<<<<<< HEAD
     --topbar_background_colour: linear-gradient(180deg, rgb(11, 16, 32), rgb(11, 16, 32));
     --progress-fill: #C04519;
     /* 🔶 your orange */
+=======
+    --topbar_background_colour: #0B1020;
+    --progress-fill: #C04519;
+>>>>>>> 5f42b62d2 (Update 2025-11-01 17:35:17)
     --progress-track: #F0F0F0;
     --advert_background_colour: #0b1226;
     --topbar_button_background_colour: #10182e;
@@ -28,12 +31,17 @@
     --convert_button_background_colour: linear-gradient(180deg, #1b2b59, #12234b);
     --button_background_colour: #10182e;
     --choose_file_background: #10182e;
-
     --body_background_colour: radial-gradient(1200px 800px at 20% -10%, #162044, transparent 60%), radial-gradient(1200px 800px at 120% 20%, #112042, transparent 60%), var(--bg);
+<<<<<<< HEAD
 --choose_file_background_colour: #ffff;
+=======
+    --choose_file_background_colour: #ffff;
+>>>>>>> 5f42b62d2 (Update 2025-11-01 17:35:17)
 }
 
 :root[data-theme="light"] {
+    --progress-fill: #C04519;
+    --progress-track: rgba(255, 255, 255, .08);
     --bg: #f6f8ff;
     --panel: #ffffff;
     --panel-2: #f2f4ff;
@@ -56,30 +64,21 @@
     --panel_background_colour: #FFFFFF;
     --dropzone_background_colour: #FDFDFF;
     --cap_okay_colour: rgba(5, 235, 43, 0.377);
-    --convert_button_background_colour: #5589D2;
-
+    --convert_button_background_colour: #b0ccfd;
 }
 
 :root {
+    --scroll-slack: 0vh !important;
     --bg: #0b1020;
-    /* your base */
-    /* fade to alpha-0 of the same colors (not plain transparent) */
-    --body_background_colour:
-        radial-gradient(1200px 800px at 20% -10%,
-            #162044 0%,
-            rgba(22, 32, 68, 0) 60%),
-        radial-gradient(1200px 800px at 120% 20%,
-            #112042 0%,
-            rgba(17, 32, 66, 0) 60%),
-        var(--bg);
+    --body_background_colour: radial-gradient(1200px 800px at 20% -10%, #162044 0%, rgba(22, 32, 68, 0) 60%), radial-gradient(1200px 800px at 120% 20%, #112042 0%, rgba(17, 32, 66, 0) 60%), var(--bg);
+    --topbar-btn-w: 140px;
+    --topbar-btn-h: 38px;
 }
 
-/* Hide unfilled AdSense INS nodes immediately */
 ins.adsbygoogle[data-ad-status="unfilled"] {
     display: none !important;
 }
 
-/* Utility: hide the whole ad slot wrapper if we decide to collapse it */
 .ad-slot.is-collapsed {
     display: none !important;
 }
@@ -88,41 +87,33 @@ ins.adsbygoogle[data-ad-status="unfilled"] {
     display: none !important;
 }
 
-/* Paint it once, fixed to the viewport so it never “jumps” */
 html {
     background: var(--body_background_colour);
     background-attachment: fixed, fixed, fixed;
-    /* one per layer */
     background-repeat: no-repeat;
     background-color: var(--bg);
-    /* fallback */
-}
-
-/* Let html's background show through */
-body,
-body::after {
-    background: transparent;
-}
-
-* {
-    box-sizing: border-box
-}
-
-html,
-body {
-    height: 100%
+    height: 100%;
 }
 
 body {
+    height: 100%;
     margin: 0;
     font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
     background: var(--body_background_colour);
     color: var(--text);
     overflow: visible;
-
 }
 
-/* Dark theme fade */
+body::after {
+    height: 0 !important;
+    background: transparent;
+    content: "";
+    display: block;
+}
+
+* {
+    box-sizing: border-box;
+}
 
 header {
     position: sticky;
@@ -130,103 +121,122 @@ header {
     z-index: 5;
     background: var(--topbar_background_colour);
     border-bottom: 1px solid var(--border);
-
 }
 
 .wrap {
     max-width: 1100px;
     margin: 0 auto;
-    padding: 18px 20px
+    padding: 18px 20px;
 }
 
 .header-row {
     justify-content: space-between;
+    display: flex;
     align-items: center;
-    display: flex
 }
 
 .header-tools {
-    gap: 10px;
+    display: flex;
     align-items: center;
-    display: flex
+    gap: 8px;
 }
 
 h1 {
     margin: 0;
-    font-size: clamp(20px, 2.4vw, 28px)
+    font-size: clamp(20px, 2.4vw, 28px);
 }
 
 main {
     max-width: 1100px;
     margin: 18px auto 140px;
-    padding: 0 20px
+    padding: 0 20px;
 }
 
 .panel {
+    margin-bottom: 50px;
+    padding: 25px;
     background: var(--panel_background_colour);
     border: 1px solid var(--border);
     border-radius: var(--radius);
     box-shadow: var(--shadow);
-    overflow: hidden
+    overflow: hidden;
 }
 
 .grid {
     display: grid;
-    gap: 16px
-}
-
-@media (min-width:960px) {
-    .grid {
-        grid-template-columns: 1.2fr .8fr
-    }
+    gap: 16px;
 }
 
 .controls {
-    padding: 18px
+    padding: 18px;
 }
 
 .controls h2 {
     margin: 4px 0 10px;
     font-size: 18px;
-    color: var(--muted)
+    color: var(--muted);
 }
 
 .row {
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
-    align-items: center
+    align-items: center;
 }
 
 .row>* {
-    flex: 1
+    flex: 1;
 }
 
 .flex2 {
+<<<<<<< HEAD
     flex: 2;
     max-width: 65%;
     
+=======
+    max-width: 65%;
+    flex: 2;
+>>>>>>> 5f42b62d2 (Update 2025-11-01 17:35:17)
 }
 
 .flex1 {
-    flex: 1
+    flex: 1;
 }
 
 .mt {
-    margin-top: 18px
+    margin-top: 18px;
 }
 
 .mt-small {
-    margin-top: 12px
+    margin-top: 12px;
 }
 
 label {
     font-size: 12px;
-    color: var(--muted)
+    color: var(--muted);
 }
 
-select,
-input[type="number"],
+select {
+    width: 100%;
+    background: #0b1226;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    outline: none;
+}
+
+input[type="number"] {
+    width: 100%;
+    background: #0b1226;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    outline: none;
+    background-color: var(--choose_file_background);
+}
+
 button {
     width: 100%;
     background: #0b1226;
@@ -234,68 +244,73 @@ button {
     border: 1px solid var(--border);
     border-radius: 10px;
     padding: 10px 12px;
-    outline: none
+    outline: none;
+    background-color: var(--choose_file_background);
+    cursor: pointer;
+    transition: transform .02s ease, background .2s ease;
 }
 
-:root[data-theme="light"] select,
-:root[data-theme="light"] select,
-input[type="number"],
-button {
+:root[data-theme="light"] select {
     background-color: var(--choose_file_background);
 }
 
-select:focus,
-input:focus,
-button:focus {
-    border-color: var(--accent)
+select:focus {
+    border-color: var(--accent);
 }
 
-/* File input: panel-colored text field + distinct button */
+input:focus {
+    border-color: var(--accent);
+}
+
+button:focus {
+    border-color: var(--accent);
+}
+
 .file-input {
     font: 500 14px/1 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
     color: var(--text);
     background: var(--panel);
-    /* ← matches panel */
-
     border-radius: 10px;
     padding: 10px 12px;
 }
 
-/* Keep the button looking like the rest of your UI (not the panel) */
-.file-input::file-selector-button,
-.file-input::-webkit-file-upload-button {
+.file-input::file-selector-button {
     font: inherit;
     color: var(--text);
     background: var(--button_background_colour);
-    /* ← keep your button color */
     border: 1px solid var(--convert_border);
     border-radius: 10px;
     padding: 8px 14px;
     margin-right: 10px;
-    /* breathing room before “No file chosen” */
     cursor: pointer;
 }
 
-/* Focus/hover polish (optional) */
+.file-input::-webkit-file-upload-button {
+    font: inherit;
+    color: var(--text);
+    background: var(--button_background_colour);
+    border: 1px solid var(--convert_border);
+    border-radius: 10px;
+    padding: 8px 14px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
 .file-input:focus-visible {
     outline: none;
     border-color: var(--accent);
 }
 
-.file-input:focus-visible::file-selector-button,
-.file-input:focus-visible::-webkit-file-upload-button {
-
+.file-input:focus-visible::file-selector-button {
     box-shadow: 0 0 0 3px rgba(99, 132, 255, .2);
 }
 
-
-button {
-    cursor: pointer;
-    transition: transform .02s ease, background .2s ease
+.file-input:focus-visible::-webkit-file-upload-button {
+    box-shadow: 0 0 0 3px rgba(99, 132, 255, .2);
 }
 
 button:hover {
-    transform: translateY(-1px)
+    transform: translateY(-1px);
 }
 
 .btn {
@@ -305,13 +320,19 @@ button:hover {
 
 .btn-ghost {
     background: var(--button_background_colour);
-
 }
 
 .btn-topbar {
     background: var(--topbar_button_background_colour);
-
-    max-width: 150px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: var(--topbar-btn-w);
+    height: var(--topbar-btn-h);
+    line-height: 1;
+    width: 48%;
+    max-width: none !important;
+    white-space: nowrap;
 }
 
 .dropzone {
@@ -321,7 +342,7 @@ button:hover {
     padding: 18px;
     text-align: center;
     background: var(--dropzone_background_colour);
-    transition: border-color .2s ease, background .2s ease
+    transition: border-color .2s ease, background .2s ease;
 }
 
 :root[data-theme="light"] .dropzone {
@@ -330,60 +351,65 @@ button:hover {
 
 .dropzone.drag {
     border-color: var(--accent);
-    background: #0f1a38
+    background: #0f1a38;
 }
 
 .filelist {
     padding: 0;
     list-style: none;
-    margin: 0
+    margin: 0;
 }
 
 .filecard {
+    position: relative;
     display: flex;
-    gap: 12px;
     align-items: center;
+    gap: 12px;
     padding: 12px 16px;
     border-top: 1px solid var(--border);
     border-radius: 10px;
     background: var(--panel);
     flex-wrap: nowrap;
-    /* keep one line by default */
 }
 
 .filecard:first-child {
-    border-top: none
+    border-top: none;
 }
 
 .f-name {
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap
 }
 
 .badge {
-    font-size: 11px;
     background: var(--convert_button_background_colour);
     border: 1px solid var(--border);
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
     padding: 4px 8px;
-    border-radius: 999px
+    min-width: 84px;
+    white-space: nowrap;
+    font-size: 12px;
 }
 
 .status {
+    color: var(--muted);
+    white-space: nowrap;
     font-size: 12px;
-    color: var(--muted)
 }
-
-/* removed global progress width (conflicted with file rows) */
 
 .downloads {
     padding: 16px;
     border-top: 1px solid var(--border);
-    background: #0e1430
+    background: #0e1430;
 }
 
 :root[data-theme="light"] .downloads {
-    background: #ffffff
+    background: #ffffff;
 }
 
 .downloads a {
@@ -393,35 +419,39 @@ button:hover {
     border: 1px solid var(--border);
     border-radius: 8px;
     text-decoration: none;
-    color: var(--text)
+    color: var(--text);
 }
 
 .aside {
     padding: 18px;
-    border-left: 1px solid var(--border)
+    border-left: 1px solid var(--border);
 }
 
 .hint {
     font-size: 13px;
     color: var(--muted);
-    line-height: 1.5
+    line-height: 1.5;
+    padding-right: 50px;
 }
 
 .footer-ads {
-    position: fixed;
     left: 0;
     right: 0;
     bottom: 0;
     z-index: 10;
     border-top: 1px solid var(--border);
     background: linear-gradient(180deg, rgba(20, 26, 47, .92), rgba(20, 26, 47, .98));
-    padding: 10px 16px;
-    display: flex;
-    justify-content: center
+    position: static !important;
+    inset: auto !important;
+    width: 100% !important;
+    margin: 24px auto !important;
+    display: flex !important;
+    justify-content: center !important;
+    padding: 8px 0 !important;
 }
 
 :root[data-theme="light"] .footer-ads {
-    background: #ffffff
+    background: #ffffff;
 }
 
 .ad-slot {
@@ -434,7 +464,7 @@ button:hover {
     justify-content: center;
     color: var(--muted);
     background: #0b1226;
-    position: relative
+    position: relative;
 }
 
 :root[data-theme="light"] .ad-slot {
@@ -446,7 +476,7 @@ button:hover {
     left: 12px;
     top: 8px;
     font-size: 11px;
-    color: #8b93bf
+    color: #8b93bf;
 }
 
 .pill {
@@ -457,18 +487,18 @@ button:hover {
     border: 1px solid var(--border);
     border-radius: 999px;
     background: #0f1a38;
-    font-size: 13px
+    font-size: 13px;
 }
 
 :root[data-theme="light"] .pill {
-    background: #eef2ff
+    background: #eef2ff;
 }
 
 .cap-list {
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
-    margin-top: 8px
+    margin-top: 8px;
 }
 
 .cap {
@@ -476,30 +506,30 @@ button:hover {
     padding: 6px 10px;
     border-radius: 999px;
     border: 1px solid var(--border);
-    background: #0e1430
+    background: #0e1430;
 }
 
 :root[data-theme="light"] .cap {
-    background: #f4f7ff
+    background: #f4f7ff;
 }
 
 .cap.ok {
     border-color: var(--cap_okay_colour);
-    background: rgba(105, 219, 124, .08)
+    background: rgba(105, 219, 124, .08);
 }
 
 .cap.miss {
     border-color: rgba(255, 107, 107, .4);
-    background: rgba(255, 107, 107, .08)
+    background: rgba(255, 107, 107, .08);
 }
 
 .prepanel {
     margin-bottom: 16px;
-    padding: 16px
+    padding: 16px;
 }
 
 .quality-wrap {
-    display: none
+    display: none;
 }
 
 .inline-ad {
@@ -507,27 +537,8 @@ button:hover {
     max-width: 1100px;
     margin: 12px auto 12px;
     padding: 16px;
-    border: 1px dashed var(--border)
+    border: 1px dashed var(--border);
 }
-
-/* Center badge text */
-.badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 4px 8px;
-    min-width: 84px;
-}
-
-/* Filecard polish */
-.filecard {
-    position: relative;
-}
-
-/* removed absolute-positioned .file-remove (we use inline button) */
-
-/* removed duplicate .file-remove:hover */
 
 .f-name.clickable {
     cursor: pointer;
@@ -537,15 +548,18 @@ button:hover {
     text-decoration: underline;
 }
 
-/* Status area download button */
-.btn.btn-small,
+.btn.btn-small {
+    font-size: 12px;
+    padding: 6px 10px;
+    margin-left: 8px;
+}
+
 .btn-small {
     font-size: 12px;
     padding: 6px 10px;
     margin-left: 8px;
 }
 
-/* Output chips at bottom */
 #download-links {
     display: flex;
     flex-wrap: wrap;
@@ -571,25 +585,32 @@ button:hover {
 
 #target-format optgroup.dim {
     opacity: .55;
+<<<<<<< HEAD
 }
 
 body::after {
     content: "";
     display: block;
     height: calc(var(--bottom-safe) + var(--scroll-slack));
+=======
+>>>>>>> 5f42b62d2 (Update 2025-11-01 17:35:17)
 }
 
-/* --- Side rail ads (fixed rails) --- */
 .side-ads {
     pointer-events: none;
+    display: none !important;
 }
 
 .side-ads .rail {
-    position: fixed;
-    top: calc(var(--header-safe, 72px) + var(--rail-offset, 24px));
-    z-index: 9;
     width: var(--rail-w, 160px);
     pointer-events: auto;
+    position: relative;
+    margin-top: auto;
+    margin-bottom: auto;
+    z-index: 2;
+    top: 75px;
+    overflow: hidden;
+    display: none !important;
 }
 
 .side-ads .rail.left {
@@ -608,20 +629,18 @@ body::after {
     justify-content: center;
 }
 
-.side-ads .ad-slot img,
+.side-ads .ad-slot img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
 .side-ads .ad-slot iframe {
     max-width: 100%;
     height: auto;
     display: block;
 }
 
-@media (min-width: 1400px) {
-    .side-ads {
-        --rail-w: 300px;
-    }
-}
-
-/* --- Center the desktop bottom ad under the content --- */
 .bottom-ads {
     position: fixed;
     left: 0;
@@ -644,15 +663,6 @@ body::after {
     max-width: 970px;
 }
 
-@media (max-width: 1280px) {
-    .bottom-ads .ad-bottom {
-        --leader-w: 728px;
-        max-width: 728px;
-    }
-}
-
-/* Bottom ad close button (compact) */
-/* Plain text “×” (no circle) */
 .bottom-ads .ad-close {
     position: absolute;
     top: 6px;
@@ -663,23 +673,1119 @@ body::after {
     border-radius: 0;
     width: auto;
     height: auto;
-    /* no fixed square */
     line-height: 1;
     font-size: 18px;
     font-weight: 700;
     color: var(--muted);
     cursor: pointer;
     z-index: 2;
-    /* above the ad iframe */
 }
 
 .bottom-ads .ad-close:hover {
     color: #fff;
 }
 
-/* Prevent mobile+desktop overlap by default */
-.footer-ads {
+#downloads {
+    display: none !important;
+}
+
+.progwrap .filecard {
+    max-width: 100%;
+}
+
+.filecard .f-name {
+    min-width: 0;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.filecard .file-remove:focus-visible {
+    outline: 2px solid var(--accent);
+}
+
+#file-list {
+    --filecard-max: 820px;
+    --name-ch: 24;
+    --prog-h: 8px;
+    --prog-min: 140px;
+    --prog-shrink: 12px;
+    --prog-w: 160px;
+    --prog-w-conv: 119.5px;
+    --sub-ch: 24;
+}
+
+#file-list .filecard {
+    width: min(100%, var(--filecard-max));
+    margin-inline: auto;
+    gap: 10px;
+    flex-wrap: nowrap;
+    padding: 10px 12px;
+    border: 1px solid var(--border, #2a2a2a);
+    border-radius: 12px;
+    background: var(--panel, rgba(255, 255, 255, 0.04));
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto auto !important;
+    row-gap: 8px !important;
+    align-items: center !important;
+}
+
+#file-list .filecard>* {
+    min-width: 0;
+}
+
+#file-list .f-name {
+    max-inline-size: calc(var(--name-ch) * 1ch);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    min-width: 0;
+    flex: 0 1 calc(var(--name-ch) * 1ch);
+    cursor: default;
+}
+
+#file-list .filecard progress {
+    margin-bottom: 4px;
+    flex: 0 0 var(--prog-w);
+    inline-size: var(--prog-w);
+    block-size: var(--prog-h);
+    height: var(--prog-h);
+    transition: none;
+}
+
+#file-list .filecard progress::-webkit-progress-bar {
+    background: var(--progress-track) !important;
+    height: var(--prog-h);
+    border-radius: 999px;
+}
+
+#file-list .filecard progress::-webkit-progress-value {
+    background: var(--progress-fill) !important;
+    height: var(--prog-h);
+    border-radius: 999px;
+}
+
+#file-list .filecard progress::-moz-progress-bar {
+    background: var(--progress-fill) !important;
+    height: var(--prog-h);
+    border-radius: 999px;
+}
+
+#file-list .filecard [id^="status-"] {
+    flex: 0 0 auto;
+    max-width: 14ch;
+    opacity: .8;
+    font-size: .9em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.file-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.file-remove {
+    appearance: none;
+    -webkit-appearance: none;
+    background: none;
+    border: 0;
+    padding: 0 0 0 8px;
+    margin: 0;
+    font: inherit;
+    font-size: 18px;
+    line-height: 1;
+    color: var(--text, #0f172a);
+    cursor: pointer;
+}
+
+.file-controls .file-remove:hover {
+    opacity: .8;
+}
+
+.file-controls .file-remove:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.file-controls .file-remove:focus-visible {
+    outline: none;
+    box-shadow: none;
+}
+
+.file-controls .file-remove:active {
+    outline: none;
+    box-shadow: none;
+}
+
+#file-list .filecard.is-converting progress {
+    flex-basis: var(--prog-w-conv);
+    inline-size: var(--prog-w-conv);
+}
+
+.convert {
+    background-color: var(--convert_button_background_colour);
+}
+
+#file-list .f-name.clickable {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+#file-list .file-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: auto;
+    justify-content: flex-end;
+}
+
+#file-list .file-controls .status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: var(--status-w);
+    min-width: var(--status-w);
+    max-width: var(--status-w);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: right;
+    padding-bottom: 3px;
+}
+
+#file-list .filecard.is-converting .file-controls progress {
+    inline-size: var(--prog-w-conv);
+    flex-basis: var(--prog-w-conv);
+    transition: inline-size 150ms ease;
+}
+
+#file-list .filecard .file-controls .file-remove {
+    position: static !important;
+    width: auto;
+    height: auto;
+    padding: 0 0 0 8px;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    background: none !important;
+    box-shadow: none;
+    font: inherit;
+    font-size: 18px;
+    line-height: 1;
+    color: var(--text);
+    cursor: pointer;
+    padding-bottom: 3px;
+    align-self: center;
+}
+
+#file-list .filecard .file-controls .file-remove:hover {
+    opacity: .8;
+    background: none !important;
+}
+
+#file-list .filecard .file-controls .file-remove:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+#file-list .filecard .file-controls .file-remove:focus-visible {
+    outline: none;
+    box-shadow: none;
+}
+
+#file-list .filecard .file-controls .file-remove:active {
+    outline: none;
+    box-shadow: none;
+}
+
+#file-list .sub {
+    max-inline-size: calc(var(--sub-ch) * 1ch);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    min-width: 0;
+    opacity: .8;
+    flex: 0 1 calc(var(--sub-ch) * 1ch);
+}
+
+.filecard .status {
+    white-space: nowrap;
+}
+
+.filecard .filecard .file-remove {
+    right: 6px;
+    top: 6px;
+}
+
+.filecard .file-meta {
+    min-width: 0;
+}
+
+.filecard .sub {
+    opacity: .8;
+}
+
+.filecard .file-controls {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+.filecard .badge {
+    white-space: nowrap;
+}
+
+.filecard progress {
+    height: 6px;
+    width: 160px;
+    min-width: 72px;
+}
+
+.filecard .file-remove {
+    appearance: none;
+    font-size: 18px;
+    position: static;
+    width: auto;
+    height: auto;
+    line-height: 1;
+    padding: 2px 6px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+}
+
+.sub {
+    opacity: .8;
+}
+
+.filecard .file-progress {
+    flex: 1 1 160px;
+    min-width: 72px;
+    width: auto;
+    height: 10px;
+    margin: 0;
+}
+
+.filecard .file-remove:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+#file-list .filecard .file-meta {
+    grid-column: 1 / -1 !important;
+    grid-row: 1 !important;
+    min-width: 0 !important;
+}
+
+#file-list .filecard .f-name {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+#file-list .filecard .sub {
+    opacity: .8 !important;
+}
+
+#file-list .filecard .file-controls {
+    grid-column: 1 / -1 !important;
+    grid-row: 2 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    margin-left: 0 !important;
+    justify-content: flex-start !important;
+    flex-wrap: nowrap !important;
+}
+
+#file-list .filecard .badge {
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
+}
+
+#file-list .filecard .status {
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
+}
+
+#file-list .filecard .file-remove {
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
+    position: static !important;
+    padding: 2px 6px !important;
+    border: 0 !important;
+    border-radius: 8px !important;
+    background: transparent !important;
+    color: var(--text) !important;
+    cursor: pointer !important;
+}
+
+#file-list .filecard .file-progress {
+    flex: 1 1 auto !important;
+    min-width: 120px !important;
+    width: auto !important;
+    height: 10px !important;
+    margin: 0 !important;
+}
+
+.topbar_Buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#file-add-wrap {
+    --file-picked-ch: 20;
+}
+
+.file-add-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.file-add-wrap .btn-ghost {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    width: auto;
+}
+
+.file-add-wrap .file-picked {
+    max-width: calc(var(--file-picked-ch, 28) * 1ch);
+    flex: 1 1 auto;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+progress.file-progress {
+    color: var(--progress-fill);
+    accent-color: var(--progress-fill);
+}
+
+progress.file-progress::-webkit-progress-value {
+    background: var(--progress-fill) !important;
+    border-radius: 9999px;
+}
+
+progress.file-progress::-moz-progress-bar {
+    background: var(--progress-fill) !important;
+    border-radius: 9999px;
+}
+
+progress.file-progress::-webkit-progress-bar {
+    background: var(--progress-track) !important;
+}
+
+.file-picker-wrap {
+    display: block;
+    width: 100%;
+    border-radius: 14px;
+    padding: 8px;
+    background: transparent;
+}
+
+.file-picker {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    min-height: 32px;
+}
+
+.file-input-native {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+.file-picker-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 16px;
+    min-height: 32px;
+    border: 1px solid var(--convert_border, rgba(255, 255, 255, .16));
+    border-radius: 12px;
+    background: var(--choose_file_background);
+    color: var(--text, #fff);
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    font: 500 14px/1 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    max-width: fit-content;
+}
+
+.file-picker-btn:hover {
+    background: rgba(255, 255, 255, .04);
+}
+
+.file-picker-btn:active {
+    background: rgba(255, 255, 255, .06);
+}
+
+.file-picker-btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(99, 132, 255, .20);
+}
+
+.file-picker-name {
+    flex: 1 1 auto;
+    min-width: 0;
+    font: 500 14px/1 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--muted, rgba(255, 255, 255, .65));
+    line-height: 1.2;
+}
+
+.file-picker.has-files .file-picker-name {
+    color: var(--text, #fff);
+}
+
+.file-picker-wrap.is-clickable .file-picker {
+    cursor: pointer;
+}
+
+.file-picker.js-ready .file-picker-name {
+    text-overflow: clip;
+}
+
+.site-footer {
+    margin-top: 24px;
+    border-top: 1px solid var(--border);
+    background: linear-gradient(180deg, var(--panel), var(--panel-2));
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, .20);
+    color: var(--text);
+}
+
+.site-footer .footer-inner {
+    max-width: 1100px;
+    margin-inline: auto;
+    padding: 18px 20px;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 12px;
+}
+
+.site-footer .brand {
+    justify-self: start;
+    color: var(--text);
+    text-decoration: none;
+    font-weight: 600;
+    letter-spacing: .2px;
+}
+
+.site-footer .brand:hover {
+    color: var(--accent);
+    outline: none;
+}
+
+.site-footer .brand:focus-visible {
+    color: var(--accent);
+    outline: none;
+}
+
+.site-footer .footer-nav {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+
+.site-footer .footer-nav a {
+    color: var(--muted);
+    text-decoration: none;
+    padding: 6px 8px;
+    border-radius: 8px;
+}
+
+.site-footer .footer-nav a:hover {
+    color: var(--text);
+    background: rgba(255, 255, 255, .06);
+    outline: none;
+}
+
+.site-footer .footer-nav a:focus-visible {
+    color: var(--text);
+    background: rgba(255, 255, 255, .06);
+    outline: none;
+}
+
+.site-footer .legal {
+    justify-self: end;
+    margin: 0;
+    text-align: right;
+    color: var(--muted);
+    font-size: 10px;
+}
+
+:root[data-theme="light"] .site-footer .footer-nav a:hover {
+    background: rgba(0, 0, 0, .05);
+}
+
+:root[data-theme="light"] .site-footer .footer-nav a:focus-visible {
+    background: rgba(0, 0, 0, .05);
+}
+
+html body::after {
+    content: none !important;
+    display: none !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.breadcrumb {
     display: none;
+}
+
+.footer-ads .adsbygoogle {
+    display: block !important;
+    width: 728px !important;
+    height: 90px !important;
+    margin: 0 auto !important;
+}
+
+.footer-ads ins.adsbygoogle {
+    display: block !important;
+    width: 728px !important;
+    height: 90px !important;
+    margin: 0 auto !important;
+}
+
+ul.related-conversions {
+    padding-left: 0;
+    column-width: 260px;
+    column-gap: 24px;
+    list-style: none;
+    margin: 16px 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 12px;
+}
+
+ul.related-conversions li {
+    break-inside: avoid;
+    margin: 0;
+}
+
+ul.related-conversions a {
+    border-bottom: 1px dotted rgba(255, 255, 255, .25);
+    line-height: 1.25;
+    font-family: 'Afacad', sans-serif;
+    font-weight: bold;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 16px;
+    min-height: 48px;
+    border-radius: 12px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, .02), rgba(0, 0, 0, .02)),
+        var(--panel_background_colour);
+    border: 1px solid var(--border);
+    color: var(--text);
+    text-decoration: none;
+    font: 600 16px/1.1 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    letter-spacing: .2px;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, .06) inset,
+        0 8px 18px rgba(0, 0, 0, .18);
+    transition: transform .15s ease,
+        border-color .15s ease,
+        box-shadow .15s ease,
+        background .15s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+ul.related-conversions a:hover {
+    border-bottom-style: solid;
+    background: var(--panel_background_colour);
+    transition: all .15s ease;
+    transform: translateY(-1px);
+    border-color: rgba(255, 255, 255, .20);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, .08) inset,
+        0 12px 26px rgba(0, 0, 0, .24);
+}
+
+ul.related-conversions[data-collapsed="true"] {
+    max-height: 360px;
+    overflow: hidden;
+    position: relative;
+}
+
+ul.related-conversions[data-collapsed="true"]::after {
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(16, 22, 33, 1) 100%);
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 48px;
+    pointer-events: none;
+}
+
+.rc-toggle {
+    margin-top: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    padding: 8px 12px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #c9d4ff;
+}
+
+.rc-toggle:hover {
+    border-color: rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.cloud-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+    max-width: 82px;
+}
+
+.cloud-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 36px;
+    padding: 0 12px;
+    border-radius: 10px;
+    background: var(--choose_file_background);
+    border: 1px solid rgba(255, 255, 255, .10);
+    color: #e6ecff;
+    font-weight: 600;
+    line-height: 1;
+    transition: transform .12s ease, background .12s ease, border-color .12s ease;
+    width: 36px;
+    place-items: center;
+}
+
+.cloud-btn svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+    opacity: .85;
+}
+
+.cloud-btn:hover {
+    transform: translateY(-1px);
+    background: rgba(255, 255, 255, .05);
+    border-color: rgba(255, 255, 255, .18);
+}
+
+.cloud-gdrive {
+    color: #8fb3ff;
+}
+
+.cloud-dropbox {
+    color: #7fd0ff;
+}
+
+.icon-img {
+    width: 24px;
+    height: 24px;
+    margin-right: 12px;
+    margin-left: -7px;
+}
+
+.site-legal {
+    display: none;
+}
+
+ul.related-conversions a:active {
+    transform: translateY(0);
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0),
+        0 6px 16px rgba(0, 0, 0, .24) inset;
+}
+
+ul.related-conversions a:focus-visible {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(99, 132, 255, .25),
+
+        0 12px 24px rgba(0, 0, 0, .24);
+}
+
+.panel.explainer {
+    padding: 16px 18px 14px;
+    border-radius: var(--radius);
+    background: linear-gradient(180deg, var(--panel) 0%, var(--panel-2) 100%);
+    border: 1px solid var(--border);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .18), 0 1px 0 rgba(255, 255, 255, .04) inset;
+    --measure: clamp(52ch, 66vw, 70ch);
+}
+
+.panel.explainer p {
+    margin: 0;
+    line-height: 1.55;
+    color: var(--text);
+    opacity: .92;
+    padding: 10px;
+    max-width: var(--measure);
+    text-wrap: pretty;
+    hyphens: auto;
+}
+
+.panel.explainer h2 {
+    position: relative;
+    margin: 0;
+    font-weight: 700;
+    letter-spacing: .2px;
+    color: var(--text);
+    display: inline-flex;
+    font-size: 16px;
+    margin-bottom: 6px;
+    align-items: baseline;
+    gap: 10px;
+}
+
+.panel.explainer h3 {
+    position: relative;
+    margin: 0;
+    font-weight: 700;
+    letter-spacing: .2px;
+    color: var(--text);
+    display: inline-flex;
+    font-size: 14px;
+    margin-top: 14px;
+    margin-bottom: 6px;
+    align-items: baseline;
+    gap: 10px;
+}
+
+.panel.explainer h2::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: radial-gradient(closest-side, rgba(255, 255, 255, .7), rgba(255, 255, 255, 0) 60%),
+        color-mix(in oklab, var(--accent) 88%, black);
+    box-shadow: 0 0 0 2px color-mix(in oklab, var(--accent) 25%, transparent),
+        0 0 10px color-mix(in oklab, var(--accent) 30%, transparent);
+}
+
+.panel.explainer h3::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: radial-gradient(closest-side, rgba(255, 255, 255, .7), rgba(255, 255, 255, 0) 60%),
+        color-mix(in oklab, var(--accent) 88%, black);
+    box-shadow: 0 0 0 2px color-mix(in oklab, var(--accent) 25%, transparent),
+        0 0 10px color-mix(in oklab, var(--accent) 30%, transparent);
+}
+
+.panel.explainer h3::after {
+    content: "";
+    flex: 1 1 auto;
+    height: 1px;
+    margin-left: 10px;
+    max-width: var(--measure);
+    background: linear-gradient(90deg, var(--border), transparent);
+    opacity: .65;
+}
+
+.panel.explainer .hint {
+    padding-top: 10px;
+    color: var(--muted);
+    font-size: 12.5px;
+    line-height: 1.45;
+    margin-top: 12px;
+    padding: 8px 10px;
+    border-top: 1px dashed var(--border);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, .02);
+}
+
+:root[data-theme="light"] .panel.explainer {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, .06), 0 1px 0 rgba(0, 0, 0, .04) inset;
+}
+
+.panel.explainer:hover h2::before {
+    box-shadow: 0 0 0 2px color-mix(in oklab, var(--accent) 35%, transparent),
+        0 0 12px color-mix(in oklab, var(--accent) 45%, transparent);
+}
+
+.panel.explainer:hover h3::before {
+    box-shadow: 0 0 0 2px color-mix(in oklab, var(--accent) 35%, transparent),
+        0 0 12px color-mix(in oklab, var(--accent) 45%, transparent);
+}
+
+.panel.explainer .hint::before {
+    content: "ℹ️";
+    margin-right: 8px;
+    font-size: 12px;
+    opacity: .9;
+}
+
+.panel.format-explainer {
+    margin-top: 12px;
+    margin-bottom: 24px;
+    max-width: none !important;
+}
+
+.format-explainer__content {
+    display: grid;
+    gap: 16px;
+}
+
+.panel.format-explainer h2 {
+    margin: 0 0 .35rem;
+    font-size: clamp(1.28rem, 2.1vw, 1.62rem);
+    line-height: 1.22;
+}
+
+.panel.format-explainer .lead {
+    color: var(--muted);
+    font-size: .95rem;
+    line-height: 1.55;
+    margin: 0;
+}
+
+.panel.format-explainer .explain-block {
+    border-top: 1px solid var(--border);
+    padding-top: .8rem;
+    margin-top: 14px;
+}
+
+.panel.format-explainer h3 {
+    margin: 0 0 .35rem;
+    font-size: 1.06rem;
+}
+
+.panel.format-explainer ul {
+    margin: .25rem 0 0 1.25rem;
+}
+
+.panel.format-explainer ul li {
+    margin: .15rem 0;
+}
+
+.panel.format-explainer .details {
+    margin-top: 14px;
+}
+
+.panel.format-explainer .kv-list {
+    display: grid;
+    grid-template-columns: minmax(140px, 240px) 1fr;
+    gap: .45rem 1rem;
+}
+
+.panel.format-explainer .kv .k {
+    color: var(--muted);
+    font-weight: 600;
+}
+
+.panel.format-explainer .kv .v {
+    color: var(--text);
+}
+
+.panel.format-explainer .alias-of {
+    color: var(--muted);
+}
+
+.related-links {
+    margin-top: 14px;
+}
+
+.related-conversions {
+    margin-bottom: 28px;
+    margin-top: 14px;
+}
+
+.related-links .panel {
+    margin-inline: auto;
+    max-width: 48rem;
+    margin-bottom: 18px;
+}
+
+.related-conversions ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 10px;
+}
+
+.related-conversions li a {
+    display: block;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.02);
+    text-decoration: none;
+    color: var(--text);
+    transition: transform .12s ease, border-color .12s ease, background .12s ease;
+}
+
+.related-conversions li a:hover {
+    border-color: var(--accent);
+    background: rgba(255, 255, 255, 0.04);
+    transform: translateY(-1px);
+}
+
+.related-links>a {
+    margin-inline: auto;
+    max-width: 48rem;
+    margin-bottom: 18px;
+}
+
+.related-links>div {
+    margin-inline: auto;
+    max-width: 48rem;
+    margin-bottom: 18px;
+}
+
+.panel.format-explainer li {
+    margin: .16rem 0;
+}
+
+/* === merged: styles.min.css (overrides) === */
+:root {
+    --bottom-safe: 0px;
+    --rail-offset: 24px;
+    --scroll-slack: 5vh;
+    --bg: #0b1020;
+    --panel: #141a2f;
+    --panel-2: #0f1528;
+    --text: #e6ebff;
+    --muted: #a7b0d6;
+    --accent: #6ea8fe;
+    --danger: #ff6b6b;
+    --ok: #69db7c;
+    --border: #263154;
+    --shadow: 0 10px 30px rgba(0, 0, 0, .25);
+    --radius: 16px;
+    --cap_okay_colour: rgb(0, 252, 42);
+    --topbar_background_colour: linear-gradient(180deg, rgb(11, 16, 32), rgb(11, 16, 32));
+    --advert_background_colour: #0b1226;
+    --topbar_button_background_colour: #10182e;
+    --panel_background_colour: linear-gradient(180deg, var(--panel), var(--panel-2));
+    --dropzone_background_colour: #0b1226;
+    --convert_border: #2a3a6a;
+    --convert_button_background_colour: linear-gradient(180deg, #1b2b59, #12234b);
+    --button_background_colour: #10182e;
+    --choose_file_background: #10182e;
+    --body_background_colour: radial-gradient(1200px 800px at 20% -10%, #162044, transparent 60%), radial-gradient(1200px 800px at 120% 20%, #112042, transparent 60%), var(--bg);
+}
+
+@media (min-width:960px) {
+    .grid {
+        grid-template-columns: 1.2fr .8fr;
+    }
+
+    #file-list .filecard {
+        display: flex !important;
+        align-items: center !important;
+        gap: 10px !important;
+        flex-wrap: nowrap !important;
+        overflow: hidden !important;
+    }
+
+    #file-list .filecard .file-meta {
+        min-width: 0 !important;
+        flex: 0 1 auto !important;
+    }
+
+    #file-list .filecard .f-name {
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+
+    #file-list .filecard .file-controls {
+        margin-left: auto !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        min-width: 0 !important;
+        flex: 0 1 auto !important;
+    }
+
+    #file-list .filecard .badge {
+        flex: 0 0 auto !important;
+        white-space: nowrap !important;
+    }
+
+    #file-list .filecard .status {
+        flex: 0 0 auto !important;
+        white-space: nowrap !important;
+    }
+
+    #file-list .filecard .file-remove {
+        flex: 0 0 auto !important;
+        white-space: nowrap !important;
+        position: static !important;
+        padding: 2px 6px !important;
+        border: 0 !important;
+        border-radius: 8px !important;
+        background: transparent !important;
+        color: var(--text) !important;
+        cursor: pointer !important;
+    }
+
+    #file-list progress.file-progress {
+        flex: 1 1 auto !important;
+        min-width: 120px !important;
+        width: auto !important;
+        color: var(--progress-fill) !important;
+        height: 10px !important;
+        margin: 0 !important;
+    }
+
+    #file-list .filecard .file-progress {
+        flex: 1 1 auto !important;
+        min-width: 120px !important;
+        width: auto !important;
+        color: var(--progress-fill) !important;
+        height: 10px !important;
+        margin: 0 !important;
+    }
+}
+
+@media (min-width: 1400px) {
+    .side-ads {
+        --rail-w: 300px;
+    }
+}
+
+@media (max-width: 1280px) {
+    .bottom-ads .ad-bottom {
+        --leader-w: 728px;
+        max-width: 728px;
+    }
 }
 
 @media (max-width:1199px) {
@@ -698,384 +1804,13 @@ body::after {
     }
 }
 
-#downloads {
-    display: none !important;
-}
-
-/* removed absolute-positioned .file-remove (we use inline button) */
-
-/* removed duplicate .file-remove:hover */
-
-.f-name.clickable {
-    cursor: pointer;
-}
-
-.f-name.clickable:hover {
-    text-decoration: underline;
-}
-
-.progwrap
-/* removed global progress width (conflicted with file rows) */
-
-/* --- Enhancements: file remove + name truncation --- */
-.filecard {
-    max-width: 100%;
-}
-
-.filecard .f-name {
-    min-width: 0;
-    max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-/* removed absolute-positioned .file-remove (we use inline button) */
-
-/* removed duplicate .file-remove:hover */
-
-.filecard .file-remove:focus-visible {
-    outline: 2px solid var(--accent);
-}
-
-/* === File card: single-line layout + tighter sizing === */
-
-/* Tweakables (change numbers to taste) */
-#file-list {
-    --filecard-max: 820px;
-    /* overall max width for the card */
-    --name-ch: 36;
-    /* ≈ max characters shown for the filename */
-    --prog-w: 160px;
-    /* progress bar width */
-    --prog-h: 8px;
-    /* progress bar height */
-}
-
-/* Keep the card to a single row */
-#file-list .filecard {
-    width: min(100%, var(--filecard-max));
-    margin-inline: auto;
-
-    align-items: center;
-    gap: 10px;
-    flex-wrap: nowrap;
-    /* <- single line */
-    padding: 10px 12px;
-    border: 1px solid var(--border, #2a2a2a);
-    border-radius: 12px;
-    background: var(--panel, rgba(255, 255, 255, 0.04));
-}
-
-/* Let children shrink; needed for ellipsis */
-#file-list .filecard>* {
-    min-width: 0;
-}
-
-/* Filename: clamp to N characters with ellipsis */
-#file-list {
-    --name-ch: 24;
-}
-
-/* tweak this number */
-
-#file-list .f-name {
-    max-inline-size: calc(var(--name-ch) * 1ch);
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    min-width: 0;
-    /* important inside flex rows */
-    /* optional: keep a fixed slot width */
-    flex: 0 1 calc(var(--name-ch) * 1ch);
-}
-
-/* Progress: fixed small width + height */
-#file-list .filecard progress {
-    flex: 0 0 var(--prog-w);
-    inline-size: var(--prog-w);
-    block-size: var(--prog-h);
-    height: var(--prog-h);
-    margin-bottom: 4px;
-    /* fallback */
-}
-
-#file-list .filecard progress::-webkit-progress-bar {
-    height: var(--prog-h);
-    border-radius: 999px;
-    background: rgba(255, 255, 255, .08);
-}
-
-#file-list .filecard progress::-webkit-progress-value {
-    height: var(--prog-h);
-    border-radius: 999px;
-    background: var(--accent, #4b8aff);
-}
-
-#file-list .filecard progress::-moz-progress-bar {
-    height: var(--prog-h);
-    border-radius: 999px;
-    background: var(--accent, #4b8aff);
-}
-
-/* Status text stays compact and doesn't wrap */
-#file-list .filecard [id^="status-"] {
-    flex: 0 0 auto;
-    max-width: 14ch;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    opacity: .8;
-    font-size: .9em;
-}
-
-/* Delete (×) button stays at the far right without stretching layout */
-.file-controls {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.file-remove {
-    appearance: none;
-    -webkit-appearance: none;
-    background: none;
-    border: 0;
-    padding: 0 0 0 8px;
-    /* small gap from status */
-    margin: 0;
-    font: inherit;
-    font-size: 18px;
-    line-height: 1;
-    color: var(--text, #0f172a);
-    cursor: pointer;
-}
-
-.file-controls .file-remove:hover {
-    opacity: .8;
-}
-
-/* no ring / outline */
-.file-controls .file-remove:focus,
-.file-controls .file-remove:focus-visible,
-.file-controls .file-remove:active {
-    outline: none;
-    box-shadow: none;
-}
-
-
-
-/* Progress width defaults + smaller while converting */
-#file-list {
-    --prog-w: 160px;
-    /* normal width */
-    --prog-w-conv: 110px;
-    /* width during "Converting…" */
-    --prog-h: 8px;
-}
-
-#file-list .filecard progress {
-    flex: 0 0 var(--prog-w);
-    inline-size: var(--prog-w);
-    block-size: var(--prog-h);
-    height: var(--prog-h);
-    transition: inline-size 180ms ease;
-}
-
-/* When the card is converting, make the bar smaller */
-#file-list .filecard.is-converting progress {
-    flex-basis: var(--prog-w-conv);
-    inline-size: var(--prog-w-conv);
-}
-
-/* Keep status on one line so the row stays stable */
-#file-list .filecard [id^="status-"] {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.convert {
-    background-color: var(--convert_button_background_colour);
-}
-
-/* Progress size (normal vs converting) */
-#file-list {
-    --prog-w: 160px;
-    /* normal width */
-    --prog-w-conv: 110px;
-    /* during converting */
-    --prog-h: 8px;
-}
-
-#file-list .filecard progress {
-    flex: 0 0 var(--prog-w);
-    inline-size: var(--prog-w);
-    block-size: var(--prog-h);
-    height: var(--prog-h);
-    /* default: no animation to avoid jitter */
-    transition: none;
-}
-
-/* Smaller bar while converting */
-#file-list .filecard.is-converting progress {
-    flex-basis: var(--prog-w-conv);
-    inline-size: var(--prog-w-conv);
-}
-
-/* If user allows motion, use a *very* short resize animation */
 @media (prefers-reduced-motion: no-preference) {
     #file-list .filecard progress {
         transition: inline-size 90ms ease;
     }
 }
 
-/* Filename looks clickable only after ready */
-#file-list .f-name {
-    cursor: default;
-}
-
-#file-list .f-name.clickable {
-    cursor: pointer;
-    text-decoration: underline;
-}
-
-/* Pack the whole controls group to the right edge */
-#file-list .file-controls {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-left: auto;
-    /* pushes group to the far right */
-    justify-content: flex-end;
-    /* pack items against the right edge */
-}
-
-/* Status box: fixed width, contents right-aligned, ellipsis */
-#file-list .file-controls .status {
-    display: inline-flex;
-    align-items: center;
-    justify-content: flex-end;
-    /* text sticks to the right inside the box */
-    width: var(--status-w);
-    min-width: var(--status-w);
-    max-width: var(--status-w);
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    text-align: right;
-    padding-bottom: 3px;
-}
-
-/* Control the progress-bar shrink during "Converting…" */
-#file-list {
-    --prog-w: 160px;
-    /* normal width (keep as-is) */
-    --prog-min: 140px;
-    /* NEVER smaller than this when converting */
-    --prog-shrink: 12px;
-    /* how much to shrink from normal (tweak smaller) */
-}
-
-/* Smooth but modest animation */
-/* Fixed progress width while converting (global) */
-#file-list {
-    --prog-w: 160px;
-    /* normal width */
-    --prog-w-conv: 119.5px;
-    /* your manual width during converting */
-}
-
-#file-list .filecard.is-converting .file-controls progress {
-    inline-size: var(--prog-w-conv);
-    flex-basis: var(--prog-w-conv);
-    transition: inline-size 150ms ease;
-    /* tweak speed/feel */
-}
-
-/* before */
-.side-ads .rail {
-    position: fixed;
-    /* ... */
-}
-
-/* after */
-.side-ads .rail {
-    position: relative;
-    /* scrolls with the page */
-    top: var(--rail-offset, 24px);
-    /* left/right rules you already had continue to apply */
-    margin-top: auto;
-    margin-bottom: auto;
-    z-index: 1000;
-
-    position: fixed;
-    z-index: 2;
-
-    top: 75px;
-
-    overflow: hidden;
-}
-
-.hint {
-    padding-right: 50px;
-}
-
-/* Inline, text-only × inside .file-controls (overrides earlier absolute bubble) */
-#file-list .filecard .file-controls .file-remove {
-    position: static !important;
-    width: auto;
-    height: auto;
-    padding: 0 0 0 8px;
-    /* small gap after status */
-    margin: 0;
-    border: 0;
-    border-radius: 0;
-    background: none !important;
-    box-shadow: none;
-    font: inherit;
-    font-size: 18px;
-    line-height: 1;
-    color: var(--text);
-    cursor: pointer;
-    padding-bottom: 3px;
-    align-self: center;
-    /* aligns with progress/status in the flex row */
-}
-
-#file-list .filecard .file-controls .file-remove:hover {
-    opacity: .8;
-    background: none !important;
-}
-
-#file-list .filecard .file-controls .file-remove:focus,
-#file-list .filecard .file-controls .file-remove:focus-visible,
-#file-list .filecard .file-controls .file-remove:active {
-    outline: none;
-    box-shadow: none;
-}
-
-/* Limit the .sub text length similar to filename */
-#file-list {
-    --sub-ch: 24;
-    /* tweak how many characters to show */
-}
-
-#file-list .sub {
-    max-inline-size: calc(var(--sub-ch) * 1ch);
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    min-width: 0;
-    /* important inside flex rows */
-    opacity: .8;
-    /* keep your subdued tone */
-    flex: 0 1 calc(var(--sub-ch) * 1ch);
-}
-
 @media (max-width: 720px) {
-
-    /* make room for the mobile footer ad (+ iOS notch) */
     :root {
         --bottom-safe: calc(84px + env(safe-area-inset-bottom, 0px));
         --radius: 12px;
@@ -1099,7 +1834,6 @@ body::after {
         margin: 12px auto calc(24px + var(--bottom-safe));
         padding: 0 14px;
         max-width: 1100px;
-        /* keep your existing max-width */
     }
 
     .panel {
@@ -1114,10 +1848,8 @@ body::after {
         padding: 14px;
         border-left: 0;
         border-top: 1px solid var(--border);
-        /* divider when stacked */
     }
 
-    /* stack every control row */
     .row {
         gap: 8px;
     }
@@ -1126,9 +1858,16 @@ body::after {
         flex: 1 1 100%;
     }
 
-    /* larger tap targets on mobile */
-    select,
-    input[type="number"],
+    select {
+        padding: 12px;
+        font-size: 16px;
+    }
+
+    input[type="number"] {
+        padding: 12px;
+        font-size: 16px;
+    }
+
     button {
         padding: 12px;
         font-size: 16px;
@@ -1138,35 +1877,34 @@ body::after {
         width: 100%;
     }
 
-    /* dropzone a bit tighter */
     #dropzone {
         padding: 14px;
     }
 
-    /* action buttons: full width, stacked */
-    .convert,
-    .btn-ghost,
+    .convert {
+        width: 100%;
+    }
+
+    .btn-ghost {
+        width: 100%;
+    }
+
     .btn {
         width: 100%;
     }
 
-    /* ===== FILE LIST: single-line row; progress fills leftover space ===== */
     .filecard {
         display: flex;
-        /* flex, not grid */
         align-items: center;
         gap: 8px;
         padding: 12px 12px 14px;
         flex-wrap: nowrap;
-        /* never wrap */
         overflow: hidden;
-        /* clip any stray overflow */
         border-top: 1px solid var(--border);
         border-radius: 10px;
         background: var(--panel);
     }
 
-    /* Left: name + meta */
     .filecard .file-meta {
         min-width: 0;
         flex: 1 1 auto;
@@ -1182,7 +1920,6 @@ body::after {
         opacity: .8;
     }
 
-    /* Right: controls in a single line */
     .filecard .file-controls {
         margin-left: auto;
         display: flex;
@@ -1190,31 +1927,28 @@ body::after {
         gap: 8px;
         min-width: 0;
         flex: 0 0 auto;
-        /* intrinsic width; progress will flex */
     }
 
-    .badge,
+    .badge {
+        white-space: nowrap;
+        font-size: 12px;
+    }
+
     .status {
         white-space: nowrap;
         font-size: 12px;
     }
 
-    /* 🔥 Progress fills all remaining space (and shrinks first if tight) */
     .filecard .file-progress {
         flex: 1 1 auto;
-        /* grow to fill, shrink when needed */
         min-width: 48px;
-        /* never vanish */
         width: auto;
-        /* ignore any global width */
         height: 8px;
         margin: 0;
     }
 
-    /* Close button in flow so it never overlaps or disappears */
     .filecard .file-remove {
         position: static;
-        /* inline, not absolute */
         padding: 2px 6px;
         border: 0;
         border-radius: 8px;
@@ -1227,13 +1961,14 @@ body::after {
         background: rgba(255, 255, 255, 0.12);
     }
 
-    /* downloads area */
     .downloads {
         padding: 12px;
     }
 
-    /* ads: show only the mobile footer bar; hide desktop frames */
-    #bottom-ads,
+    #bottom-ads {
+        display: none !important;
+    }
+
     .side-ads {
         display: none !important;
     }
@@ -1248,7 +1983,6 @@ body::after {
         width: 100%;
     }
 
-    /* top-right small buttons */
     .btn-topbar {
         max-width: none;
     }
@@ -1258,14 +1992,28 @@ body::after {
         gap: 8px;
     }
 
-    /* variables not needed for this layout; kept for compatibility */
-    #file-list {}
+    .site-footer .footer-inner {
+        grid-template-columns: 1fr;
+        text-align: center;
+        row-gap: 10px;
+    }
+
+    .site-footer .brand {
+        justify-self: center;
+        text-align: center;
+    }
+
+    .site-footer .legal {
+        justify-self: center;
+        text-align: center;
+    }
+
+    .site-footer .footer-nav a {
+        padding: 8px 10px;
+    }
 }
 
-/* ====== <= 600px ====== */
 @media (max-width: 600px) {
-
-    /* progress: a bit shorter and allowed to shrink more */
     .filecard .file-progress {
         flex: 1 1 auto;
         min-width: 44px;
@@ -1283,16 +2031,21 @@ body::after {
         gap: 6px;
     }
 
-    .badge,
+    .badge {
+        font-size: 11.5px;
+    }
+
     .status {
         font-size: 11.5px;
     }
+
+    .topbar_Buttons {
+        flex-wrap: wrap;
+        width: 100%;
+    }
 }
 
-/* ====== <= 520px ====== */
 @media (max-width: 520px) {
-
-    /* progress: smaller still */
     .filecard .file-progress {
         flex: 1 1 auto;
         min-width: 40px;
@@ -1310,7 +2063,10 @@ body::after {
         gap: 6px;
     }
 
-    .badge,
+    .badge {
+        font-size: 11px;
+    }
+
     .status {
         font-size: 11px;
     }
@@ -1318,12 +2074,14 @@ body::after {
     .f-name {
         font-size: 0.98rem;
     }
+
+    #file-list .filecard .file-progress {
+        min-width: 100px !important;
+        height: 8px !important;
+    }
 }
 
-/* ====== <= 420px ====== */
 @media (max-width: 420px) {
-
-    /* progress: compact but still visible */
     .filecard .file-progress {
         flex: 1 1 auto;
         min-width: 36px;
@@ -1341,7 +2099,10 @@ body::after {
         gap: 5px;
     }
 
-    .badge,
+    .badge {
+        font-size: 10.5px;
+    }
+
     .status {
         font-size: 10.5px;
     }
@@ -1351,10 +2112,7 @@ body::after {
     }
 }
 
-/* ====== <= 360px ====== */
 @media (max-width: 360px) {
-
-    /* progress: smallest preset; still fills leftover space */
     .filecard .file-progress {
         flex: 1 1 auto;
         min-width: 32px;
@@ -1372,7 +2130,10 @@ body::after {
         gap: 4px;
     }
 
-    .badge,
+    .badge {
+        font-size: 10px;
+    }
+
     .status {
         font-size: 10px;
     }
@@ -1382,7 +2143,6 @@ body::after {
     }
 }
 
-/* ====== <= 680px (between 720 and 600) ====== */
 @media (max-width: 680px) {
     .filecard .file-progress {
         flex: 1 1 auto;
@@ -1401,16 +2161,15 @@ body::after {
         gap: 7px;
     }
 
-    .badge,
+    .badge {
+        font-size: 11.75px;
+    }
+
     .status {
         font-size: 11.75px;
     }
 }
 
-/* ====== <= 560px (between 600 and 520) ====== */
-
-
-/* ====== <= 480px (between 520 and 420) ====== */
 @media (max-width: 480px) {
     .filecard .file-progress {
         flex: 1 1 auto;
@@ -1429,7 +2188,10 @@ body::after {
         gap: 5px;
     }
 
-    .badge,
+    .badge {
+        font-size: 10.75px;
+    }
+
     .status {
         font-size: 10.75px;
     }
@@ -1439,7 +2201,6 @@ body::after {
     }
 }
 
-/* ====== <= 400px (between 420 and 360) ====== */
 @media (max-width: 400px) {
     .filecard .file-progress {
         flex: 1 1 auto;
@@ -1458,7 +2219,10 @@ body::after {
         gap: 4px;
     }
 
-    .badge,
+    .badge {
+        font-size: 10.25px;
+    }
+
     .status {
         font-size: 10.25px;
     }
@@ -1466,32 +2230,59 @@ body::after {
     .f-name {
         font-size: 0.92rem;
     }
+
+    #file-list .filecard .file-progress {
+        min-width: 80px !important;
+        height: 6px !important;
+    }
+
+    #file-list .filecard .badge {
+        font-size: 12px !important;
+    }
+
+    #file-list .filecard .status {
+        font-size: 12px !important;
+    }
 }
 
-/* ====== <= 540px ====== */
 @media (max-width: 540px) {
-
-    /* progress tweaks FIRST */
     progress.file-progress {
         flex: 1 1 200px !important;
-        /* larger base, still flexible */
         min-width: 52px !important;
         height: 7px !important;
         width: auto !important;
         margin: 0 !important;
     }
 
-    /* (optional for consistent thickness across engines) */
-    progress.file-progress::-webkit-progress-bar,
+    progress.file-progress::-webkit-progress-bar {
+        height: 7px;
+    }
+
     progress.file-progress::-webkit-progress-value {
         height: 7px;
     }
+
+    #file-list progress.file-progress {
+        flex: 1 1 160px !important;
+        min-width: 44px !important;
+        height: 6px !important;
+        width: auto !important;
+        color: var(--progress-fill) !important;
+        margin: 0 !important;
+    }
+
+    #file-list progress.file-progress::-webkit-progress-bar {
+        height: 6px;
+        color: var(--progress-fill) !important;
+    }
+
+    #file-list progress.file-progress::-webkit-progress-value {
+        height: 6px;
+        color: var(--progress-fill) !important;
+    }
 }
 
-/* ====== <= 500px ====== */
 @media (max-width: 500px) {
-
-    /* progress tweaks FIRST */
     progress.file-progress {
         flex: 1 1 180px !important;
         min-width: 48px !important;
@@ -1500,16 +2291,16 @@ body::after {
         margin: 0 !important;
     }
 
-    progress.file-progress::-webkit-progress-bar,
+    progress.file-progress::-webkit-progress-bar {
+        height: 6px;
+    }
+
     progress.file-progress::-webkit-progress-value {
         height: 6px;
     }
 }
 
-/* ====== <= 460px ====== */
 @media (max-width: 460px) {
-
-    /* progress tweaks FIRST */
     progress.file-progress {
         flex: 1 1 160px !important;
         min-width: 42px !important;
@@ -1518,16 +2309,16 @@ body::after {
         margin: 0 !important;
     }
 
-    progress.file-progress::-webkit-progress-bar,
+    progress.file-progress::-webkit-progress-bar {
+        height: 5px;
+    }
+
     progress.file-progress::-webkit-progress-value {
         height: 5px;
     }
 }
 
-/* ====== <= 440px ====== */
 @media (max-width: 440px) {
-
-    /* progress tweaks FIRST */
     progress.file-progress {
         flex: 1 1 140px !important;
         min-width: 36px !important;
@@ -1536,13 +2327,15 @@ body::after {
         margin: 0 !important;
     }
 
-    progress.file-progress::-webkit-progress-bar,
+    progress.file-progress::-webkit-progress-bar {
+        height: 4px;
+    }
+
     progress.file-progress::-webkit-progress-value {
         height: 4px;
     }
 }
 
-/* extra-small phones */
 @media (max-width: 380px) {
     .badge {
         min-width: auto;
@@ -1561,183 +2354,9 @@ body::after {
     }
 }
 
-/* keep the row to one visual line */
-.filecard .status {
-    white-space: nowrap;
-}
-
-.filecard .f-name {
-    white-space: nowrap;
-}
-
-/* you already ellipsize; this enforces one line */
-/* Keep text single-line */
-.f-name {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.badge,
-.status {
-    white-space: nowrap;
-}
-
-/* Progress fills only the available middle column */
-.filecard
-/* removed global progress width (conflicted with file rows) */
-
-/* Make sure the remove button is visible */
-.filecard .file-remove {
-    right: 6px;
-    top: 6px;
-}
-
-/* === FILE ROW (one-line, responsive) === */
-.filecard {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    padding: 12px 16px;
-    border-top: 1px solid var(--border);
-    border-radius: 10px;
-    background: var(--panel);
-    flex-wrap: nowrap;
-    /* keep one line by default */
-}
-
-/* left side: name + subtext */
-.filecard .file-meta {
-    min-width: 0;
-    /* allow ellipsis */
-}
-
-.filecard .f-name {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.filecard .sub {
-    opacity: .8;
-}
-
-/* right side: controls grouped together */
-.filecard .file-controls {
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    min-width: 0;
-}
-
-.filecard .badge,
-.filecard .status {
-    white-space: nowrap;
-}
-
-/* progress only grows into remaining room inside controls */
-.filecard progress {
-    height: 6px;
-    width: 160px;
-    /* base width; JS will shrink this if needed */
-    min-width: 72px;
-}
-
-/* inline “×” so it never escapes the card */
-.filecard .file-remove {
-    appearance: none;
-    border: 0;
-    background: transparent;
-    font-size: 18px;
-    line-height: 1;
-    cursor: pointer;
-    padding: 2px 6px;
-    border-radius: 8px;
-}
-
-/* removed duplicate .file-remove:hover */
-
-
-
-/* === Responsive one-line file row === */
-.filecard {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
-    border-top: 1px solid var(--border);
-    border-radius: 10px;
-    background: var(--panel);
-    /* one line by default */
-    flex-wrap: nowrap;
-}
-
-/* Left side: filename + meta */
-.filecard .file-meta {
-    min-width: 0;
-}
-
-/* allow ellipsis */
-.f-name {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.sub {
-    opacity: .8;
-}
-
-/* Right side: controls block */
-.filecard .file-controls {
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    min-width: 0;
-    /* so progress can shrink */
-}
-
-.badge,
-.status {
-    white-space: nowrap;
-}
-
-/* The secret sauce: let the progress flex */
-.filecard .file-progress {
-    flex: 1 1 160px;
-    /* grow and shrink with room */
-    min-width: 72px;
-    /* never collapse completely */
-    width: auto;
-    /* ignore any global width:100% */
-    height: 10px;
-}
-
-/* Make the close button participate in the flow */
-.filecard .file-remove {
-    position: static;
-    /* was absolute; inline keeps it visible */
-    width: auto;
-    height: auto;
-    line-height: 1;
-    padding: 2px 6px;
-    border-radius: 8px;
-    background: transparent;
-}
-
-/* Optional hover for the close button */
-/* removed duplicate .file-remove:hover */
-
-/* Narrow screens: allow a clean wrap (progress goes full width) */
-/* ===== smooth the 560 → 540px gap ===== */
-
-/* <= 560px */
 @media (max-width: 560px) {
     #file-list progress.file-progress {
         flex: 1 1 170px !important;
-        /* smaller base than before */
         min-width: 46px !important;
         height: 6px !important;
         width: auto !important;
@@ -1745,15 +2364,17 @@ body::after {
         margin: 0 !important;
     }
 
-    /* (optional) WebKit height consistency */
-    #file-list progress.file-progress::-webkit-progress-bar,
+    #file-list progress.file-progress::-webkit-progress-bar {
+        height: 6px;
+        color: var(--progress-fill) !important;
+    }
+
     #file-list progress.file-progress::-webkit-progress-value {
         height: 6px;
         color: var(--progress-fill) !important;
     }
 }
 
-/* <= 555px (tiny step) */
 @media (max-width: 555px) {
     #file-list progress.file-progress {
         flex: 1 1 168px !important;
@@ -1765,7 +2386,6 @@ body::after {
     }
 }
 
-/* <= 550px */
 @media (max-width: 550px) {
     #file-list progress.file-progress {
         flex: 1 1 166px !important;
@@ -1777,7 +2397,6 @@ body::after {
     }
 }
 
-/* <= 545px (tiny step) */
 @media (max-width: 545px) {
     #file-list progress.file-progress {
         flex: 1 1 163px !important;
@@ -1789,6 +2408,7 @@ body::after {
     }
 }
 
+<<<<<<< HEAD
 /* <= 540px — now gently lands here instead of jumping */
 @media (max-width: 540px) {
     #file-list progress.file-progress {
@@ -1994,17 +2614,17 @@ body::after {
    ========================================================= */
 
 /* —— DESKTOP (>=960px): keep everything on ONE line ————————————— */
+=======
+>>>>>>> 5f42b62d2 (Update 2025-11-01 17:35:17)
 @media (min-width: 960px) {
     #file-list .filecard {
         display: flex !important;
         align-items: center !important;
         gap: 10px !important;
         flex-wrap: nowrap !important;
-        /* single line */
         overflow: hidden !important;
     }
 
-    /* left cluster */
     #file-list .filecard .file-meta {
         min-width: 0 !important;
         flex: 0 1 auto !important;
@@ -2016,7 +2636,6 @@ body::after {
         text-overflow: ellipsis !important;
     }
 
-    /* right cluster */
     #file-list .filecard .file-controls {
         margin-left: auto !important;
         display: flex !important;
@@ -2026,14 +2645,12 @@ body::after {
         flex: 0 1 auto !important;
     }
 
-    /* short items keep intrinsic size */
-    #file-list .filecard .badge,
-    #file-list .filecard .status,
-    #file-list .filecard .file-remove {
+    #file-list .filecard .badge {
         flex: 0 0 auto !important;
         white-space: nowrap !important;
     }
 
+<<<<<<< HEAD
     /* progress fills all remaining desktop space */
     #file-list progress.file-progress,
     #file-list .filecard .file-progress {
@@ -2043,10 +2660,16 @@ body::after {
         color: var(--progress-fill) !important;
         height: 10px !important;
         margin: 0 !important;
+=======
+    #file-list .filecard .status {
+        flex: 0 0 auto !important;
+        white-space: nowrap !important;
+>>>>>>> 5f42b62d2 (Update 2025-11-01 17:35:17)
     }
 
-    /* inline close button so it never overlaps */
     #file-list .filecard .file-remove {
+        flex: 0 0 auto !important;
+        white-space: nowrap !important;
         position: static !important;
         padding: 2px 6px !important;
         border: 0 !important;
@@ -2055,12 +2678,27 @@ body::after {
         color: var(--text) !important;
         cursor: pointer !important;
     }
+
+    #file-list progress.file-progress {
+        flex: 1 1 auto !important;
+        min-width: 120px !important;
+        width: auto !important;
+        color: var(--progress-fill) !important;
+        height: 10px !important;
+        margin: 0 !important;
+    }
+
+    #file-list .filecard .file-progress {
+        flex: 1 1 auto !important;
+        min-width: 120px !important;
+        width: auto !important;
+        color: var(--progress-fill) !important;
+        height: 10px !important;
+        margin: 0 !important;
+    }
 }
 
-/* —— MOBILE/TABLET (<960px): TWO ROWS ———————————————— */
 @media (max-width: 959.98px) {
-
-    /* grid with two rows: meta (row 1), controls (row 2) */
     #file-list .filecard {
         display: grid !important;
         grid-template-columns: 1fr !important;
@@ -2070,7 +2708,6 @@ body::after {
         overflow: hidden !important;
     }
 
-    /* Row 1 */
     #file-list .filecard .file-meta {
         grid-column: 1 / -1 !important;
         grid-row: 1 !important;
@@ -2087,7 +2724,6 @@ body::after {
         opacity: .8 !important;
     }
 
-    /* Row 2: full-width controls */
     #file-list .filecard .file-controls {
         grid-column: 1 / -1 !important;
         grid-row: 2 !important;
@@ -2099,16 +2735,14 @@ body::after {
         margin-left: 0 !important;
         justify-content: flex-start !important;
         flex-wrap: nowrap !important;
-        /* keep controls on one line within this row */
     }
 
-    #file-list .filecard .badge,
-    #file-list .filecard .status,
-    #file-list .filecard .file-remove {
+    #file-list .filecard .badge {
         flex: 0 0 auto !important;
         white-space: nowrap !important;
     }
 
+<<<<<<< HEAD
     #file-list progress.file-progress,
     #file-list .filecard .file-progress {
         flex: 1 1 auto !important;
@@ -2118,9 +2752,16 @@ body::after {
         width: auto !important;
         height: 10px !important;
         margin: 0 !important;
+=======
+    #file-list .filecard .status {
+        flex: 0 0 auto !important;
+        white-space: nowrap !important;
+>>>>>>> 5f42b62d2 (Update 2025-11-01 17:35:17)
     }
 
     #file-list .filecard .file-remove {
+        flex: 0 0 auto !important;
+        white-space: nowrap !important;
         position: static !important;
         padding: 2px 6px !important;
         border: 0 !important;
@@ -2129,11 +2770,18 @@ body::after {
         color: var(--text) !important;
         cursor: pointer !important;
     }
-}
 
-/* —— Compact tweaks (phones) ————————————————————— */
-@media (max-width: 520px) {
+    #file-list progress.file-progress {
+        flex: 1 1 auto !important;
+        color: var(--progress-fill) !important;
+        min-width: 140px !important;
+        width: auto !important;
+        height: 10px !important;
+        margin: 0 !important;
+    }
+
     #file-list .filecard .file-progress {
+<<<<<<< HEAD
         min-width: 100px !important;
         height: 8px !important;
     }
@@ -2217,13 +2865,25 @@ body::after {
 @media (min-width: 768px) {
     .mobile-inline-ad {
         display: none !important;
+=======
+        flex: 1 1 auto !important;
+        color: var(--progress-fill) !important;
+        min-width: 140px !important;
+        width: auto !important;
+        height: 10px !important;
+        margin: 0 !important;
+>>>>>>> 5f42b62d2 (Update 2025-11-01 17:35:17)
     }
 }
 
 @media (max-width: 767px) {
+    .mobile-inline-ad {
+        display: block;
+        border-radius: 12px;
+    }
+
     .footer-ads {
         display: none !important;
-
     }
 
     .dropzone {
@@ -2235,37 +2895,1204 @@ body::after {
     }
 }
 
-#file-add-wrap {
-    --file-picked-ch: 20;
+@media (min-width: 768px) {
+    .mobile-inline-ad {
+        display: none !important;
+    }
 }
 
-/* Row layout for the custom file picker */
-.file-add-wrap {
+@media (max-width: 768px) {
+    html {
+        min-height: 100svh;
+        background-color: var(--panel, #0f172a) !important;
+        background-image: none !important;
+    }
+
+    body {
+        min-height: 100svh;
+        background-attachment: scroll !important;
+        background-color: var(--panel, #0f172a) !important;
+        background-image: none !important;
+    }
+
+    .app {
+        background-color: transparent !important;
+    }
+
+    .container {
+        background-color: transparent !important;
+    }
+
+    .panel {
+        background-color: transparent !important;
+    }
+
+    .card {
+        background-color: transparent !important;
+    }
+
+    .section {
+        background-color: transparent !important;
+    }
+
+    .dropzone {
+        background-color: transparent !important;
+    }
+
+    .file-input {
+        background-color: transparent !important;
+    }
+}
+
+@media (min-width: 720px) {
+    .site-footer .footer-nav a+a::before {
+        content: "•";
+        opacity: .45;
+        margin-right: 25px;
+    }
+}
+
+@media (max-width: 800px) {
+    .footer-ads .adsbygoogle {
+        width: 320px !important;
+        height: 100px !important;
+    }
+
+    .footer-ads ins.adsbygoogle {
+        width: 320px !important;
+        height: 100px !important;
+    }
+
+    ul.related-conversions {
+        column-width: 180px;
+        column-gap: 16px;
+    }
+}
+
+@media (max-width: 1100px) {
+    ul.related-conversions {
+        grid-template-columns: repeat(2, minmax(220px, 1fr));
+    }
+}
+
+@media (max-width: 640px) {
+    ul.related-conversions {
+        grid-template-columns: 1fr;
+    }
+
+    .related-conversions ul {
+        grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .panel.explainer * {
+        transition: none !important;
+        animation: none !important;
+    }
+}
+
+@media (forced-colors: active) {
+    .panel.explainer {
+        border: 1px solid CanvasText;
+    }
+
+    .panel.explainer .hint {
+        border-top-style: solid;
+    }
+}
+
+@media (min-width: 980px) {
+    .format-explainer__content {
+        display: grid !important;
+        grid-template-columns: minmax(540px, 1.35fr) 1fr !important;
+        gap: 20px 28px !important;
+        align-items: start !important;
+    }
+
+    .format-explainer__content>* {
+        grid-column: 1 !important;
+    }
+
+    .format-explainer__content>.explain-block:nth-of-type(n+3) {
+        grid-column: 2 !important;
+    }
+
+    .format-explainer__content>.details {
+        grid-column: 2 !important;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 12px 14px;
+        background: linear-gradient(180deg, var(--panel) 0%, var(--panel-2) 100%);
+        position: sticky;
+        top: calc(var(--header-safe, 72px) + 12px);
+    }
+
+    .panel.format-explainer .explain-block {
+        border-top: 0 !important;
+        padding-top: 0 !important;
+        margin-top: 0 !important;
+    }
+
+    .panel.format-explainer h3 {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 8px 0 6px;
+        font-size: 1.06rem;
+    }
+
+    .panel.format-explainer h3::after {
+        content: "";
+        flex: 1 1 auto;
+        height: 1px;
+        margin-left: 10px;
+        background: linear-gradient(90deg, var(--border), transparent);
+        opacity: .65;
+    }
+}
+
+@media (min-width:1400px) {
+    .side-ads {
+        --rail-w: 300px;
+    }
+}
+
+@media (max-width:1280px) {
+    .bottom-ads .ad-bottom {
+        --leader-w: 728px;
+        max-width: 728px;
+    }
+}
+
+@media (prefers-reduced-motion:no-preference) {
+    #file-list .filecard progress {
+        transition: inline-size 90ms ease;
+    }
+}
+
+@media (max-width:720px) {
+    :root {
+        --bottom-safe: calc(84px + env(safe-area-inset-bottom, 0px));
+        --radius: 12px;
+        --rail-offset: 0px;
+    }
+
+    header .wrap {
+        padding: 12px 14px;
+    }
+
+    .header-row {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    h1 {
+        font-size: clamp(18px, 5.4vw, 24px);
+    }
+
+    main {
+        margin: 12px auto calc(24px + var(--bottom-safe));
+        padding: 0 14px;
+        max-width: 1100px;
+    }
+
+    .panel {
+        border-radius: var(--radius);
+    }
+
+    .controls {
+        padding: 14px;
+    }
+
+    .aside {
+        padding: 14px;
+        border-left: 0;
+        border-top: 1px solid var(--border);
+    }
+
+    .row {
+        gap: 8px;
+    }
+
+    .row>* {
+        flex: 1 1 100%;
+    }
+
+    select {
+        padding: 12px;
+        font-size: 16px;
+    }
+
+    input[type="number"] {
+        padding: 12px;
+        font-size: 16px;
+    }
+
+    button {
+        padding: 12px;
+        font-size: 16px;
+    }
+
+    input[type="range"] {
+        width: 100%;
+    }
+
+    #dropzone {
+        padding: 14px;
+    }
+
+    .convert {
+        width: 100%;
+    }
+
+    .btn-ghost {
+        width: 100%;
+    }
+
+    .btn {
+        width: 100%;
+    }
+
+    .filecard {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 12px 14px;
+        flex-wrap: nowrap;
+        overflow: hidden;
+        border-top: 1px solid var(--border);
+        border-radius: 10px;
+        background: var(--panel);
+    }
+
+    .filecard .file-meta {
+        min-width: 0;
+        flex: 1 1 auto;
+    }
+
+    .f-name {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .sub {
+        opacity: .8;
+    }
+
+    .filecard .file-controls {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-width: 0;
+        flex: 0 0 auto;
+    }
+
+    .badge {
+        white-space: nowrap;
+        font-size: 12px;
+    }
+
+    .status {
+        white-space: nowrap;
+        font-size: 12px;
+    }
+
+    .filecard .file-progress {
+        flex: 1 1 auto;
+        min-width: 48px;
+        width: auto;
+        height: 8px;
+        margin: 0;
+    }
+
+    .filecard .file-remove {
+        position: static;
+        padding: 2px 6px;
+        border: 0;
+        border-radius: 8px;
+        background: transparent;
+        color: var(--text);
+        cursor: pointer;
+    }
+
+    .filecard .file-remove:hover {
+        background: rgba(255, 255, 255, 0.12);
+    }
+
+    .downloads {
+        padding: 12px;
+    }
+
+    #bottom-ads {
+        display: none !important;
+    }
+
+    .side-ads {
+        display: none !important;
+    }
+
+    .footer-ads {
+        display: flex !important;
+        padding: 8px 10px;
+    }
+
+    .footer-ads .ad-slot {
+        min-height: 60px;
+        width: 100%;
+    }
+
+    .btn-topbar {
+        max-width: none;
+    }
+
+    .topbar_Buttons {
+        display: flex;
+        gap: 8px;
+    }
+}
+
+@media (max-width:600px) {
+    .filecard .file-progress {
+        flex: 1 1 auto;
+        min-width: 44px;
+        height: 7px;
+        margin: 0;
+        width: auto;
+    }
+
+    .filecard {
+        gap: 8px;
+        padding: 10px 12px;
+    }
+
+    .filecard .file-controls {
+        gap: 6px;
+    }
+
+    .badge {
+        font-size: 11.5px;
+    }
+
+    .status {
+        font-size: 11.5px;
+    }
+
+    .topbar_Buttons {
+        flex-wrap: wrap;
+        width: 100%;
+    }
+}
+
+@media (max-width:520px) {
+    .filecard .file-progress {
+        flex: 1 1 auto;
+        min-width: 40px;
+        height: 6px;
+        margin: 0;
+        width: auto;
+    }
+
+    .filecard {
+        gap: 6px;
+        padding: 10px 10px;
+    }
+
+    .filecard .file-controls {
+        gap: 6px;
+    }
+
+    .badge {
+        font-size: 11px;
+    }
+
+    .status {
+        font-size: 11px;
+    }
+
+    .f-name {
+        font-size: 0.98rem;
+    }
+
+    #file-list .filecard .file-progress {
+        min-width: 100px !important;
+        height: 8px !important;
+    }
+}
+
+@media (max-width:420px) {
+    .filecard .file-progress {
+        flex: 1 1 auto;
+        min-width: 36px;
+        height: 5px;
+        margin: 0;
+        width: auto;
+    }
+
+    .filecard {
+        gap: 6px;
+        padding: 8px 10px;
+    }
+
+    .filecard .file-controls {
+        gap: 5px;
+    }
+
+    .badge {
+        font-size: 10.5px;
+    }
+
+    .status {
+        font-size: 10.5px;
+    }
+
+    .f-name {
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width:360px) {
+    .filecard .file-progress {
+        flex: 1 1 auto;
+        min-width: 32px;
+        height: 4px;
+        margin: 0;
+        width: auto;
+    }
+
+    .filecard {
+        gap: 5px;
+        padding: 8px 8px;
+    }
+
+    .filecard .file-controls {
+        gap: 4px;
+    }
+
+    .badge {
+        font-size: 10px;
+    }
+
+    .status {
+        font-size: 10px;
+    }
+
+    .f-name {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width:680px) {
+    .filecard .file-progress {
+        flex: 1 1 auto;
+        min-width: 46px;
+        height: 7px;
+        width: auto;
+        margin: 0;
+    }
+
+    .filecard {
+        gap: 8px;
+        padding: 11px 12px;
+    }
+
+    .filecard .file-controls {
+        gap: 7px;
+    }
+
+    .badge {
+        font-size: 11.75px;
+    }
+
+    .status {
+        font-size: 11.75px;
+    }
+}
+
+@media (max-width:480px) {
+    .filecard .file-progress {
+        flex: 1 1 auto;
+        min-width: 38px;
+        height: 5px;
+        width: auto;
+        margin: 0;
+    }
+
+    .filecard {
+        gap: 6px;
+        padding: 9px 10px;
+    }
+
+    .filecard .file-controls {
+        gap: 5px;
+    }
+
+    .badge {
+        font-size: 10.75px;
+    }
+
+    .status {
+        font-size: 10.75px;
+    }
+
+    .f-name {
+        font-size: 0.96rem;
+    }
+}
+
+@media (max-width:400px) {
+    .filecard .file-progress {
+        flex: 1 1 auto;
+        min-width: 34px;
+        height: 4px;
+        width: auto;
+        margin: 0;
+    }
+
+    .filecard {
+        gap: 5px;
+        padding: 8px 9px;
+    }
+
+    .filecard .file-controls {
+        gap: 4px;
+    }
+
+    .badge {
+        font-size: 10.25px;
+    }
+
+    .status {
+        font-size: 10.25px;
+    }
+
+    .f-name {
+        font-size: 0.92rem;
+    }
+
+    #file-list .filecard .file-progress {
+        min-width: 80px !important;
+        height: 6px !important;
+    }
+
+    #file-list .filecard .badge {
+        font-size: 12px !important;
+    }
+
+    #file-list .filecard .status {
+        font-size: 12px !important;
+    }
+}
+
+@media (max-width:540px) {
+    progress.file-progress {
+        flex: 1 1 200px !important;
+        min-width: 52px !important;
+        height: 7px !important;
+        width: auto !important;
+        margin: 0 !important;
+    }
+
+    progress.file-progress::-webkit-progress-bar {
+        height: 7px;
+    }
+
+    progress.file-progress::-webkit-progress-value {
+        height: 7px;
+    }
+
+    #file-list progress.file-progress {
+        flex: 1 1 160px !important;
+        min-width: 44px !important;
+        height: 6px !important;
+        color: var(--progress-fill) !important;
+        width: auto !important;
+        margin: 0 !important;
+    }
+
+    #file-list progress.file-progress::-webkit-progress-bar {
+        height: 6px;
+        color: var(--progress-fill) !important;
+    }
+
+    #file-list progress.file-progress::-webkit-progress-value {
+        height: 6px;
+        color: var(--progress-fill) !important;
+    }
+}
+
+@media (max-width:500px) {
+    progress.file-progress {
+        flex: 1 1 180px !important;
+        min-width: 48px !important;
+        height: 6px !important;
+        width: auto !important;
+        margin: 0 !important;
+    }
+
+    progress.file-progress::-webkit-progress-bar {
+        height: 6px;
+    }
+
+    progress.file-progress::-webkit-progress-value {
+        height: 6px;
+    }
+}
+
+@media (max-width:460px) {
+    progress.file-progress {
+        flex: 1 1 160px !important;
+        min-width: 42px !important;
+        height: 5px !important;
+        width: auto !important;
+        margin: 0 !important;
+    }
+
+    progress.file-progress::-webkit-progress-bar {
+        height: 5px;
+    }
+
+    progress.file-progress::-webkit-progress-value {
+        height: 5px;
+    }
+}
+
+@media (max-width:440px) {
+    progress.file-progress {
+        flex: 1 1 140px !important;
+        min-width: 36px !important;
+        height: 4px !important;
+        width: auto !important;
+        margin: 0 !important;
+    }
+
+    progress.file-progress::-webkit-progress-bar {
+        height: 4px;
+    }
+
+    progress.file-progress::-webkit-progress-value {
+        height: 4px;
+    }
+}
+
+@media (max-width:380px) {
+    .badge {
+        min-width: auto;
+    }
+
+    .footer-ads .ad-slot {
+        min-height: 50px;
+    }
+
+    #file-list {
+        --prog-w: 30vw;
+        --prog-min: 100vw;
+        --prog-shrink: 12px;
+        --prog-w-conv: 110px;
+        --prog-h: 8px;
+    }
+}
+
+@media (max-width:560px) {
+    #file-list progress.file-progress {
+        flex: 1 1 170px !important;
+        min-width: 46px !important;
+        color: var(--progress-fill) !important;
+        height: 6px !important;
+        width: auto !important;
+        margin: 0 !important;
+    }
+
+    #file-list progress.file-progress::-webkit-progress-bar {
+        height: 6px;
+        color: var(--progress-fill) !important;
+    }
+
+    #file-list progress.file-progress::-webkit-progress-value {
+        height: 6px;
+        color: var(--progress-fill) !important;
+    }
+}
+
+@media (max-width:555px) {
+    #file-list progress.file-progress {
+        flex: 1 1 168px !important;
+        min-width: 46px !important;
+        height: 6px !important;
+        width: auto !important;
+        color: var(--progress-fill) !important;
+        margin: 0 !important;
+    }
+}
+
+@media (max-width:550px) {
+    #file-list progress.file-progress {
+        flex: 1 1 166px !important;
+        min-width: 45px !important;
+        height: 6px !important;
+        width: auto !important;
+        margin: 0 !important;
+        color: var(--progress-fill) !important;
+    }
+}
+
+@media (max-width:545px) {
+    #file-list progress.file-progress {
+        flex: 1 1 163px !important;
+        min-width: 45px !important;
+        color: var(--progress-fill) !important;
+        height: 6px !important;
+        width: auto !important;
+        margin: 0 !important;
+    }
+}
+
+@media (max-width:959.98px) {
+    #file-list .filecard {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        grid-template-rows: auto auto !important;
+        row-gap: 8px !important;
+        align-items: center !important;
+        overflow: hidden !important;
+    }
+
+    #file-list .filecard .file-meta {
+        grid-column: 1 / -1 !important;
+        grid-row: 1 !important;
+        min-width: 0 !important;
+    }
+
+    #file-list .filecard .f-name {
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+
+    #file-list .filecard .sub {
+        opacity: .8 !important;
+    }
+
+    #file-list .filecard .file-controls {
+        grid-column: 1 / -1 !important;
+        grid-row: 2 !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 10px !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        margin-left: 0 !important;
+        justify-content: flex-start !important;
+        flex-wrap: nowrap !important;
+    }
+
+    #file-list .filecard .badge {
+        flex: 0 0 auto !important;
+        white-space: nowrap !important;
+    }
+
+    #file-list .filecard .status {
+        flex: 0 0 auto !important;
+        white-space: nowrap !important;
+    }
+
+    #file-list .filecard .file-remove {
+        flex: 0 0 auto !important;
+        white-space: nowrap !important;
+        position: static !important;
+        padding: 2px 6px !important;
+        border: 0 !important;
+        border-radius: 8px !important;
+        background: transparent !important;
+        color: var(--text) !important;
+        cursor: pointer !important;
+    }
+
+    #file-list progress.file-progress {
+        flex: 1 1 auto !important;
+        min-width: 140px !important;
+        width: auto !important;
+        height: 10px !important;
+        margin: 0 !important;
+        color: var(--progress-fill) !important;
+    }
+
+    #file-list .filecard .file-progress {
+        flex: 1 1 auto !important;
+        min-width: 140px !important;
+        width: auto !important;
+        height: 10px !important;
+        margin: 0 !important;
+        color: var(--progress-fill) !important;
+    }
+}
+
+@media (max-width:767px) {
+    .mobile-inline-ad {
+        display: block;
+    }
+
+    .footer-ads {
+        display: none !important;
+    }
+
+    .dropzone {
+        display: none !important;
+    }
+
+    .file-input {
+        width: 100%;
+    }
+}
+
+@media (min-width:768px) {
+    .mobile-inline-ad {
+        display: none !important;
+    }
+}
+
+/* Fill the top-right gap */
+@media (min-width: 980px) {
+    .format-explainer__content {
+        grid-auto-flow: row dense !important;
+        /* backfill earlier rows */
+    }
+
+    /* Right column starts at the top */
+    .format-explainer__content>.explain-block:nth-of-type(3) {
+        /* Common uses */
+        grid-column: 2 !important;
+        grid-row: 1 !important;
+    }
+
+    .format-explainer__content>.explain-block:nth-of-type(4) {
+        /* Limitations */
+        grid-column: 2 !important;
+        grid-row: 2 !important;
+    }
+
+    .format-explainer__content>.details {
+        grid-column: 2 !important;
+        grid-row: 3 !important;
+    }
+}
+
+/* ===== Explainer override: 2-zone, no stairs ===== */
+.panel.format-explainer {
+    max-width: none !important;
+}
+
+/* Use full content width */
+.panel.format-explainer {
+    max-width: none;
+}
+
+/* Mobile-first: stack naturally. Desktop: 2 columns under a full-width header */
+@media (min-width: 980px) {
+    .format-explainer__content.two-col {
+        display: grid;
+        grid-template-columns: minmax(540px, 1.35fr) 1fr;
+        /* left | right */
+        grid-template-areas:
+            "head head"
+            "left right";
+        gap: 20px 28px;
+        align-items: start;
+    }
+
+    .explainer-header {
+        grid-area: head;
+    }
+
+    .col--left {
+        grid-area: left;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+    }
+
+    .col--right {
+        grid-area: right;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+    }
+
+    /* Make Details a tidy sticky card */
+    .col--right .details {
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 12px 14px;
+        background: linear-gradient(180deg, var(--panel) 0%, var(--panel-2) 100%);
+        position: sticky;
+        top: calc(var(--header-safe, 72px) + 12px);
+    }
+}
+
+/* Remove the long horizontal rules that caused the “stairs” */
+.panel.format-explainer .explain-block {
+    border-top: 0;
+    padding-top: 0;
+    margin-top: 0;
+}
+
+/* Optional: a subtle rule tied to headings instead of full-width borders */
+.panel.format-explainer h3 {
     display: flex;
     align-items: center;
+    gap: 10px;
+    margin: 8px 0 6px;
+    font-size: 1.06rem;
+}
+
+.panel.format-explainer h3::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    margin-left: 10px;
+    background: linear-gradient(90deg, var(--border), transparent);
+    opacity: .65;
+}
+
+/* Optional: faint vertical divider between columns
+.col--right{ border-left: 1px solid var(--border); padding-left: 24px; }
+*/
+
+/* ===== Explainer (flex version) — lock header above columns, no surprises ===== */
+@media (min-width: 980px) {
+
+    /* Make the content a vertical stack: header first, columns second */
+    .panel.format-explainer>.format-explainer__content {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 18px !important;
+    }
+
+    /* Two columns row */
+    .panel.format-explainer .explainer-columns {
+        display: flex !important;
+        gap: 28px !important;
+        align-items: flex-start !important;
+        width: 90%;
+        clear: both !important;
+    }
+
+    .panel.format-explainer .explainer-left {
+        flex: 1.35 1 0 !important;
+        min-width: 0 !important;
+    }
+
+
+    /* Safety: prevent legacy floats/positions from affecting order */
+    .panel.format-explainer .explainer-header,
+    .panel.format-explainer .explainer-columns {
+        position: static !important;
+        float: none !important;
+    }
+
+    /* Details card (keep) */
+    .panel.format-explainer .explainer-right .details {
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 14px 14px;
+        background: linear-gradient(180deg, var(--panel) 0%, var(--panel-2) 100%);
+        position: sticky;
+        top: calc(var(--header-safe, 72px) + 12px);
+        width: fit-content;
+        margin-left: -6px;
+    }
+
+    /* Remove the old full-width borders */
+    .panel.format-explainer .explain-block {
+        border-top: 0 !important;
+        padding-top: 0 !important;
+        margin-top: 0 !important;
+    }
+
+    /* Keep header text from being capped */
+    .panel.format-explainer .explainer-header .lead {
+        max-width: none !important;
+    }
+}
+
+/* --- Final polish for the explainer card --- */
+.panel.format-explainer {
+    max-width: none;
+}
+
+/* Typography & rhythm */
+.panel.format-explainer h2 {
+    margin: 0 0 .35rem;
+    letter-spacing: .2px;
+}
+
+.panel.format-explainer .lead {
+    margin: 0 0 .8rem;
+    opacity: .85;
+}
+
+.panel.format-explainer p {
+    max-width: 68ch;
+    line-height: 1.55;
+}
+
+.panel.format-explainer ul {
+    padding-left: 1.1rem;
+}
+
+.panel.format-explainer li {
+    margin: .18rem 0;
+}
+
+/* Softer section separators (keeps the tidy look) */
+.panel.format-explainer h3 {
+    margin-top: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.panel.format-explainer h3::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--border), transparent);
+    opacity: .65;
+}
+
+/* Desktop layout refinements */
+@media (min-width: 980px) {
+
+    /* Column spacing and proportions */
+    .explainer-columns {
+        gap: 32px;
+    }
+
+    .explainer-left {
+        flex: 1.45 1 0;
+    }
+
+    .explainer-right {
+        flex: 1 1 0;
+    }
+
+    /* Subtle vertical divider for clearer separation */
+    .explainer-right {
+        border-left: 1px solid var(--border);
+        padding-left: 24px;
+    }
+
+    /* Details card alignment & stickiness */
+    .explainer-right .details {
+        margin-top: 10px;
+        /* nudge to align with headings above */
+        position: sticky;
+        top: calc(var(--header-safe, 72px) + 12px);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: linear-gradient(180deg, var(--panel) 0%, var(--panel-2) 100%);
+        padding: 12px 14px;
+    }
+}
+
+/* Remove the old full-width rules for good */
+.panel.format-explainer .explain-block {
+    border-top: 0;
+    margin-top: 0;
+    padding-top: 0;
+}
+
+/* Neutralize global <header> styling inside the explainer card */
+.panel.format-explainer header.explainer-header {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: 0 !important;
+    padding: 0 !important;
+}
+
+/* === Details spec card polish === */
+.panel.format-explainer .details {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: linear-gradient(180deg, var(--panel) 0%, var(--panel-2) 100%);
+    padding: 14px 16px;
+}
+
+.panel.format-explainer .details h3 {
+    margin: 0 0 10px;
+    font-size: .98rem;
+    letter-spacing: .2px;
+}
+
+/* 2x2 spec grid */
+.panel.format-explainer .details .kv-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    /* left column of pairs | right column of pairs */
+    gap: 6px, 0px;
+    align-items: start;
+}
+
+/* Each pair = label | value */
+.panel.format-explainer .details .kv {
+    display: grid;
+    grid-template-columns: 60px 10fr;
+    /* label width | value */
     gap: 12px;
+    padding: 8px 0;
+    border-top: 1px dashed rgba(255, 255, 255, .06);
 }
 
-/* Keep the button from stretching or wrapping */
-.file-add-wrap .btn-ghost {
-    flex: 0 0 auto;
+.panel.format-explainer .details .kv:nth-child(-n+2) {
+    border-top: 0;
+}
+
+/* no top rule on first row */
+
+.panel.format-explainer .details .kv .k {
+    color: var(--muted);
+    font-weight: 600;
+    opacity: .9;
+    font-size: 14px;
+    margin-top: 3px;
+}
+
+.panel.format-explainer .details .kv .v {
+    color: var(--text);
+    opacity: .95;
+}
+
+/* Turn nested lists into tidy chips (no bullets) */
+.panel.format-explainer .details .kv .v ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.panel.format-explainer .details .kv .v li {
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, .03);
+    line-height: 1.3;
     white-space: nowrap;
-    width: auto;
-    /* in case a global rule sets button{width:100%} */
+
 }
 
-/* Filename label: single line, ellipsis, char-limited width */
-.file-add-wrap .file-picked {
-    /* change the 28 to whatever “character” cap you want */
-    max-width: calc(var(--file-picked-ch, 28) * 1ch);
-    flex: 1 1 auto;
-    min-width: 0;
-    /* enables ellipsis inside flex rows */
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+/* Make MIME look “techy” */
+.panel.format-explainer .details .kv:nth-child(3) .v li {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
 }
 
+<<<<<<< HEAD
 /* === Progress bar color: orange === */
 
 
@@ -2438,3 +4265,113 @@ max-width: fit-content;
   .file-picker.js-ready .file-picker-name {
     text-overflow: clip;  /* no extra dots at the end */
   }
+=======
+.panel.format-explainer .explainer-right {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    width: 50%;
+}
+
+@media (max-width:1120px) {
+    .k {
+        font-size: 13px !important;
+    }
+
+    .explainer-right {}
+}
+
+@media (max-width:1080px) {
+    .k {
+        font-size: 13px !important;
+    }
+
+
+
+    .panel.format-explainer .details .kv .v li {
+        font-size: 12px !important;
+        padding: 4px 8px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: rgba(255, 255, 255, .03);
+        line-height: 1.3;
+        white-space: inherit !important;
+    }
+}
+
+@media (max-width:978.5px) {
+    .k {
+        font-size: 12px !important;
+    }
+
+    .panel.format-explainer .details {
+        min-width: fit-content;
+    }
+
+    .panel.format-explainer .details .kv .v li {
+        font-size: 12px !important;
+        padding: 4px 8px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: rgba(255, 255, 255, .03);
+        line-height: 1.3;
+        white-space: nowrap !important;
+    }
+}
+
+@media (max-width:575px) {
+    .k {
+        font-size: 10px;
+    }
+
+    .panel.format-explainer .details {
+        min-width: fit-content;
+    }
+
+    .panel.format-explainer .details .kv .v li {
+        white-space: inherit !important;
+    }
+}
+
+
+
+@media (max-width:462.5px) {
+    .k .kv {
+        font-size: 10px !important;
+    }
+
+    .panel.format-explainer .details {
+        min-width: fit-content;
+    }
+
+    .panel.format-explainer .details .kv .v li {
+        white-space: inherit;
+        font-size: 10px !important;
+    }
+
+    .panel.format-explainer .explainer-right {
+        width: 100%;
+    }
+
+    .panel.format-explainer p {
+        width: 90%;
+    }
+
+    .details {
+
+        padding: 6px 6px !important;
+    }
+
+    .panel {
+        padding: 5px !important;
+    }
+
+    .kv-list {
+        gap: 4px !important;
+
+    }
+
+    .explainer-right {
+        padding-left: auto !important;
+    }
+}
+>>>>>>> 5f42b62d2 (Update 2025-11-01 17:35:17)

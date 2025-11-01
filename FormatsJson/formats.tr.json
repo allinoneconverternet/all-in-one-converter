@@ -1,0 +1,1104 @@
+{
+    "language":  "tr",
+    "version":  "1.0",
+    "last_updated":  "2025-10-25",
+    "formats":  {
+                    "png":  {
+                                "name":  "PNG",
+                                "category":  "görüntü",
+                                "extensions":  [
+                                                   "png"
+                                               ],
+                                "mime":  [
+                                             "image/png"
+                                         ],
+                                "synonyms":  [
+                                                 "Taşınabilir Ağ Grafikleri"
+                                             ],
+                                "one_liner":  "Saydamlık desteği ve keskin kenarlar sunan kayıpsız raster görüntü; UI, logolar ve ekran görüntüleri için ideal.",
+                                "about_to":  "PNG, her pikseli koruyan ve tam alfa saydamlık destekleyen kayıpsız bir raster formattır; UI öğeleri, logolar, grafikler ve ekran görüntüleri için idealdir. Düz renkler ve keskin çizgilerde verimli sıkıştırır ve kaydet‑yeniden kaydet işlemlerinde kalite kaybı oluşturmaz. JPEG ile karşılaştırıldığında, fotoğraflar için genelde daha büyük, metin ve grafikler için ise daha temizdir. Keskin detay, saydam arka plan ya da tarayıcılar ve uygulamalar arasında öngörülebilir bir görüntüleme gerektiğinde PNG’yi seçin.",
+                                "about_from":  "PNG dosyaları grafikler için harikadır; ancak fotoğraflar genellikle JPEG veya WebP olarak daha iyi sıkıştırılır. PNG’den dönüştürüyorsanız muhtemelen web için daha küçük bir görüntü ya da fotoğraf odaklı bir format istiyorsunuzdur. Kayıplı bir biçime dönüştürmek boyutu önemli ölçüde düşürebilir, ancak orijinalin ötesinde kalite artışı sağlamaz.",
+                                "common_uses":  [
+                                                    "Web grafikleri",
+                                                    "UI varlıkları",
+                                                    "Ekran görüntüleri",
+                                                    "Saydam logolar"
+                                                ],
+                                "limitations":  [
+                                                    "Fotoğraflarda JPEG’e göre daha büyük dosyalar",
+                                                    "Animasyon yok (APNG veya GIF/WebM kullanın)"
+                                                ]
+                            },
+                    "jpg":  {
+                                "name":  "JPG",
+                                "category":  "görüntü",
+                                "extensions":  [
+                                                   "jpg",
+                                                   "jpeg"
+                                               ],
+                                "mime":  [
+                                             "image/jpeg"
+                                         ],
+                                "synonyms":  [
+                                                 "JPEG"
+                                             ],
+                                "one_liner":  "Yaygın kayıplı fotoğraf formatı; geniş uyumluluk ve küçük dosyalar.",
+                                "about_to":  "JPEG, görsel kalite ile küçük dosya boyutu arasında denge kuran ve webde en geniş uyumluluğa sahip fotoğraf formatıdır. İnce sıkıştırma izlerinin kabul edilebilir olduğu fotoğraf ve gerçekçi görüntüler için idealdir. JPEG saydamlık veya vektör verilerini desteklemez ve tekrarlanan düzenleme/kaydetme işlemleri birikimli kayıp ekleyebilir. Neredeyse her cihazda hızlı yüklenen görüntüler istediğinizde JPEG’i seçin.",
+                                "about_from":  "JPEG’den dönüştürüyorsanız, muhtemelen saydamlık (PNG/WebP) ya da benzer kalitede daha iyi sıkıştırma sağlayan modern bir format (WebP) hedefliyorsunuzdur. Kayıplı bir JPEG’i başka bir formata dönüştürmek kaybolan ayrıntıları geri getirmez; yalnızca boyut/uyumluluk değişir.",
+                                "common_uses":  [
+                                                    "Fotoğrafçılık",
+                                                    "Web görselleri",
+                                                    "E‑posta paylaşımları",
+                                                    "Sosyal gönderiler"
+                                                ],
+                                "limitations":  [
+                                                    "Saydamlık yok",
+                                                    "Kayıplı; tekrarlı kaydetmeler kaliteyi düşürebilir"
+                                                ]
+                            },
+                    "jpeg":  {
+                                 "alias_of":  "jpg"
+                             },
+                    "webp":  {
+                                 "name":  "WebP",
+                                 "category":  "görüntü",
+                                 "extensions":  [
+                                                    "webp"
+                                                ],
+                                 "mime":  [
+                                              "image/webp"
+                                          ],
+                                 "synonyms":  [
+
+                                              ],
+                                 "one_liner":  "Kayıplı veya kayıpsız sıkıştırma ve alfa desteği sunan modern görüntü formatı.",
+                                 "about_to":  "WebP, hem fotoğraflar hem de grafikler için mükemmel sıkıştırma sunar; saydamlık ve isteğe bağlı kayıpsız modu destekler. JPEG ve PNG’ye kıyasla aynı kalitede genellikle daha küçük dosyalar üretir; bu da sayfa hızını ve Core Web Vitals metriklerini iyileştirir. WebP tüm büyük tarayıcılarda ve son yıllarda yayımlanan çoğu uygulamada yerel olarak desteklenir. Verimli, modern web dağıtımı için WebP’yi seçin.",
+                                 "about_from":  "WebP’den dönüştürüyorsanız, muhtemelen JPEG/PNG tercih eden bir araca hedefliyorsunuzdur. WebP’den (kayıplı) başka bir kayıplı formata geçmek kaliteyi artırmaz; uyumluluk veya saydamlık ihtiyaçlarına odaklanın.",
+                                 "common_uses":  [
+                                                     "Modern web görselleri",
+                                                     "Duyarlı siteler",
+                                                     "Saydam grafikleri"
+                                                 ],
+                                 "limitations":  [
+                                                     "Daha eski yazılımlarda tam destek eksik olabilir",
+                                                     "Tarayıcı dışı ortamlarda animasyonlu WebP desteği değişken"
+                                                 ]
+                             },
+                    "svg":  {
+                                "name":  "SVG",
+                                "category":  "görüntü",
+                                "extensions":  [
+                                                   "svg"
+                                               ],
+                                "mime":  [
+                                             "image/svg+xml"
+                                         ],
+                                "synonyms":  [
+                                                 "Ölçeklenebilir Vektör Grafikleri"
+                                             ],
+                                "one_liner":  "Pikselden bağımsız vektör grafikler; simgeler, logolar ve diyagramlar için ideal.",
+                                "about_to":  "SVG, XML tabanlı bir vektör formatıdır; bu nedenle çizimler herhangi bir boyutta piksellenmeden keskin kalır. Simgeler, logolar, basit illüstrasyonlar ve grafikler için mükemmeldir; CSS ile stillenebilir, JavaScript ile betiklenebilir. Geometrik sanat için dosya boyutları genellikle çok küçüktür. Keskin çizgiler, küçük yük ve sonsuz ölçeklenebilirlik gerektiğinde SVG’yi seçin.",
+                                "about_from":  "SVG’den dönüştürmek, vektör desteği olmayan uygulamalar için bitmap (PNG/JPEG) gerektiğinde yaygındır veya sosyal platformlar için. Rastere dönüştürmek ayrıntıları piksele indirger; düzenleme için SVG özgününü saklayın ve ihtiyaç duydukça farklı boyutlar dışa aktarın.",
+                                "common_uses":  [
+                                                    "Simgeler",
+                                                    "Logolar",
+                                                    "Diyagramlar",
+                                                    "Grafikler"
+                                                ],
+                                "limitations":  [
+                                                    "Fotoğraflar için uygun değil",
+                                                    "Karmaşık SVG’ler ağır olabilir veya uygulamalar arasında farklı render edilebilir"
+                                                ]
+                            },
+                    "bmp":  {
+                                "name":  "BMP",
+                                "category":  "görüntü",
+                                "extensions":  [
+                                                   "bmp"
+                                               ],
+                                "mime":  [
+                                             "image/bmp"
+                                         ],
+                                "synonyms":  [
+                                                 "Bitmap"
+                                             ],
+                                "one_liner":  "Eski Windows sistemlerinde yaygın, ham/sıkıştırmasız bitmap; çok büyük dosyalar.",
+                                "about_to":  "BMP, pikselleri minimum sıkıştırma ile saklar; dosyalar büyüktür ancak çözmesi kolaydır. Çoğunlukla eski iş akışlarında ve aygıt yakalamalarında kullanılır. Günlük paylaşım için PNG veya JPEG’e dönüştürmek, görünür kaliteyi çoğu içerikte korurken boyutu dramatik biçimde azaltır.",
+                                "about_from":  "BMP’den dönüştürüyorsanız muhtemelen daha küçük dosyalar veya web‑dostu formatlar istiyorsunuzdur. PNG grafikler ve ekran görüntüleri için; JPEG fotoğraflar için uygundur. Tipik içerikte büyük boyut düşüşü bekleyin ve görünürde kayıp az olur.",
+                                "common_uses":  [
+                                                    "Eski Windows görüntüleri",
+                                                    "Aygıt ekran görüntüleri",
+                                                    "Ham bitmapler"
+                                                ],
+                                "limitations":  [
+                                                    "Çok büyük dosyalar",
+                                                    "Saydamlık yok (maske yoluyla hariç)"
+                                                ]
+                            },
+                    "tiff":  {
+                                 "name":  "TIFF",
+                                 "category":  "görüntü",
+                                 "extensions":  [
+                                                    "tiff",
+                                                    "tif"
+                                                ],
+                                 "mime":  [
+                                              "image/tiff"
+                                          ],
+                                 "synonyms":  [
+                                                  "Etiketli Görüntü Dosyası Biçimi"
+                                              ],
+                                 "one_liner":  "Kayıpsız seçeneklere ve çok sayfalı desteğe sahip esnek, arşiv sınıfı görüntü formatı.",
+                                 "about_to":  "TIFF, tarama, baskı ve arşivleme işlerinde tercih edilen yüksek doğruluklu bir formattır. Birden çok renk uzayı, katman ve hatta çok sayfalı belgeleri destekler; sıklıkla LZW veya Deflate gibi kayıpsız sıkıştırmalar kullanır. Düzenleme veya uzun süreli saklama için ana kalite görüntüler gerektiğinde TIFF’i seçin.",
+                                 "about_from":  "TIFF’ten dönüştürmek genellikle web dağıtımı veya daha küçük depolama için yapılır. Fotoğraflar için JPEG/WebP; grafikler için PNG; çok sayfalı taramalar için PDF uygundur. TIFF’ten dönüştürmek, algılanan kalitede minimum değişimle boyutu önemli ölçüde azaltabilir.",
+                                 "common_uses":  [
+                                                     "Tarama",
+                                                     "Baskı öncesi",
+                                                     "Arşiv görüntüleri",
+                                                     "Çok sayfalı belgeler"
+                                                 ],
+                                 "limitations":  [
+                                                     "Büyük dosyalar",
+                                                     "Hızlı web dağıtımı için ideal değil"
+                                                 ]
+                             },
+                    "gif":  {
+                                "name":  "GIF",
+                                "category":  "görüntü",
+                                "extensions":  [
+                                                   "gif"
+                                               ],
+                                "mime":  [
+                                             "image/gif"
+                                         ],
+                                "synonyms":  [
+                                                 "Grafik Değişim Formatı"
+                                             ],
+                                "one_liner":  "Basit animasyon desteği olan 8 bit paletli görüntüler; basit döngüler ve çıkartmalar için en iyisi.",
+                                "about_to":  "GIF, kare başına 256 renge ve basit animasyona kadar destek verir; bu da hafif döngüler ve çıkartmalar için idealdir. Durağan görüntülerde PNG veya WebP genellikle daha iyi görünür ve daha küçük sıkıştırır. Hareketli içerikte MP4/WebM çok daha küçük boyutta daha akıcı oynatım sunar. Kısa animasyonlu döngüler için en geniş uyumluluk gerektiğinde GIF’i tercih edin.",
+                                "about_from":  "GIF’ten dönüştürmek, animasyonlu dosyaları MP4/WebM’e küçültmek veya durağan kareleri PNG/JPEG’e çıkarmak için yaygındır. Uzun veya fotoğraf benzeri GIF’leri video formatlarına dönüştürürken büyük boyut düşüşleri bekleyin.",
+                                "common_uses":  [
+                                                    "Mizah ve çıkartmalar",
+                                                    "Basit animasyonlar",
+                                                    "UI hareket demoları"
+                                                ],
+                                "limitations":  [
+                                                    "256 renk sınırı",
+                                                    "Fotoğraf içeriğinde büyük dosyalar",
+                                                    "Gerçek alfa yok (yalnızca 1 bit saydamlık)"
+                                                ]
+                            },
+                    "mp3":  {
+                                "name":  "MP3",
+                                "category":  "ses",
+                                "extensions":  [
+                                                   "mp3"
+                                               ],
+                                "mime":  [
+                                             "audio/mpeg"
+                                         ],
+                                "synonyms":  [
+
+                                             ],
+                                "one_liner":  "Müzik ve podcastler için yaygın kayıplı ses; küçük dosyalar, evrensel destek.",
+                                "about_to":  "MP3, ses kalitesi ve küçük dosya boyutları arasında denge kurar; telefonlar, arabalar, hoparlörler ve tarayıcılarda her yerde çalar. Müzik için daha yüksek, konuşma için daha düşük bit hızları kullanın. En küçük boyutlar için AAC veya Opus gibi modern kodekler benzer kalitede daha verimli olabilir, ancak MP3 evrensel uyumluluğu ile öne çıkar.",
+                                "about_from":  "MP3’ten dönüştürmek, sıkıştırmayla kaybolan kaliteyi geri getirmez. Daha küçük dosyalar için AAC/Opus’a; düzenleme veya arşiv için WAV/FLAC’a dönüştürülebilir. Daha iyi sadakat gerekiyorsa eski bir MP3’ü dönüştürmek yerine kayıpsız bir kaynaktan başlayın.",
+                                "common_uses":  [
+                                                    "Müzik dağıtımı",
+                                                    "Podcastler",
+                                                    "Sesli kitaplar",
+                                                    "Web sesleri"
+                                                ],
+                                "limitations":  [
+                                                    "Kayıplı; düşük bit hızlarında artefaktlar",
+                                                    "Gelişmiş çok kanallı üstveri sınırlı"
+                                                ]
+                            },
+                    "wav":  {
+                                "name":  "WAV",
+                                "category":  "ses",
+                                "extensions":  [
+                                                   "wav"
+                                               ],
+                                "mime":  [
+                                             "audio/wav",
+                                             "audio/x-wav",
+                                             "audio/vnd.wave"
+                                         ],
+                                "synonyms":  [
+                                                 "Dalga Biçimi Sesi"
+                                             ],
+                                "one_liner":  "Maksimum kalite ve düzenleme alanı için sıkıştırmasız PCM ses.",
+                                "about_to":  "WAV, sesi sıkıştırmasız PCM olarak saklar; miksaj, mastering veya analiz için her örneği korur. Kusursuz kalite ve kolay düzenleme gerektiğinde mükemmeldir, ancak dosyalar büyüktür. Dağıtım veya paylaşım için AAC/MP3/Opus’a dönüştürerek boyutu büyük ölçüde azaltabilirsiniz.",
+                                "about_from":  "WAV’den dönüştürüyorsanız muhtemelen yayınlamak veya alan kazanmak istiyorsunuzdur. İçeriğinize (müzik/konuşma) uygun modern kayıplı bir kodek ve bit hızı seçin. Kayıpsız sıkıştırma ve daha küçük boyut için FLAC iyi bir alternatiftir.",
+                                "common_uses":  [
+                                                    "Kayıt ve düzenleme",
+                                                    "Ana dosyalar",
+                                                    "Ses arşivleme"
+                                                ],
+                                "limitations":  [
+                                                    "Çok büyük dosyalar",
+                                                    "Varsayılan olarak sıkıştırma yok"
+                                                ]
+                            },
+                    "ogg":  {
+                                "name":  "Ogg Vorbis",
+                                "category":  "ses",
+                                "extensions":  [
+                                                   "ogg"
+                                               ],
+                                "mime":  [
+                                             "audio/ogg"
+                                         ],
+                                "synonyms":  [
+                                                 "Ogg kapsayıcısında Vorbis"
+                                             ],
+                                "one_liner":  "Mütevazı bit hızlarında iyi kalite sunan, açık ve telifsiz kayıplı ses.",
+                                "about_to":  "Ogg Vorbis, benzer bit hızlarında çoğu zaman AAC ile yarışan verimli, telifsiz bir sıkıştırma sunar. Modern tarayıcılarda ve oynatıcılarda geniş destek görür. Açık lisanslama ve sağlam kalite istediğiniz akış veya indirmeler için Ogg’u seçin.",
+                                "about_from":  "Ogg’den dönüştürmek genellikle cihaz uyumluluğu (MP3/AAC) veya düzenleme (WAV/FLAC) içindir. Kayıplı kodekler arasında yeniden kodlamak ek artefaktlar ekleyebilir; mümkünse kayıpsız bir özgün tutun.",
+                                "common_uses":  [
+                                                    "Akış sesleri",
+                                                    "Açık kaynak projeler",
+                                                    "Oyun varlıkları"
+                                                ],
+                                "limitations":  [
+                                                    "Bazı eski cihazlarda daha az destek",
+                                                    "Kayıplı sıkıştırma"
+                                                ]
+                            },
+                    "m4a":  {
+                                "name":  "M4A",
+                                "category":  "ses",
+                                "extensions":  [
+                                                   "m4a"
+                                               ],
+                                "mime":  [
+                                             "audio/mp4",
+                                             "audio/x-m4a"
+                                         ],
+                                "synonyms":  [
+                                                 "MP4 kapsayıcısında AAC veya ALAC"
+                                             ],
+                                "one_liner":  "MP4 ses kapsayıcısı—genellikle AAC (kayıplı) veya ALAC (kayıpsız).",
+                                "about_to":  "M4A, ses için kullanılan bir MP4 kapsayıcısıdır. Çoğu M4A dosyası küçük boyut ve geniş destek için AAC (kayıplı) içerirken, bazıları kusursuz kalite için ALAC (kayıpsız) kullanır. Apple ve modern aygıtlarda sorunsuz çalar. Verimlilik ve uyumluluk dengesi için M4A’yı seçin.",
+                                "about_from":  "M4A’dan dönüştürürken kaynağın AAC (kayıplı) mı yoksa ALAC (kayıpsız) mı olduğunu belirleyin. Kayıplı AAC’yi başka bir kayıplı formata dönüştürmek kalite eklemez; düzenleme için WAV/FLAC’a, uyumluluk için MP3’e geçin.",
+                                "common_uses":  [
+                                                    "Müzik arşivleri",
+                                                    "Podcastler",
+                                                    "Apple ekosistemi sesleri"
+                                                ],
+                                "limitations":  [
+                                                    "İlgili M4P/M4B içeriklerinde DRM bulunabilir",
+                                                    "Kapsayıcı ayrıntıları bazı eski araçları şaşırtabilir"
+                                                ]
+                            },
+                    "flac":  {
+                                 "name":  "FLAC",
+                                 "category":  "ses",
+                                 "extensions":  [
+                                                    "flac"
+                                                ],
+                                 "mime":  [
+                                              "audio/flac"
+                                          ],
+                                 "synonyms":  [
+                                                  "Ücretsiz Kayıpsız Ses Kodeği"
+                                              ],
+                                 "one_liner":  "Kayıpsız ses sıkıştırma—arşivleme ve yüksek sadakatli dinleme için ideal.",
+                                 "about_to":  "FLAC, ses bilgisini kayıp olmadan sıkıştırır; boyutu WAV’a göre tipik olarak %30–60 azaltır. Müzik arşivlemek, ana kayıtları korumak ve boşluksuz çalma için mükemmeldir. WAV’a göre daha küçük dosyalarla bit‑müthiş doğruluk için FLAC’ı seçin.",
+                                 "about_from":  "FLAC’tan dönüştürmek, taşınabilir sürümler (AAC/MP3/Opus) oluşturmak için yaygındır. FLAC’ı ana kaynağınız olarak tutun; telefon, akış veya paylaşım için uygun bit hızlarında kayıplı kopyalar üretin.",
+                                 "common_uses":  [
+                                                     "Müzik arşivleme",
+                                                     "Kayıpsız dağıtım",
+                                                     "Yüksek sadakatli çalma"
+                                                 ],
+                                 "limitations":  [
+                                                     "AAC/MP3’e göre daha büyük",
+                                                     "Bazı cihazlar hâlâ MP3/AAC’i tercih eder"
+                                                 ]
+                             },
+                    "opus":  {
+                                 "name":  "Opus",
+                                 "category":  "ses",
+                                 "extensions":  [
+                                                    "opus"
+                                                ],
+                                 "mime":  [
+                                              "audio/ogg",
+                                              "audio/opus"
+                                          ],
+                                 "synonyms":  [
+
+                                              ],
+                                 "one_liner":  "Son teknoloji, düşük bit hızlı ses; akış, VoIP ve konuşma için harika.",
+                                 "about_to":  "Opus, düşük bit hızlarında mükemmel kalite sunar; konuşma ve müziğe iyi uyum sağlar. Açık, telifsizdir ve tarayıcılarda ve modern oynatıcılarda geniş destek görür. Özellikle akış veya sesli içeriklerde küçük dosyalarla etkileyici netlik için Opus’u seçin.",
+                                 "about_from":  "Opus’tan dönüştürmek genellikle cihaz uyumluluğu (MP3/AAC) veya düzenleme (WAV) içindir. Başka bir kayıplı kodeğe yeniden kodlamak jenerasyon kaybı ekler; birden çok dönüşüm planlıyorsanız kayıpsız kaynak tutun.",
+                                 "common_uses":  [
+                                                     "Akış",
+                                                     "VoIP",
+                                                     "Podcastler",
+                                                     "Oyun sesleri"
+                                                 ],
+                                 "limitations":  [
+                                                     "Eski donanımlarda sınırlı destek",
+                                                     "Kayıplı kodek"
+                                                 ]
+                             },
+                    "aiff":  {
+                                 "name":  "AIFF",
+                                 "category":  "ses",
+                                 "extensions":  [
+                                                    "aiff",
+                                                    "aif"
+                                                ],
+                                 "mime":  [
+                                              "audio/aiff",
+                                              "audio/x-aiff"
+                                          ],
+                                 "synonyms":  [
+                                                  "Ses Değişim Dosya Biçimi"
+                                              ],
+                                 "one_liner":  "macOS sistemlerinde yaygın, sıkıştırmasız PCM ses.",
+                                 "about_to":  "AIFF, WAV’e benzer biçimde sıkıştırmasız ses depolar; mükemmel kalite ve kolay düzenleme sağlar. Apple iş akışlarında ve eski DAW’larda popülerdir. Dağıtım veya bulut saklama için AAC/MP3/Opus’a dönüştürerek yeniden kayda gerek kalmadan boyutu azaltmayı düşünün.",
+                                 "about_from":  "AIFF’ten WAV’e dönüştürmek çapraz platform düzenleme için kaliteyi korur. Paylaşımda uygun bit hızında modern kayıplı bir kodek seçin veya kayıpsız sıkıştırma için FLAC kullanın.",
+                                 "common_uses":  [
+                                                     "Ses prodüksiyonu",
+                                                     "Arşiv ana kayıtları",
+                                                     "macOS projeleri"
+                                                 ],
+                                 "limitations":  [
+                                                     "Büyük dosyalar",
+                                                     "Apple ekosistemi dışında daha az yaygın"
+                                                 ]
+                             },
+                    "aac":  {
+                                "name":  "AAC",
+                                "category":  "ses",
+                                "extensions":  [
+                                                   "aac"
+                                               ],
+                                "mime":  [
+                                             "audio/aac"
+                                         ],
+                                "synonyms":  [
+                                                 "Gelişmiş Ses Kodlama"
+                                             ],
+                                "one_liner":  "Modern kayıplı ses kodeği; verimli ve geniş destekli (çoğunlukla M4A olarak saklanır).",
+                                "about_to":  "AAC, çoğu bit hızında MP3’e göre iyileştirmeler sunar ve iOS, Android, tarayıcılar ve akıllı cihazlarda geniş destek görür. Kalite ve küçük dosyalar istediğiniz müzik dağıtımı için güçlü bir varsayılandır. Birçok AAC dosyası, MP4 kapsayıcısı içinde M4A olarak saklanır.",
+                                "about_from":  "AAC’yi başka bir kayıplı kodeğe dönüştürmek ayrıntı eklemez. Düzenleme için WAV/FLAC’a geçin; uyumluluk için MP3 hâlâ evrenseldir. Sık sık yeniden kodlama planlanıyorsa kayıpsız bir kaynak saklayın.",
+                                "common_uses":  [
+                                                    "Akış ve indirmeler",
+                                                    "Müzik arşivleri",
+                                                    "Mobil oynatma"
+                                                ],
+                                "limitations":  [
+                                                    "Kayıplı; yeniden kodlamada jenerasyon kaybı",
+                                                    "Kapsayıcı karmaşası (AAC vs. M4A)"
+                                                ]
+                            },
+                    "mp4":  {
+                                "name":  "MP4",
+                                "category":  "video",
+                                "extensions":  [
+                                                   "mp4"
+                                               ],
+                                "mime":  [
+                                             "video/mp4"
+                                         ],
+                                "synonyms":  [
+                                                 "MPEG‑4 Bölüm 14 kapsayıcı"
+                                             ],
+                                "one_liner":  "En uyumlu video kapsayıcısı; tipik olarak H.264 video ve AAC ses içerir.",
+                                "about_to":  "MP4, video ve ses için yaygın bir kapsayıcıdır; genellikle video için H.264/AVC, ses için AAC kullanır. Cihazlar, tarayıcılar ve sosyal platformlar genelinde uyumluluk için en güvenli seçimdir. Sürprizsiz oynatma ve paylaşım gerektiğinde MP4’ü seçin.",
+                                "about_from":  "MP4’ten dönüştürüyorsanız, açık bir format (WebM) veya esnek bir kapsayıcı (MKV) hedefliyor olabilirsiniz. Kapsayıcı değiştirme (ör. MP4→MKV) kayıpsız olabilir; yeni bir kodeğe yeniden kodlamak boyutu düşürebilir ama zaman ve kalite maliyeti vardır.",
+                                "common_uses":  [
+                                                    "Web videosu",
+                                                    "Mobil oynatma",
+                                                    "Sosyal yüklemeler",
+                                                    "Akış"
+                                                ],
+                                "limitations":  [
+                                                    "Eski MP4 varyantları modern kodekleri desteklemeyebilir",
+                                                    "Bazı dosyalarda DRM veya üstveri sorunları"
+                                                ]
+                            },
+                    "webm":  {
+                                 "name":  "WebM",
+                                 "category":  "video",
+                                 "extensions":  [
+                                                    "webm"
+                                                ],
+                                 "mime":  [
+                                              "video/webm"
+                                          ],
+                                 "synonyms":  [
+                                                  "VP8/VP9/AV1 + Opus kapsayıcısı"
+                                              ],
+                                 "one_liner":  "VP8/VP9/AV1 video ve Opus/Vorbis ses için açık, web‑öncelikli kapsayıcı.",
+                                 "about_to":  "WebM, modern ve telifsiz kodekleri (video için VP9/AV1, ses için Opus/Vorbis) hafif bir kapsayıcıyla birleştirir. Tüm büyük tarayıcılarda yerel olarak oynar ve düşük bit hızlarında çoğu zaman mükemmel kalite sağlar. Açıklık ve sıkıştırma verimliliği önceliğinizse web dağıtımında WebM’i seçin.",
+                                 "about_from":  "WebM’den dönüştürmek, H.264 tercih eden eski oynatıcılarla uyumluluk içindir (MP4). WebM’iniz halihazırda VP9/AV1 kullanıyorsa H.264’e yeniden kodlamak aynı kalite için boyutu artırabilir.",
+                                 "common_uses":  [
+                                                     "Gömülü web videoları",
+                                                     "Arka plan döngüleri",
+                                                     "Açık kaynak iş akışları"
+                                                 ],
+                                 "limitations":  [
+                                                     "Eski cihazlar MP4/H.264’ü tercih edebilir",
+                                                     "AV1 kodlaması çoğu sistemde daha yavaştır"
+                                                 ]
+                             },
+                    "mkv":  {
+                                "name":  "MKV",
+                                "category":  "video",
+                                "extensions":  [
+                                                   "mkv"
+                                               ],
+                                "mime":  [
+                                             "video/x-matroska"
+                                         ],
+                                "synonyms":  [
+                                                 "Matroska"
+                                             ],
+                                "one_liner":  "Birden çok ses parçası, altyazı ve bölüm desteği sunan özellikli kapsayıcı.",
+                                "about_to":  "MKV (Matroska), neredeyse her kodeği, birden fazla ses/altyazı parçasını ve bölümleri barındırabilen esnek bir kapsayıcıdır. Arşivleme ve gelişmiş oynatma kurulumları için harikadır. Basit MP4’ün ötesinde özellikler gerektiğinde veya MP4’ten kayıpsız yeniden paketleme (remux) yapmak istediğinizde MKV’yi seçin.",
+                                "about_from":  "MKV’den MP4’e cihaz uyumluluğu için geçmek, kodekler zaten H.264/AAC ise çoğunlukla yalnızca kapsayıcı değiştirmeyle (remux) mümkündür. Aksi halde hedef desteğe uymak için yeniden kodlama gerekir.",
+                                "common_uses":  [
+                                                    "Video arşivleme",
+                                                    "Çoklu ses veya altyazı sürümleri",
+                                                    "Remux iş akışları"
+                                                ],
+                                "limitations":  [
+                                                    "Bazı cihaz/uygulamalarda yerel MKV desteği yok",
+                                                    "Akış platformları genellikle MP4’ü tercih eder"
+                                                ]
+                            },
+                    "mov":  {
+                                "name":  "MOV",
+                                "category":  "video",
+                                "extensions":  [
+                                                   "mov"
+                                               ],
+                                "mime":  [
+                                             "video/quicktime"
+                                         ],
+                                "synonyms":  [
+                                                 "QuickTime Movie"
+                                             ],
+                                "one_liner":  "Kameralar ve düzenleyiciler tarafından kullanılan Apple QuickTime kapsayıcısı; yüksek kalite, büyük dosyalar.",
+                                "about_to":  "MOV, kameralar ve iOS aygıtları tarafından sıklıkla üretilir; yüksek bit hızları ve düzenlemeye elverişli ayarlarla gelir. Üretim için mükemmel, ancak web dağıtımı için daha ağırdır. Geniş uyumluluk ve daha küçük boyutlar için MP4/H.264’e dönüştürün.",
+                                "about_from":  "MOV’dan dönüştürüyorsanız muhtemelen paylaşım için optimize ediyorsunuzdur. Kodekler zaten uyumluysa MP4’e yeniden paketleyin; değilse verimli akış için H.264/AAC veya WebM’e yeniden kodlayın.",
+                                "common_uses":  [
+                                                    "Kamera orijinalleri",
+                                                    "Düzenleme iş akışları",
+                                                    "Apple ekosistemi"
+                                                ],
+                                "limitations":  [
+                                                    "Büyük dosyalar",
+                                                    "Doğrudan web dağıtımı için daha az ideal"
+                                                ]
+                            },
+                    "m4v":  {
+                                "name":  "M4V",
+                                "category":  "video",
+                                "extensions":  [
+                                                   "m4v"
+                                               ],
+                                "mime":  [
+                                             "video/x-m4v",
+                                             "video/mp4"
+                                         ],
+                                "synonyms":  [
+                                                 "Apple MP4 türevi"
+                                             ],
+                                "one_liner":  "Apple tarafından kullanılan MP4‑ailesi kapsayıcı; MP4’e benzer, bazen DRM içerir.",
+                                "about_to":  "M4V, genellikle H.264 video ve AAC ses içeren Apple odaklı bir MP4 kapsayıcısıdır. Dosyalar kaynaklarına bağlı olarak üstveri veya DRM içerebilir. Yeniden paketleme mümkün olduğunda standart MP4’e dönüştürmek çoğu zaman kaliteyi değiştirmeden uyumluluğu artırır.",
+                                "about_from":  "M4V’den dönüştürmek genellikle kapsayıcıya özgü farklılıkları kaldırarak evrensel oynatmayı iyileştirmek içindir. DRM varsa dönüştürme, yasa veya platform tarafından kısıtlanabilir.",
+                                "common_uses":  [
+                                                    "iTunes videoları",
+                                                    "Apple cihazları"
+                                                ],
+                                "limitations":  [
+                                                    "Olası DRM",
+                                                    "Aksi halde işlevsel olarak MP4’e benzer"
+                                                ]
+                            },
+                    "pdf":  {
+                                "name":  "PDF",
+                                "category":  "belge",
+                                "extensions":  [
+                                                   "pdf"
+                                               ],
+                                "mime":  [
+                                             "application/pdf"
+                                         ],
+                                "synonyms":  [
+                                                 "Taşınabilir Belge Biçimi"
+                                             ],
+                                "one_liner":  "Her cihazda güvenilir görüntüleme ve baskı için sabit düzenli belgeler.",
+                                "about_to":  "PDF, düzeni, yazı tiplerini ve grafikleri korur; böylece belgeler her yerde aynı görünür. Paylaşacağınız veya yazdıracağınız son dosyalar için en iyi seçimdir. PDF’ler görüntü ve metin gömebilir; OCR ile taramalar aranabilir hâle gelir. Tutarlılık, taşınabilirlik ve profesyonel sunum gerektiğinde PDF’yi seçin.",
+                                "about_from":  "PDF’yi düzenlenebilir biçimlere (Word/PowerPoint/Excel) dönüştürmek yapı ve düzeni yeniden oluşturmaya çalışır; sonuçlar içeriğe göre değişir. Taranmış PDF’lerde seçilebilir metin çıkarmak için OCR gereklidir.",
+                                "common_uses":  [
+                                                    "Raporlar",
+                                                    "Formlar",
+                                                    "Kılavuzlar",
+                                                    "Sözleşmeler"
+                                                ],
+                                "limitations":  [
+                                                    "Düzenleme sınırlıdır",
+                                                    "Karmaşık düzenler kusursuz dönüştürülemeyebilir"
+                                                ]
+                            },
+                    "docx":  {
+                                 "name":  "DOCX",
+                                 "category":  "belge",
+                                 "extensions":  [
+                                                    "docx"
+                                                ],
+                                 "mime":  [
+                                              "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                                          ],
+                                 "synonyms":  [
+                                                  "Microsoft Word belgesi"
+                                              ],
+                                 "one_liner":  "Stiller, görseller ve zengin düzen içeren düzenlenebilir kelime işlem belgeleri.",
+                                 "about_to":  "DOCX, yazma ve işbirliği için standart Word biçimidir. Başlıklar, görseller, tablolar, stiller ve değişiklik izleme desteği sunar. Son dağıtım için PDF’ye, web yayını için HTML’ye dönüştürün.",
+                                 "about_from":  "DOCX’ten dönüştürmek, değiştirilemez son sürüm (PDF) üretmek veya içeriği web için hazırlamak (HTML/Markdown) amacıyla yaygındır. Özellikle tablolar ve listelerde düzeni kontrol edin.",
+                                 "common_uses":  [
+                                                     "İş belgeleri",
+                                                     "Makaleler ve raporlar",
+                                                     "Şablonlar"
+                                                 ],
+                                 "limitations":  [
+                                                     "Görünüm uygulamalar arasında değişebilir",
+                                                     "Gömülü yazı tipleri/nesneler dışa aktarımda bozulabilir"
+                                                 ]
+                             },
+                    "pptx":  {
+                                 "name":  "PPTX",
+                                 "category":  "belge",
+                                 "extensions":  [
+                                                    "pptx"
+                                                ],
+                                 "mime":  [
+                                              "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+                                          ],
+                                 "synonyms":  [
+                                                  "Microsoft PowerPoint sunumu"
+                                              ],
+                                 "one_liner":  "Metin, görseller, animasyonlar ve medya içeren slayt sunumları.",
+                                 "about_to":  "PPTX, sunumlar için standart formattır. Animasyon, video ve konuşmacı notlarını destekler. Kolay paylaşım/baskı için PDF’ye, kendiliğinden oynayan slayt videoları için MP4’e dönüştürün.",
+                                 "about_from":  "PPTX’ten dönüştürürken animasyonlar, geçişler ve gömülü medya hedef formata göre sadeleşebilir veya düzleşebilir. Yayınlamadan önce sonucu mutlaka önizleyin.",
+                                 "common_uses":  [
+                                                     "İş sunumları",
+                                                     "Dersler",
+                                                     "Konferans konuşmaları"
+                                                 ],
+                                 "limitations":  [
+                                                     "Animasyonlar statik biçimlere taşınmayabilir",
+                                                     "Yazı tipleri gömülmeden akabilir"
+                                                 ]
+                             },
+                    "xlsx":  {
+                                 "name":  "XLSX",
+                                 "category":  "belge",
+                                 "extensions":  [
+                                                    "xlsx"
+                                                ],
+                                 "mime":  [
+                                              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                                          ],
+                                 "synonyms":  [
+                                                  "Microsoft Excel çalışma kitabı"
+                                              ],
+                                 "one_liner":  "Formüller, biçimlendirme ve birden çok sayfa içeren elektronik tablolar.",
+                                 "about_to":  "XLSX, birden çok sayfaya yayılmış yapılandırılmış veri, formül, grafik ve biçimlendirmeyi saklar. Basit, uygulamadan bağımsız veri alışverişi için CSV/TSV’ye; salt okunur paylaşım için PDF’ye dönüştürün. Büyük veri kümelerinde, işlem hatları için temiz CSV özetleri kaydetmeyi düşünün.",
+                                 "about_from":  "XLSX’ten CSV/TSV’ye geçerken formüller ve stiller kaybolur; yalnızca ham değerler kalır. Veri bilimi veya ETL için bu çoğu zaman tercih edilir ve otomasyonu kolaydır.",
+                                 "common_uses":  [
+                                                     "Veri analizi",
+                                                     "Finans modelleri",
+                                                     "Raporlar"
+                                                 ],
+                                 "limitations":  [
+                                                     "Biçimlendirme ve formüller CSV/TSV’ye aktarılmaz",
+                                                     "Büyük çalışma kitapları ağır olabilir"
+                                                 ]
+                             },
+                    "csv":  {
+                                "name":  "CSV",
+                                "category":  "veri",
+                                "extensions":  [
+                                                   "csv"
+                                               ],
+                                "mime":  [
+                                             "text/csv"
+                                         ],
+                                "synonyms":  [
+                                                 "Virgülle Ayrılmış Değerler"
+                                             ],
+                                "one_liner":  "Düz metin olarak tablolar; hemen her araca içe aktarılır.",
+                                "about_to":  "CSV, alanlar arasında virgül bulunan düz metinle tabloları temsil eder. Hafif, insan tarafından okunabilir ve geniş desteklidir; veri alışverişi için idealdir. Formül veya biçimlendirme olmadan maksimum taşınabilirlik istediğinizde CSV’yi seçin.",
+                                "about_from":  "CSV’den XLSX’e veya JSON’a dönüştürmek analiz veya uygulamalar için yapısallık ekler. Özellikle ASCII olmayan verilerde ayraçlar, satır sonları ve kodlamalara dikkat edin.",
+                                "common_uses":  [
+                                                    "Veri dışa/içe aktarma",
+                                                    "ETL hatları",
+                                                    "API’ler ve günlükler"
+                                                ],
+                                "limitations":  [
+                                                    "Formül veya stil yok",
+                                                    "Virgül/tırnak/yeni satırlarla belirsizlikler"
+                                                ]
+                            },
+                    "tsv":  {
+                                "name":  "TSV",
+                                "category":  "veri",
+                                "extensions":  [
+                                                   "tsv"
+                                               ],
+                                "mime":  [
+                                             "text/tab-separated-values"
+                                         ],
+                                "synonyms":  [
+                                                 "Sekmeyle Ayrılmış Değerler"
+                                             ],
+                                "one_liner":  "Alanlar arasında sekme kullanan düz metin tablolar; birçok CSV kaçış sorununu önler.",
+                                "about_to":  "TSV, alanlar arasında sekmeler kullanır; bu da çoğu zaman tırnak ve kaçış ihtiyacını azaltır. Alanlar virgül içerebileceğinde kullanışlıdır. Daha az kaçış tuzağıyla temiz değişim için TSV’yi seçin.",
+                                "about_from":  "TSV’den CSV veya XLSX’e dönüştürmek kolaydır. Alan içinde sekmeler bulunmasına dikkat edin; bazı araçlar bunları farklı şekilde kaçışlar.",
+                                "common_uses":  [
+                                                    "Veri değişimi",
+                                                    "Biyoinformatik",
+                                                    "Günlük işleme"
+                                                ],
+                                "limitations":  [
+                                                    "Alan içi sekmeler yine sorun çıkarabilir",
+                                                    "Formül veya biçim yok"
+                                                ]
+                            },
+                    "txt":  {
+                                "name":  "TXT",
+                                "category":  "metin",
+                                "extensions":  [
+                                                   "txt"
+                                               ],
+                                "mime":  [
+                                             "text/plain"
+                                         ],
+                                "synonyms":  [
+                                                 "Düz metin"
+                                             ],
+                                "one_liner":  "Biçimlendirme olmayan basit metin; herhangi bir düzenleyici veya cihazda açılır.",
+                                "about_to":  "TXT, en basit metin depolama yoludur—küçük, taşınabilir ve geleceğe dönüktür. Notlar, hızlı dışa aktarımlar ve betikler için idealdir. Paylaşım için PDF’ye; zengin biçim için Markdown/HTML’ye dönüştürün.",
+                                "about_from":  "TXT’den içeriği Markdown, HTML veya DOCX’e yapılandırabilirsiniz. Karakterlerin bozulmaması için kodlamayı (UTF‑8) belirtmeyi unutmayın.",
+                                "common_uses":  [
+                                                    "Notlar",
+                                                    "Günlükler",
+                                                    "Readme dosyaları"
+                                                ],
+                                "limitations":  [
+                                                    "Biçimlendirme yok",
+                                                    "UTF‑8 değilse kodlama sorunları"
+                                                ]
+                            },
+                    "md":  {
+                               "name":  "Markdown",
+                               "category":  "metin",
+                               "extensions":  [
+                                                  "md",
+                                                  "markdown"
+                                              ],
+                               "mime":  [
+                                            "text/markdown"
+                                        ],
+                               "synonyms":  [
+                                                "MD"
+                                            ],
+                               "one_liner":  "HTML ve PDF’ye temizce dönüşen hafif işaretleme dili.",
+                               "about_to":  "Markdown; başlıklar, listeler, bağlantılar ve kod için yazarı dostu bir sözdizimidir. Dosyaları küçük ve sürüm karşılaştırmasına uygun tutar; yayınlamak için HTML veya PDF’ye derlenir. Kolay düzenleme ve temiz çıktılar istediğinizde Markdown’ı seçin.",
+                               "about_from":  "Markdown’ı HTML veya PDF’ye dönüştürmek cilalı çıktılar üretir. MD dosyasını asıl kaynak olarak tutun ve gerektiğinde farklı biçimlere dışa aktarın.",
+                               "common_uses":  [
+                                                   "Dokümantasyon",
+                                                   "Bloglar",
+                                                   "Readme dosyaları"
+                                               ],
+                               "limitations":  [
+                                                   "İnce ayrıntılı yerleşim kontrolü sınırlı",
+                                                   "Uzantılar işleyiciye göre değişir"
+                                               ]
+                           },
+                    "json":  {
+                                 "name":  "JSON",
+                                 "category":  "veri",
+                                 "extensions":  [
+                                                    "json"
+                                                ],
+                                 "mime":  [
+                                              "application/json"
+                                          ],
+                                 "synonyms":  [
+                                                  "JavaScript Nesne Gösterimi"
+                                              ],
+                                 "one_liner":  "API’ler ve uygulamalar için yapılandırılmış veri biçimi; insan tarafından okunabilir ve dilden bağımsız.",
+                                 "about_to":  "JSON, nesneleri, dizileri ve değerleri programların kolayca ayrıştırdığı hafif bir metin biçiminde kodlar. Web API’leri ve yapılandırmalar için fiili standarttır. Düz tablolar için CSV’ye dönüştürün; iç içe yapı için JSON’u koruyun.",
+                                 "about_from":  "JSON’dan dönüştürmek genellikle CSV’ye düzleştirmeyi veya alanları analiz için dönüştürmeyi içerir. İç içe diziler/nesneler—karmaşık yapılar tabloya aktarımda özel eşleme gerektirebilir.",
+                                 "common_uses":  [
+                                                     "API’ler",
+                                                     "Yapılandırmalar",
+                                                     "Olay günlükleri"
+                                                 ],
+                                 "limitations":  [
+                                                     "Büyük ikili veriler için ideal değil",
+                                                     "Derin iç içe yapı tablosal dışa aktarmayı zorlaştırır"
+                                                 ]
+                             },
+                    "jsonl":  {
+                                  "name":  "JSON Lines",
+                                  "category":  "veri",
+                                  "extensions":  [
+                                                     "jsonl",
+                                                     "ndjson"
+                                                 ],
+                                  "mime":  [
+                                               "application/x-ndjson",
+                                               "application/json"
+                                           ],
+                                  "synonyms":  [
+                                                   "NDJSON"
+                                               ],
+                                  "one_liner":  "Akış ve büyük veri hatları için her satırda bir JSON nesnesi.",
+                                  "about_to":  "JSON Lines, kayıtları satır satır saklar; bu da akışa uygun ve büyük veri kümelerine ölçeklenebilir bir yapı sunar. Günlükler ve makine öğrenimi hatları için idealdir. Her satırın bağımsız bir nesne olduğu, artımlı işlenebilen veriler için JSONL’yi seçin.",
+                                  "about_from":  "JSONL’den tek bir JSON dizisi oluşturabilir veya analiz için CSV’ye düzleştirebilirsiniz. Satır sonu tutarlılığını sistemler arasında koruduğunuzdan emin olun.",
+                                  "common_uses":  [
+                                                      "Günlükler",
+                                                      "Makine öğrenimi veri setleri",
+                                                      "ETL"
+                                                  ],
+                                  "limitations":  [
+                                                      "Karmaşık iç içe veriler için insana dost değildir",
+                                                      "Satır sonları dikkatli ele alınmalıdır"
+                                                  ]
+                              },
+                    "html":  {
+                                 "name":  "HTML",
+                                 "category":  "web",
+                                 "extensions":  [
+                                                    "html",
+                                                    "htm"
+                                                ],
+                                 "mime":  [
+                                              "text/html"
+                                          ],
+                                 "synonyms":  [
+                                                  "Köprü Metni Biçimlendirme Dili"
+                                              ],
+                                 "one_liner":  "Web sayfaları için işaretleme; metin, görseller, CSS ve betikler içerebilir.",
+                                 "about_to":  "HTML, içeriği tarayıcılar için yapılandırır. PDF’ye dönüştürmek sabit bir anlık görüntü verir; TXT’ye dönüştürmek düz metin üretir; Markdown’a dönüştürmek okunabilir yapıyı korur. Web sunumu için HTML’yi seçin; statik, paylaşılabilir çıktılar gerektiğinde dönüştürün.",
+                                 "about_from":  "HTML’den PDF’ye veya görsellere dönüştürmek, raporlar ve makbuzlar için yaygındır. Dinamik betikler ve stiller tamamen taşınamayabilir—dışa aktarımda yazdırılabilir stilleri hedefleyin.",
+                                 "common_uses":  [
+                                                     "Web sayfaları",
+                                                     "E‑postalar",
+                                                     "Raporlar"
+                                                 ],
+                                 "limitations":  [
+                                                     "Tarayıcı motorları arasında işleme farklılıkları",
+                                                     "Dinamik içerik beklenen şekilde dışa aktarılmayabilir"
+                                                 ]
+                             },
+                    "zip":  {
+                                "name":  "ZIP",
+                                "category":  "arşiv",
+                                "extensions":  [
+                                                   "zip"
+                                               ],
+                                "mime":  [
+                                             "application/zip"
+                                         ],
+                                "synonyms":  [
+
+                                             ],
+                                "one_liner":  "Geniş OS desteğine sahip evrensel arşiv; isteğe bağlı AES şifreleme.",
+                                "about_to":  "ZIP, dosya ve klasörleri tek bir pakette sıkıştırarak birleştirir. Windows, macOS ve Linux’ta yerel olarak açılır; bu da paylaşım için en güvenli seçim yapar. Birçok araç ZIP arşivleri içinde güçlü AES şifreleme de destekler.",
+                                "about_from":  "ZIP’ten 7Z/RAR’a dönüştürmek, büyük ve çeşitli veri setlerinde sıkıştırmayı daha da iyileştirebilir. Alıcı uyumluluğu en önemliyse ZIP kullanın.",
+                                "common_uses":  [
+                                                    "İndirmeleri paketleme",
+                                                    "E‑posta ekleri",
+                                                    "Yedeklemeler"
+                                                ],
+                                "limitations":  [
+                                                    "7Z/XZ’ye göre daha mütevazı sıkıştırma",
+                                                    "Parola koruması araçlara göre değişir"
+                                                ]
+                            },
+                    "rar":  {
+                                "name":  "RAR",
+                                "category":  "arşiv",
+                                "extensions":  [
+                                                   "rar"
+                                               ],
+                                "mime":  [
+                                             "application/vnd.rar"
+                                         ],
+                                "synonyms":  [
+
+                                             ],
+                                "one_liner":  "Sağlam sıkıştırma ve kurtarma özelliklerine sahip tescilli arşiv.",
+                                "about_to":  "RAR, güçlü sıkıştırma sunar ve hasarlı arşivler için kurtarma kayıtları içerebilir. Güç kullanıcı topluluklarında popülerdir ancak oluşturmak/açmak için uyumlu yazılım gerekir. İyi sıkıştırma ve hata kurtarma seçenekleri istediğinizde RAR’ı seçin.",
+                                "about_from":  "RAR’dan ZIP veya 7Z’ye geçmek açıklığı artırır ve paylaşımı kolaylaştırabilir. RAR oluşturmak genellikle ticari araçlar gerektirir.",
+                                "common_uses":  [
+                                                    "Büyük dosya setleri",
+                                                    "Uzun süreli saklama",
+                                                    "Sahne sürümleri"
+                                                ],
+                                "limitations":  [
+                                                    "Tescilli format",
+                                                    "Oluşturma çoğu zaman ücretli yazılım ister"
+                                                ]
+                            },
+                    "7z":  {
+                               "name":  "7Z",
+                               "category":  "arşiv",
+                               "extensions":  [
+                                                  "7z"
+                                              ],
+                               "mime":  [
+                                            "application/x-7z-compressed"
+                                        ],
+                               "synonyms":  [
+                                                "7‑Zip arşivi"
+                                            ],
+                               "one_liner":  "İsteğe bağlı AES‑256 şifrelemeyle yüksek oranlı arşiv (LZMA/LZMA2).",
+                               "about_to":  "7Z, özellikle büyük veya tekrarlayan verilerde mükemmel sıkıştırma sağlar. Solid bloklar, çok büyük arşivler ve AES‑256 şifrelemeyi destekler. Boyutun yerel OS desteğinden daha önemli olduğu durumlarda 7Z’yi seçin.",
+                               "about_from":  "7Z’den ZIP’e geçmek, tüm cihazlarda hazır kullanılabilirliği artırır; bunun karşılığında dosya boyutu biraz büyüyebilir.",
+                               "common_uses":  [
+                                                   "Yazılım paketleri",
+                                                   "Yedeklemeler",
+                                                   "Büyük veri setlerini dağıtma"
+                                               ],
+                               "limitations":  [
+                                                   "Bazı sistemlerde yerel olarak açılmaz",
+                                                   "Sıkıştırma CPU‑yoğundur"
+                                               ]
+                           },
+                    "tar":  {
+                                "name":  "TAR",
+                                "category":  "arşiv",
+                                "extensions":  [
+                                                   "tar"
+                                               ],
+                                "mime":  [
+                                             "application/x-tar"
+                                         ],
+                                "synonyms":  [
+                                                 "Bant Arşivi"
+                                             ],
+                                "one_liner":  "Birçok dosyayı tek akışta saklayan dosya sistemi paketleyici—tek başına sıkıştırma yapmaz.",
+                                "about_to":  "TAR, birden çok dosya ve klasörü izinleri ve üstverileri koruyarak tek bir arşivde birleştirir. Tek başına sıkıştırma yapmaz; genellikle Gzip, Bzip2 veya XZ ile eşleştirilir (örn. .tgz). Doğru üstveriyle UNIX dostu bir paket gerektiğinde TAR’ı seçin.",
+                                "about_from":  "TAR’dan ZIP veya 7Z’ye geçmek sıkıştırma ekler ve UNIX dışındaki kullanıcılar için uyumluluğu artırır. Küçük setlerde yalnızca ZIP daha basit olabilir.",
+                                "common_uses":  [
+                                                    "UNIX yedekleri",
+                                                    "Kaynak kodu sürümleri",
+                                                    "Sunucu dağıtımları"
+                                                ],
+                                "limitations":  [
+                                                    "Tek başına sıkıştırma yok",
+                                                    "UNIX dışı kullanıcılar için daha az tanıdık"
+                                                ]
+                            },
+                    "gz":  {
+                               "name":  "GZ",
+                               "category":  "arşiv",
+                               "extensions":  [
+                                                  "gz"
+                                              ],
+                               "mime":  [
+                                            "application/gzip"
+                                        ],
+                               "synonyms":  [
+                                                "Gzip"
+                                            ],
+                               "one_liner":  "TAR ile birlikte .tgz arşivlerini oluşturmakta yaygın tek akış sıkıştırma.",
+                               "about_to":  "Gzip, DEFLATE algoritmasını kullanarak tek bir akışı—çoğunlukla bir TAR dosyasını—sıkıştırır. Hızlıdır ve sunucularda/araçlarda geniş destek görür. İyi hız/boyut dengesi için .tgz kullanın.",
+                               "about_from":  "GZ’den dönüştürmek genellikle .tar.gz’yi açıp ZIP/7Z olarak yeniden paketlemeyi içerir. Bağımsız .gz dosyaları tek öğeyi sıkıştırır; karışık klasörler için ZIP daha pratik olabilir.",
+                               "common_uses":  [
+                                                   "Sunucu günlükleri",
+                                                   "Paket tarball’ları (.tgz)",
+                                                   "UNIX hatları"
+                                               ],
+                               "limitations":  [
+                                                   "Tek dosya akışı",
+                                                   "Bazı verilerde XZ’ye göre daha zayıf sıkıştırma"
+                                               ]
+                           },
+                    "bz2":  {
+                                "name":  "BZ2",
+                                "category":  "arşiv",
+                                "extensions":  [
+                                                   "bz2"
+                                               ],
+                                "mime":  [
+                                             "application/x-bzip2"
+                                         ],
+                                "synonyms":  [
+                                                 "Bzip2"
+                                             ],
+                                "one_liner":  "Gzip’ten daha küçük sonuçlar üreten, CPU’yu daha çok kullanan sıkıştırma; genellikle TAR ile.",
+                                "about_to":  "Bzip2, hız yerine daha sıkı sıkıştırmayı önceler. Çoğunlukla .tar.bz2 tarball’ları olarak görülür. Gzip’ten daha küçük dosyalar istediğiniz ve biraz zamanı değiştirebileceğiniz durumlarda kullanın.",
+                                "about_from":  "BZ2’den dönüştürmek genellikle .tar.bz2’yi açıp ZIP/7Z’ye geçmeyi içerir. Maksimum açıklık için ZIP, gündelik kullanıcılara daha dosttur.",
+                                "common_uses":  [
+                                                    "Kaynak arşivleri",
+                                                    "UNIX yedekleri"
+                                                ],
+                                "limitations":  [
+                                                    "Gzip’ten daha yavaş",
+                                                    "GZ gibi tek akış"
+                                                ]
+                            },
+                    "xz":  {
+                               "name":  "XZ",
+                               "category":  "arşiv",
+                               "extensions":  [
+                                                  "xz"
+                                              ],
+                               "mime":  [
+                                            "application/x-xz"
+                                        ],
+                               "synonyms":  [
+                                                "LZMA2 sıkıştırma"
+                                            ],
+                               "one_liner":  "Çok yüksek sıkıştırma (LZMA2); daha yavaş ama arşivleme için harika.",
+                               "about_to":  "XZ, LZMA2 kullanarak mükemmel sıkıştırma sağlar; genellikle TAR dosyalarını .tar.xz olarak sarar. Hızdan çok boyutun önemli olduğu uzun süreli saklama ve dağıtım için uygundur.",
+                               "about_from":  "XZ/TAR.XZ’den 7Z veya ZIP’e geçmek daha geniş kullanılabilirlik sağlar. Daha hızlı ve uyumlu formatlara geçerken dosya boyutu büyüyebilir.",
+                               "common_uses":  [
+                                                   "Kaynak dağıtımları",
+                                                   "Linux paketleri",
+                                                   "Uzun süreli arşivler"
+                                               ],
+                               "limitations":  [
+                                                   "Sıkıştırma yavaştır",
+                                                   "Tek akış (birçok dosya için TAR ile eşleyin)"
+                                               ]
+                           },
+                    "tgz":  {
+                                "name":  "TGZ",
+                                "category":  "arşiv",
+                                "extensions":  [
+                                                   "tgz",
+                                                   "tar.gz"
+                                               ],
+                                "mime":  [
+                                             "application/gzip"
+                                         ],
+                                "synonyms":  [
+                                                 "tar.gz"
+                                             ],
+                                "one_liner":  "Gzip ile sıkıştırılmış bir TAR arşivi; standart Linux/UNIX tarball’ı.",
+                                "about_to":  "TGZ, TAR’ın dosya paketlemesini Gzip sıkıştırmasıyla birleştirir ve pratik bir hız/boyut dengesi sunar. UNIX araçları ve paket yöneticileri arasında yaygındır.",
+                                "about_from":  "TGZ’den dönüştürmek genellikle teknik olmayan kullanıcılar için ZIP’e veya en küçük boyut için 7Z/XZ’ye yeniden sıkıştırmayı içerir.",
+                                "common_uses":  [
+                                                    "Açık kaynak sürümleri",
+                                                    "Sunucu dağıtımları",
+                                                    "Paket dağıtımı"
+                                                ],
+                                "limitations":  [
+                                                    "Windows’ta araçsız daha az tanıdık",
+                                                    "Rastgele erişim için ideal değil"
+                                                ]
+                            },
+                    "tbz2":  {
+                                 "name":  "TBZ2",
+                                 "category":  "arşiv",
+                                 "extensions":  [
+                                                    "tbz2",
+                                                    "tar.bz2"
+                                                ],
+                                 "mime":  [
+                                              "application/x-bzip2"
+                                          ],
+                                 "synonyms":  [
+                                                  "tar.bz2"
+                                              ],
+                                 "one_liner":  "Gzip’ten daha sıkı boyut için Bzip2 ile sıkıştırılmış TAR arşivi.",
+                                 "about_to":  "TBZ2, TAR’ı Bzip2 ile eşleyerek Gzip’ten daha iyi sıkıştırma sağlar; ancak daha yavaştır. Boyut önemli olduğunda ve hedef kitle UNIX tarzı arşivleri kullanabildiğinde uygundur.",
+                                 "about_from":  "TBZ2’den ZIP’e evrensel paylaşım için veya maksimum sıkıştırma için 7Z/XZ’ye geçin.",
+                                 "common_uses":  [
+                                                     "Kaynak kodu tarball’ları",
+                                                     "Yedeklemeler"
+                                                 ],
+                                 "limitations":  [
+                                                     "Daha yavaş sıkıştırma",
+                                                     "UNIX dışı ortamlarda daha az tanıdık"
+                                                 ]
+                             },
+                    "txz":  {
+                                "name":  "TXZ",
+                                "category":  "arşiv",
+                                "extensions":  [
+                                                   "txz",
+                                                   "tar.xz"
+                                               ],
+                                "mime":  [
+                                             "application/x-xz"
+                                         ],
+                                "synonyms":  [
+                                                 "tar.xz"
+                                             ],
+                                "one_liner":  "Mükemmel boyut, daha yavaş hız: XZ ile sıkıştırılmış TAR arşivi.",
+                                "about_to":  "TXZ, TAR’ı XZ (LZMA2) ile birleştirerek harika sıkıştırma sunar. Boyutu en aza indirmek hızdan daha önemli olduğunda uzun süreli dağıtımlar için güçlü bir seçimdir.",
+                                "about_from":  "TXZ’den ZIP’e geçmek boyutu artırabilir ancak Windows ve macOS’ta yerel uyumluluğu iyileştirir.",
+                                "common_uses":  [
+                                                    "Linux paketleri",
+                                                    "Uzun süreli arşivler"
+                                                ],
+                                "limitations":  [
+                                                    "Yavaş sıkıştırma",
+                                                    "Gündelik kullanıcılara daha az dost"
+                                                ]
+                            },
+                    "rtf":  {
+                                "name":  "RTF",
+                                "category":  "document",
+                                "extensions":  [
+                                                   "rtf"
+                                               ],
+                                "mime":  [
+                                             "application/rtf",
+                                             "text/rtf"
+                                         ],
+                                "synonyms":  [
+                                                 "Rich Text Format"
+                                             ],
+                                "one_liner":  "Formatted text exchange format that preserves basic styling across word processors.",
+                                "about_to":  "RTF (Rich Text Format) keeps fonts, basic styles, and simple images while remaining widely compatible. Convert to DOCX or PDF for modern editing or fixed-layout sharing.",
+                                "about_from":  "Converting from RTF is common when you want cleaner layouts (DOCX) or a print-perfect file (PDF). Complex elements may simplify because RTF focuses on portability.",
+                                "common_uses":  [
+                                                    "Cross-platform text",
+                                                    "Simple documents",
+                                                    "Interchange between editors"
+                                                ],
+                                "limitations":  [
+                                                    "Limited advanced layout",
+                                                    "Larger than plain text"
+                                                ]
+                            },
+                    "tar.gz":  {
+                                   "alias_of":  "tgz"
+                               },
+                    "tar.bz2":  {
+                                    "alias_of":  "tbz2"
+                                },
+                    "tar.xz":  {
+                                   "alias_of":  "txz"
+                               },
+                    "tbz":  {
+                                "alias_of":  "tbz2"
+                            },
+                    "tif":  {
+                                "alias_of":  "tiff"
+                            }
+                },
+    "pair_notes_templates":  {
+                                 "lossy_to_lossy":  "{FROM} biçimini {TO} biçimine dönüştürmek kaliteyi artırmaz; ikisi de kayıplı kodeklerdir. En iyi sonuç için daha yüksek bit hızı seçin ya da kayıpsız bir kaynaktan başlayın.",
+                                 "container_swap":  "Kapsayıcıyı değiştirmek (ör. {FROM} → {TO}) ses/görüntü kodekleri zaten uyumluysa kayıpsız olabilir; değilse yeniden kodlama gerekir.",
+                                 "archive_note":  "{FROM} dosyalarını {TO} arşivine almak paylaşım/depolama için öğeleri paketler; yeniden kodlama yapmaz ve ortam kalitesini değiştirmez.",
+                                 "scan_ocr":  "PDF’niz taranmış bir görüntü ise dönüştürürken OCR’yi etkinleştirin; böylece çıktı aranabilir/düzenlenebilir olur.",
+                                 "photo_graphic":  "Metin veya saydamlık içeren grafiklerde PNG/WebP kullanın; dosya boyutunu küçük tutmak için fotoğraflarda JPEG/WebP kullanın."
+                             }
+}

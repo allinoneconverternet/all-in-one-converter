@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<!-- CMP-START (auto-inserted) -->
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){ dataLayer.push(arguments); }
+gtag('consent','default',{
+ad_storage:'denied',
+analytics_storage:'denied',
+ad_user_data:'denied',
+ad_personalization:'denied'
+});
+</script>
+<script async src="https://fundingchoicesmessages.google.com/i/pub-6251303109610053?ers=1"></script>
+<script>
+(function signalGooglefcPresent(){
+if(!window.frames['googlefcPresent']){
+if(document.body){
+var f=document.createElement('iframe');
+f.style='width:0;height:0;border:none;position:absolute;left:-9999px;';
+f.name='googlefcPresent';
+document.body.appendChild(f);
+} else { setTimeout(signalGooglefcPresent,0); }
+}
+})();
+(function waitForTCF(){
+function go(){
+if(window.__adsLoaded) return;
+window.__adsLoaded = true;
+if(typeof window.loadAdSense==='function'){ window.loadAdSense(); }
+else{
+if(document.getElementById('adsbygoogle-js')) return;
+var s=document.createElement('script');
+s.id='adsbygoogle-js';
+s.async=true;
+s.src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6251303109610053';
+s.crossOrigin='anonymous';
+document.head.appendChild(s);
+}
+}
+if(typeof __tcfapi!=='function'){ setTimeout(waitForTCF,50); return; }
+__tcfapi('addEventListener',2,function(tcData,success){
+if(!success) return;
+if(['useractioncomplete','tcloaded'].indexOf(tcData.eventStatus)>-1){ go(); }
+});
+})();
+</script>
+<!-- CMP-END (auto-inserted) -->
+<meta charset="utf-8">
+<title>Безопасность | {{BRAND}} — Локальная конвертация на устройстве (без загрузки на сервер)</title>
+<meta name="description" content="{{BRAND}} обрабатывает файлы полностью в вашем браузере. Без загрузки на сервер. Узнайте о нашей модели безопасности: HTTPS/HSTS, CSP, SRI, изоляция и политика раскрытия уязвимостей.">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="index,follow">
+
+<!-- <link rel="alternate" hreflang="x-default" href="https://www.all-in-one-converter.net/languages/en/"/><link rel="alternate" hreflang="en" href="https://www.all-in-one-converter.net/languages/en/"/> -->
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="{{BRAND}}">
+<meta property="og:title" content="Безопасность | {{BRAND}}">
+<meta property="og:description" content="Локальная конвертация на устройстве. Узнайте, как мы защищаем приложение и вашу конфиденциальность.">
+<meta property="og:url" content="https://www.all-in-one-converter.net/languages/ru/%D0%B1%D0%B5%D0%B7%D0%BE%D0%BF%D0%B0%D1%81%D0%BD%D0%BE%D1%81%D1%82%D1%8C/"/>
+<!-- <meta property="og:image" content="https://yourcdn.example/og/security.png"> -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Безопасность | {{BRAND}}">
+<meta name="twitter:description" content="Конвертация на устройстве, HTTPS/HSTS, CSP, SRI, изоляция и политика раскрытия уязвимостей.">
+<!-- Structured Data -->
+<script type="application/ld+json">
+{
+"@context":"https://schema.org",
+"@type":"WebPage",
+"name":"Безопасность",
+"url":"https://www\.all-in-one-converter\.net/ru/безопасность/",
+"inLanguage":"ру",
+"datePublished":"2025-10-19",
+"dateModified":"2025-10-19"
+}
+</script>
+<script type="application/ld+json">
+{
+"@context":"https://schema.org",
+"@type":"BreadcrumbList",
+"itemListElement":[
+{"@type":"ListItem","position":1,"name":"Главная","item":"https://www\.all-in-one-converter\.net/ru/безопасность//../"},
+{"@type":"ListItem","position":2,"name":"Безопасность","item":"https://www\.all-in-one-converter\.net/ru/безопасность/"}
+]
+}
+</script>
+  <link rel="canonical" href="https://www.all-in-one-converter.net/languages/ru/%D0%B1%D0%B5%D0%B7%D0%BE%D0%BF%D0%B0%D1%81%D0%BD%D0%BE%D1%81%D1%82%D1%8C/"/>
+</head>
+<body>
+<main>
+<header>
+
+<h1>Безопасность в {{BRAND}}</h1>
+<p><strong>Последнее обновление:</strong> 19 октября 2025&nbsp;г.</p>
+<p>{{BRAND}} выполняет конвертацию файлов <strong>полностью в вашем браузере</strong>. Ваши файлы <strong>никогда не загружаются</strong> на наши серверы. Ниже описано, как мы защищаем пользователей и само приложение.</p>
+</header>
+<section id="threat-model">
+<h2>Модель угроз и принципы</h2>
+<ul>
+<li><strong>Минимизация данных:</strong> файлы и чувствительное содержимое остаются на вашем устройстве.</li>
+<li><strong>Защита транспорта:</strong> все страницы обслуживаются по HTTPS с включённым HSTS.</li>
+<li><strong>Изоляция:</strong> ресурсоёмкая обработка использует WebAssembly/веб-воркеры, где это возможно, чтобы держать задачи в «песочнице» браузера.</li>
+</ul>
+</section>
+<section id="app-security">
+<h2>Практики безопасности приложения</h2>
+<ul>
+<li><strong>Content Security Policy (CSP):</strong> строгие значения по умолчанию для ограничения источников скриптов и встроенного кода.</li>
+<li><strong>Subresource Integrity (SRI):</strong> сторонние скрипты/стили защищаются атрибутами integrity, где применимо.</li>
+<li><strong>Заголовки:</strong> COOP/COEP/CORP и Permissions-Policy используются для снижения междоменных рисков и ограничения доступа к мощным API.</li>
+<li><strong>Цепочка поставок:</strong> обновления зависимостей отслеживаются, исправления безопасности применяются оперативно.</li>
+<li><strong>Песочница для рекламы:</strong> рекламные слоты используют фиксированные размеры и изолированные iframe, чтобы минимизировать сдвиг макета и снизить риски.</li>
+</ul>
+<p><em>Примечание:</em> точные политики могут различаться в зависимости от развёртывания; если вы исследователь, свяжитесь с нами для подробностей.</p>
+</section>
+<section id="user-data">
+<h2>Ваши файлы и данные</h2>
+<ul>
+<li><strong>Без загрузок:</strong> конвертация выполняется локально в вашем браузере.</li>
+<li><strong>Без хранения:</strong> мы не сохраняем ваши файлы на наших серверах.</li>
+<li><strong>Только реклама и согласие:</strong> мы можем обрабатывать ограниченные идентификаторы для показа и измерения рекламы, с учётом ваших настроек согласия. См. нашу <a href="/languages/ru/конфиденциальность/">Политику конфиденциальности</a>.</li>
+</ul>
+</section>
+<section id="disclosure">
+<h2>Раскрытие уязвимостей</h2>
+<p>Если вы считаете, что обнаружили проблему безопасности, отправьте письмо на <a href="mailto:{{SECURITY_EMAIL}}">{{SECURITY_EMAIL}}</a> с подробностями. При ответственном раскрытии мы подтвердим получение сообщения и оперативно займёмся решением.</p>
+<p>Дополнительно: мы также публикуем <code>/.well-known/security.txt</code> с актуальной контактной информацией.</p>
+</section>
+<section id="availability">
+<h2>Доступность сервиса</h2>
+<p>Как инструмент, работающий в браузере, {{BRAND}} зависит от производительности вашего устройства и возможностей браузера. Мы стремимся поддерживать актуальные версии основных браузеров на настольных и мобильных устройствах.</p>
+</section>
+<nav aria-label="Связанные разделы">
+<ul>
+<li><a href="/languages/ru/конфиденциальность/">Конфиденциальность</a></li>
+<li><a href="/languages/ru/вопросы-и-ответы/">Часто задаваемые вопросы</a></li>
+<li><a href="/languages/ru/как-сделать/">Как это сделать</a></li>
+<li><a href="/languages/ru/условия/">Условия</a></li>
+</ul>
+</nav>
+</main>
+<!-- CMP-FOOTER-LINK (auto-inserted) -->
+
+<!-- /CMP-FOOTER-LINK -->
+</body>
+</html>

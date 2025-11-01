@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<!-- CMP-START (auto-inserted) -->
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){ dataLayer.push(arguments); }
+gtag('consent','default',{
+ad_storage:'denied',
+analytics_storage:'denied',
+ad_user_data:'denied',
+ad_personalization:'denied'
+});
+</script>
+<script async src="https://fundingchoicesmessages.google.com/i/pub-6251303109610053?ers=1"></script>
+<script>
+(function signalGooglefcPresent(){
+if(!window.frames['googlefcPresent']){
+if(document.body){
+var f=document.createElement('iframe');
+f.style='width:0;height:0;border:none;position:absolute;left:-9999px;';
+f.name='googlefcPresent';
+document.body.appendChild(f);
+} else { setTimeout(signalGooglefcPresent,0); }
+}
+})();
+(function waitForTCF(){
+function go(){
+if(window.__adsLoaded) return;
+window.__adsLoaded = true;
+if(typeof window.loadAdSense==='function'){ window.loadAdSense(); }
+else{
+if(document.getElementById('adsbygoogle-js')) return;
+var s=document.createElement('script');
+s.id='adsbygoogle-js';
+s.async=true;
+s.src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6251303109610053';
+s.crossOrigin='anonymous';
+document.head.appendChild(s);
+}
+}
+if(typeof __tcfapi!=='function'){ setTimeout(waitForTCF,50); return; }
+__tcfapi('addEventListener',2,function(tcData,success){
+if(!success) return;
+if(['useractioncomplete','tcloaded'].indexOf(tcData.eventStatus)>-1){ go(); }
+});
+})();
+</script>
+<!-- CMP-END (auto-inserted) -->
+<meta charset="utf-8">
+<title>Безпека | {{BRAND}} — Локальні конвертації на пристрої (без завантажень)</title>
+<meta name="description" content="{{BRAND}} обробляє файли повністю у вашому браузері. Без завантажень. Дізнайтесь про нашу модель безпеки: HTTPS/HSTS, CSP, SRI, ізоляція та політика розкриття вразливостей.">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="index,follow">
+
+<!-- <link rel="alternate" hreflang="x-default" href="https://www.all-in-one-converter.net/languages/en/"/><link rel="alternate" hreflang="en" href="https://www.all-in-one-converter.net/languages/en/"/> -->
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="{{BRAND}}">
+<meta property="og:title" content="Безпека | {{BRAND}}">
+<meta property="og:description" content="Локальні конвертації на пристрої. Дізнайтесь, як ми захищаємо застосунок і вашу приватність.">
+<meta property="og:url" content="https://www.all-in-one-converter.net/languages/uk/%D0%B1%D0%B5%D0%B7%D0%BF%D0%B5%D0%BA%D0%B0/"/>
+<!-- <meta property="og:image" content="https://yourcdn.example/og/security.png"> -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Безпека | {{BRAND}}">
+<meta name="twitter:description" content="Локальні конвертації, HTTPS/HSTS, CSP, SRI, ізоляція та політика розкриття.">
+<!-- Structured Data -->
+<script type="application/ld+json">
+{
+"@context":"https://schema.org",
+"@type":"WebPage",
+"name":"Безпека",
+"url":"https://www\.all-in-one-converter\.net/uk/безпека/",
+"inLanguage":"uk",
+"datePublished":"2025-10-19",
+"dateModified":"2025-10-19"
+}
+</script>
+<script type="application/ld+json">
+{
+"@context":"https://schema.org",
+"@type":"BreadcrumbList",
+"itemListElement":[
+{"@type":"ListItem","position":1,"name":"Головна","item":"https://www\.all-in-one-converter\.net/uk/безпека//../"},
+{"@type":"ListItem","position":2,"name":"Безпека","item":"https://www\.all-in-one-converter\.net/uk/безпека/"}
+]
+}
+</script>
+  <link rel="canonical" href="https://www.all-in-one-converter.net/languages/uk/%D0%B1%D0%B5%D0%B7%D0%BF%D0%B5%D0%BA%D0%B0/"/>
+</head>
+<body>
+<main>
+<header>
+
+<h1>Безпека у {{BRAND}}</h1>
+<p><strong>Останнє оновлення:</strong> 19 жовтня 2025</p>
+<p>{{BRAND}} виконує конвертацію файлів <strong>повністю у вашому браузері</strong>. Ваші файли <strong>ніколи не завантажуються</strong> на наші сервери. Нижче — як ми захищаємо користувачів і сам застосунок.</p>
+</header>
+<section id="threat-model">
+<h2>Модель загроз і філософія</h2>
+<ul>
+<li><strong>Мінімізація даних:</strong> файли та чутливий вміст залишаються на вашому пристрої.</li>
+<li><strong>Захист передавання даних:</strong> усі сторінки подаються через HTTPS з увімкненим HSTS.</li>
+<li><strong>Ізоляція:</strong> ресурсоємні обчислення використовують WebAssembly/Web Workers (за наявності), щоб виконання було ізольовано в браузері.</li>
+</ul>
+</section>
+<section id="app-security">
+<h2>Практики безпеки застосунку</h2>
+<ul>
+<li><strong>Content Security Policy (CSP):</strong> суворі налаштування за замовчуванням, що обмежують джерела скриптів та інлайновий код.</li>
+<li><strong>Subresource Integrity (SRI):</strong> сторонні скрипти/стилі захищено атрибутами <code>integrity</code>, де це застосовно.</li>
+<li><strong>Заголовки:</strong> COOP/COEP/CORP та Permissions-Policy використовуються для зменшення міждоменних ризиків і обмеження доступу до потужних API.</li>
+<li><strong>Ланцюг постачання ПЗ:</strong> відстежуємо оновлення залежностей і оперативно застосовуємо патчі безпеки.</li>
+<li><strong>Пісочниця для реклами:</strong> рекламні блоки мають фіксовані розміри та розміщуються в ізольованих iframe, щоб мінімізувати зсув макета і зменшити ризики.</li>
+</ul>
+<p><em>Примітка:</em> конкретні політики можуть відрізнятися за розгортанням; якщо ви дослідник, зв’яжіться з нами для деталей.</p>
+</section>
+<section id="user-data">
+<h2>Ваші файли та дані</h2>
+<ul>
+<li><strong>Без завантажень:</strong> конвертація відбувається локально у вашому браузері.</li>
+<li><strong>Без зберігання:</strong> ми не зберігаємо ваші файли на наших серверах.</li>
+<li><strong>Лише реклама та згода:</strong> ми можемо обробляти обмежені ідентифікатори для показу та вимірювання реклами відповідно до ваших налаштувань згоди. Докладніше — у <a href="/languages/uk/конфіденційність/">Політиці конфіденційності</a>.</li>
+</ul>
+</section>
+<section id="disclosure">
+<h2>Розкриття вразливостей</h2>
+<p>Якщо ви вважаєте, що знайшли проблему безпеки, надішліть листа на <a href="mailto:{{SECURITY_EMAIL}}">{{SECURITY_EMAIL}}</a> із деталями. За відповідального розкриття ми підтвердимо отримання звіту та швидко працюватимемо над усуненням проблеми.</p>
+<p>Необов’язково: ми також публікуємо <code>/.well-known/security.txt</code> з нашими актуальними контактами.</p>
+</section>
+<section id="availability">
+<h2>Доступність сервісу</h2>
+<p>Як інструмент у браузері, {{BRAND}} залежить від продуктивності вашого пристрою та можливостей браузера. Ми прагнемо підтримувати актуальні версії основних браузерів на комп’ютерах і мобільних пристроях.</p>
+</section>
+<nav aria-label="Related">
+<ul>
+<li><a href="/languages/uk/конфіденційність/">Приватність</a></li>
+<li><a href="/languages/uk/питання-та-відповіді/">Часті запитання</a></li>
+<li><a href="/languages/uk/як-користуватися/">Інструкції</a></li>
+<li><a href="/languages/uk/умови/">Умови</a></li>
+</ul>
+</nav>
+</main>
+<!-- CMP-FOOTER-LINK (auto-inserted) -->
+
+<!-- /CMP-FOOTER-LINK -->
+</body>
+</html>

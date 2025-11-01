@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<!-- CMP-START (auto-inserted) -->
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){ dataLayer.push(arguments); }
+gtag('consent','default',{
+ad_storage:'denied',
+analytics_storage:'denied',
+ad_user_data:'denied',
+ad_personalization:'denied'
+});
+</script>
+<script async src="https://fundingchoicesmessages.google.com/i/pub-6251303109610053?ers=1"></script>
+<script>
+(function signalGooglefcPresent(){
+if(!window.frames['googlefcPresent']){
+if(document.body){
+var f=document.createElement('iframe');
+f.style='width:0;height:0;border:none;position:absolute;left:-9999px;';
+f.name='googlefcPresent';
+document.body.appendChild(f);
+} else { setTimeout(signalGooglefcPresent,0); }
+}
+})();
+(function waitForTCF(){
+function go(){
+if(window.__adsLoaded) return;
+window.__adsLoaded = true;
+if(typeof window.loadAdSense==='function'){ window.loadAdSense(); }
+else{
+if(document.getElementById('adsbygoogle-js')) return;
+var s=document.createElement('script');
+s.id='adsbygoogle-js';
+s.async=true;
+s.src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6251303109610053';
+s.crossOrigin='anonymous';
+document.head.appendChild(s);
+}
+}
+if(typeof __tcfapi!=='function'){ setTimeout(waitForTCF,50); return; }
+__tcfapi('addEventListener',2,function(tcData,success){
+if(!success) return;
+if(['useractioncomplete','tcloaded'].indexOf(tcData.eventStatus)>-1){ go(); }
+});
+})();
+</script>
+<!-- CMP-END (auto-inserted) -->
+<meta charset="utf-8">
+<title>Security | {{BRAND}} — Local, On-Device Conversions (No Uploads)</title>
+<meta name="description" content="{{BRAND}} processes files entirely in your browser. No uploads. Learn about our security model: HTTPS/HSTS, CSP, SRI, isolation, and disclosure policy.">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="index,follow">
+
+<!-- <link rel="alternate" hreflang="x-default" href="https://www.all-in-one-converter.net/languages/en/"/><link rel="alternate" hreflang="en" href="https://www.all-in-one-converter.net/languages/en/"/> -->
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="{{BRAND}}">
+<meta property="og:title" content="Security | {{BRAND}}">
+<meta property="og:description" content="Local, on-device conversions. Learn how we secure the app and your privacy.">
+<meta property="og:url" content="https://www.all-in-one-converter.net/languages/pt/seguranca/"/>
+<!-- <meta property="og:image" content="https://yourcdn.example/og/security.png"> -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Security | {{BRAND}}">
+<meta name="twitter:description" content="On-device conversions, HTTPS/HSTS, CSP, SRI, isolation, and disclosure policy.">
+<!-- Structured Data -->
+<script type="application/ld+json">
+{
+"@context":"https://schema.org",
+"@type":"WebPage",
+"name":"Security",
+"url":"https://www\.all-in-one-converter\.net/pt/seguranca/",
+"inLanguage":"pt",
+"datePublished":"2025-10-19",
+"dateModified":"2025-10-19"
+}
+</script>
+<script type="application/ld+json">
+{
+"@context":"https://schema.org",
+"@type":"BreadcrumbList",
+"itemListElement":[
+{"@type":"ListItem","position":1,"name":"Home","item":"https://www\.all-in-one-converter\.net/pt/seguranca//../"},
+{"@type":"ListItem","position":2,"name":"Security","item":"https://www\.all-in-one-converter\.net/pt/seguranca/"}
+]
+}
+</script>
+  <link rel="canonical" href="https://www.all-in-one-converter.net/languages/pt/seguranca/"/>
+</head>
+<body>
+<main>
+<header>
+
+<h1>Security at {{BRAND}}</h1>
+<p><strong>Last updated:</strong> 19 October 2025</p>
+<p>{{BRAND}} performs file conversions <strong>entirely in your browser</strong>. Your files are <strong>never uploaded</strong> to our servers. Below is how we protect users and the app itself.</p>
+</header>
+<section id="threat-model">
+<h2>Threat Model &amp; Philosophy</h2>
+<ul>
+<li><strong>Data minimization:</strong> files and sensitive content stay on your device.</li>
+<li><strong>Transport security:</strong> all pages are served over HTTPS with HSTS enabled.</li>
+<li><strong>Isolation:</strong> heavy processing uses WebAssembly/Web Workers where available to keep tasks sandboxed in the browser.</li>
+</ul>
+</section>
+<section id="app-security">
+<h2>Application Security Practices</h2>
+<ul>
+<li><strong>Content Security Policy (CSP):</strong> restrictive defaults to limit script origins and inline code.</li>
+<li><strong>Subresource Integrity (SRI):</strong> third-party scripts/styles guarded with integrity attributes where applicable.</li>
+<li><strong>Headers:</strong> COOP/COEP/CORP and Permissions-Policy used to reduce cross-origin risks and lock down powerful APIs.</li>
+<li><strong>Supply chain:</strong> dependency updates tracked and security patches applied promptly.</li>
+<li><strong>Ads sandboxing:</strong> ad slots use fixed sizes and sandboxed iframes to minimize layout shift and reduce risk.</li>
+</ul>
+<p><em>Note:</em> exact policies may vary by deployment; if you’re a researcher, contact us for details.</p>
+</section>
+<section id="user-data">
+<h2>Your Files &amp; Data</h2>
+<ul>
+<li><strong>No uploads:</strong> conversions happen locally in your browser.</li>
+<li><strong>No retention:</strong> we don’t store your files on our servers.</li>
+<li><strong>Ads &amp; consent only:</strong> we may process limited identifiers to serve and measure ads, subject to your consent preferences. See our <a href="/languages/pt/privacidade/">Privacy Policy</a>.</li>
+</ul>
+</section>
+<section id="disclosure">
+<h2>Vulnerability Disclosure</h2>
+<p>If you believe you’ve found a security issue, please email <a href="mailto:{{SECURITY_EMAIL}}">{{SECURITY_EMAIL}}</a> with details. For responsible disclosure, we’ll acknowledge your report and work to resolve the issue quickly.</p>
+<p>Optional: we also serve <code>/.well-known/security.txt</code> with our current contact information.</p>
+</section>
+<section id="availability">
+<h2>Service Availability</h2>
+<p>As an in-browser tool, {{BRAND}} depends on your device’s performance and browser capabilities. We aim to support current versions of major browsers on desktop and mobile.</p>
+</section>
+<nav aria-label="Related">
+<ul>
+<li><a href="/languages/pt/privacidade/">Privacy</a></li>
+<li><a href="/languages/pt/perguntas-frequentes/">FAQ</a></li>
+<li><a href="/languages/pt/como-fazer/">How-to</a></li>
+<li><a href="/languages/pt/termos/">Terms</a></li>
+</ul>
+</nav>
+</main>
+<!-- CMP-FOOTER-LINK (auto-inserted) -->
+
+<!-- /CMP-FOOTER-LINK -->
+</body>
+</html>

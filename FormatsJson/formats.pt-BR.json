@@ -1,0 +1,1104 @@
+{
+    "language":  "pt-BR",
+    "version":  "1.0",
+    "last_updated":  "2025-10-25",
+    "formats":  {
+                    "png":  {
+                                "name":  "PNG",
+                                "category":  "imagem",
+                                "extensions":  [
+                                                   "png"
+                                               ],
+                                "mime":  [
+                                             "image/png"
+                                         ],
+                                "synonyms":  [
+                                                 "Gráficos Portáteis de Rede"
+                                             ],
+                                "one_liner":  "Imagem raster sem perdas com transparência e bordas nítidas para UI, logos e capturas de tela.",
+                                "about_to":  "PNG é um formato raster sem perdas que preserva cada pixel e suporta transparência alfa completa, tornando‑o ideal para elementos de UI, logos, gráficos e capturas de tela. Ele comprime com eficiência áreas de cores chapadas e linhas nítidas, e evita perda de qualidade a cada salvamento. Em comparação ao JPEG, o PNG costuma ser maior para fotos, mas mais limpo para textos e gráficos. Escolha PNG quando precisar de detalhes nítidos, fundos transparentes ou renderização previsível em navegadores e apps.",
+                                "about_from":  "Arquivos PNG são ótimos para gráficos, mas fotos geralmente comprimem melhor como JPEG ou WebP. Se você está convertendo de PNG, provavelmente busca uma imagem menor para a web ou um formato mais adequado a fotografia. Converter para um formato com perdas pode reduzir bastante o tamanho, mas não vai aumentar a qualidade além do original.",
+                                "common_uses":  [
+                                                    "Gráficos para web",
+                                                    "Assets de UI",
+                                                    "Capturas de tela",
+                                                    "Logos com transparência"
+                                                ],
+                                "limitations":  [
+                                                    "Maior que JPEG em fotos",
+                                                    "Sem animação (use APNG ou GIF/WebM)"
+                                                ]
+                            },
+                    "jpg":  {
+                                "name":  "JPG",
+                                "category":  "imagem",
+                                "extensions":  [
+                                                   "jpg",
+                                                   "jpeg"
+                                               ],
+                                "mime":  [
+                                             "image/jpeg"
+                                         ],
+                                "synonyms":  [
+                                                 "JPEG"
+                                             ],
+                                "one_liner":  "Formato de foto com perdas, onipresente, com ótima compatibilidade e arquivos pequenos.",
+                                "about_to":  "JPEG é o formato de foto mais compatível na web, equilibrando qualidade visual e tamanhos reduzidos. É ideal para fotografia e imagens realistas, onde artefatos sutis de compressão são aceitáveis. JPEG não oferece transparência nem dados vetoriais, e edições/salvamentos repetidos acumulam perdas. Escolha JPEG quando quiser imagens que carregam rápido e funcionam em praticamente qualquer dispositivo.",
+                                "about_from":  "Se você está convertendo de JPEG, talvez precise de transparência (PNG/WebP) ou de um formato moderno com melhor compressão em qualidade similar (WebP). Converter um JPEG com perdas para outro formato não restaura detalhes; apenas muda tamanho/compatibilidade.",
+                                "common_uses":  [
+                                                    "Fotografia",
+                                                    "Imagens para web",
+                                                    "Compartilhamento por e‑mail",
+                                                    "Postagens em redes sociais"
+                                                ],
+                                "limitations":  [
+                                                    "Sem transparência",
+                                                    "Com perdas; salvamentos repetidos podem degradar a qualidade"
+                                                ]
+                            },
+                    "jpeg":  {
+                                 "alias_of":  "jpg"
+                             },
+                    "webp":  {
+                                 "name":  "WebP",
+                                 "category":  "imagem",
+                                 "extensions":  [
+                                                    "webp"
+                                                ],
+                                 "mime":  [
+                                              "image/webp"
+                                          ],
+                                 "synonyms":  [
+
+                                              ],
+                                 "one_liner":  "Formato de imagem moderno com compressão com ou sem perdas e suporte a alfa.",
+                                 "about_to":  "WebP oferece excelente compressão para fotos e gráficos, com suporte a transparência e modo sem perdas opcional. Em comparação a JPEG e PNG, costuma gerar arquivos menores com qualidade comparável, melhorando velocidade de páginas e Core Web Vitals. WebP é suportado nativamente por todos os grandes navegadores e pela maioria dos apps recentes. Escolha WebP para entrega moderna e eficiente na web.",
+                                 "about_from":  "Se você está convertendo de WebP, provavelmente busca uma ferramenta que prefira JPEG/PNG. Lembre‑se: migrar de WebP (com perdas) para outro formato com perdas não melhora a qualidade; foque em compatibilidade ou necessidade de transparência.",
+                                 "common_uses":  [
+                                                     "Imagens modernas para web",
+                                                     "Sites responsivos",
+                                                     "Gráficos com transparência"
+                                                 ],
+                                 "limitations":  [
+                                                     "Softwares antigos podem não ter suporte completo",
+                                                     "Suporte a WebP animado varia fora dos navegadores"
+                                                 ]
+                             },
+                    "svg":  {
+                                "name":  "SVG",
+                                "category":  "imagem",
+                                "extensions":  [
+                                                   "svg"
+                                               ],
+                                "mime":  [
+                                             "image/svg+xml"
+                                         ],
+                                "synonyms":  [
+                                                 "Scalable Vector Graphics"
+                                             ],
+                                "one_liner":  "Gráficos vetoriais independentes de resolução, ideais para ícones, logos e diagramas.",
+                                "about_to":  "SVG é um formato vetorial baseado em XML, então as artes escalam com nitidez em qualquer tamanho, sem pixelização. É perfeito para ícones, logos, ilustrações simples e gráficos, e pode ser estilizado com CSS ou manipulado com JavaScript. Os arquivos costumam ser minúsculos para arte geométrica. Escolha SVG quando precisar de linhas nítidas, payloads pequenos e escalabilidade infinita.",
+                                "about_from":  "Converter de SVG é comum quando é necessário um bitmap (PNG/JPEG) para apps que não suportam vetores ou para redes sociais. Conversões rasterizadas achatam os detalhes em pixels; mantenha o SVG original para editar e exporte tamanhos diferentes conforme precisar.",
+                                "common_uses":  [
+                                                    "Ícones",
+                                                    "Logos",
+                                                    "Diagramas",
+                                                    "Gráficos/Charts"
+                                                ],
+                                "limitations":  [
+                                                    "Não é ideal para fotos",
+                                                    "SVGs complexos podem ser pesados ou renderizar diferente entre apps"
+                                                ]
+                            },
+                    "bmp":  {
+                                "name":  "BMP",
+                                "category":  "imagem",
+                                "extensions":  [
+                                                   "bmp"
+                                               ],
+                                "mime":  [
+                                             "image/bmp"
+                                         ],
+                                "synonyms":  [
+                                                 "Bitmap"
+                                             ],
+                                "one_liner":  "Bitmap bruto/não comprimido comum em sistemas Windows antigos; arquivos muito grandes.",
+                                "about_to":  "BMP armazena pixels com compressão mínima, então os arquivos são grandes, porém simples de decodificar. É usado principalmente em fluxos legados e capturas de dispositivos. Para compartilhamento cotidiano, converter para PNG ou JPEG reduz drasticamente o tamanho preservando a qualidade visível na maioria dos conteúdos.",
+                                "about_from":  "Se você está convertendo de BMP, provavelmente quer arquivos menores ou formatos amigáveis à web. PNG serve para gráficos e capturas; JPEG serve para fotos. Espere grandes reduções de tamanho com pouca ou nenhuma perda visível em conteúdo típico.",
+                                "common_uses":  [
+                                                    "Imagens legadas do Windows",
+                                                    "Capturas de dispositivos",
+                                                    "Bitmaps brutos"
+                                                ],
+                                "limitations":  [
+                                                    "Arquivos muito grandes",
+                                                    "Sem transparência (exceto via máscaras)"
+                                                ]
+                            },
+                    "tiff":  {
+                                 "name":  "TIFF",
+                                 "category":  "imagem",
+                                 "extensions":  [
+                                                    "tiff",
+                                                    "tif"
+                                                ],
+                                 "mime":  [
+                                              "image/tiff"
+                                          ],
+                                 "synonyms":  [
+                                                  "Tagged Image File Format"
+                                              ],
+                                 "one_liner":  "Formato de imagem flexível, nível arquivístico, com opções sem perdas e suporte a múltiplas páginas.",
+                                 "about_to":  "TIFF é um formato de alta fidelidade preferido em digitalização, impressão e arquivamento. Suporta múltiplos espaços de cor, camadas e até documentos de várias páginas, muitas vezes com compressão sem perdas como LZW ou Deflate. Escolha TIFF quando precisar de imagens de qualidade master para edição ou armazenamento de longo prazo.",
+                                 "about_from":  "Ao converter de TIFF, geralmente busca‑se otimizar para web ou reduzir armazenamento. JPEG/WebP atendem fotos; PNG atende gráficos; PDF pode agrupar digitalizações de múltiplas páginas. Converter de TIFF pode reduzir muito o tamanho com mudança perceptiva mínima.",
+                                 "common_uses":  [
+                                                     "Digitalização",
+                                                     "Pré‑impressão",
+                                                     "Imagens de arquivo",
+                                                     "Documentos multipágina"
+                                                 ],
+                                 "limitations":  [
+                                                     "Arquivos grandes",
+                                                     "Não ideal para entrega rápida na web"
+                                                 ]
+                             },
+                    "gif":  {
+                                "name":  "GIF",
+                                "category":  "imagem",
+                                "extensions":  [
+                                                   "gif"
+                                               ],
+                                "mime":  [
+                                             "image/gif"
+                                         ],
+                                "synonyms":  [
+                                                 "Graphics Interchange Format"
+                                             ],
+                                "one_liner":  "Imagens em paleta de 8 bits com animação básica; melhor para loops simples e stickers.",
+                                "about_to":  "GIF suporta até 256 cores por quadro e animação simples, o que é ótimo para loops leves e stickers. Para imagens estáticas, PNG ou WebP geralmente ficam melhores e comprimem mais. Para movimento, MP4/WebM entregam reprodução mais suave e tamanhos muito menores. Escolha GIF apenas quando a ampla compatibilidade para curtas animações em loop for essencial.",
+                                "about_from":  "Converter de GIF é comum ao reduzir animados para MP4/WebM ou ao extrair quadros estáticos em PNG/JPEG. Espere grandes reduções de tamanho ao migrar GIFs longos ou ‘fotográficos’ para formatos de vídeo.",
+                                "common_uses":  [
+                                                    "Memes e stickers",
+                                                    "Animações simples",
+                                                    "Demos de movimento em UI"
+                                                ],
+                                "limitations":  [
+                                                    "Limite de 256 cores",
+                                                    "Arquivos grandes para conteúdo fotográfico",
+                                                    "Sem alfa verdadeiro (apenas transparência 1‑bit)"
+                                                ]
+                            },
+                    "mp3":  {
+                                "name":  "MP3",
+                                "category":  "áudio",
+                                "extensions":  [
+                                                   "mp3"
+                                               ],
+                                "mime":  [
+                                             "audio/mpeg"
+                                         ],
+                                "synonyms":  [
+
+                                             ],
+                                "one_liner":  "Áudio com perdas onipresente para música e podcasts; arquivos pequenos e suporte universal.",
+                                "about_to":  "MP3 equilibra qualidade de som e tamanho reduzido, e toca em qualquer lugar — celulares, carros, caixas de som e navegadores. Use bitrates mais altos para música e mais baixos para voz. Para tamanhos ainda menores com qualidade similar, codecs modernos como AAC ou Opus podem ser mais eficientes, mas o MP3 continua sendo a escolha mais compatível.",
+                                "about_from":  "Converter de MP3 não restaura a qualidade perdida na compressão. Você pode converter para AAC/Opus para arquivos menores, ou para WAV/FLAC para edição ou arquivamento. Se precisa de melhor fidelidade, parta de uma fonte sem perdas em vez de transcodificar um MP3 antigo.",
+                                "common_uses":  [
+                                                    "Distribuição de música",
+                                                    "Podcasts",
+                                                    "Audiolivros",
+                                                    "Áudio para web"
+                                                ],
+                                "limitations":  [
+                                                    "Com perdas; artefatos em bitrates baixos",
+                                                    "Metadados multicanal limitados"
+                                                ]
+                            },
+                    "wav":  {
+                                "name":  "WAV",
+                                "category":  "áudio",
+                                "extensions":  [
+                                                   "wav"
+                                               ],
+                                "mime":  [
+                                             "audio/wav",
+                                             "audio/x-wav",
+                                             "audio/vnd.wave"
+                                         ],
+                                "synonyms":  [
+                                                 "Waveform Audio"
+                                             ],
+                                "one_liner":  "Áudio PCM não comprimido para máxima qualidade e margem de edição.",
+                                "about_to":  "WAV armazena áudio em PCM não comprimido, preservando cada amostra para mixagem, masterização ou análise. É perfeito quando você precisa de qualidade impecável e edição fácil, mas os arquivos são grandes. Para distribuição ou compartilhamento, converta para AAC/MP3/Opus para reduzir muito o tamanho mantendo fidelidade aceitável.",
+                                "about_from":  "Se você está convertendo de WAV, provavelmente está publicando ou economizando espaço. Escolha um codec moderno com perdas e um bitrate adequado ao conteúdo (música vs. fala). Para compressão sem perdas com arquivos menores, FLAC é uma boa alternativa.",
+                                "common_uses":  [
+                                                    "Gravação e edição",
+                                                    "Arquivos master",
+                                                    "Arquivamento de áudio"
+                                                ],
+                                "limitations":  [
+                                                    "Arquivos muito grandes",
+                                                    "Sem compressão por padrão"
+                                                ]
+                            },
+                    "ogg":  {
+                                "name":  "Ogg Vorbis",
+                                "category":  "áudio",
+                                "extensions":  [
+                                                   "ogg"
+                                               ],
+                                "mime":  [
+                                             "audio/ogg"
+                                         ],
+                                "synonyms":  [
+                                                 "Vorbis em contêiner Ogg"
+                                             ],
+                                "one_liner":  "Áudio aberto e livre de royalties, com boa qualidade em bitrates modestos.",
+                                "about_to":  "Ogg Vorbis oferece compressão eficiente, livre de royalties, que muitas vezes rivaliza o AAC em bitrates semelhantes. É amplamente suportado em navegadores e players modernos. Escolha Ogg quando quiser licenciamento aberto e qualidade sólida para streaming ou downloads.",
+                                "about_from":  "Converter de Ogg geralmente visa compatibilidade de dispositivos (MP3/AAC) ou edição (WAV/FLAC). Transcodificar entre codecs com perdas pode introduzir artefatos extras; mantenha um original sem perdas quando possível.",
+                                "common_uses":  [
+                                                    "Streaming de áudio",
+                                                    "Projetos open‑source",
+                                                    "Assets de jogos"
+                                                ],
+                                "limitations":  [
+                                                    "Menos suporte em alguns dispositivos legados",
+                                                    "Codec com perdas"
+                                                ]
+                            },
+                    "m4a":  {
+                                "name":  "M4A",
+                                "category":  "áudio",
+                                "extensions":  [
+                                                   "m4a"
+                                               ],
+                                "mime":  [
+                                             "audio/mp4",
+                                             "audio/x-m4a"
+                                         ],
+                                "synonyms":  [
+                                                 "AAC ou ALAC em contêiner MP4"
+                                             ],
+                                "one_liner":  "Contêiner de áudio MP4 — tipicamente AAC (com perdas) ou ALAC (sem perdas).",
+                                "about_to":  "M4A é um contêiner MP4 usado para áudio. A maioria dos arquivos M4A contém AAC (com perdas) para tamanhos pequenos e amplo suporte, enquanto alguns usam ALAC (sem perdas) para qualidade impecável. Reproduz bem em dispositivos Apple e modernos. Escolha M4A por um bom equilíbrio entre eficiência e compatibilidade.",
+                                "about_from":  "Se for converter de M4A, descubra se a origem é AAC (com perdas) ou ALAC (sem perdas). Transcodificar AAC com perdas para outro codec com perdas não adiciona qualidade; converta fontes sem perdas para o codec e bitrate de distribuição preferidos.",
+                                "common_uses":  [
+                                                    "Bibliotecas de música",
+                                                    "Podcasts",
+                                                    "Áudio no ecossistema Apple"
+                                                ],
+                                "limitations":  [
+                                                    "Pode haver DRM em M4P/M4B relacionados",
+                                                    "Especificidades do contêiner podem confundir ferramentas antigas"
+                                                ]
+                            },
+                    "flac":  {
+                                 "name":  "FLAC",
+                                 "category":  "áudio",
+                                 "extensions":  [
+                                                    "flac"
+                                                ],
+                                 "mime":  [
+                                              "audio/flac"
+                                          ],
+                                 "synonyms":  [
+                                                  "Free Lossless Audio Codec"
+                                              ],
+                                 "one_liner":  "Compressão de áudio sem perdas — perfeito para arquivamento e alta fidelidade.",
+                                 "about_to":  "FLAC comprime áudio sem perder informação, normalmente reduzindo 30–60% em relação ao WAV. É excelente para arquivar música, preservar masters e reprodução sem gaps. Escolha FLAC quando precisar de áudio bit‑perfect com arquivos menores que WAV.",
+                                 "about_from":  "Converter de FLAC é comum para criar versões portáteis (AAC/MP3/Opus). Mantenha o FLAC como master; gere cópias com perdas em bitrates adequados para celular, streaming ou compartilhamento.",
+                                 "common_uses":  [
+                                                     "Arquivamento de música",
+                                                     "Distribuição sem perdas",
+                                                     "Reprodução em alta fidelidade"
+                                                 ],
+                                 "limitations":  [
+                                                     "Maior que AAC/MP3",
+                                                     "Alguns dispositivos ainda preferem MP3/AAC"
+                                                 ]
+                             },
+                    "opus":  {
+                                 "name":  "Opus",
+                                 "category":  "áudio",
+                                 "extensions":  [
+                                                    "opus"
+                                                ],
+                                 "mime":  [
+                                              "audio/ogg",
+                                              "audio/opus"
+                                          ],
+                                 "synonyms":  [
+
+                                              ],
+                                 "one_liner":  "Áudio de última geração em bitrates baixos; ótimo para streaming, VoIP e fala.",
+                                 "about_to":  "Opus entrega excelente qualidade em bitrates baixos, adaptando‑se bem a fala e música. É aberto, livre de royalties e amplamente suportado em navegadores e players modernos. Escolha Opus quando quiser arquivos pequenos com clareza impressionante, especialmente para streaming ou conteúdo de voz.",
+                                 "about_from":  "Você pode converter de Opus por compatibilidade de dispositivos (MP3/AAC) ou por edição (WAV). Transcodificar para outro codec com perdas adiciona perda de geração; mantenha uma fonte sem perdas se planejar múltiplas conversões.",
+                                 "common_uses":  [
+                                                     "Streaming",
+                                                     "VoIP",
+                                                     "Podcasts",
+                                                     "Áudio para jogos"
+                                                 ],
+                                 "limitations":  [
+                                                     "Suporte limitado em hardware antigo",
+                                                     "Codec com perdas"
+                                                 ]
+                             },
+                    "aiff":  {
+                                 "name":  "AIFF",
+                                 "category":  "áudio",
+                                 "extensions":  [
+                                                    "aiff",
+                                                    "aif"
+                                                ],
+                                 "mime":  [
+                                              "audio/aiff",
+                                              "audio/x-aiff"
+                                          ],
+                                 "synonyms":  [
+                                                  "Audio Interchange File Format"
+                                              ],
+                                 "one_liner":  "Áudio PCM não comprimido comumente usado em sistemas macOS.",
+                                 "about_to":  "AIFF armazena áudio não comprimido, semelhante ao WAV, oferecendo excelente qualidade e edição simples. É popular em fluxos Apple e DAWs antigas. Para distribuição ou nuvem, considere converter para AAC/MP3/Opus para reduzir tamanho sem regravar.",
+                                 "about_from":  "Converter de AIFF para WAV preserva a qualidade para edição multiplataforma. Para compartilhamento, escolha um codec moderno com perdas em bitrate adequado, ou FLAC para compressão sem perdas.",
+                                 "common_uses":  [
+                                                     "Produção de áudio",
+                                                     "Masters de arquivo",
+                                                     "Projetos no macOS"
+                                                 ],
+                                 "limitations":  [
+                                                     "Arquivos grandes",
+                                                     "Menos comum fora do ecossistema Apple"
+                                                 ]
+                             },
+                    "aac":  {
+                                "name":  "AAC",
+                                "category":  "áudio",
+                                "extensions":  [
+                                                   "aac"
+                                               ],
+                                "mime":  [
+                                             "audio/aac"
+                                         ],
+                                "synonyms":  [
+                                                 "Advanced Audio Coding"
+                                             ],
+                                "one_liner":  "Codec de áudio moderno com perdas; eficiente e amplamente suportado (geralmente em M4A).",
+                                "about_to":  "AAC melhora o MP3 na maioria dos bitrates e é suportado em iOS, Android, navegadores e dispositivos inteligentes. É um forte padrão para distribuição de música quando você quer qualidade e arquivos pequenos. Muitos arquivos AAC são armazenados como M4A dentro de um contêiner MP4.",
+                                "about_from":  "Converter de AAC para outro codec com perdas não adiciona detalhe. Para editar, mova para WAV/FLAC; para compatibilidade, MP3 continua universal. Mantenha uma fonte sem perdas se planejar transcodificações frequentes.",
+                                "common_uses":  [
+                                                    "Streaming e downloads",
+                                                    "Bibliotecas de música",
+                                                    "Reprodução móvel"
+                                                ],
+                                "limitations":  [
+                                                    "Com perdas; há perda de geração ao transcodificar",
+                                                    "Confusão de contêiner (AAC vs. M4A)"
+                                                ]
+                            },
+                    "mp4":  {
+                                "name":  "MP4",
+                                "category":  "vídeo",
+                                "extensions":  [
+                                                   "mp4"
+                                               ],
+                                "mime":  [
+                                             "video/mp4"
+                                         ],
+                                "synonyms":  [
+                                                 "Contêiner MPEG‑4 Parte 14"
+                                             ],
+                                "one_liner":  "O contêiner de vídeo mais compatível; tipicamente H.264 no vídeo e AAC no áudio.",
+                                "about_to":  "MP4 é um contêiner amplamente suportado para vídeo e áudio, comumente usando H.264/AVC no vídeo e AAC no áudio. É a escolha mais segura para compatibilidade entre dispositivos, navegadores e redes sociais. Escolha MP4 quando precisar de reprodução confiável e compartilhamento sem surpresas.",
+                                "about_from":  "Se você está convertendo de MP4, talvez busque um formato aberto (WebM) ou um contêiner flexível (MKV). Remux de contêiner (ex.: MP4→MKV) pode ser sem perdas; re‑codificar para um novo codec pode reduzir tamanho à custa de tempo e qualidade.",
+                                "common_uses":  [
+                                                    "Vídeo para web",
+                                                    "Reprodução móvel",
+                                                    "Uploads em redes sociais",
+                                                    "Streaming"
+                                                ],
+                                "limitations":  [
+                                                    "Variantes antigas de MP4 podem não ter codecs modernos",
+                                                    "DRM ou peculiaridades de metadados em alguns arquivos"
+                                                ]
+                            },
+                    "webm":  {
+                                 "name":  "WebM",
+                                 "category":  "vídeo",
+                                 "extensions":  [
+                                                    "webm"
+                                                ],
+                                 "mime":  [
+                                              "video/webm"
+                                          ],
+                                 "synonyms":  [
+                                                  "Contêiner VP9/AV1 + Opus"
+                                              ],
+                                 "one_liner":  "Contêiner aberto, voltado para a web, para vídeo VP8/VP9/AV1 e áudio Opus/Vorbis.",
+                                 "about_to":  "WebM combina codecs modernos e livres de royalties (VP9/AV1 para vídeo, Opus/Vorbis para áudio) em um contêiner leve. Reproduz nativamente nos principais navegadores e costuma alcançar ótima qualidade em bitrates baixos. Escolha WebM para entrega web quando priorizar abertura e eficiência de compressão.",
+                                 "about_from":  "Converter de WebM é principalmente por compatibilidade com players antigos que preferem MP4/H.264. Se seu WebM já usa VP9/AV1, recodificar para H.264 pode aumentar o tamanho para a mesma qualidade.",
+                                 "common_uses":  [
+                                                     "Vídeo incorporado em páginas",
+                                                     "Loops de fundo",
+                                                     "Fluxos open‑source"
+                                                 ],
+                                 "limitations":  [
+                                                     "Dispositivos legados podem preferir MP4/H.264",
+                                                     "Codificação AV1 é mais lenta na maioria dos sistemas"
+                                                 ]
+                             },
+                    "mkv":  {
+                                "name":  "MKV",
+                                "category":  "vídeo",
+                                "extensions":  [
+                                                   "mkv"
+                                               ],
+                                "mime":  [
+                                             "video/x-matroska"
+                                         ],
+                                "synonyms":  [
+                                                 "Matroska"
+                                             ],
+                                "one_liner":  "Contêiner rico em recursos com várias trilhas de áudio, legendas e capítulos.",
+                                "about_to":  "MKV (Matroska) é um contêiner flexível que comporta praticamente qualquer codec, múltiplas trilhas de áudio/legendas e capítulos. É ótimo para arquivamento e setups avançados de reprodução. Escolha MKV quando precisar de recursos além do MP4 comum, ou quiser um remux sem perdas de MP4.",
+                                "about_from":  "Converter de MKV para MP4 por compatibilidade de dispositivos muitas vezes funciona via remux (troca de contêiner) se os codecs já forem H.264/AAC. Caso contrário, será necessário recodificar para atingir o suporte do destino.",
+                                "common_uses":  [
+                                                    "Arquivamento de vídeo",
+                                                    "Lançamentos com múltiplos áudios/legendas",
+                                                    "Workflows de remux"
+                                                ],
+                                "limitations":  [
+                                                    "Alguns dispositivos/apps não suportam MKV nativamente",
+                                                    "Plataformas de streaming geralmente preferem MP4"
+                                                ]
+                            },
+                    "mov":  {
+                                "name":  "MOV",
+                                "category":  "vídeo",
+                                "extensions":  [
+                                                   "mov"
+                                               ],
+                                "mime":  [
+                                             "video/quicktime"
+                                         ],
+                                "synonyms":  [
+                                                 "QuickTime Movie"
+                                             ],
+                                "one_liner":  "Contêiner QuickTime da Apple usado por câmeras e editores; alta qualidade, arquivos grandes.",
+                                "about_to":  "MOV é comumente produzido por câmeras e dispositivos iOS, frequentemente com bitrates altos e configurações amigáveis à edição. É excelente para produção, mas pesado para entrega web. Converta para MP4/H.264 para ampla compatibilidade e tamanhos menores.",
+                                "about_from":  "Se você está convertendo de MOV, provavelmente está otimizando para compartilhamento. Remuxe para MP4 se os codecs já forem compatíveis; caso contrário, recodifique para H.264/AAC ou WebM para streaming eficiente.",
+                                "common_uses":  [
+                                                    "Originais de câmera",
+                                                    "Fluxos de edição",
+                                                    "Ecossistema Apple"
+                                                ],
+                                "limitations":  [
+                                                    "Arquivos grandes",
+                                                    "Menos ideal para entrega direta na web"
+                                                ]
+                            },
+                    "m4v":  {
+                                "name":  "M4V",
+                                "category":  "vídeo",
+                                "extensions":  [
+                                                   "m4v"
+                                               ],
+                                "mime":  [
+                                             "video/x-m4v",
+                                             "video/mp4"
+                                         ],
+                                "synonyms":  [
+                                                 "Variante Apple do MP4"
+                                             ],
+                                "one_liner":  "Contêiner da família MP4 usado pela Apple; similar ao MP4, às vezes com DRM.",
+                                "about_to":  "M4V é um MP4 com sabor Apple, normalmente com vídeo H.264 e áudio AAC. Arquivos podem incluir metadados ou DRM dependendo da origem. Converter para MP4 padrão geralmente melhora a compatibilidade sem mudanças de qualidade quando o remux é possível.",
+                                "about_from":  "Converter de M4V normalmente significa remover peculiaridades do contêiner para reprodução universal. Se houver DRM, a conversão pode ser restrita por leis ou plataformas.",
+                                "common_uses":  [
+                                                    "Vídeos do iTunes",
+                                                    "Dispositivos Apple"
+                                                ],
+                                "limitations":  [
+                                                    "Possível DRM",
+                                                    "Funcionalmente similar ao MP4 fora isso"
+                                                ]
+                            },
+                    "pdf":  {
+                                "name":  "PDF",
+                                "category":  "documento",
+                                "extensions":  [
+                                                   "pdf"
+                                               ],
+                                "mime":  [
+                                             "application/pdf"
+                                         ],
+                                "synonyms":  [
+                                                 "Portable Document Format"
+                                             ],
+                                "one_liner":  "Documentos de layout fixo para visualização e impressão confiáveis em qualquer dispositivo.",
+                                "about_to":  "PDF preserva layout, fontes e gráficos para que documentos pareçam iguais em todos os lugares. É a melhor escolha para arquivos finais de compartilhamento ou impressão. PDFs podem incorporar imagens e texto; com OCR, digitalizações se tornam pesquisáveis. Escolha PDF quando consistência, portabilidade e apresentação profissional forem importantes.",
+                                "about_from":  "Converter de PDF para formatos editáveis (Word/PowerPoint/Excel) tenta reconstruir estrutura e layout; os resultados variam conforme o conteúdo. Para PDFs escaneados, é preciso OCR para extrair texto selecionável.",
+                                "common_uses":  [
+                                                    "Relatórios",
+                                                    "Formulários",
+                                                    "Manuais",
+                                                    "Contratos"
+                                                ],
+                                "limitations":  [
+                                                    "Edição limitada",
+                                                    "Layouts complexos podem ser difíceis de converter perfeitamente"
+                                                ]
+                            },
+                    "docx":  {
+                                 "name":  "DOCX",
+                                 "category":  "documento",
+                                 "extensions":  [
+                                                    "docx"
+                                                ],
+                                 "mime":  [
+                                              "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                                          ],
+                                 "synonyms":  [
+                                                  "Documento do Microsoft Word"
+                                              ],
+                                 "one_liner":  "Arquivos editáveis de processamento de texto com estilos, imagens e layout rico.",
+                                 "about_to":  "DOCX é o padrão do Word para escrita e colaboração. Suporta cabeçalhos, imagens, tabelas, estilos e controle de alterações. Converta para PDF para distribuição final ou para HTML para publicação na web.",
+                                 "about_from":  "Converter de DOCX é comum ao exportar uma versão final, não editável (PDF) ou ao preparar conteúdo para web (HTML/Markdown). Revise o resultado quanto a ajustes de layout — especialmente em tabelas e listas.",
+                                 "common_uses":  [
+                                                     "Documentos corporativos",
+                                                     "Ensaios e relatórios",
+                                                     "Modelos"
+                                                 ],
+                                 "limitations":  [
+                                                     "A aparência pode variar entre apps",
+                                                     "Fontes/objetos incorporados podem não sobreviver à exportação"
+                                                 ]
+                             },
+                    "pptx":  {
+                                 "name":  "PPTX",
+                                 "category":  "documento",
+                                 "extensions":  [
+                                                    "pptx"
+                                                ],
+                                 "mime":  [
+                                              "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+                                          ],
+                                 "synonyms":  [
+                                                  "Apresentação Microsoft PowerPoint"
+                                              ],
+                                 "one_liner":  "Apresentações em slides com texto, imagens, animações e mídia.",
+                                 "about_to":  "PPTX é o formato padrão para apresentações. Suporta animações, vídeo e anotações do apresentador. Converta para PDF para compartilhamento/impressão fáceis ou para MP4 para vídeos de slides autoexecutáveis.",
+                                 "about_from":  "Ao converter de PPTX, saiba que animações, transições e mídias incorporadas podem simplificar ou achatar dependendo do formato de destino. Sempre faça uma prévia antes de publicar.",
+                                 "common_uses":  [
+                                                     "Apresentações de negócios",
+                                                     "Aulas",
+                                                     "Palestras em conferências"
+                                                 ],
+                                 "limitations":  [
+                                                     "Animações podem não migrar para formatos estáticos",
+                                                     "Fontes podem refluír sem incorporação"
+                                                 ]
+                             },
+                    "xlsx":  {
+                                 "name":  "XLSX",
+                                 "category":  "documento",
+                                 "extensions":  [
+                                                    "xlsx"
+                                                ],
+                                 "mime":  [
+                                              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                                          ],
+                                 "synonyms":  [
+                                                  "Pasta de trabalho do Microsoft Excel"
+                                              ],
+                                 "one_liner":  "Planilhas com fórmulas, formatação e múltiplas abas.",
+                                 "about_to":  "XLSX armazena dados estruturados, fórmulas, gráficos e formatação em várias planilhas. Converta para CSV/TSV para troca de dados simples e agnóstica de app, ou para PDF para compartilhamento somente leitura. Para grandes conjuntos, considere salvar extratos CSV limpos para pipelines.",
+                                 "about_from":  "De XLSX para CSV/TSV você perderá fórmulas e estilos, mantendo apenas valores brutos. Para ciência de dados ou ETL, isso costuma ser preferível e mais fácil de automatizar.",
+                                 "common_uses":  [
+                                                     "Análise de dados",
+                                                     "Modelos financeiros",
+                                                     "Relatórios"
+                                                 ],
+                                 "limitations":  [
+                                                     "Formatação e fórmulas não vão para CSV/TSV",
+                                                     "Pastas grandes podem ser pesadas"
+                                                 ]
+                             },
+                    "csv":  {
+                                "name":  "CSV",
+                                "category":  "dados",
+                                "extensions":  [
+                                                   "csv"
+                                               ],
+                                "mime":  [
+                                             "text/csv"
+                                         ],
+                                "synonyms":  [
+                                                 "Valores Separados por Vírgula"
+                                             ],
+                                "one_liner":  "Dados tabulares em texto simples; fácil de importar em quase qualquer ferramenta.",
+                                "about_to":  "CSV representa tabelas como texto simples com vírgulas entre os campos. É leve, legível por humanos e amplamente suportado, ideal para troca de dados. Escolha CSV quando quiser máxima portabilidade sem fórmulas ou formatação.",
+                                "about_from":  "Converter de CSV para XLSX ou JSON adiciona estrutura para análise ou apps. Atenção a delimitadores, quebras de linha e codificações — principalmente com dados não ASCII.",
+                                "common_uses":  [
+                                                    "Exportação/Importação de dados",
+                                                    "Pipelines ETL",
+                                                    "APIs e logs"
+                                                ],
+                                "limitations":  [
+                                                    "Sem fórmulas ou estilos",
+                                                    "Ambiguidades com vírgulas/aspas/linhas"
+                                                ]
+                            },
+                    "tsv":  {
+                                "name":  "TSV",
+                                "category":  "dados",
+                                "extensions":  [
+                                                   "tsv"
+                                               ],
+                                "mime":  [
+                                             "text/tab-separated-values"
+                                         ],
+                                "synonyms":  [
+                                                 "Valores Separados por Tabulação"
+                                             ],
+                                "one_liner":  "Tabelas em texto simples usando tabs; evita muitos problemas de aspas do CSV.",
+                                "about_to":  "TSV armazena dados tabulares com tabs entre campos, reduzindo a necessidade de aspas e escapes. É útil quando campos podem conter vírgulas. Escolha TSV para intercâmbio limpo com menos armadilhas de citação.",
+                                "about_from":  "Converter de TSV para CSV ou XLSX é direto. Atenção a tabs dentro de campos; algumas ferramentas os escapam de formas diferentes.",
+                                "common_uses":  [
+                                                    "Troca de dados",
+                                                    "Bioinformática",
+                                                    "Processamento de logs"
+                                                ],
+                                "limitations":  [
+                                                    "Tabs dentro de campos ainda podem causar problemas",
+                                                    "Sem fórmulas ou formatação"
+                                                ]
+                            },
+                    "txt":  {
+                                "name":  "TXT",
+                                "category":  "texto",
+                                "extensions":  [
+                                                   "txt"
+                                               ],
+                                "mime":  [
+                                             "text/plain"
+                                         ],
+                                "synonyms":  [
+                                                 "Texto simples"
+                                             ],
+                                "one_liner":  "Texto simples sem formatação; abre em qualquer editor ou dispositivo.",
+                                "about_to":  "TXT é a forma mais simples de armazenar texto — minúsculo, portátil e à prova do tempo. É ideal para notas, exportações rápidas e scripts. Converta para PDF para compartilhamento ou para Markdown/HTML para formatação rica.",
+                                "about_from":  "A partir de TXT, você pode estruturar o conteúdo em Markdown, HTML ou DOCX. Lembre‑se de especificar a codificação (UTF‑8) para evitar caracteres corrompidos.",
+                                "common_uses":  [
+                                                    "Anotações",
+                                                    "Logs",
+                                                    "Arquivos readme"
+                                                ],
+                                "limitations":  [
+                                                    "Sem formatação",
+                                                    "Problemas de codificação se não for UTF‑8"
+                                                ]
+                            },
+                    "md":  {
+                               "name":  "Markdown",
+                               "category":  "texto",
+                               "extensions":  [
+                                                  "md",
+                                                  "markdown"
+                                              ],
+                               "mime":  [
+                                            "text/markdown"
+                                        ],
+                               "synonyms":  [
+                                                "MD"
+                                            ],
+                               "one_liner":  "Markup leve que se converte bem para HTML e PDF.",
+                               "about_to":  "Markdown é uma sintaxe amigável para títulos, listas, links e código. Mantém arquivos pequenos e fáceis de versionar, e compila para HTML ou PDF para publicação. Escolha Markdown quando quiser edição fácil com exportações limpas.",
+                               "about_from":  "Converter de Markdown para HTML ou PDF produz saídas caprichadas. Mantenha o MD como sua fonte da verdade e exporte diferentes formatos conforme necessário.",
+                               "common_uses":  [
+                                                   "Documentação",
+                                                   "Blogs",
+                                                   "Arquivos readme"
+                                               ],
+                               "limitations":  [
+                                                   "Controle de layout fino é limitado",
+                                                   "Extensões variam conforme o renderizador"
+                                               ]
+                           },
+                    "json":  {
+                                 "name":  "JSON",
+                                 "category":  "dados",
+                                 "extensions":  [
+                                                    "json"
+                                                ],
+                                 "mime":  [
+                                              "application/json"
+                                          ],
+                                 "synonyms":  [
+                                                  "JavaScript Object Notation"
+                                              ],
+                                 "one_liner":  "Formato de dados estruturados para APIs e apps; legível e independente de linguagem.",
+                                 "about_to":  "JSON codifica objetos, arrays e valores em texto leve, fácil para programas analisarem. É o padrão de fato para APIs web e configuração. Converta para CSV para tabelas planas ou mantenha como JSON para dados estruturados com aninhamento.",
+                                 "about_from":  "Converter de JSON geralmente significa achatar em CSV ou transformar campos para análise. Atenção a arrays/objetos aninhados — estruturas complexas podem exigir mapeamento personalizado.",
+                                 "common_uses":  [
+                                                     "APIs",
+                                                     "Configs",
+                                                     "Logs de eventos"
+                                                 ],
+                                 "limitations":  [
+                                                     "Não é ideal para dados binários grandes",
+                                                     "Aninhamento profundo complica exportação tabular"
+                                                 ]
+                             },
+                    "jsonl":  {
+                                  "name":  "JSON Lines",
+                                  "category":  "dados",
+                                  "extensions":  [
+                                                     "jsonl",
+                                                     "ndjson"
+                                                 ],
+                                  "mime":  [
+                                               "application/x-ndjson",
+                                               "application/json"
+                                           ],
+                                  "synonyms":  [
+                                                   "NDJSON"
+                                               ],
+                                  "one_liner":  "Um objeto JSON por linha para streaming e pipelines de big data.",
+                                  "about_to":  "JSON Lines armazena registros linha a linha, o que transmite bem e escala para grandes volumes. É ideal para logs e pipelines de ML. Escolha JSONL quando cada linha for um objeto independente que você possa processar incrementalmente.",
+                                  "about_from":  "De JSONL, você pode agrupar registros em um único array JSON ou achatar para CSV para análise. Garanta consistência no tratamento de quebras de linha entre sistemas.",
+                                  "common_uses":  [
+                                                      "Logs",
+                                                      "Conjuntos para aprendizado de máquina",
+                                                      "ETL"
+                                                  ],
+                                  "limitations":  [
+                                                      "Pouco amigável para dados complexos aninhados",
+                                                      "Exige cuidado com quebras de linha"
+                                                  ]
+                              },
+                    "html":  {
+                                 "name":  "HTML",
+                                 "category":  "web",
+                                 "extensions":  [
+                                                    "html",
+                                                    "htm"
+                                                ],
+                                 "mime":  [
+                                              "text/html"
+                                          ],
+                                 "synonyms":  [
+                                                  "HyperText Markup Language"
+                                              ],
+                                 "one_liner":  "Markup para páginas web; pode incluir texto, imagens, CSS e scripts.",
+                                 "about_to":  "HTML estrutura conteúdo para navegadores. Ao converter para PDF você obtém um instantâneo fixo; para TXT, apenas o texto simples; para Markdown, uma estrutura legível. Escolha HTML para apresentação na web e converta quando precisar de saídas estáticas e compartilháveis.",
+                                 "about_from":  "Converter de HTML para PDF ou imagens é comum em relatórios e recibos. Scripts e estilos dinâmicos podem não migrar totalmente — prefira CSS de impressão ao exportar.",
+                                 "common_uses":  [
+                                                     "Páginas da web",
+                                                     "E‑mails",
+                                                     "Relatórios"
+                                                 ],
+                                 "limitations":  [
+                                                     "Renderização varia entre engines",
+                                                     "Conteúdo dinâmico pode não exportar como esperado"
+                                                 ]
+                             },
+                    "zip":  {
+                                "name":  "ZIP",
+                                "category":  "arquivo",
+                                "extensions":  [
+                                                   "zip"
+                                               ],
+                                "mime":  [
+                                             "application/zip"
+                                         ],
+                                "synonyms":  [
+
+                                             ],
+                                "one_liner":  "Arquivo compactado universal com amplo suporte no SO e opção de criptografia AES.",
+                                "about_to":  "ZIP agrupa arquivos e pastas em um único pacote com compressão. Abre nativamente no Windows, macOS e Linux, o que o torna a escolha mais segura para compartilhar. Muitas ferramentas também suportam criptografia forte AES em ZIPs.",
+                                "about_from":  "Converter de ZIP para 7Z/RAR pode melhorar a compressão em conjuntos grandes e diversos. Use ZIP quando a compatibilidade do destinatário for mais importante.",
+                                "common_uses":  [
+                                                    "Empacotar downloads",
+                                                    "Anexos de e‑mail",
+                                                    "Backups"
+                                                ],
+                                "limitations":  [
+                                                    "Compressão modesta vs. 7Z/XZ",
+                                                    "Proteção por senha varia conforme a ferramenta"
+                                                ]
+                            },
+                    "rar":  {
+                                "name":  "RAR",
+                                "category":  "arquivo",
+                                "extensions":  [
+                                                   "rar"
+                                               ],
+                                "mime":  [
+                                             "application/vnd.rar"
+                                         ],
+                                "synonyms":  [
+
+                                             ],
+                                "one_liner":  "Arquivo proprietário com boa compressão e recursos de recuperação.",
+                                "about_to":  "RAR oferece compressão forte e pode incluir registros de recuperação para arquivos danificados. É popular entre power users, mas requer software compatível para criar/abrir. Escolha RAR quando quiser boa compressão e opções de recuperação de erros.",
+                                "about_from":  "Converter de RAR para ZIP ou 7Z melhora a abertura em qualquer lugar e pode facilitar o compartilhamento. Observe que criar RARs geralmente exige ferramentas comerciais.",
+                                "common_uses":  [
+                                                    "Conjuntos de arquivos grandes",
+                                                    "Armazenamento de longo prazo",
+                                                    "Distribuições da ‘scene’"
+                                                ],
+                                "limitations":  [
+                                                    "Formato proprietário",
+                                                    "Criação normalmente requer software pago"
+                                                ]
+                            },
+                    "7z":  {
+                               "name":  "7Z",
+                               "category":  "arquivo",
+                               "extensions":  [
+                                                  "7z"
+                                              ],
+                               "mime":  [
+                                            "application/x-7z-compressed"
+                                        ],
+                               "synonyms":  [
+                                                "Arquivo 7‑Zip"
+                                            ],
+                               "one_liner":  "Arquivo de alta taxa de compressão usando LZMA/LZMA2, com opção de AES‑256.",
+                               "about_to":  "7Z alcança compressão excelente, especialmente em dados grandes ou repetitivos. Suporta blocos sólidos, arquivos enormes e criptografia AES‑256. Escolha 7Z quando o tamanho importar mais do que o suporte nativo do sistema.",
+                               "about_from":  "Converter de 7Z para ZIP melhora a compatibilidade em todos os dispositivos, ao custo de arquivos um pouco maiores.",
+                               "common_uses":  [
+                                                   "Pacotes de software",
+                                                   "Backups",
+                                                   "Distribuição de grandes datasets"
+                                               ],
+                               "limitations":  [
+                                                   "Não abre nativamente em alguns sistemas",
+                                                   "Compressão pode ser intensa para CPU"
+                                               ]
+                           },
+                    "tar":  {
+                                "name":  "TAR",
+                                "category":  "arquivo",
+                                "extensions":  [
+                                                   "tar"
+                                               ],
+                                "mime":  [
+                                             "application/x-tar"
+                                         ],
+                                "synonyms":  [
+                                                 "Tape Archive"
+                                             ],
+                                "one_liner":  "Empacotador de sistema de arquivos que armazena muitos arquivos em um fluxo — sem compressão por si só.",
+                                "about_to":  "TAR combina vários arquivos e pastas em um único arquivo preservando permissões e metadados. Não comprime por si só; é comumente pareado com Gzip, Bzip2 ou XZ (ex.: .tgz). Escolha TAR quando precisar de um pacote ‘UNIX‑friendly’ com metadados precisos.",
+                                "about_from":  "Converter de TAR para ZIP ou 7Z adiciona compressão e melhora a compatibilidade com usuários não UNIX. Para conjuntos pequenos, apenas ZIP pode ser mais simples.",
+                                "common_uses":  [
+                                                    "Backups em UNIX",
+                                                    "Lançamentos de código‑fonte",
+                                                    "Deploys em servidores"
+                                                ],
+                                "limitations":  [
+                                                    "Sem compressão sozinho",
+                                                    "Menos familiar para usuários não técnicos"
+                                                ]
+                            },
+                    "gz":  {
+                               "name":  "GZ",
+                               "category":  "arquivo",
+                               "extensions":  [
+                                                  "gz"
+                                              ],
+                               "mime":  [
+                                            "application/gzip"
+                                        ],
+                               "synonyms":  [
+                                                "Gzip"
+                                            ],
+                               "one_liner":  "Compressão de fluxo comumente usada com TAR para criar arquivos .tgz.",
+                               "about_to":  "Gzip comprime um único fluxo — frequentemente um arquivo TAR — usando o algoritmo DEFLATE. É rápido e amplamente suportado em servidores e ferramentas. Use .tgz quando precisar de um tarball comprimido com bom equilíbrio entre velocidade e tamanho.",
+                               "about_from":  "Converter de GZ normalmente significa descompactar um .tar.gz e reempacotar como ZIP/7Z. Arquivos .gz isolados comprimem um único item; ZIP pode ser mais prático para pastas mistas.",
+                               "common_uses":  [
+                                                   "Logs de servidor",
+                                                   "Pacotes (.tgz)",
+                                                   "Pipelines UNIX"
+                                               ],
+                               "limitations":  [
+                                                   "Fluxo de arquivo único",
+                                                   "Compressão mais fraca que XZ para alguns dados"
+                                               ]
+                           },
+                    "bz2":  {
+                                "name":  "BZ2",
+                                "category":  "arquivo",
+                                "extensions":  [
+                                                   "bz2"
+                                               ],
+                                "mime":  [
+                                             "application/x-bzip2"
+                                         ],
+                                "synonyms":  [
+                                                 "Bzip2"
+                                             ],
+                                "one_liner":  "Compressão mais pesada de CPU que Gzip com resultados menores; normalmente usada com TAR.",
+                                "about_to":  "Bzip2 prioriza compressão mais apertada em vez de velocidade. É comumente visto como tarballs .tar.bz2. Use quando quiser arquivos menores que Gzip e puder trocar por mais tempo de processamento.",
+                                "about_from":  "Converter de BZ2 geralmente envolve descompactar .tar.bz2 e migrar para ZIP/7Z. Para máxima abertura, ZIP é mais amigável a usuários casuais.",
+                                "common_uses":  [
+                                                    "Arquivos de código‑fonte",
+                                                    "Backups em sistemas *nix"
+                                                ],
+                                "limitations":  [
+                                                    "Mais lento que Gzip",
+                                                    "Fluxo único como GZ"
+                                                ]
+                            },
+                    "xz":  {
+                               "name":  "XZ",
+                               "category":  "arquivo",
+                               "extensions":  [
+                                                  "xz"
+                                              ],
+                               "mime":  [
+                                            "application/x-xz"
+                                        ],
+                               "synonyms":  [
+                                                "Compressão LZMA2"
+                                            ],
+                               "one_liner":  "Compressão muito alta via LZMA2; mais lenta, porém ótima para arquivamento.",
+                               "about_to":  "XZ usa LZMA2 para excelente compressão, normalmente envolvendo arquivos TAR como .tar.xz. É ótimo para armazenamento e distribuição de longo prazo, quando tamanho importa mais que velocidade.",
+                               "about_from":  "De XZ/TAR.XZ você pode converter para 7Z ou ZIP para maior usabilidade. Espere arquivos maiores ao migrar para formatos mais rápidos e compatíveis.",
+                               "common_uses":  [
+                                                   "Distribuições de código‑fonte",
+                                                   "Pacotes Linux",
+                                                   "Arquivos de longo prazo"
+                                               ],
+                               "limitations":  [
+                                                   "Compressão lenta",
+                                                   "Fluxo único (combine com TAR para múltiplos arquivos)"
+                                               ]
+                           },
+                    "tgz":  {
+                                "name":  "TGZ",
+                                "category":  "arquivo",
+                                "extensions":  [
+                                                   "tgz",
+                                                   "tar.gz"
+                                               ],
+                                "mime":  [
+                                             "application/gzip"
+                                         ],
+                                "synonyms":  [
+                                                 "tar.gz"
+                                             ],
+                                "one_liner":  "Um arquivo TAR comprimido com Gzip; o tarball padrão de Linux/UNIX.",
+                                "about_to":  "TGZ combina o empacotamento do TAR com compressão Gzip, num equilíbrio prático de velocidade e tamanho. É onipresente em ferramentas e gerenciadores de pacotes UNIX.",
+                                "about_from":  "Converter de TGZ normalmente significa recomprimir como ZIP para usuários não técnicos ou para 7Z/XZ visando arquivos menores.",
+                                "common_uses":  [
+                                                    "Lançamentos open‑source",
+                                                    "Deploys em servidores",
+                                                    "Distribuição de pacotes"
+                                                ],
+                                "limitations":  [
+                                                    "Menos familiar no Windows sem ferramentas",
+                                                    "Acesso aleatório não é ideal"
+                                                ]
+                            },
+                    "tbz2":  {
+                                 "name":  "TBZ2",
+                                 "category":  "arquivo",
+                                 "extensions":  [
+                                                    "tbz2",
+                                                    "tar.bz2"
+                                                ],
+                                 "mime":  [
+                                              "application/x-bzip2"
+                                          ],
+                                 "synonyms":  [
+                                                  "tar.bz2"
+                                              ],
+                                 "one_liner":  "Um arquivo TAR comprimido com Bzip2 para tamanho menor que Gzip.",
+                                 "about_to":  "TBZ2 combina TAR com Bzip2 para melhor compressão que Gzip, a custo de velocidade. Use quando o tamanho pesar e o público souber lidar com arquivos estilo UNIX.",
+                                 "about_from":  "De TBZ2, considere ZIP para compatibilidade universal ou 7Z/XZ para máxima compressão.",
+                                 "common_uses":  [
+                                                     "Tarballs de código‑fonte",
+                                                     "Backups"
+                                                 ],
+                                 "limitations":  [
+                                                     "Compressão mais lenta",
+                                                     "Menos familiar fora do ecossistema UNIX"
+                                                 ]
+                             },
+                    "txz":  {
+                                "name":  "TXZ",
+                                "category":  "arquivo",
+                                "extensions":  [
+                                                   "txz",
+                                                   "tar.xz"
+                                               ],
+                                "mime":  [
+                                             "application/x-xz"
+                                         ],
+                                "synonyms":  [
+                                                 "tar.xz"
+                                             ],
+                                "one_liner":  "Arquivo TAR comprimido com XZ para excelente tamanho a velocidades menores.",
+                                "about_to":  "TXZ oferece ótima compactação ao combinar TAR com XZ (LZMA2). É uma forte escolha para distribuição de longo prazo quando minimizar o tamanho importa mais que a velocidade.",
+                                "about_from":  "Converter de TXZ para ZIP pode aumentar o tamanho, mas melhora a compatibilidade nativa no Windows e macOS.",
+                                "common_uses":  [
+                                                    "Pacotes Linux",
+                                                    "Arquivamento de longo prazo"
+                                                ],
+                                "limitations":  [
+                                                    "Compressão lenta",
+                                                    "Menos amigável para usuários casuais"
+                                                ]
+                            },
+                    "rtf":  {
+                                "name":  "RTF",
+                                "category":  "document",
+                                "extensions":  [
+                                                   "rtf"
+                                               ],
+                                "mime":  [
+                                             "application/rtf",
+                                             "text/rtf"
+                                         ],
+                                "synonyms":  [
+                                                 "Rich Text Format"
+                                             ],
+                                "one_liner":  "Formatted text exchange format that preserves basic styling across word processors.",
+                                "about_to":  "RTF (Rich Text Format) keeps fonts, basic styles, and simple images while remaining widely compatible. Convert to DOCX or PDF for modern editing or fixed-layout sharing.",
+                                "about_from":  "Converting from RTF is common when you want cleaner layouts (DOCX) or a print-perfect file (PDF). Complex elements may simplify because RTF focuses on portability.",
+                                "common_uses":  [
+                                                    "Cross-platform text",
+                                                    "Simple documents",
+                                                    "Interchange between editors"
+                                                ],
+                                "limitations":  [
+                                                    "Limited advanced layout",
+                                                    "Larger than plain text"
+                                                ]
+                            },
+                    "tar.gz":  {
+                                   "alias_of":  "tgz"
+                               },
+                    "tar.bz2":  {
+                                    "alias_of":  "tbz2"
+                                },
+                    "tar.xz":  {
+                                   "alias_of":  "txz"
+                               },
+                    "tbz":  {
+                                "alias_of":  "tbz2"
+                            },
+                    "tif":  {
+                                "alias_of":  "tiff"
+                            }
+                },
+    "pair_notes_templates":  {
+                                 "lossy_to_lossy":  "Converter {FROM} para {TO} não vai melhorar a qualidade porque ambos são codecs com perdas. Escolha uma taxa de bits maior ou parta de uma fonte sem perdas para obter os melhores resultados.",
+                                 "container_swap":  "Trocar de contêiner (por exemplo, {FROM} para {TO}) pode ser sem perdas se os codecs de áudio/vídeo já forem compatíveis; caso contrário, será necessário recodificar.",
+                                 "archive_note":  "Arquivar arquivos {FROM} em {TO} agrupa os itens para compartilhamento/armazenamento; isso não reencoda nem altera a qualidade da mídia.",
+                                 "scan_ocr":  "Se o seu PDF for um documento escaneado, ative o OCR ao converter para que a saída se torne pesquisável/editável.",
+                                 "photo_graphic":  "Use PNG/WebP para gráficos com texto ou transparência; use JPEG/WebP para fotos para manter os tamanhos pequenos."
+                             }
+}
