@@ -14,14 +14,8 @@
     --shadow: 0 10px 30px rgba(0, 0, 0, .25);
     --radius: 16px;
     --cap_okay_colour: rgb(0, 252, 42);
-<<<<<<< HEAD
-    --topbar_background_colour: linear-gradient(180deg, rgb(11, 16, 32), rgb(11, 16, 32));
-    --progress-fill: #C04519;
-    /* 🔶 your orange */
-=======
     --topbar_background_colour: #0B1020;
     --progress-fill: #C04519;
->>>>>>> 5f42b62d2 (Update 2025-11-01 17:35:17)
     --progress-track: #F0F0F0;
     --advert_background_colour: #0b1226;
     --topbar_button_background_colour: #10182e;
@@ -32,11 +26,7 @@
     --button_background_colour: #10182e;
     --choose_file_background: #10182e;
     --body_background_colour: radial-gradient(1200px 800px at 20% -10%, #162044, transparent 60%), radial-gradient(1200px 800px at 120% 20%, #112042, transparent 60%), var(--bg);
-<<<<<<< HEAD
---choose_file_background_colour: #ffff;
-=======
     --choose_file_background_colour: #ffff;
->>>>>>> 5f42b62d2 (Update 2025-11-01 17:35:17)
 }
 
 :root[data-theme="light"] {
@@ -50,9 +40,6 @@
     --accent: #3056d3;
     --danger: #b00020;
     --ok: #0b8e2a;
-    --progress-fill: #C04519;
-    /* 🔶 your orange */
-    --progress-track: rgba(255, 255, 255, .08);
     --border: #dbe1ff;
     --choose_file_background: #f7f9ff;
     --button_background_colour: #f7f9ff;
@@ -189,14 +176,8 @@ main {
 }
 
 .flex2 {
-<<<<<<< HEAD
-    flex: 2;
-    max-width: 65%;
-    
-=======
     max-width: 65%;
     flex: 2;
->>>>>>> 5f42b62d2 (Update 2025-11-01 17:35:17)
 }
 
 .flex1 {
@@ -535,7 +516,7 @@ button:hover {
 .inline-ad {
     display: none;
     max-width: 1100px;
-    margin: 12px auto 12px;
+    margin: 12px auto 120px;
     padding: 16px;
     border: 1px dashed var(--border);
 }
@@ -585,15 +566,6 @@ button:hover {
 
 #target-format optgroup.dim {
     opacity: .55;
-<<<<<<< HEAD
-}
-
-body::after {
-    content: "";
-    display: block;
-    height: calc(var(--bottom-safe) + var(--scroll-slack));
-=======
->>>>>>> 5f42b62d2 (Update 2025-11-01 17:35:17)
 }
 
 .side-ads {
@@ -2408,214 +2380,6 @@ ul.related-conversions a:focus-visible {
     }
 }
 
-<<<<<<< HEAD
-/* <= 540px — now gently lands here instead of jumping */
-@media (max-width: 540px) {
-    #file-list progress.file-progress {
-        flex: 1 1 160px !important;
-        /* was 200px — this caused the jump */
-        min-width: 44px !important;
-        height: 6px !important;
-        width: auto !important;
-        color: var(--progress-fill) !important;
-        margin: 0 !important;
-    }
-
-    #file-list progress.file-progress::-webkit-progress-bar,
-    #file-list progress.file-progress::-webkit-progress-value {
-        height: 6px;
-        color: var(--progress-fill) !important;
-    }
-}
-
-
-/* === BEGIN: Responsive one-line file row (patched) === */
-.filecard {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
-    border-top: 1px solid var(--border);
-    border-radius: 10px;
-    background: var(--panel);
-    flex-wrap: nowrap;
-    /* one line by default */
-}
-
-.filecard:first-child {
-    border-top: none;
-}
-
-/* Left side: name + meta */
-.filecard .file-meta {
-    min-width: 0;
-}
-
-.f-name {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.sub {
-    opacity: .8;
-}
-
-/* Right side: controls grouped */
-.filecard .file-controls {
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    min-width: 0;
-    /* let progress shrink */
-}
-
-.badge,
-.status {
-    white-space: nowrap;
-    font-size: 12px;
-}
-
-/* Progress bar grows/shrinks with space */
-.filecard .file-progress {
-    flex: 1 1 160px;
-    /* base width ~160px; can grow & shrink */
-    min-width: 72px;
-    /* don’t collapse completely */
-    width: auto;
-    /* override any global width */
-    height: 10px;
-    margin: 0;
-}
-
-/* Inline close button */
-.filecard .file-remove {
-    position: static;
-    width: auto;
-    height: auto;
-    line-height: 1;
-    padding: 2px 6px;
-    border: 0;
-    border-radius: 8px;
-    background: transparent;
-    color: var(--text);
-    cursor: pointer;
-}
-
-.filecard .file-remove:hover {
-    background: rgba(255, 255, 255, 0.12);
-}
-
-/* Narrow screens: wrap neatly; progress full width */
-
-
-/* === END: Responsive one-line file row (patched) === */
-
-/* =========================================================
-   FILE CARDS — TWO-ROW LAYOUT (always: controls under meta)
-   ========================================================= */
-#file-list .filecard {
-    display: grid !important;
-    grid-template-columns: 1fr !important;
-    grid-template-rows: auto auto !important;
-    row-gap: 8px !important;
-    align-items: center !important;
-    /* keep existing padding/background/border from earlier rules */
-}
-
-/* Row 1: filename + sub */
-#file-list .filecard .file-meta {
-    grid-column: 1 / -1 !important;
-    grid-row: 1 !important;
-    min-width: 0 !important;
-}
-
-#file-list .filecard .f-name {
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-}
-
-#file-list .filecard .sub {
-    opacity: .8 !important;
-}
-
-/* Row 2: controls block spans full width */
-#file-list .filecard .file-controls {
-    grid-column: 1 / -1 !important;
-    grid-row: 2 !important;
-    display: flex !important;
-    align-items: center !important;
-    gap: 10px !important;
-    width: 100% !important;
-    min-width: 0 !important;
-    margin-left: 0 !important;
-    /* cancel earlier auto-right push */
-    justify-content: flex-start !important;
-    flex-wrap: nowrap !important;
-    /* keep controls on one line within this row */
-}
-
-/* Keep short items intrinsic, let progress eat remaining space */
-#file-list .filecard .badge,
-#file-list .filecard .status,
-#file-list .filecard .file-remove {
-    flex: 0 0 auto !important;
-    white-space: nowrap !important;
-}
-
-/* Progress fills the row between badge and status */
-#file-list .filecard .file-progress {
-    flex: 1 1 auto !important;
-    /* grow to fill; shrink when tight */
-    min-width: 120px !important;
-    /* sensible floor */
-    width: auto !important;
-    height: 10px !important;
-    margin: 0 !important;
-}
-
-/* Inline close button so it never overlaps */
-#file-list .filecard .file-remove {
-    position: static !important;
-    padding: 2px 6px !important;
-    border: 0 !important;
-    border-radius: 8px !important;
-    background: transparent !important;
-    color: var(--text) !important;
-    cursor: pointer !important;
-}
-
-/* Optional: compact variants for small phones */
-@media (max-width: 520px) {
-    #file-list .filecard .file-progress {
-        min-width: 100px !important;
-        height: 8px !important;
-    }
-}
-
-@media (max-width: 400px) {
-    #file-list .filecard .file-progress {
-        min-width: 80px !important;
-        height: 6px !important;
-    }
-
-    #file-list .filecard .badge,
-    #file-list .filecard .status {
-        font-size: 12px !important;
-    }
-}
-
-
-/* =========================================================
-   FILECARDS — DESKTOP one-row, MOBILE/TABLET two-rows
-   (Place at the END so these win the cascade)
-   ========================================================= */
-
-/* —— DESKTOP (>=960px): keep everything on ONE line ————————————— */
-=======
->>>>>>> 5f42b62d2 (Update 2025-11-01 17:35:17)
 @media (min-width: 960px) {
     #file-list .filecard {
         display: flex !important;
@@ -2650,21 +2414,9 @@ ul.related-conversions a:focus-visible {
         white-space: nowrap !important;
     }
 
-<<<<<<< HEAD
-    /* progress fills all remaining desktop space */
-    #file-list progress.file-progress,
-    #file-list .filecard .file-progress {
-        flex: 1 1 auto !important;
-        min-width: 120px !important;
-        width: auto !important;
-        color: var(--progress-fill) !important;
-        height: 10px !important;
-        margin: 0 !important;
-=======
     #file-list .filecard .status {
         flex: 0 0 auto !important;
         white-space: nowrap !important;
->>>>>>> 5f42b62d2 (Update 2025-11-01 17:35:17)
     }
 
     #file-list .filecard .file-remove {
@@ -2742,21 +2494,9 @@ ul.related-conversions a:focus-visible {
         white-space: nowrap !important;
     }
 
-<<<<<<< HEAD
-    #file-list progress.file-progress,
-    #file-list .filecard .file-progress {
-        flex: 1 1 auto !important;
-        /* fill the row */
-        color: var(--progress-fill) !important;
-        min-width: 140px !important;
-        width: auto !important;
-        height: 10px !important;
-        margin: 0 !important;
-=======
     #file-list .filecard .status {
         flex: 0 0 auto !important;
         white-space: nowrap !important;
->>>>>>> 5f42b62d2 (Update 2025-11-01 17:35:17)
     }
 
     #file-list .filecard .file-remove {
@@ -2781,98 +2521,12 @@ ul.related-conversions a:focus-visible {
     }
 
     #file-list .filecard .file-progress {
-<<<<<<< HEAD
-        min-width: 100px !important;
-        height: 8px !important;
-    }
-}
-
-@media (max-width: 400px) {
-    #file-list .filecard .file-progress {
-        min-width: 80px !important;
-        height: 6px !important;
-    }
-
-    #file-list .filecard .badge,
-    #file-list .filecard .status {
-        font-size: 12px !important;
-    }
-}
-
-/* === Topbar buttons: equal size + same baseline === */
-:root {
-    --topbar-btn-w: 140px;
-    /* tweak width here */
-    --topbar-btn-h: 38px;
-    /* tweak height here */
-}
-
-/* container holds them on one y level */
-.header-row {
-    align-items: center;
-}
-
-/* already present, reinforce */
-.header-tools,
-.topbar_Buttons {
-    display: flex;
-    align-items: center;
-    /* same baseline */
-    gap: 8px;
-}
-
-/* make each topbar button identical dimensions */
-.btn-topbar {
-    display: inline-flex;
-    /* centers content */
-    align-items: center;
-    justify-content: center;
-    width: var(--topbar-btn-w);
-    /* equal width */
-    min-width: var(--topbar-btn-w);
-    height: var(--topbar-btn-h);
-    /* equal height */
-    line-height: 1;
-    /* no extra vertical wobble */
-    width: 48%;
-    /* consistent padding */
-    max-width: none !important;
-    /* override earlier 150px cap */
-    white-space: nowrap;
-    /* keep labels on one line */
-}
-
-/* if buttons include icons, keep them centered nicely */
-
-
-/* optional: on small screens let them wrap but keep size */
-@media (max-width: 600px) {
-    .topbar_Buttons {
-        flex-wrap: wrap;
-        width: 100%;
-    }
-}
-
-/* Show the inline square only on small screens */
-@media (max-width: 767px) {
-    .mobile-inline-ad {
-        display: block;
-        border-radius: 12px;
-    }
-}
-
-/* Hide it on tablets/desktop to avoid crowding with other placements */
-@media (min-width: 768px) {
-    .mobile-inline-ad {
-        display: none !important;
-=======
         flex: 1 1 auto !important;
         color: var(--progress-fill) !important;
         min-width: 140px !important;
         width: auto !important;
         height: 10px !important;
         margin: 0 !important;
->>>>>>> 5f42b62d2 (Update 2025-11-01 17:35:17)
     }
 }
 
@@ -4092,180 +3746,6 @@ ul.related-conversions a:focus-visible {
 
 }
 
-<<<<<<< HEAD
-/* === Progress bar color: orange === */
-
-
-progress.file-progress {
-    color: var(--progress-fill);
-    /* some engines use this */
-}
-
-/* WebKit/Chromium fill */
-#file-list .filecard progress::-webkit-progress-value {
-    background: var(--progress-fill) !important;
-}
-
-/* Firefox fill */
-#file-list .filecard progress::-moz-progress-bar {
-    background: var(--progress-fill) !important;
-}
-
-/* (optional) track color override, if you want a subtle grey track */
-#file-list .filecard progress::-webkit-progress-bar {
-    background: var(--progress-track);
-}
-
-/* === Progress bar color: orange === */
-
-
-/* optional: some engines also look at color/accent-color */
-progress.file-progress {
-    color: var(--progress-fill);
-    accent-color: var(--progress-fill);
-}
-
-/* WebKit/Chromium fill */
-#file-list .filecard progress::-webkit-progress-value,
-progress.file-progress::-webkit-progress-value {
-    background: var(--progress-fill) !important;
-    border-radius: 9999px;
-}
-
-/* Firefox fill */
-#file-list .filecard progress::-moz-progress-bar,
-progress.file-progress::-moz-progress-bar {
-    background: var(--progress-fill) !important;
-    border-radius: 9999px;
-}
-
-/* Track (what you see at value=0) */
-#file-list .filecard progress::-webkit-progress-bar,
-progress.file-progress::-webkit-progress-bar {
-    background: var(--progress-track) !important;
-}
-
-/* show up to ~40 characters before ellipsis for this widget */
-/* --- Mobile fold seam hotfix --- */
-@media (max-width: 768px) {
-
-    /* 1) Use modern viewport height so address-bar collapse doesn't reveal a different bg */
-    html,
-    body {
-        min-height: 100svh;
-        /* supported on iOS/Android; falls back below */
-    }
-
-    /* 2) If any gradient/background was fixed, make it scroll on mobile to avoid seams */
-    body {
-        background-attachment: scroll !important;
-    }
-
-    /* 3) Ensure page + panels share the same paint so no horizontal “page break” appears */
-    html,
-    body {
-        /* pick the base you already use for panels; change if yours is different */
-        background-color: var(--panel, #0f172a) !important;
-        background-image: none !important;
-        /* avoid gradient/attachment conflicts on mobile */
-    }
-
-    /* 4) Let inner blocks inherit the same background so it’s seamless */
-    .app,
-    .container,
-    .panel,
-    .card,
-    .section,
-    .dropzone,
-    .file-input {
-        background-color: transparent !important;
-    }
-}
-/* ==== Native-like file input (exact look) ==== */
-.file-picker-wrap {
-    /* outer field */
-    display: block;
-    width: 100%;
-    
-    border-radius: 14px;
-    padding: 8px;              /* space between outer border and inner button/text */
-    background: transparent;
-  }
-  
-  .file-picker {
-    display: flex;
-    align-items: center;
-    gap: 14px;                 /* space between button and text */
-    width: 100%;
-    min-height: 32px;
-  }
-  
-  /* Keep a real input for functionality but hide it visually */
-  .file-input-native {
-    position: absolute;
-    width: 1px; height: 1px;
-    margin: -1px; padding: 0; border: 0;
-    overflow: hidden; clip: rect(0 0 0 0);
-    white-space: nowrap;
-  }
-  
-  /* The left pill-like button */
-  .file-picker-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 6px 16px;
-    min-height: 32px;
-    border: 1px solid var(--convert_border, rgba(255,255,255,.16));
-    border-radius: 12px;
-    background: var(--choose_file_background);   /* matches your native control on dark theme */
-    color: var(--text, #fff);
-    font: inherit;
-    cursor: pointer;
-    user-select: none;
-    -webkit-tap-highlight-color: transparent;
-font: 500 14px/1 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-max-width: fit-content;
-  }
-  
-  .file-picker-btn:hover {
-    background: rgba(255,255,255,.04);
-  }
-  .file-picker-btn:active {
-    background: rgba(255,255,255,.06);
-  }
-  .file-picker-btn:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(99,132,255,.20);
-  }
-  
-  /* Filename text on the right */
-  .file-picker-name {
-    flex: 1 1 auto;
-    min-width: 0;        
-    font: 500 14px/1 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif  ;       /* required so ellipsis can shrink */
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;      /* CSS fallback; JS does middle-ellipsis */
-    color: var(--muted, rgba(255,255,255,.65));
-    line-height: 1.2;
-
-
- 
-  }
-  
-  .file-picker.has-files .file-picker-name {
-    color: var(--text, #fff);
-  }
-  
-  /* Optional: make the whole row clickable like many native controls */
-  .file-picker-wrap.is-clickable .file-picker {
-    cursor: pointer;
-  }
-  .file-picker.js-ready .file-picker-name {
-    text-overflow: clip;  /* no extra dots at the end */
-  }
-=======
 .panel.format-explainer .explainer-right {
     flex: 1 1 0 !important;
     min-width: 0 !important;
@@ -4374,4 +3854,3 @@ max-width: fit-content;
         padding-left: auto !important;
     }
 }
->>>>>>> 5f42b62d2 (Update 2025-11-01 17:35:17)
